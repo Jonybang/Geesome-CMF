@@ -12,16 +12,17 @@ class PagesTableSeeder extends Seeder
     public function run()
     {
         $seeds = [
-            ['Главная', 'index', 'Содержимое главной страницы'],
-            ['Блог', 'blog', ''],
-            ['О нас', 'page', 'Содержимое страницы о нас'],
+            ['Главная', '', 'index', 'Содержимое главной страницы'],
+            ['Блог', 'blog', 'blog', ''],
+            ['О нас', 'about', 'page', 'Содержимое страницы о нас'],
         ];
         foreach($seeds as $seed){
             $page = \App\Page::create([
                 'title' => $seed[0],
-                'template_id' => \App\Template::where('path', $seed[1])->first()->id
+                'alias' => $seed[1],
+                'template_id' => \App\Template::where('path', $seed[2])->first()->id
             ]);
-            $page->content = $seed[2];
+            $page->content = $seed[3];
         }
     }
 }

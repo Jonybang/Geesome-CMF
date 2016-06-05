@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class ClientServiceProvider extends ServiceProvider
+class SiteServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -18,6 +18,12 @@ class ClientServiceProvider extends ServiceProvider
                 'menu_items',
                 \App\Page::where('is_menu_hide', false)->where('parent_page_id', 0)->with('child_pages')->get()
             );
+
+        if(\Schema::hasTable('pages')){
+            $settings = \App\Setting::get();
+            foreach($settings as $setting)
+                \View::share($setting->name, $setting->value);
+        }
     }
 
     /**

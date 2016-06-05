@@ -51,11 +51,7 @@ class Page extends Model
 
     public function getAliasAttribute()
     {
-        try {
-            return $this->alias ? $this->alias : $this->id;
-        } catch(\ErrorException $e){
-            return $this->id;
-        }
+        return isset($this->attributes['alias']) ? $this->attributes['alias'] : $this->id;
     }
 
     public function getMenuTitleAttribute()

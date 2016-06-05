@@ -10,9 +10,12 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::get('/login', ['as' => 'login', function(){
+    return view('admin.login');
+}]);
 
 Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], function () {
-    Route::get('/', ['as' => 'dashboard', 'AdminController@index']);
+    Route::get('/', ['as' => 'dashboard', 'uses' => 'AdminController@index']);
 });
 
 
