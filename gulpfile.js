@@ -28,7 +28,7 @@ var concatCss = require('gulp-concat-css');
 //});
 
 var js_dir = 'public/assets/js/';
-var dist_dir = 'public/dist/';
+var dist_dir = 'public/assets/dist/';
 
 gulp.task('concatAngularVendorJS', function() {
     return gulp.src(js_dir +'angular/*.js')

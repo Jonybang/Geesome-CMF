@@ -228,5 +228,6 @@
     <script src="assets/js/plugins/morris/morris.min.js"></script>
     <script src="assets/js/plugins/morris/morris-data.js"></script>
 
-    {!! Asset::scripts() !!}
+    <script src="assets/dist/vendor.js"></script>
+    <script src="assets/dist/app.js"></script>
 @endsection
