@@ -21,7 +21,8 @@ class BlogPagesTableSeeder extends Seeder
                 'title' => $seed[0],
                 'sub_title' => $seed[1],
                 'template_id' => \App\Template::where('path', 'page')->first()->id,
-                'parent_page_id' => \App\Page::where('alias', 'blog')->first()->id
+                'parent_page_id' => \App\Page::where('alias', 'blog')->first()->id,
+                'author_id' => \App\User::first()->id
             ]);
             $page->content = $seed[2];
         }

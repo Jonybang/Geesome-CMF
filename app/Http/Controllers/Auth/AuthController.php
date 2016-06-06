@@ -76,9 +76,14 @@ class AuthController extends Controller
     public function authenticate(Request $request)
     {
         $data = $request->all();
-        if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']]))
-        {
+        if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
+            Session::flash('message_type', 'success');
+            Session::flash('message_text', 'You logged in admin panel.');
             return redirect('/admin');
+        } else {
+            Session::flash('message_type', 'warning');
+            Session::flash('message_text', 'Incorrect email or password.');
+            return redirect()->route('login')->withInput();
         }
     }
 

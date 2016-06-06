@@ -8,6 +8,8 @@
         <div class="container-fluid">
             <h1>Login</h1>
 
+            @include('share.flash-message')
+
             <form class="form-horizontal" role="form" method="POST" action="/login">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
