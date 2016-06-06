@@ -79,7 +79,7 @@ class AuthController extends Controller
         if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
             Session::flash('message_type', 'success');
             Session::flash('message_text', 'You logged in admin panel.');
-            return redirect('/admin');
+            return redirect('/admin/');
         } else {
             Session::flash('message_type', 'warning');
             Session::flash('message_text', 'Incorrect email or password.');

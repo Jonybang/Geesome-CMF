@@ -20,14 +20,25 @@ Route::post('/login', 'Auth\AuthController@authenticate');
 Route::get('/logout', 'Auth\AuthController@logout');
 
 Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], function () {
-    Route::get('/', ['as' => 'dashboard', 'uses' => 'AdminController@index']);
-
-
     Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
         Route::resource('settings', 'Api\SettingController');
     });
+
+
+    Route::get('/', function () {
+        return view('admin.index');
+    });
+
+    Route::get('{any}', function ($any) {
+        return view('admin.index');
+    })->where('any', '.*');
+
+    #Route::get('/', ['as' => 'dashboard', 'uses' => 'AdminController@index']);
 });
 
+//Route::get('{page}/{subs}', ['middleware' => 'auth', function($uri) {
+//    return view('admin.index');
+//}])->where(['page' => '^((?!admin).)*$', 'subs' => '.*']);
 
 Route::get('/{alias?}', function ($alias = null) {
     $page = null;
