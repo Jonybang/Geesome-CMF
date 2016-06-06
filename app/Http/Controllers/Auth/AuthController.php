@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use Validator;
+use \Auth;
+use \Session;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -70,11 +73,19 @@ class AuthController extends Controller
         ]);
     }
 
-    public function authenticate(array $data)
+    public function authenticate(Request $request)
     {
+        $data = $request->all();
         if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']]))
         {
-            return redirect('/');
+            return redirect('/admin');
         }
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        Session::flush();
+        return redirect('/');
     }
 }
