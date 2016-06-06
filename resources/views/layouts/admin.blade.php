@@ -2,6 +2,10 @@
 
 @section('wrapper_id', 'wrapper')
 
+@section('title')
+    Admin - @yield('page_name') - @yield('page_sub_title')
+@endsection
+
 @section('styles')
     <!-- Custom CSS -->
     <link href="assets/css/sb-admin.css" rel="stylesheet">
@@ -181,7 +185,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        @yield('page_name') <small>Statistics Overview</small>
+                        @yield('page_name') <small>@yield('page_sub_title', 'Z')</small>
                     </h1>
                     <ol class="breadcrumb">
                         <li class="active">

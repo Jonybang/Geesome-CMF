@@ -1,8 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin')
-
 @section('page_name', 'Dashboard')
+@section('page_sub_title', 'Statistics Overview')
 
 @section('admin_content')
     <div class="row">
