@@ -30,6 +30,7 @@
                             <a href="\{{$menu_item->alias}}">{{$menu_item->menu_title}}</a>
                         </li>
                     @endforeach
+
                      @if(Auth::check())
                         <li class="active">
                             <a href="\admin">Admin panel</a>

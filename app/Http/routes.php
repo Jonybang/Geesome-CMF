@@ -21,6 +21,11 @@ Route::get('/logout', 'Auth\AuthController@logout');
 
 Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], function () {
     Route::get('/', ['as' => 'dashboard', 'uses' => 'AdminController@index']);
+
+
+    Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
+        Route::resource('settings', 'Api\SettingController');
+    });
 });
 
 
