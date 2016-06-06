@@ -7,6 +7,8 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
+        <base href="/">
+
         <title>Lanit Dev - @yield('title')</title>
 
         <!-- Bootstrap Core CSS -->

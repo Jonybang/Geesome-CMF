@@ -9,10 +9,9 @@
 @endsection
 
 @section('scripts')
-        <!-- Morris Charts JavaScript -->
-    <script src="/assets/js/plugins/morris/raphael.min.js"></script>
-    <script src="/assets/js/plugins/morris/morris.min.js"></script>
-    <script src="/assets/js/plugins/morris/morris-data.js"></script>
+    <script src="/assets/js/lodash.min.js"></script>
+    <script src="/assets/js/moment.min.js"></script>
+    <script src="/assets/js/moment-ru.js"></script>
 
     <script src="/assets/dist/vendor.js"></script>
     <script src="/assets/dist/app.js"></script>

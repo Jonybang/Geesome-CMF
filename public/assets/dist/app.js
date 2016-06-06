@@ -51,23 +51,21 @@ var defaultOptions = {
 app.factory('Settings', ['$resource', function($resource) {
     return $resource('/settings/:id', null, defaultOptions);
 }]);
+var app_path = '/assets/js/admin-app/';
 angular.module('app')
-    .factory('AppPaths', [function(){
-        this.app = '/assets/js/admin-app/';
-        this.app_tpls = this.app_path + 'templates/';
-
-        this.modules = this.app_path + 'modules/';
-        this.dashboard_tpls = this.modules_path + 'dashboard/templates/';
-        this.settings_tpls = this.modules_path + 'settings/templates/';
-
-        return this;
-    }]);
-angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.get();
-    }]);
-
+    .constant('AppPaths', {
+            app: app_path,
+            app_tpls: app_path + 'templates/',
+            modules: app_path + 'modules/',
+            dashboard_tpls: app_path + 'modules/dashboard/templates/',
+            settings_tpls: app_path + 'modules/settings/templates/'
+    });
 angular.module('app')
     .controller('DashboardController', ['$scope', function($scope) {
 
+    }]);
+
+angular.module('app')
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = Settings.get();
     }]);
