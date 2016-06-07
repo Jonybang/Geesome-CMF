@@ -225,3 +225,17 @@ ul.alert-dropdown {
 .panel-yellow > a:hover {
     color: #df8a13;
 }
+
+.main-menu .nav-pills{
+    width: 10%;
+    display: inline-block;
+}
+
+.main-menu .tab-content {
+    width: 89%;
+    display: inline-block;
+    vertical-align: top;
+    background-color: #fff;
+    padding: 10px 20px;
+    min-height: 600px;
+}

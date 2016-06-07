@@ -1,6 +1,5 @@
 @extends('layouts.master')
 
-@section('wrapper_id', 'wrapper')
 
 @section('title')
     Admin - @yield('page_name') - @yield('page_sub_title')

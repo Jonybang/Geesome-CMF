@@ -1,5 +1,5 @@
 angular
-    .module('app', ['a-edit', 'ui.router'])
+    .module('app', ['ngResource', 'a-edit', 'ui.router', 'ui.router.tabs'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 

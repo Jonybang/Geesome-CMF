@@ -13,4 +13,11 @@ use App\Http\Controllers\Controller;
 
 class ApiController extends Controller
 {
+    public function cur_user()
+    {
+        return Response::json(
+            Auth::user()->toArray(),
+            200
+        );
+    }
 }

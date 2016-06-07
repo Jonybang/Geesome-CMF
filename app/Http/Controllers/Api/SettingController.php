@@ -39,10 +39,19 @@ class SettingController extends ApiController
     public function update(Request $request)
     {
         $data = $request->all();
+        $is_saved = Setting::find($data['id'])->update($data);
 
         return Response::json(
-            Setting::find($data['id'])->update($data)->toArray(),
-            200
+            Setting::find($data['id']),
+            $is_saved ? 200 : 400
+        );
+    }
+    public function destroy($id)
+    {
+        $is_destroyed = Setting::destroy($id);
+
+        return Response::json(
+            $is_destroyed ? 200 : 400
         );
     }
 }

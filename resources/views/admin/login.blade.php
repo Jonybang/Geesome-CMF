@@ -1,5 +1,7 @@
 @extends('layouts.admin')
 
+@section('wrapper_id', 'wrapper')
+
 @section('title', 'Admin')
 
 @section('navbar')
