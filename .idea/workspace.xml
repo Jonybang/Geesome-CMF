@@ -2,20 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1b05e9aa-2014-4e36-87ee-d6521084ef20" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/pages-controller.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/pages.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/templates/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/js/angular/awesome-edit" afterPath="$PROJECT_DIR$/public/assets/js/angular/awesome-edit" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Http/routes.php" afterPath="$PROJECT_DIR$/app/Http/routes.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/dist/app.js" afterPath="$PROJECT_DIR$/public/assets/dist/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/dist/vendor.js" afterPath="$PROJECT_DIR$/public/assets/dist/vendor.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/js/admin-app/app-controller.js" afterPath="$PROJECT_DIR$/public/assets/js/admin-app/app-controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/js/admin-app/app.js" afterPath="$PROJECT_DIR$/public/assets/js/admin-app/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/js/admin-app/modules/settings/settings-controller.js" afterPath="$PROJECT_DIR$/public/assets/js/admin-app/modules/settings/settings-controller.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/js/admin-app/services/models.js" afterPath="$PROJECT_DIR$/public/assets/js/admin-app/services/models.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/js/admin-app/services/paths.js" afterPath="$PROJECT_DIR$/public/assets/js/admin-app/services/paths.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/views/layouts/admin.blade.php" afterPath="$PROJECT_DIR$/resources/views/layouts/admin.blade.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/views/templates/blog.blade.php" afterPath="$PROJECT_DIR$/resources/views/templates/blog.blade.php" />
     </list>
     <ignored path="lanit-dev-site.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -129,11 +116,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.016163792">
+            <state vertical-scroll-proportion="-0.625">
               <caret line="1" column="57" selection-start-line="1" selection-start-column="57" selection-end-line="1" selection-end-column="57" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="blog.blade.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/resources/views/templates/blog.blade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.61422414">
+              <caret line="38" column="154" selection-start-line="38" selection-start-column="154" selection-end-line="38" selection-end-column="154" />
               <folding />
             </state>
           </provider>
@@ -144,16 +141,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-3.125">
               <caret line="5" column="38" selection-start-line="5" selection-start-column="38" selection-end-line="5" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="helpers.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/assets/js/angular/awesome-edit/src/js/services/helpers.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="45" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -173,7 +160,6 @@
         <option value="$PROJECT_DIR$/app/Http/Controllers/AdminController.php" />
         <option value="$PROJECT_DIR$/database/seeds/BlogPagesSeeder.php.php" />
         <option value="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" />
-        <option value="$PROJECT_DIR$/resources/views/templates/blog.blade.php" />
         <option value="$PROJECT_DIR$/database/seeds/PagesTableSeeder.php" />
         <option value="$PROJECT_DIR$/.env.example" />
         <option value="$PROJECT_DIR$/database/seeds/BlogPagesTableSeeder.php" />
@@ -218,6 +204,7 @@
         <option value="$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/pages-controller.js" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/Api/PageController.php" />
         <option value="$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/templates/index.html" />
+        <option value="$PROJECT_DIR$/resources/views/templates/blog.blade.php" />
       </list>
     </option>
   </component>
@@ -302,6 +289,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lanit-dev-site" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lanit-dev-site" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1345,13 +1354,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/database/seeds/BlogPagesTableSeeder.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.75">
-          <caret line="22" column="52" selection-start-line="22" selection-start-column="52" selection-end-line="22" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/share/flash-message.blade.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1754,8 +1756,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.016163792">
+        <state vertical-scroll-proportion="-0.625">
           <caret line="1" column="57" selection-start-line="1" selection-start-column="57" selection-end-line="1" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/templates/blog.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.61422414">
+          <caret line="38" column="154" selection-start-line="38" selection-start-column="154" selection-end-line="38" selection-end-column="154" />
           <folding />
         </state>
       </provider>

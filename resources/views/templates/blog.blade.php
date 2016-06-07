@@ -36,7 +36,7 @@
                             </h3>
                         </a>
                         @if($child_page->author)
-                            <p class="post-meta">Posted by <a href="/users/{{$child_page->author->id}}">{{$child_page->author->name}}</a> on {{$child_page->child_page->created_at}}</p>
+                            <p class="post-meta">Posted by <a href="/users/{{$child_page->author->id}}">{{$child_page->author->name}}</a> on {{$child_page->created_at}}</p>
                         @endif
                     </div>
                     <hr>
