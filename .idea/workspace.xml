@@ -3,9 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="1b05e9aa-2014-4e36-87ee-d6521084ef20" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/js/angular/awesome-edit" afterPath="$PROJECT_DIR$/public/assets/js/angular/awesome-edit" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/PageController.php" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/PageController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/js/admin-app/templates/index.html" afterPath="$PROJECT_DIR$/public/assets/js/admin-app/templates/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/views/admin/login.blade.php" afterPath="$PROJECT_DIR$/resources/views/admin/login.blade.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Page.php" afterPath="$PROJECT_DIR$/app/Page.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/dist/app.js" afterPath="$PROJECT_DIR$/public/assets/dist/app.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/pages-controller.js" afterPath="$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/pages-controller.js" />
     </list>
     <ignored path="lanit-dev-site.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,8 +49,8 @@
       <file leaf-file-name="grid.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/assets/js/angular/awesome-edit/src/js/directives/grid.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.483871">
-              <caret line="207" column="61" selection-start-line="207" selection-start-column="61" selection-end-line="207" selection-end-column="61" />
+            <state vertical-scroll-proportion="-8.225806">
+              <caret line="152" column="53" selection-start-line="152" selection-start-column="53" selection-end-line="152" selection-end-column="53" />
               <folding />
             </state>
           </provider>
@@ -80,8 +82,8 @@
       <file leaf-file-name="Page.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Page.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-27.416666">
-              <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+            <state vertical-scroll-proportion="-8.125">
+              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -90,8 +92,8 @@
       <file leaf-file-name="PageController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Api/PageController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.875">
-              <caret line="29" column="5" selection-start-line="29" selection-start-column="5" selection-end-line="29" selection-end-column="5" />
+            <state vertical-scroll-proportion="-9.375">
+              <caret line="24" column="39" selection-start-line="24" selection-start-column="39" selection-end-line="24" selection-end-column="39" />
               <folding>
                 <element signature="e#44#72#0#PHP" expanded="true" />
               </folding>
@@ -99,11 +101,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/assets/js/admin-app/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.16163793">
-              <caret line="10" column="62" selection-start-line="10" selection-start-column="62" selection-end-line="13" selection-end-column="13" />
+            <state vertical-scroll-proportion="-6.875">
+              <caret line="11" column="47" selection-start-line="11" selection-start-column="47" selection-end-line="11" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -139,11 +141,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pages-controller.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="pages-controller.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/pages-controller.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="35" column="17" selection-start-line="35" selection-start-column="17" selection-end-line="35" selection-end-column="17" />
+            <state vertical-scroll-proportion="0.5042017">
+              <caret line="32" column="35" selection-start-line="32" selection-start-column="35" selection-end-line="32" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -201,13 +203,13 @@
         <option value="$PROJECT_DIR$/resources/views/templates/blog.blade.php" />
         <option value="$PROJECT_DIR$/public/assets/js/angular/awesome-edit/src/js/directives/modal.js" />
         <option value="$PROJECT_DIR$/public/assets/js/angular/awesome-edit/src/css/a-edit.css" />
-        <option value="$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/pages-controller.js" />
-        <option value="$PROJECT_DIR$/public/assets/js/angular/awesome-edit/src/js/directives/grid.js" />
         <option value="$PROJECT_DIR$/public/assets/js/angular/awesome-edit/src/js/directives/inputs.js" />
-        <option value="$PROJECT_DIR$/app/Page.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/Api/PageController.php" />
         <option value="$PROJECT_DIR$/public/assets/js/admin-app/templates/index.html" />
         <option value="$PROJECT_DIR$/resources/views/admin/login.blade.php" />
+        <option value="$PROJECT_DIR$/app/Page.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/Api/PageController.php" />
+        <option value="$PROJECT_DIR$/public/assets/js/angular/awesome-edit/src/js/directives/grid.js" />
+        <option value="$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/pages-controller.js" />
       </list>
     </option>
   </component>
@@ -1622,7 +1624,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1674,12 +1676,12 @@
         <state vertical-scroll-proportion="-9.419354">
           <caret line="76" column="32" selection-start-line="76" selection-start-column="32" selection-end-line="76" selection-end-column="32" />
           <folding>
-            <marker date="1465268813684" expanded="true" signature="503:1625" placeholder="..." />
-            <marker date="1465268813684" expanded="true" signature="628:1599" placeholder="..." />
-            <marker date="1465268813684" expanded="true" signature="653:1325" placeholder="..." />
-            <marker date="1465268813684" expanded="true" signature="1391:1579" placeholder="..." />
-            <marker date="1465268813684" expanded="true" signature="1839:1895" placeholder="..." />
-            <marker date="1465268813684" expanded="true" signature="37629:37636" placeholder="{...}" />
+            <marker date="1465270399012" expanded="true" signature="503:1625" placeholder="..." />
+            <marker date="1465270399012" expanded="true" signature="628:1599" placeholder="..." />
+            <marker date="1465270399012" expanded="true" signature="653:1325" placeholder="..." />
+            <marker date="1465270399012" expanded="true" signature="1391:1579" placeholder="..." />
+            <marker date="1465270399012" expanded="true" signature="1839:1895" placeholder="..." />
+            <marker date="1465270399012" expanded="true" signature="37787:37794" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -1695,22 +1697,6 @@
             <marker date="1465255907052" expanded="true" signature="1391:1579" placeholder="..." />
             <marker date="1465255907052" expanded="true" signature="1839:1895" placeholder="..." />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/pages-controller.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="35" column="17" selection-start-line="35" selection-start-column="17" selection-end-line="35" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/assets/js/angular/awesome-edit/src/js/directives/grid.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.483871">
-          <caret line="207" column="61" selection-start-line="207" selection-start-column="61" selection-end-line="207" selection-end-column="61" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1730,24 +1716,6 @@
         <state vertical-scroll-proportion="-2.5">
           <caret line="4" column="28" selection-start-line="4" selection-start-column="28" selection-end-line="8" selection-end-column="17" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Page.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-27.416666">
-          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Api/PageController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.875">
-          <caret line="29" column="5" selection-start-line="29" selection-start-column="5" selection-end-line="29" selection-end-column="5" />
-          <folding>
-            <element signature="e#44#72#0#PHP" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1777,8 +1745,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/assets/js/admin-app/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16163793">
-          <caret line="10" column="62" selection-start-line="10" selection-start-column="62" selection-end-line="13" selection-end-column="13" />
+        <state vertical-scroll-proportion="-6.875">
+          <caret line="11" column="47" selection-start-line="11" selection-start-column="47" selection-end-line="11" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Page.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.125">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Api/PageController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.375">
+          <caret line="24" column="39" selection-start-line="24" selection-start-column="39" selection-end-line="24" selection-end-column="39" />
+          <folding>
+            <element signature="e#44#72#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/assets/js/angular/awesome-edit/src/js/directives/grid.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.225806">
+          <caret line="152" column="53" selection-start-line="152" selection-start-column="53" selection-end-line="152" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/assets/js/admin-app/modules/pages/pages-controller.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5042017">
+          <caret line="32" column="35" selection-start-line="32" selection-start-column="35" selection-end-line="32" selection-end-column="35" />
           <folding />
         </state>
       </provider>

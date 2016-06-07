@@ -13,6 +13,16 @@ class Page extends Model
         'title', 'sub_title', 'alias', 'description', 'content', 'menu_index', 'is_published', 'is_main_page', 'parent_page_id', 'author_id', 'template_id'
     ];
 
+    protected $casts = [
+        'id' => 'integer',
+        'menu_index' => 'integer',
+        'is_published' => 'boolean',
+        'is_main_page' => 'boolean',
+        'parent_page_id' => 'integer',
+        'author_id' => 'integer',
+        'template_id' => 'integer'
+    ];
+
     public function author()
     {
         return $this->belongsTo('App\User');

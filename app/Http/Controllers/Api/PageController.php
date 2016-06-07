@@ -15,6 +15,7 @@ class PageController extends Controller
 {
     public function index()
     {
+        //TODO: Разобраться с получением данных: числа получаю как строки
         return Response::json(
             \DB::table('pages')
                 ->leftJoin('pages_contents', 'pages_contents.page_id', '=', 'pages.id')
@@ -24,6 +25,7 @@ class PageController extends Controller
                     'parent_page_id', 'author_id', 'template_id',
                     'pages_contents.content as content'
                 )
+                ->orderBy('id', 'desc')
                 ->get(),
             200
         );

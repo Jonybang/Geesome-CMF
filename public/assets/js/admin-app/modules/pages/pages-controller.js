@@ -4,7 +4,7 @@ angular.module('app')
 
         $scope.aGridOptions = {
             caption: '',
-            orderBy: '-id',
+            orderBy: '',
             model: Pages,
             fields: [
                 {
