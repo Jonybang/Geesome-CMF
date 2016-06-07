@@ -79,7 +79,7 @@ class Page extends Model
     {
         $content_row = $this->contentRow();
         if($content_row)
-            $content_row->update(['content' => $value, 'updated_at' => new \DateTime()]);
+            \DB::table('pages_contents')->where('page_id', $this->id)->update(['content' => $value, 'updated_at' => new \DateTime()]);
         else if($value)
             \DB::table('pages_contents')->insert(
                 ['page_id' => $this->id, 'content' => $value, 'created_at' => new \DateTime()]

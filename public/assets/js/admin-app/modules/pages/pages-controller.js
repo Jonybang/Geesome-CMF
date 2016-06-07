@@ -38,7 +38,7 @@ angular.module('app')
                     label: 'Template',
                     type: 'select',
                     model: Templates,
-                    list_name: 'templates'
+                    list: 'templates'
                 },
                 {
                     name: 'menu_title',
