@@ -15,7 +15,10 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/admin/">{{$site_title}} Admin</a>
+        <a class="navbar-brand" href="/admin/">Admin Panel</a>
+        <ul class="nav navbar-nav navbar-left">
+            <li><a href="/" target="_self">Site Content</a></li>
+        </ul>
     </div>
 
 </nav>

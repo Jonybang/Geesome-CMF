@@ -48,7 +48,9 @@ class PageController extends Controller
     {
         $data = $request->all();
         $page = Page::create($data);
-        $page->content = $data['content'];
+
+        if(isset($data['content']))
+            $page->content = $data['content'];
 
         return Response::json(
             $this->getPageArrayWithContent($page),
@@ -60,7 +62,9 @@ class PageController extends Controller
         $data = $request->all();
         $page = Page::find($data['id']);
         $is_saved = $page->update($data);
-        $page->content = $data['content'];
+
+        if(isset($data['content']))
+            $page->content = $data['content'];
 
         return Response::json(
             $this->getPageArrayWithContent($page),
