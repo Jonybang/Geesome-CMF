@@ -94,6 +94,18 @@ angular
             scope.save = function(item){
                 if(!item)
                     return;
+
+                item.errors || (item.errors = {});
+
+                scope.options.fields.forEach(function(field){
+                    if(field.required && !item[field.name])
+                        item.errors[field.name] = true;
+                    else if(item.errors[field.name])
+                        delete item.errors[field.name];
+                });
+
+                if(!AEditHelpers.isEmptyObject(item.errors))
+                    return;
                     
                 console.log('save item', item);
 
@@ -219,6 +231,9 @@ angular
                 '<tr ng-repeat="item in filtredList | orderBy: options.orderBy track by item.id">';
 
             scope.options.fields.forEach(function(field, index){
+                if(field.table_hide)
+                    return;
+
                 tplHead += '<th>' + field.label + '</th>';
 
                 if(field.readonly || !scope.options.edit){
@@ -241,14 +256,14 @@ angular
                         else if(field.list)
                             list_variable = 'options.lists.' + field.list;
 
-                        var model_name = field.model ? field.model.config.name : null;
+                        var model_name = field.model ? field.list_name : null;
                         if(model_name){
                             list_variable = 'options.models_lists.' + model_name;
 
                             if(!scope.options.models_lists[model_name]){
                                 scope.options.models_lists[model_name] = [];
 
-                                field.model.get().then(function(list){
+                                AEditHelpers.getResourceQuery(field.model, 'get').then(function(list){
                                     scope.options.models_lists[model_name] = list;
                                 });
                             }
@@ -375,7 +390,7 @@ angular
             '<div ng-if="!isEdit">' +
                 (type == 'text' ? text : '<pre ng-if="$parent.ngModel">{{$parent.ngModel}}</pre>') +
             '</div>' +
-            '<div ng-if="isEdit">' +
+            '<div ng-if="isEdit" ng-class="input_class">' +
                 (type == 'text' ? '<input type="text"' : '<textarea ') +
                 ' class="form-control input-sm" placeholder="{{$parent.placeholder}}"' +
                 ' ng-model="$parent.ngModel" ng-enter="$parent.save()"' +
@@ -398,6 +413,7 @@ angular
                 ngModelStr: '=?',
                 isEdit: '=?',
                 modalModel: '=?',
+                hasError: '=?',
                 //callbacks
                 ngChange: '&',
                 onSave: '&',
@@ -405,6 +421,7 @@ angular
                 placeholder: '@',
                 name: '@',
                 width: '@',
+                required: '@',
                 type: '@' //text or textarea
             },
             link: function (scope, element, attrs) {
@@ -427,7 +444,17 @@ angular
                     templateElement = null;
                 });
 
+                scope.$watch('hasError', function(hasError){
+                    scope.input_class = hasError ? "has-error" : '';
+                });
+
                 scope.save = function(){
+                    if(scope.required && !scope.ngModel){
+                        scope.input_class = "has-error";
+                        return;
+                    }
+
+                    scope.input_class = '';
                     if(scope.onSave)
                         $timeout(scope.onSave);
                 }
@@ -503,11 +530,11 @@ angular
                     '<input type="hidden" name="{{name}}" ng-bind="ngModel" class="form-control" required />' +
                     '<ui-select ' + (type == 'multiselect' ? 'multiple close-on-select="false"' : '') + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small">' +
                         '<ui-select-match placeholder="">' +
-                            '{{' + (type == 'multiselect' ? '$item.name' : '$select.selected.name') + '}}' +
+                            '{{' + (type == 'multiselect' ? '$item.name || $item.title' : '$select.selected.name || $select.selected.title') + '}}' +
                         '</ui-select-match>' +
 
                         '<ui-select-choices repeat="item.id as item in $parent.list track by $index">' +
-                            '<div ng-bind-html="item.name | highlight: $select.search"></div>' +
+                            '<div ng-bind-html="item.name || item.title | highlight: $select.search"></div>' +
                         '</ui-select-choices>' +
                     '</ui-select>' +
                 '</div>';
@@ -781,7 +808,7 @@ angular
                                 lists_container: 'lists',
                                 already_modal: true
                             }) + '</dd>';
-                        })
+                        });
                         
                         template +=
                                 '</dl>' +
@@ -891,8 +918,11 @@ angular.module('a-edit')
                 if(field.width)
                     output += 'width="' + field.width + '" ';
 
-                if(field.model)
-                    output += 'url="' + field.model.config.url + '" ';
+                if(field.required)
+                    output += 'required="true" ';
+
+                if(field.url)
+                    output += 'url="' + field.url + '" ';
 
                 if(config.list_variable)
                     output += 'list="' + config.list_variable + '" ';
@@ -913,6 +943,7 @@ angular.module('a-edit')
                     
                 output += 'ng-model="' + item_field + '" ' +
                     'on-save="save(' + item_name + ')" ' +
+                    'has-error="' + item_name + '.errors.' + field_name + '" ' +
                     'ng-model-str="' + item_name + '.' +  field_name + '_str" ' +
                     'ng-model-sub-str="' + item_name + '.' +  field_name + '_sub_str" ' +
                     'is-edit="' + is_edit + '" '+
@@ -932,6 +963,9 @@ angular.module('a-edit')
                 
                 var possibleFunctions;
                 switch(action){
+                    case 'get':
+                        possibleFunctions = ['query', 'get'];
+                        break;
                     case 'create':
                         possibleFunctions = ['$save', 'create'];
                         break;
@@ -941,7 +975,6 @@ angular.module('a-edit')
                     case 'delete':
                         possibleFunctions = ['$delete', 'delete'];
                         break;
-
                 }
                 
                 var query;
@@ -955,7 +988,15 @@ angular.module('a-edit')
                 if(!query){
                     console.error('Undefined model resource! Override getResourceQuery function in AEditHelpers service for define custom resource function.')
                 }
-                return query;
+                return query.$promise || query;
+            },
+            isEmptyObject: function(obj) {
+                for(var prop in obj) {
+                    if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+                        return false;
+                    }
+                }
+                return true;
             }
         };
 
@@ -983,6 +1024,11 @@ angular
                     url: '/settings',
                     controller: 'SettingsController',
                     templateUrl: AppPaths.settings_tpls + 'index.html'
+                })
+                .state('app.pages', {
+                    url: '/pages',
+                    controller: 'PagesController',
+                    templateUrl: AppPaths.pages_tpls + 'index.html'
                 });
 
             $locationProvider.html5Mode(true);
@@ -1000,6 +1046,10 @@ angular.module('app')
             {
                 heading: 'Settings',
                 route:   'app.settings'
+            },
+            {
+                heading: 'Pages',
+                route:   'app.pages'
             },
             {
                 heading: 'Accounts',
@@ -1021,6 +1071,14 @@ var defaultOptions = {
 app.factory('Settings', ['$resource', function($resource) {
     return $resource('admin/api/settings/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Pages', ['$resource', function($resource) {
+    return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Templates', ['$resource', function($resource) {
+    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
+}]);
 var app_path = '/assets/js/admin-app/';
 angular.module('app')
     .constant('AppPaths', {
@@ -1028,7 +1086,8 @@ angular.module('app')
             app_tpls: app_path + 'templates/',
             modules: app_path + 'modules/',
             dashboard_tpls: app_path + 'modules/dashboard/templates/',
-            settings_tpls: app_path + 'modules/settings/templates/'
+            settings_tpls: app_path + 'modules/settings/templates/',
+            pages_tpls: app_path + 'modules/pages/templates/'
     });
 angular.module('app')
     .controller('DashboardController', ['$scope', function($scope) {
@@ -1036,8 +1095,87 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('PagesController', ['$scope', 'Pages', 'Templates', function($scope, Pages, Templates) {
+        $scope.pages = Pages.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: Pages,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'title',
+                    modal: 'self',
+                    label: 'Title',
+                    new_placeholder: 'New page',
+                    required: true
+                },
+                {
+                    name: 'alias',
+                    label: 'Alias'
+                },
+                {
+                    name: 'sub_title',
+                    label: 'SubTitle'
+                },
+                {
+                    name: 'parent_page_id',
+                    label: 'Parent page',
+                    type: 'select',
+                    list: 'self'
+                },
+                {
+                    name: 'template_id',
+                    label: 'Template',
+                    type: 'select',
+                    model: Templates,
+                    list_name: 'templates'
+                },
+                {
+                    name: 'menu_title',
+                    label: 'MenuTitle',
+                    table_hide: true
+                },
+                {
+                    name: 'menu_index',
+                    label: 'Menu Index',
+                    table_hide: true
+                },
+                {
+                    name: 'description',
+                    label: 'Description',
+                    table_hide: true
+                },
+                {
+                    name: 'is_abstract',
+                    label: 'Is abstract page',
+                    table_hide: true
+                },
+                {
+                    name: 'is_menu_hide',
+                    label: 'Is hide from menu',
+                    table_hide: true
+                },
+                {
+                    name: 'content',
+                    label: 'Content',
+                    type: 'textarea',
+                    table_hide: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
         $scope.settings = Settings.query();
+        console.log(Settings.prototype);
+
 
         $scope.aGridOptions = {
             caption: 'All settings available in templates.',
@@ -1053,11 +1191,13 @@ angular.module('app')
                     name: 'name',
                     modal: 'self',
                     label: 'Name',
-                    new_placeholder: 'New Setting'
+                    new_placeholder: 'New Setting',
+                    required: true
                 },
                 {
                     name: 'value',
-                    label: 'Value'
+                    label: 'Value',
+                    required: true
                 },
                 {
                     name: 'title',

@@ -19,6 +19,11 @@ angular
                     url: '/settings',
                     controller: 'SettingsController',
                     templateUrl: AppPaths.settings_tpls + 'index.html'
+                })
+                .state('app.pages', {
+                    url: '/pages',
+                    controller: 'PagesController',
+                    templateUrl: AppPaths.pages_tpls + 'index.html'
                 });
 
             $locationProvider.html5Mode(true);

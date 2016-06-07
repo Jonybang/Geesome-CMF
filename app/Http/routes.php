@@ -24,6 +24,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
         Route::get('/cur_user', 'Api\ApiController@cur_user');
 
         Route::resource('settings', 'Api\SettingController');
+        Route::resource('pages', 'Api\PageController');
+        Route::resource('templates', 'Api\TemplateController');
     });
 
 

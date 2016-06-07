@@ -12,6 +12,10 @@ angular.module('app')
                 route:   'app.settings'
             },
             {
+                heading: 'Pages',
+                route:   'app.pages'
+            },
+            {
                 heading: 'Accounts',
                 route:   'app.accounts',
                 disable: true

@@ -5,5 +5,6 @@ angular.module('app')
             app_tpls: app_path + 'templates/',
             modules: app_path + 'modules/',
             dashboard_tpls: app_path + 'modules/dashboard/templates/',
-            settings_tpls: app_path + 'modules/settings/templates/'
+            settings_tpls: app_path + 'modules/settings/templates/',
+            pages_tpls: app_path + 'modules/pages/templates/'
     });
