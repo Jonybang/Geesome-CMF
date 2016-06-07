@@ -2,8 +2,8 @@
   <component name="PhpInterpreters">
     <interpreters>
       <interpreter home="D:\olga\Install\php\php.exe" id="284079f8-291e-4b0b-99b7-84525a0058bd" name="PHP" debugger_id="php.debugger.XDebug" />
-      <interpreter home="ssh://lanit@192.168.23.31:22/usr/bin/php" id="e1210de6-7d40-44ff-be13-055c24954d4d" name="Remote PHP 5.5" debugger_id="php.debugger.XDebug">
-        <remote_data HOST="192.168.23.31" PORT="22" ANONYMOUS="false" USERNAME="lanit" PASSWORD="dfe6dfcbdfc4dfc3dfdedf9bdf98df99" PRIVATE_KEY_FILE="" MY_KNOWN_HOSTS_FILE="" PASSPHRASE="" USE_KEY_PAIR="false" INTERPRETER_PATH="/usr/bin/php" HELPERS_PATH="/home/lanit/.phpstorm_helpers" INITIALIZED="false" VALID="true" />
+      <interpreter home="ssh://lanit@192.168.23.32:22/usr/bin/php" id="e1210de6-7d40-44ff-be13-055c24954d4d" name="Remote PHP 5.5" debugger_id="php.debugger.XDebug">
+        <remote_data HOST="192.168.23.32" PORT="22" ANONYMOUS="false" USERNAME="lanit" PASSWORD="dfe6dfcbdfc4dfc3dfdedf9bdf98df99" PRIVATE_KEY_FILE="" MY_KNOWN_HOSTS_FILE="" PASSPHRASE="" USE_KEY_PAIR="false" INTERPRETER_PATH="/usr/bin/php" HELPERS_PATH="/home/lanit/.phpstorm_helpers" INITIALIZED="false" VALID="true" />
       </interpreter>
     </interpreters>
   </component>
