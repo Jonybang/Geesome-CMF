@@ -20,4 +20,11 @@ class ApiController extends Controller
             200
         );
     }
+    public function test($test)
+    {
+        return Response::json(
+            $test,
+            200
+        );
+    }
 }
