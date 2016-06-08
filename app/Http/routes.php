@@ -41,13 +41,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
     Route::get('{any}', function ($any) {
         return view('admin.index');
     })->where('any', '.*');
-
-    #Route::get('/', ['as' => 'dashboard', 'uses' => 'AdminController@index']);
 });
-
-//Route::get('{page}/{subs}', ['middleware' => 'auth', function($uri) {
-//    return view('admin.index');
-//}])->where(['page' => '^((?!admin).)*$', 'subs' => '.*']);
 
 Route::get('/{alias?}', function ($alias = null) {
     $page = null;
@@ -79,6 +73,6 @@ Route::get('/{alias?}', function ($alias = null) {
         $path = '404';
     }
 
-    $page_data = array_merge($page_data, ['page' => $page, 'sub_fields' => $sub_fields]);
+    $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields]);
     return view('templates.' . $path, $page_data);
 });

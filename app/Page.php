@@ -51,12 +51,16 @@ class Page extends Model
     {
         return $this->morphMany('App\UserActionLog', 'logable');
     }
+    public function pages()
+    {
+        return $this->hasMany('App\Page', 'page_id');
+    }
 
     public function getSubFieldsValuesAttribute()
     {
         return \DB::table('sub_fields_values')->where('page_id', $this->id)
             ->join('sub_fields', 'sub_fields_values.sub_field_id', '=', 'sub_fields.id')
-            ->lists('sub_fields.name', 'sub_fields_values.value');
+            ->lists('sub_fields_values.value', 'sub_fields.name');
     }
 
     public function getAliasAttribute()

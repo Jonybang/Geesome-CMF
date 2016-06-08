@@ -23,4 +23,8 @@ class SubField extends Model
     {
         return $this->belongsTo('App\SubFieldType', 'id', 'sub_field_type_id');
     }
+    public function sub_field_values()
+    {
+        return $this->hasMany('App\SubFieldValue', 'sub_field_id');
+    }
 }
