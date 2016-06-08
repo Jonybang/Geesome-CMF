@@ -1,4 +1,9 @@
 <application>
+  <component name="MessDetector">
+    <phpmd_settings>
+      <MessDetectorConfiguration />
+    </phpmd_settings>
+  </component>
   <component name="PhpInterpreters">
     <interpreters>
       <interpreter home="D:\olga\Install\php\php.exe" id="284079f8-291e-4b0b-99b7-84525a0058bd" name="PHP" debugger_id="php.debugger.XDebug" />
