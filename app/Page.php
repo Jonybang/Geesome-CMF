@@ -64,6 +64,11 @@ class Page extends Model
         return isset($this->attributes['alias']) ? $this->attributes['alias'] : $this->id;
     }
 
+    public function getNameAttribute()
+    {
+        return $this->title;
+    }
+
     public function getMenuTitleAttribute()
     {
         try {

@@ -1037,6 +1037,11 @@ angular
                     url: '/pages',
                     controller: 'PagesController',
                     templateUrl: AppPaths.pages_tpls + 'index.html'
+                })
+                .state('app.logs', {
+                    url: '/logs',
+                    controller: 'LogController',
+                    templateUrl: AppPaths.logs_tpls + 'index.html'
                 });
 
             $locationProvider.html5Mode(true);
@@ -1058,6 +1063,10 @@ angular.module('app')
             {
                 heading: 'Pages',
                 route:   'app.pages'
+            },
+            {
+                heading: 'Logs',
+                route:   'app.logs'
             },
             {
                 heading: 'Accounts',
@@ -1087,6 +1096,10 @@ app.factory('Pages', ['$resource', function($resource) {
 app.factory('Templates', ['$resource', function($resource) {
     return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Logs', ['$resource', function($resource) {
+    return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
+}]);
 var app_path = '/assets/js/admin-app/';
 angular.module('app')
     .constant('AppPaths', {
@@ -1095,11 +1108,51 @@ angular.module('app')
             modules: app_path + 'modules/',
             dashboard_tpls: app_path + 'modules/dashboard/templates/',
             settings_tpls: app_path + 'modules/settings/templates/',
-            pages_tpls: app_path + 'modules/pages/templates/'
+            pages_tpls: app_path + 'modules/pages/templates/',
+            logs_tpls: app_path + 'modules/logs/templates/'
     });
 angular.module('app')
     .controller('DashboardController', ['$scope', function($scope) {
 
+    }]);
+
+angular.module('app')
+    .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
+        $scope.logs = Logs.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            model: Logs,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User'
+                },
+                {
+                    name: 'logable_name',
+                    label: 'TableName'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
     }]);
 
 angular.module('app')

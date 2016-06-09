@@ -16,10 +16,10 @@ class CreateUserActionLogsTable extends Migration
             $table->increments('id');
 
             $table->string('action');
-            $table->text('content')->nullable();
+            $table->text('description')->nullable();
 
-            $table->integer('logable_id');
-            $table->string('logable_type');
+            $table->integer('logable_id')->nullable();
+            $table->string('logable_type')->nullable();
 
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
