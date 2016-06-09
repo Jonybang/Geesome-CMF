@@ -60,6 +60,18 @@ Route::get('/{alias?}', function ($alias = null) {
     $sub_fields = [];
     if($page){
         $sub_fields = $page->sub_fields_values;
+        foreach($page->template->controller_actions as $controller_action){
+            $result = \App::call('App\\Http\\Controllers\\' . $controller_action->name, ['page' => $page]);
+
+            if($result instanceof \Illuminate\Http\JsonResponse)
+                $result_data = (array)$result->getData();
+            else
+                $result_data = $result;
+
+            $page_data = array_merge($page_data, $result_data);
+        }
+    } else {
+        $path = '404';
     }
 
     return view('templates.' . $path, ['page' => $page, 'sub_fields' => $sub_fields]);
