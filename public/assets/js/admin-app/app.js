@@ -24,6 +24,11 @@ angular
                     url: '/pages',
                     controller: 'PagesController',
                     templateUrl: AppPaths.pages_tpls + 'index.html'
+                })
+                .state('app.logs', {
+                    url: '/logs',
+                    controller: 'LogController',
+                    templateUrl: AppPaths.logs_tpls + 'index.html'
                 });
 
             $locationProvider.html5Mode(true);
