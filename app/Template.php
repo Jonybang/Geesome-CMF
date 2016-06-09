@@ -17,4 +17,9 @@ class Template extends Model
     {
         return $this->belongsToMany('App\SubField', 'templates_sub_fields');
     }
+
+    public function controller_actions()
+    {
+        return $this->belongsToMany('App\ControllerAction', 'templates_controller_actions');
+    }
 }

@@ -18,7 +18,7 @@ class CreateSubFieldsValuesTable extends Migration
             $table->integer('sub_field_id')->unsigned();
             $table->foreign('sub_field_id')->references('id')->on('sub_fields');
 
-            $table->integer('page_id')->unsigned();
+            $table->integer('page_id')->unsigned()->nullable();
             $table->foreign('page_id')->references('id')->on('pages');
 
             $table->text('value')->nullable();

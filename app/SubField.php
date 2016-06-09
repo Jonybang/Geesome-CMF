@@ -11,6 +11,10 @@ class SubField extends Model
         'config' => 'array',
     ];
 
+    protected $fillable = [
+        'title', 'name', 'description', 'config', 'sub_field_type_id'
+    ];
+
     public function templates()
     {
         return $this->belongsToMany('App\Template', 'templates_sub_fields');
@@ -18,5 +22,9 @@ class SubField extends Model
     public function type()
     {
         return $this->belongsTo('App\SubFieldType', 'id', 'sub_field_type_id');
+    }
+    public function sub_field_values()
+    {
+        return $this->hasMany('App\SubFieldValue', 'sub_field_id');
     }
 }
