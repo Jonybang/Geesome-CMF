@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingsTableSeeder::class);
 
         $this->call(SubFieldTypesTableSeeder::class);
+
         $this->call(TestSubFieldsTableSeeder::class);
+        $this->call(TestControllerActionsTableSeeder::class);
     }
 }

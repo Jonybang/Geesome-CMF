@@ -60,12 +60,12 @@ Route::get('/{alias?}', function ($alias = null) {
         $sub_fields = $page->sub_fields_values;
 
         foreach($page->template->controller_actions as $controller_action){
-            $result = \App::call("App\\Http\\Controllers\\" . $controller_action, ['page' => $page]);
+            $result = \App::call('App\\Http\\Controllers\\' . $controller_action->name, ['page' => $page]);
 
             if($result instanceof \Illuminate\Http\JsonResponse)
-                $result_data = $result->getData();
+                $result_data = (array)$result->getData();
             else
-                $result_data = $result['data'];
+                $result_data = $result;
 
             $page_data = array_merge($page_data, $result_data);
         }
