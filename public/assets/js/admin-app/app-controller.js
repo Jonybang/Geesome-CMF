@@ -20,6 +20,10 @@ angular.module('app')
                 route:   'app.logs'
             },
             {
+                heading: 'Users',
+                route:   'app.users'
+            },
+            {
                 heading: 'Accounts',
                 route:   'app.accounts',
                 disable: true

@@ -7,7 +7,7 @@ sudo ln -s /usr/bin/nodejs /usr/bin/node
 
 sudo npm install --global gulp-cli
 sudo npm install --save-dev gulp
-npm install --save-dev gulp-concat
-npm install --save-dev gulp-concat-css
+sudo npm install --save-dev gulp-concat
+sudo npm install --save-dev gulp-concat-css
 
 gulp

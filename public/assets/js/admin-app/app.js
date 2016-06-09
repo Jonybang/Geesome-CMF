@@ -29,8 +29,12 @@ angular
                     url: '/logs',
                     controller: 'LogController',
                     templateUrl: AppPaths.logs_tpls + 'index.html'
+                })
+                .state('app.users', {
+                    url: '/users',
+                    controller: 'UserController',
+                    templateUrl: AppPaths.users_tpls + 'index.html'
                 });
-
             $locationProvider.html5Mode(true);
             $urlRouterProvider.otherwise("/admin");
         }]);

@@ -1042,8 +1042,12 @@ angular
                     url: '/logs',
                     controller: 'LogController',
                     templateUrl: AppPaths.logs_tpls + 'index.html'
+                })
+                .state('app.users', {
+                    url: '/users',
+                    controller: 'UserController',
+                    templateUrl: AppPaths.users_tpls + 'index.html'
                 });
-
             $locationProvider.html5Mode(true);
             $urlRouterProvider.otherwise("/admin");
         }]);
@@ -1067,6 +1071,10 @@ angular.module('app')
             {
                 heading: 'Logs',
                 route:   'app.logs'
+            },
+            {
+                heading: 'Users',
+                route:   'app.users'
             },
             {
                 heading: 'Accounts',
@@ -1100,6 +1108,10 @@ app.factory('Templates', ['$resource', function($resource) {
 app.factory('Logs', ['$resource', function($resource) {
     return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Users', ['$resource', function($resource) {
+    return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
+}]);
 var app_path = '/assets/js/admin-app/';
 angular.module('app')
     .constant('AppPaths', {
@@ -1109,7 +1121,8 @@ angular.module('app')
             dashboard_tpls: app_path + 'modules/dashboard/templates/',
             settings_tpls: app_path + 'modules/settings/templates/',
             pages_tpls: app_path + 'modules/pages/templates/',
-            logs_tpls: app_path + 'modules/logs/templates/'
+            logs_tpls: app_path + 'modules/logs/templates/',
+            users_tpls: app_path + 'modules/users/templates/'
     });
 angular.module('app')
     .controller('DashboardController', ['$scope', function($scope) {
@@ -1268,6 +1281,40 @@ angular.module('app')
                     name: 'description',
                     label: 'Description'
                 }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('UserController', ['$scope', 'Users', function($scope, Users) {
+        $scope.users = Users.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: true,
+            edit: true,
+            orderBy: '-id',
+            model: Users,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Name',
+                    required: true
+                },
+                {
+                    name: 'email',
+                    modal: 'self',
+                    label: 'E-mail',
+                    new_placeholder: 'New email',
+                    required: true
+                },
             ]
         };
     }]);

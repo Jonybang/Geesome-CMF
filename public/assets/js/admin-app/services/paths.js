@@ -7,5 +7,6 @@ angular.module('app')
             dashboard_tpls: app_path + 'modules/dashboard/templates/',
             settings_tpls: app_path + 'modules/settings/templates/',
             pages_tpls: app_path + 'modules/pages/templates/',
-            logs_tpls: app_path + 'modules/logs/templates/'
+            logs_tpls: app_path + 'modules/logs/templates/',
+            users_tpls: app_path + 'modules/users/templates/'
     });

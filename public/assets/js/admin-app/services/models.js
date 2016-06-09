@@ -19,3 +19,7 @@ app.factory('Templates', ['$resource', function($resource) {
 app.factory('Logs', ['$resource', function($resource) {
     return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Users', ['$resource', function($resource) {
+    return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
+}]);

@@ -11,11 +11,6 @@
 |
 */
 
-Route::get('/test', ['as' => 'test', function(){
-    return dd(\App::call('App\Http\Controllers\Api\ApiController@test', ['test'=>\Auth::user()])->getData());
-}]);
-
-
 Route::get('/login', ['as' => 'login', function(){
     return view('admin.login');
 }]);
@@ -32,6 +27,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
         Route::resource('pages', 'Api\PageController');
         Route::resource('templates', 'Api\TemplateController');
         Route::resource('logs', 'Api\LogController');
+        Route::resource('users', 'Api\UserController');
     });
 
 
@@ -42,7 +38,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
     Route::get('{any}', function ($any) {
         return view('admin.index');
     })->where('any', '.*');
+
+    #Route::get('/', ['as' => 'dashboard', 'uses' => 'AdminController@index']);
 });
+
+//Route::get('{page}/{subs}', ['middleware' => 'auth', function($uri) {
+//    return view('admin.index');
+//}])->where(['page' => '^((?!admin).)*$', 'subs' => '.*']);
 
 Route::get('/{alias?}', function ($alias = null) {
     $page = null;
@@ -53,27 +55,12 @@ Route::get('/{alias?}', function ($alias = null) {
         $page = \App\Page::find($main_page_id)->first();
     }
 
+    $path = $page ? $page->template->path : '404';
+
     $sub_fields = [];
-    $page_data = [];
     if($page){
-        $path = $page->template->path;
-
         $sub_fields = $page->sub_fields_values;
-
-        foreach($page->template->controller_actions as $controller_action){
-            $result = \App::call("App\\Http\\Controllers\\" . $controller_action, ['page' => $page]);
-
-            if($result instanceof \Illuminate\Http\JsonResponse)
-                $result_data = $result->getData();
-            else
-                $result_data = $result['data'];
-
-            $page_data = array_merge($page_data, $result_data);
-        }
-    } else {
-        $path = '404';
     }
 
-    $page_data = array_merge($page_data, ['page' => $page], $sub_fields);
-    return view('templates.' . $path, $page_data);
+    return view('templates.' . $path, ['page' => $page, 'sub_fields' => $sub_fields]);
 });
