@@ -85,6 +85,7 @@ class AuthController extends Controller
             Session::flash('message_text', 'Incorrect email or password.');
             return redirect()->route('login')->withInput();
         }
+
     }
 
     public function logout()
