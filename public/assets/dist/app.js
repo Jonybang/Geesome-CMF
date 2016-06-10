@@ -68,14 +68,13 @@ angular
                 orderBy: '-id',
                 defaultAttrs: {},
                 modalIndex: 0,
-                searchDebounce: 200
+                searchDebounce: 200,
+                lists: {}
             };
             scope.options = angular.extend(defaultOptions, scope.options);
             AEditConfig.currentOptions = scope.options;
 
             scope.new_item = {};
-
-            scope.options.models_lists = {};
 
             scope.status = "";
 
@@ -93,6 +92,18 @@ angular
 
             scope.save = function(item){
                 if(!item)
+                    return;
+
+                item.errors || (item.errors = {});
+
+                scope.options.fields.forEach(function(field){
+                    if(field.required && !item[field.name])
+                        item.errors[field.name] = true;
+                    else if(item.errors[field.name])
+                        delete item.errors[field.name];
+                });
+
+                if(!AEditHelpers.isEmptyObject(item.errors))
                     return;
                     
                 console.log('save item', item);
@@ -143,6 +154,8 @@ angular
                             console.log(updated_item);
                             angular.extend(item, updated_item);
                             item.is_edit = false;
+
+                            scope.search();
                         });
                     } else {
                         angular.forEach(scope.options.defaultAttrs, function(value, attr){
@@ -153,8 +166,10 @@ angular
                         query.then(function(created_item){
                             created_item.is_new = true;
 
-                            scope.ngModel.push(created_item);
+                            scope.ngModel.unshift(created_item);
                             delete scope.new_item;
+
+                            scope.search();
                         });
                     }
                     item.is_edit = false;
@@ -185,6 +200,9 @@ angular
                     scope.filtredList = scope.ngModel;
                 else
                     scope.filtredList = $filter('filter')(scope.ngModel, scope.searchQuery);
+
+                if(scope.options.orderBy)
+                    scope.filtredList = $filter('orderBy')(scope.filtredList, scope.options.orderBy);
             };
 
             scope.clearSearch = function(){
@@ -192,8 +210,9 @@ angular
                 scope.filtredList = scope.ngModel;
             };
 
-            scope.$watchCollection('ngModel', function(){
+            scope.$watchCollection('ngModel', function(list){
                 scope.search();
+                scope.options.lists['self'] = list;
             });
 
             var tplSearch =
@@ -216,9 +235,13 @@ angular
 
             var tplBodyItem =
                 '<tbody>' +
-                '<tr ng-repeat="item in filtredList | orderBy: options.orderBy track by item.id">';
+                '<tr ng-repeat="item in filtredList track by item.id">';
+
 
             scope.options.fields.forEach(function(field, index){
+                if(field.table_hide)
+                    return;
+
                 tplHead += '<th>' + field.label + '</th>';
 
                 if(field.readonly || !scope.options.edit){
@@ -241,15 +264,15 @@ angular
                         else if(field.list)
                             list_variable = 'options.lists.' + field.list;
 
-                        var model_name = field.model ? field.model.config.name : null;
+                        var model_name = field.model ? field.list : null;
                         if(model_name){
-                            list_variable = 'options.models_lists.' + model_name;
+                            list_variable = 'options.lists.' + model_name;
 
-                            if(!scope.options.models_lists[model_name]){
-                                scope.options.models_lists[model_name] = [];
+                            if(!scope.options.lists[model_name]){
+                                scope.options.lists[model_name] = [];
 
-                                field.model.get().then(function(list){
-                                    scope.options.models_lists[model_name] = list;
+                                AEditHelpers.getResourceQuery(field.model, 'get').then(function(list){
+                                    scope.options.lists[model_name] = list;
                                 });
                             }
                         }
@@ -375,7 +398,7 @@ angular
             '<div ng-if="!isEdit">' +
                 (type == 'text' ? text : '<pre ng-if="$parent.ngModel">{{$parent.ngModel}}</pre>') +
             '</div>' +
-            '<div ng-if="isEdit">' +
+            '<div ng-if="isEdit" ng-class="input_class">' +
                 (type == 'text' ? '<input type="text"' : '<textarea ') +
                 ' class="form-control input-sm" placeholder="{{$parent.placeholder}}"' +
                 ' ng-model="$parent.ngModel" ng-enter="$parent.save()"' +
@@ -400,6 +423,7 @@ angular
                 ngModelStr: '=?',
                 isEdit: '=?',
                 modalModel: '=?',
+                hasError: '=?',
                 //callbacks
                 ngChange: '&',
                 onSave: '&',
@@ -407,6 +431,7 @@ angular
                 placeholder: '@',
                 name: '@',
                 width: '@',
+                required: '@',
                 type: '@' //text or textarea
             },
             link: function (scope, element, attrs) {
@@ -429,7 +454,17 @@ angular
                     templateElement = null;
                 });
 
+                scope.$watch('hasError', function(hasError){
+                    scope.input_class = hasError ? "has-error" : '';
+                });
+
                 scope.save = function(){
+                    if(scope.required && !scope.ngModel){
+                        scope.input_class = "has-error";
+                        return;
+                    }
+
+                    scope.input_class = '';
                     if(scope.onSave)
                         $timeout(scope.onSave);
                 }
@@ -497,7 +532,6 @@ angular
         };
     }])
 
-
     .directive('selectInput', ['$timeout', '$compile', '$templateCache', 'AEditHelpers', function($timeout, $compile, $templateCache, AEditHelpers) {
         function getTemplateByType(type, options){
             options = options || {};
@@ -519,13 +553,14 @@ angular
                 '<div class="select-input-container ' + uiSelect.subClasses + ' {{input_class}}">' +
                     '<span ng-if="!isEdit">{{selectedName}}</span>' +
                     '<input type="hidden" name="{{name}}" ng-bind="ngModel" class="form-control" required />' +
-                    '<ui-select ' + (type == 'multiselect' ? 'multiple close-on-select="false"' : '') + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small">' +
+
+                    '<ui-select ' + uiSelect.tags + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small">' +
                         '<ui-select-match placeholder="">' +
-                            '{{' + (type == 'multiselect' ? '$item.name' : '$select.selected.name') + '}}' +
+                            '{{' + uiSelect.match + '}}' +
                         '</ui-select-match>' +
 
-                        '<ui-select-choices repeat="item.id as item in $parent.list track by $index">' +
-                            '<div ng-bind-html="item.name | highlight: $select.search"></div>' +
+                        '<ui-select-choices repeat="item.id as item in $parent.list | filter: $select.search track by $index">' +
+                            '<div ng-bind-html="item.name || item.title | highlight: $select.search"></div>' +
                         '</ui-select-choices>' +
                     '</ui-select>';
 
@@ -611,7 +646,7 @@ angular
 
                     scope.options.value = newVal;
 
-                    scope.setSelectedName (newVal);
+                    scope.setSelectedName(newVal);
                 });
 
                 //TODO: optimize
@@ -619,11 +654,11 @@ angular
                     return ngModel.$viewValue;
                 }, function(newVal) {
                     scope.ngModel = newVal;
-                    scope.setSelectedName (newVal);
+                    scope.setSelectedName(newVal);
                 });
 
                 scope.$watch('list', function(){
-                    scope.setSelectedName (scope.ngModel);
+                    scope.setSelectedName(scope.ngModel);
                 });
 
                 scope.$watch('ngResource', function(ngResource){
@@ -643,27 +678,11 @@ angular
                         });
                         scope.selectedName = names.join(', ');
                     } else {
-                        scope.selectedName = getNameById(newVal);
+                        scope.selectedName = AEditHelpers.getNameById(scope.list, newVal);
                     }
 
                     scope.ngModelStr = scope.selectedName;
                 };
-
-                //TODO: to helper
-                function getNameById (val){
-                    var resultName = '';
-
-                    if(!scope.list || !scope.list.length)
-                        return resultName;
-
-                    scope.list.some(function(obj){
-                        var result = obj.id == val;
-                        if(result)
-                            resultName = obj.name;
-                        return result;
-                    });
-                    return resultName;
-                }
 
                 scope.save = function(){
                     if(scope.onSave)
@@ -852,7 +871,7 @@ angular
                                 '<h3 class="modal-title">Awesome modal!</h3>' +
                             '</div>' +
                             '<div class="modal-body">' +
-                                '<button type="button" class="btn btn-default btn-sm pull-right" ng-click="object.is_edit = !object.is_edit">' +
+                                '<button type="button" class="btn btn-warning btn-sm pull-right" ng-click="object.is_edit = !object.is_edit">' +
                                     '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>' +
                                 '</button>' +
                                 '<dl class="dl-horizontal">';
@@ -864,7 +883,7 @@ angular
                                 lists_container: 'lists',
                                 already_modal: true
                             }) + '</dd>';
-                        })
+                        });
                         
                         template +=
                                 '</dl>' +
@@ -989,8 +1008,11 @@ angular.module('a-edit')
                 if(field.width)
                     output += 'width="' + field.width + '" ';
 
-                if(field.model)
-                    output += 'url="' + field.model.config.url + '" ';
+                if(field.required)
+                    output += 'required="true" ';
+
+                if(field.url)
+                    output += 'url="' + field.url + '" ';
 
                 if(config.list_variable)
                     output += 'list="' + config.list_variable + '" ';
@@ -1011,6 +1033,7 @@ angular.module('a-edit')
                     
                 output += 'ng-model="' + item_field + '" ' +
                     'on-save="save(' + item_name + ')" ' +
+                    'has-error="' + item_name + '.errors.' + field_name + '" ' +
                     'ng-model-str="' + item_name + '.' +  field_name + '_str" ' +
                     'ng-model-sub-str="' + item_name + '.' +  field_name + '_sub_str" ' +
                     'is-edit="' + is_edit + '" '+
@@ -1030,11 +1053,14 @@ angular.module('a-edit')
                 
                 var possibleFunctions;
                 switch(action){
+                    case 'get':
+                        possibleFunctions = ['query', 'get'];
+                        break;
                     case 'create':
                         possibleFunctions = ['$save', 'create'];
                         break;
                     case 'update':
-                        possibleFunctions = ['$save', 'update'];
+                        possibleFunctions = ['$update', 'update'];
                         break;
                     case 'delete':
                         possibleFunctions = ['$delete', 'delete'];
@@ -1052,7 +1078,29 @@ angular.module('a-edit')
                 if(!query){
                     console.error('Undefined model resource! Override getResourceQuery function in AEditHelpers service for define custom resource function.')
                 }
-                return query;
+                return query.$promise || query;
+            },
+            isEmptyObject: function(obj) {
+                for(var prop in obj) {
+                    if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+            getNameById: function (list, val){
+                var resultName = '';
+
+                if(!list || !list.length)
+                    return resultName;
+
+                list.some(function(obj){
+                    var result = obj.id == val;
+                    if(result)
+                        resultName = obj.name || obj.title;
+                    return result;
+                });
+                return resultName;
             }
         };
 
@@ -1207,6 +1255,89 @@ angular.module('app')
             users_tpls: app_path + 'modules/users/templates/'
     });
 angular.module('app')
+    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', function($scope, $http, AppData, Pages, Templates, Users) {
+        $scope.page = new Pages();
+
+        //Get current user and set his id as author id
+        function setCurUserAuthorId(){
+            $scope.page.author_id =  AppData.cur_user.id;
+        }
+        if(AppData.cur_user.$promise)
+            AppData.cur_user.$promise.then(setCurUserAuthorId);
+        else
+            setCurUserAuthorId();
+
+        //Get site settings and set default values to page object
+        function setDefaultSettings(){
+            $scope.page.template_id =  AppData.site_settings.default_template_id;
+        }
+        if(AppData.site_settings.$promise)
+            AppData.site_settings.$promise.then(setDefaultSettings);
+        else
+            setDefaultSettings();
+
+        //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
+        //if not: just insert replace spaces to dashes and get lowercase title for set alias
+        var site_settings = AppData.site_settings;
+        var last_translate = '';
+        $scope.$watch('page.title', function(title){
+            if(!title)
+                return;
+
+            if((!$scope.page.alias || $scope.page.alias == last_translate) && site_settings.yandex_translate_api_key){
+                $http.get(
+                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
+                    '?key=' + site_settings.yandex_translate_api_key +
+                    '&text=' + title +
+                    '&lang=en')
+                    .then(function(result){
+                        last_translate = result.data.text[0].replace(/\s+/g, '-').toLowerCase();
+                        $scope.page.alias = last_translate;
+                    });
+            } else {
+                $scope.page.alias = title.replace(/\s+/g, '-').toLowerCase();
+            }
+        });
+
+        //Models for select inputs
+        $scope.models = {
+            pages : Pages,
+            templates: Templates,
+            users: Users
+        };
+        //Fields for adder functional at select inputs
+        $scope.templatesFields = [
+            {
+                name: 'name',
+                label: 'Name'
+            },
+            {
+                name: 'path',
+                label: 'Path'
+            }
+        ];
+
+        //Validate for require and save page
+        $scope.savePage = function(){
+            $scope.hasErrors = {};
+            var required = ['title', 'template_id'];
+            required.forEach(function(reqField){
+                if(!$scope.page[reqField])
+                    $scope.hasErrors[reqField] = true;
+                else
+                    delete $scope.hasErrors[reqField];
+            });
+
+            if(!_.isEmpty($scope.hasErrors))
+                return;
+
+            $scope.page.$save().then(function(){
+                $scope.page = {};
+            })
+        }
+    }]);
+
+angular.module('app')
     .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
         $scope.logs = Logs.query();
 
@@ -1360,89 +1491,6 @@ angular.module('app')
                 }
             ]
         };
-    }]);
-
-angular.module('app')
-    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', function($scope, $http, AppData, Pages, Templates, Users) {
-        $scope.page = new Pages();
-
-        //Get current user and set his id as author id
-        function setCurUserAuthorId(){
-            $scope.page.author_id =  AppData.cur_user.id;
-        }
-        if(AppData.cur_user.$promise)
-            AppData.cur_user.$promise.then(setCurUserAuthorId);
-        else
-            setCurUserAuthorId();
-
-        //Get site settings and set default values to page object
-        function setDefaultSettings(){
-            $scope.page.template_id =  AppData.site_settings.default_template_id;
-        }
-        if(AppData.site_settings.$promise)
-            AppData.site_settings.$promise.then(setDefaultSettings);
-        else
-            setDefaultSettings();
-
-        //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
-        //if not: just insert replace spaces to dashes and get lowercase title for set alias
-        var site_settings = AppData.site_settings;
-        var last_translate = '';
-        $scope.$watch('page.title', function(title){
-            if(!title)
-                return;
-
-            if((!$scope.page.alias || $scope.page.alias == last_translate) && site_settings.yandex_translate_api_key){
-                $http.get(
-                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + site_settings.yandex_translate_api_key +
-                    '&text=' + title +
-                    '&lang=en')
-                    .then(function(result){
-                        last_translate = result.data.text[0].replace(/\s+/g, '-').toLowerCase();
-                        $scope.page.alias = last_translate;
-                    });
-            } else {
-                $scope.page.alias = title.replace(/\s+/g, '-').toLowerCase();
-            }
-        });
-
-        //Models for select inputs
-        $scope.models = {
-            pages : Pages,
-            templates: Templates,
-            users: Users
-        };
-        //Fields for adder functional at select inputs
-        $scope.templatesFields = [
-            {
-                name: 'name',
-                label: 'Name'
-            },
-            {
-                name: 'path',
-                label: 'Path'
-            }
-        ];
-
-        //Validate for require and save page
-        $scope.savePage = function(){
-            $scope.hasErrors = {};
-            var required = ['title', 'template_id'];
-            required.forEach(function(reqField){
-                if(!$scope.page[reqField])
-                    $scope.hasErrors[reqField] = true;
-                else
-                    delete $scope.hasErrors[reqField];
-            });
-
-            if(!_.isEmpty($scope.hasErrors))
-                return;
-
-            $scope.page.$save().then(function(){
-                $scope.page = {};
-            })
-        }
     }]);
 
 angular.module('app')
