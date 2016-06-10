@@ -239,3 +239,16 @@ ul.alert-dropdown {
     padding: 10px 20px;
     min-height: 600px;
 }
+
+.markdown-input.form-control{
+    height: 300px;
+}
+input.form-control[type=checkbox] {
+    height: 21px;
+    width: 21px;
+    position: relative;
+    top: 5px;
+}
+label {
+    width: 100%;
+}
