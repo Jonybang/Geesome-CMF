@@ -35,7 +35,7 @@ class UserController extends ApiController
     public function store(Request $request)
     {
         $data = $request->all();
-
+        $data['password'] = bcrypt($data['password']);
         return Response::json(
             User::create($data)->toArray(),
             200
@@ -44,6 +44,8 @@ class UserController extends ApiController
     public function update(Request $request)
     {
         $data = $request->all();
+        if(isset($data['password']) && $data['password'])
+            $data['password'] = bcrypt($data['password']);
         $is_saved = User::find($data['id'])->update($data);
 
         return Response::json(

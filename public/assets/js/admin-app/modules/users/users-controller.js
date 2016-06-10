@@ -18,14 +18,18 @@ angular.module('app')
                     name: 'name',
                     modal: 'self',
                     label: 'Name',
-                    new_placeholder: 'New Name',
+                    new_placeholder: 'New User',
                     required: true
                 },
                 {
                     name: 'email',
-                    modal: 'self',
                     label: 'E-mail',
-                    new_placeholder: 'New email',
+                    required: true
+                },
+                {
+                    name: 'password',
+                    type: 'password',
+                    label: 'Password',
                     required: true
                 }
             ]

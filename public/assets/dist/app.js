@@ -97,10 +97,19 @@ angular
                 item.errors || (item.errors = {});
 
                 scope.options.fields.forEach(function(field){
+                    //if field empty and required - add to errors, else delete from errors
                     if(field.required && !item[field.name])
                         item.errors[field.name] = true;
                     else if(item.errors[field.name])
                         delete item.errors[field.name];
+
+                    //if password not changed and not new object
+                    if(field.type == 'password' && item.id)
+                        delete item.errors[field.name];
+
+                    //if password not changed delete field from request data
+                    if(field.type == 'password' && !item[field.name])
+                        delete item[field.name];
                 });
 
                 if(!AEditHelpers.isEmptyObject(item.errors))
@@ -281,6 +290,7 @@ angular
                             item_name: item_name,
                             field_name: field_name,
                             always_edit: is_new,
+                            is_new: is_new,
                             list_variable: list_variable
                         });
                     }
@@ -391,25 +401,43 @@ angular
     .directive('textInput', ['$timeout', '$compile', function($timeout, $compile) {
         function getTemplateByType(type, options){
             var text = '{{$parent.ngModel}}';
+            var inputTagBegin = '<input type="text"';
+            var inputTagEnd = '';
+
             if(options && options.modal_link)
                 text = '<a a-model-modal="modalModel" on-save="save()" href>' + text + '</a>';
+            else if(type == 'textarea'){
+                text = '<pre ng-if="$parent.ngModel">{{$parent.ngModel}}</pre>';
+
+                inputTagBegin = '<textarea';
+                inputTagEnd = '</textarea>';
+            } else if(type == 'password'){
+                text = '<small>[password hidden]</small>';
+
+                inputTagBegin = '' +
+                    '<a href ng-click="changePassword = true" ng-show="!isNew && !changePassword">Change password</a>' +
+                    '<div ng-if="changePassword || isNew"><input type="password"';
+                inputTagEnd = '</div>';
+            }
+
 
             return '' +
             '<div ng-if="!isEdit">' +
-                (type == 'text' ? text : '<pre ng-if="$parent.ngModel">{{$parent.ngModel}}</pre>') +
+                text +
             '</div>' +
             '<div ng-if="isEdit" ng-class="input_class">' +
-                (type == 'text' ? '<input type="text"' : '<textarea ') +
+                inputTagBegin +
                 ' class="form-control input-sm" placeholder="{{$parent.placeholder}}"' +
                 ' ng-model="$parent.ngModel" ng-enter="$parent.save()"' +
                 ' ng-model-options="$parent.ngModelOptions || {}"' +
                 ' ng-style="{ \'width\' : $parent.width + \'px\'}">' +
-                (type == 'textarea' ? '</textarea>' : '') +
+                inputTagEnd +
             '</div>';
         }
 
         var typeTemplates = {
             'text': $compile(getTemplateByType('text')),
+            'password': $compile(getTemplateByType('password')),
             'text_modal_link': $compile(getTemplateByType('text', {modal_link: true})),
             'textarea': $compile(getTemplateByType('textarea'))
         };
@@ -421,6 +449,7 @@ angular
                 ngModel: '=',
                 ngModelOptions: '=?',
                 ngModelStr: '=?',
+                isNew: '=?',
                 isEdit: '=?',
                 modalModel: '=?',
                 hasError: '=?',
@@ -1037,6 +1066,7 @@ angular.module('a-edit')
                     'ng-model-str="' + item_name + '.' +  field_name + '_str" ' +
                     'ng-model-sub-str="' + item_name + '.' +  field_name + '_sub_str" ' +
                     'is-edit="' + is_edit + '" '+
+                    'is-new="' + (config.is_new ? 'true': 'false') + '" '+
                     'placeholder="' + ((config.always_edit ? field.new_placeholder : field.placeholder) || '') + '" ';
 
                 if(field.type == 'file' || field.type == 'multifile')
@@ -1255,89 +1285,6 @@ angular.module('app')
             users_tpls: app_path + 'modules/users/templates/'
     });
 angular.module('app')
-    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', function($scope, $http, AppData, Pages, Templates, Users) {
-        $scope.page = new Pages();
-
-        //Get current user and set his id as author id
-        function setCurUserAuthorId(){
-            $scope.page.author_id =  AppData.cur_user.id;
-        }
-        if(AppData.cur_user.$promise)
-            AppData.cur_user.$promise.then(setCurUserAuthorId);
-        else
-            setCurUserAuthorId();
-
-        //Get site settings and set default values to page object
-        function setDefaultSettings(){
-            $scope.page.template_id =  AppData.site_settings.default_template_id;
-        }
-        if(AppData.site_settings.$promise)
-            AppData.site_settings.$promise.then(setDefaultSettings);
-        else
-            setDefaultSettings();
-
-        //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
-        //if not: just insert replace spaces to dashes and get lowercase title for set alias
-        var site_settings = AppData.site_settings;
-        var last_translate = '';
-        $scope.$watch('page.title', function(title){
-            if(!title)
-                return;
-
-            if((!$scope.page.alias || $scope.page.alias == last_translate) && site_settings.yandex_translate_api_key){
-                $http.get(
-                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + site_settings.yandex_translate_api_key +
-                    '&text=' + title +
-                    '&lang=en')
-                    .then(function(result){
-                        last_translate = result.data.text[0].replace(/\s+/g, '-').toLowerCase();
-                        $scope.page.alias = last_translate;
-                    });
-            } else {
-                $scope.page.alias = title.replace(/\s+/g, '-').toLowerCase();
-            }
-        });
-
-        //Models for select inputs
-        $scope.models = {
-            pages : Pages,
-            templates: Templates,
-            users: Users
-        };
-        //Fields for adder functional at select inputs
-        $scope.templatesFields = [
-            {
-                name: 'name',
-                label: 'Name'
-            },
-            {
-                name: 'path',
-                label: 'Path'
-            }
-        ];
-
-        //Validate for require and save page
-        $scope.savePage = function(){
-            $scope.hasErrors = {};
-            var required = ['title', 'template_id'];
-            required.forEach(function(reqField){
-                if(!$scope.page[reqField])
-                    $scope.hasErrors[reqField] = true;
-                else
-                    delete $scope.hasErrors[reqField];
-            });
-
-            if(!_.isEmpty($scope.hasErrors))
-                return;
-
-            $scope.page.$save().then(function(){
-                $scope.page = {};
-            })
-        }
-    }]);
-
-angular.module('app')
     .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
         $scope.logs = Logs.query();
 
@@ -1367,6 +1314,46 @@ angular.module('app')
                 {
                     name: 'logable_name',
                     label: 'TableName'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = Settings.query();
+        console.log(Settings.prototype);
+
+
+        $scope.aGridOptions = {
+            caption: 'All settings available in templates.',
+            orderBy: '-id',
+            model: Settings,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Setting',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value',
+                    required: true
+                },
+                {
+                    name: 'title',
+                    label: 'Title'
                 },
                 {
                     name: 'description',
@@ -1454,43 +1441,86 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
-        console.log(Settings.prototype);
+    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', function($scope, $http, AppData, Pages, Templates, Users) {
+        $scope.page = new Pages();
 
+        //Get current user and set his id as author id
+        function setCurUserAuthorId(){
+            $scope.page.author_id =  AppData.cur_user.id;
+        }
+        if(AppData.cur_user.$promise)
+            AppData.cur_user.$promise.then(setCurUserAuthorId);
+        else
+            setCurUserAuthorId();
 
-        $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
-            orderBy: '-id',
-            model: Settings,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Setting',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value',
-                    required: true
-                },
-                {
-                    name: 'title',
-                    label: 'Title'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
+        //Get site settings and set default values to page object
+        function setDefaultSettings(){
+            $scope.page.template_id =  AppData.site_settings.default_template_id;
+        }
+        if(AppData.site_settings.$promise)
+            AppData.site_settings.$promise.then(setDefaultSettings);
+        else
+            setDefaultSettings();
+
+        //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
+        //if not: just insert replace spaces to dashes and get lowercase title for set alias
+        var site_settings = AppData.site_settings;
+        var last_translate = '';
+        $scope.$watch('page.title', function(title){
+            if(!title)
+                return;
+
+            if((!$scope.page.alias || $scope.page.alias == last_translate) && site_settings.yandex_translate_api_key){
+                $http.get(
+                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
+                    '?key=' + site_settings.yandex_translate_api_key +
+                    '&text=' + title +
+                    '&lang=en')
+                    .then(function(result){
+                        last_translate = result.data.text[0].replace(/\s+/g, '-').toLowerCase();
+                        $scope.page.alias = last_translate;
+                    });
+            } else {
+                $scope.page.alias = title.replace(/\s+/g, '-').toLowerCase();
+            }
+        });
+
+        //Models for select inputs
+        $scope.models = {
+            pages : Pages,
+            templates: Templates,
+            users: Users
         };
+        //Fields for adder functional at select inputs
+        $scope.templatesFields = [
+            {
+                name: 'name',
+                label: 'Name'
+            },
+            {
+                name: 'path',
+                label: 'Path'
+            }
+        ];
+
+        //Validate for require and save page
+        $scope.savePage = function(){
+            $scope.hasErrors = {};
+            var required = ['title', 'template_id'];
+            required.forEach(function(reqField){
+                if(!$scope.page[reqField])
+                    $scope.hasErrors[reqField] = true;
+                else
+                    delete $scope.hasErrors[reqField];
+            });
+
+            if(!_.isEmpty($scope.hasErrors))
+                return;
+
+            $scope.page.$save().then(function(){
+                $scope.page = {};
+            })
+        }
     }]);
 
 angular.module('app')
@@ -1513,14 +1543,18 @@ angular.module('app')
                     name: 'name',
                     modal: 'self',
                     label: 'Name',
-                    new_placeholder: 'New Name',
+                    new_placeholder: 'New User',
                     required: true
                 },
                 {
                     name: 'email',
-                    modal: 'self',
                     label: 'E-mail',
-                    new_placeholder: 'New email',
+                    required: true
+                },
+                {
+                    name: 'password',
+                    type: 'password',
+                    label: 'Password',
                     required: true
                 }
             ]
