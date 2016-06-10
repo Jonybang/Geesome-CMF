@@ -20,10 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(BlogPagesTableSeeder::class);
 
         $this->call(SettingsTableSeeder::class);
-
-        $this->call(SubFieldTypesTableSeeder::class);
-
-        $this->call(TestSubFieldsTableSeeder::class);
-        $this->call(TestControllerActionsTableSeeder::class);
     }
 }
+
+       
