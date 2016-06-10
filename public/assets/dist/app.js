@@ -1,6 +1,6 @@
 // Code goes here
 angular
-  .module('a-edit', ['ui.bootstrap', 'angularMoment', 'ui.select', 'ngSanitize'])
+  .module('a-edit', ['ui.bootstrap', 'angularMoment', 'ui.select', 'ngSanitize', 'wiz.markdown'])
   
   .run(['amMoment', 'uiSelectConfig', '$templateCache', function(amMoment, uiSelectConfig, $templateCache) {
     amMoment.changeLocale('ru');
@@ -495,10 +495,26 @@ angular
         };
     }])
 
-    .directive('selectInput', ['$timeout', '$compile', function($timeout, $compile) {
-        function getTemplateByType(type){
-            return '' +
-                '<div class="select-input-container">' +
+
+    .directive('selectInput', ['$timeout', '$compile', '$templateCache', 'AEditHelpers', function($timeout, $compile, $templateCache, AEditHelpers) {
+        function getTemplateByType(type, options){
+            options = options || {};
+
+            var uiSelect = {
+                tags: '',
+                match: 'selectedName',
+                subClasses: ''
+            };
+            if(type == 'multiselect'){
+                uiSelect.tags = 'multiple close-on-select="false" ';
+                uiSelect.match = '$item.name || $item.title';
+            }
+            if(options.adder){
+                uiSelect.subClasses = 'btn-group select-adder';
+            }
+
+            var template = '' +
+                '<div class="select-input-container ' + uiSelect.subClasses + ' {{input_class}}">' +
                     '<span ng-if="!isEdit">{{selectedName}}</span>' +
                     '<input type="hidden" name="{{name}}" ng-bind="ngModel" class="form-control" required />' +
                     '<ui-select ' + (type == 'multiselect' ? 'multiple close-on-select="false"' : '') + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small">' +
@@ -509,13 +525,25 @@ angular
                         '<ui-select-choices repeat="item.id as item in $parent.list track by $index">' +
                             '<div ng-bind-html="item.name | highlight: $select.search"></div>' +
                         '</ui-select-choices>' +
-                    '</ui-select>' +
+                    '</ui-select>';
+
+            if(options.adder){
+                template += '' +
+                    '<button type="button" class="btn btn-success" uib-popover-template="popoverTemplateName" uib-popover-title="Add object" uib-popover-placement="right">' +
+                        '<span class="glyphicon glyphicon-plus"></span>' +
+                    '</button>';
+            }
+
+            template += '' +
                 '</div>';
+            return template;
         }
 
         var typeTemplates = {
             'select': $compile(getTemplateByType('')),
-            'multiselect': $compile(getTemplateByType('multiselect'))
+            'select-adder': $compile(getTemplateByType('', {adder: true})),
+            'multiselect': $compile(getTemplateByType('multiselect')),
+            'multiselect-adder': $compile(getTemplateByType('multiselect', {adder: true}))
         };
 
         return {
@@ -523,15 +551,21 @@ angular
             require: 'ngModel',
             scope: {
                 //require
-                list: '=',
+                list: '=?',
                 ngModel: '=',
                 ngModelStr: '=?',
                 isEdit: '=?',
+                hasError: '=?',
+
+                ngResource: '=?',
+                ngResourceFields: '=?',
+
                 //callbacks
                 ngChange: '&',
                 onSave: '&',
                 //sub
-                multiselect: '=',
+                multiselect: '=?',
+                adder: '=?',
                 placeholder: '@',
                 name: '@',
                 type: '@' //select or multiselect
@@ -541,7 +575,11 @@ angular
                     value: ''
                 };
 
-                var template = typeTemplates[scope.type || 'select'],
+                scope.type = scope.type || 'select';
+                if(scope.adder)
+                    scope.type += '-adder';
+
+                var template = typeTemplates[scope.type],
                     templateElement;
 
                 template(scope, function (clonedElement, scope) {
@@ -554,6 +592,10 @@ angular
                 element.on("$destroy", function () {
                     templateElement.remove();
                     templateElement = null;
+                });
+
+                scope.$watch('hasError', function(hasError){
+                    scope.input_class = hasError ? "has-error" : '';
                 });
 
                 scope.changer = function() {
@@ -580,6 +622,15 @@ angular
 
                 scope.$watch('list', function(){
                     scope.setSelectedName (scope.ngModel);
+                });
+
+                scope.$watch('ngResource', function(ngResource){
+                    if(!ngResource)
+                        return;
+
+                    AEditHelpers.getResourceQuery(ngResource, 'get').then(function(list){
+                        scope.list = list;
+                    });
                 });
 
                 scope.setSelectedName = function (newVal){
@@ -615,6 +666,36 @@ angular
                 scope.save = function(){
                     if(scope.onSave)
                         $timeout(scope.onSave);
+                };
+
+                if(scope.adder){
+                    var popoverTemplate = '' +
+                        '<div ng-click="popoverContentClick($event)">';
+
+                    scope.ngResourceFields.forEach(function(field){
+                        popoverTemplate += '' +
+                            '<div class="form-group col-md-12 row">' +
+                                '<div>' +
+                                    '<label>' + field.label + '</label>' +
+                                '</div>' +
+                                '<div>' +
+                                    AEditHelpers.generateDirectiveByConfig(field, {
+                                        item_name: 'object',
+                                        lists_container: 'lists',
+                                        //already_modal: true
+                                    }) +
+                                '</div>' +
+                            '</div>';
+                    });
+
+                    popoverTemplate += '' +
+                            '<div class="form-group col-md-12 row">' +
+                                '<button type="submit" class="btn btn-primary" ng-click="$parent.saveResource(new_resource);">Save</button>' +
+                            '</div>' +
+                        '</div>';
+
+                    scope.popoverTemplateName = attrs.ngModel + '-' + attrs.ngResource + '.html';
+                    $templateCache.put(scope.popoverTemplateName, popoverTemplate);
                 }
             }
         };
@@ -839,6 +920,21 @@ angular
         };
     }]);
 
+angular.module('a-edit').directive('selectAdder', [function() {
+    return {
+        restrict: 'C',
+        link: function ($scope, $element, $attrs){
+            $element.click(function($event){
+                var $element = angular.element($event.target);
+                if(!$element.hasClass('btn'))
+                    $event.stopPropagation();
+
+                if($element.hasClass('btn-default'))
+                    $event.stopPropagation();
+            });
+        }
+    };
+}]);
 /**
  * Created by jonybang on 04.07.15.
  */
@@ -962,7 +1058,7 @@ angular.module('a-edit')
     }]);
 
 angular
-    .module('app', ['ngResource', 'a-edit', 'ui.router', 'ui.router.tabs'])
+    .module('app', ['ngResource', 'a-edit', 'ui.router', 'ui.router.tabs', 'wiz.markdown'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 
@@ -1075,47 +1171,41 @@ angular.module('app')
             users_tpls: app_path + 'modules/users/templates/'
     });
 angular.module('app')
-    .controller('DashboardController', ['$scope', function($scope) {
-
-    }]);
-
-angular.module('app')
-    .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
-        $scope.logs = Logs.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            model: Logs,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User'
-                },
-                {
-                    name: 'logable_name',
-                    label: 'TableName'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
+    .controller('DashboardController', ['$scope', 'Pages', 'Templates', 'Users', function($scope, Pages, Templates, Users) {
+        $scope.page = new Pages();
+        $scope.models = {
+            pages : Pages,
+            templates: Templates,
+            users: Users
         };
+        $scope.templatesFields = [
+            {
+                name: 'name',
+                label: 'Name'
+            },
+            {
+                name: 'path',
+                label: 'Path'
+            }
+        ];
+
+        $scope.savePage = function(){
+            $scope.hasErrors = {};
+            var required = ['title', 'template_id'];
+            required.forEach(function(reqField){
+                if(!$scope.page[reqField])
+                    $scope.hasErrors[reqField] = true;
+                else
+                    delete $scope.hasErrors[reqField];
+            });
+
+            if(!_.isEmpty($scope.hasErrors))
+                return;
+
+            $scope.page.$save().then(function(){
+                $scope.page = {};
+            })
+        }
     }]);
 
 angular.module('app')
@@ -1190,6 +1280,45 @@ angular.module('app')
                     label: 'Content',
                     type: 'textarea',
                     table_hide: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
+        $scope.logs = Logs.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            model: Logs,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User'
+                },
+                {
+                    name: 'logable_name',
+                    label: 'TableName'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
                 }
             ]
         };

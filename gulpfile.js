@@ -42,7 +42,6 @@ gulp.task('concatAngularVendorJS', function() {
     return gulp.src([
             js_dir +'angular/angular.min.js',
             js_dir +'angular/ui-bootstrap*',
-            js_dir +'angular/angular.js',
             js_dir +'angular/*.js'
         ])
         .pipe(concat('vendor.js'))
