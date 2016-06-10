@@ -35,6 +35,20 @@ angular
                     controller: 'UserController',
                     templateUrl: AppPaths.users_tpls + 'index.html'
                 });
-            $locationProvider.html5Mode(true);
+            $locationProvider.html5Mode(true).hashPrefix('!');
             $urlRouterProvider.otherwise("/admin");
-        }]);
+        }])
+    .run(['$rootScope', 'AppData', function($rootScope, AppData){
+
+        function setDefaultSettings(){
+            $rootScope.cur_user = AppData.cur_user;
+        }
+        if(AppData.cur_user.$promise)
+            AppData.cur_user.$promise.then(setDefaultSettings);
+        else
+            setDefaultSettings();
+
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+            AppData.reload();
+        });
+    }]);

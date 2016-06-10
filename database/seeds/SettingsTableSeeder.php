@@ -12,8 +12,10 @@ class SettingsTableSeeder extends Seeder
     public function run()
     {
         $seeds = [
-            ['Заголовок сайта', 'site_title', env('SITE_TITLE')],
-            ['Главная страница', 'main_page', \App\Page::first()->id]
+            ['Site title text', 'site_title', env('SITE_TITLE')],
+            ['Main page id', 'main_page', \App\Page::first()->id],
+            ['Yandex translate api key', 'yandex_translate_api_key', env('SITE_YANDEX_TRANSLATE_API_KEY')],
+            ['Default template id at create page form', 'default_template_id', \App\Template::where('path', 'page')->first()->id]
         ];
         foreach($seeds as $seed){
             DB::table('settings')->insert([

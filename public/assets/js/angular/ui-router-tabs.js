@@ -26,107 +26,107 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
 
 angular.module('ui.router.tabs', ['ngSanitize']);
 angular.module('ui.router.tabs').directive(
-  'tabs', ['$rootScope', '$state', function($rootScope, $state) {
+    'tabs', ['$rootScope', '$state', function($rootScope, $state) {
 
-    return {
-      restrict: 'E',
-      scope: {
-        tabs: '=data',
-        type: '@',
-        justified: '@',
-        vertical: '@',
-        class: '@'
-      },
-      link: function(scope) {
+      return {
+        restrict: 'E',
+        scope: {
+          tabs: '=data',
+          type: '@',
+          justified: '@',
+          vertical: '@',
+          class: '@'
+        },
+        link: function(scope) {
 
-        var updateTabs = function() {
-          scope.update_tabs();
-        };
+          var updateTabs = function() {
+            scope.update_tabs();
+          };
 
-        var unbindStateChangeSuccess = $rootScope.$on('$stateChangeSuccess', updateTabs);
-        var unbindStateChangeError = $rootScope.$on('$stateChangeError', updateTabs);
-        var unbindStateChangeCancel = $rootScope.$on('$stateChangeCancel', updateTabs);
-        var unbindStateNotFound = $rootScope.$on('$stateNotFound', updateTabs);
+          var unbindStateChangeSuccess = $rootScope.$on('$stateChangeSuccess', updateTabs);
+          var unbindStateChangeError = $rootScope.$on('$stateChangeError', updateTabs);
+          var unbindStateChangeCancel = $rootScope.$on('$stateChangeCancel', updateTabs);
+          var unbindStateNotFound = $rootScope.$on('$stateNotFound', updateTabs);
 
-        scope.$on('$destroy', unbindStateChangeSuccess);
-        scope.$on('$destroy', unbindStateChangeError);
-        scope.$on('$destroy', unbindStateChangeCancel);
-        scope.$on('$destroy', unbindStateNotFound);
-      },
-      controller: ['$scope', function($scope) {
+          scope.$on('$destroy', unbindStateChangeSuccess);
+          scope.$on('$destroy', unbindStateChangeError);
+          scope.$on('$destroy', unbindStateChangeCancel);
+          scope.$on('$destroy', unbindStateNotFound);
+        },
+        controller: ['$scope', function($scope) {
 
-        if (!$scope.tabs) {
-          throw new Error('UI Router Tabs: \'data\' attribute not defined, please check documentation for how to use this directive.');
-        }
-
-        if (!angular.isArray($scope.tabs)) {
-          throw new Error('UI Router Tabs: \'data\' attribute must be an array of tab data with at least one tab defined.');
-        }
-
-        var currentStateEqualTo = function(tab) {
-
-          var isEqual = $state.is(tab.route, tab.params, tab.options);
-          return isEqual;
-        };
-
-        $scope.go = function(tab) {
-
-          if (!currentStateEqualTo(tab) && !tab.disable) {
-            $state.go(tab.route, tab.params, tab.options);
+          if (!$scope.tabs) {
+            throw new Error('UI Router Tabs: \'data\' attribute not defined, please check documentation for how to use this directive.');
           }
-        };
 
-        /* whether to highlight given route as part of the current state */
-        $scope.is_active = function(tab) {
+          if (!angular.isArray($scope.tabs)) {
+            throw new Error('UI Router Tabs: \'data\' attribute must be an array of tab data with at least one tab defined.');
+          }
 
-          var isAncestorOfCurrentRoute = $state.includes(tab.route, tab.params, tab.options);
-          return isAncestorOfCurrentRoute;
-        };
+          var currentStateEqualTo = function(tab) {
 
-        $scope.update_tabs = function() {
+            var isEqual = $state.is(tab.route, tab.params, tab.options);
+            return isEqual;
+          };
 
-          // sets which tab is active (used for highlighting)
-          angular.forEach($scope.tabs, function(tab, index) {
-            tab.params = tab.params || {};
-            tab.options = tab.options || {};
-            tab.class = tab.class || '';
+          $scope.go = function(tab) {
 
-            tab.active = $scope.is_active(tab);
-            if (tab.active) {
-              $scope.tabs.active = index;
+            if (!currentStateEqualTo(tab) && !tab.disable) {
+              $state.go(tab.route, tab.params, tab.options);
             }
-          });
-        };
+          };
 
-        $scope.update_tabs();
-    }],
-      templateUrl: function(element, attributes) {
-        return attributes.templateUrl || 'ui-router-tabs-default-template.html';
-      }
-    };
-}]
+          /* whether to highlight given route as part of the current state */
+          $scope.is_active = function(tab) {
+
+            var isAncestorOfCurrentRoute = $state.includes(tab.route, tab.params, tab.options);
+            return isAncestorOfCurrentRoute;
+          };
+
+          $scope.update_tabs = function() {
+
+            // sets which tab is active (used for highlighting)
+            angular.forEach($scope.tabs, function(tab, index) {
+              tab.params = tab.params || {};
+              tab.options = tab.options || {};
+              tab.class = tab.class || '';
+
+              tab.active = $scope.is_active(tab);
+              if (tab.active) {
+                $scope.tabs.active = index;
+              }
+            });
+          };
+
+          $scope.update_tabs();
+        }],
+        templateUrl: function(element, attributes) {
+          return attributes.templateUrl || 'ui-router-tabs-default-template.html';
+        }
+      };
+    }]
 ).run(
-['$templateCache', function($templateCache) {
-    var CUSTOM_UI_VIEW_TEMPLATE = '<div>' +
-      '<uib-tabset active="tabs.active" class="tab-container" type="{{type}}" vertical="{{vertical}}" justified="{{justified}}" class="{{class}}">' +
-      '<uib-tab class="tab {{tab.class}}" ng-repeat="tab in tabs" ' +
-      'disable="tab.disable" ng-click="go(tab)">' +
-      '<uib-tab-heading ng-bind-html="tab.heading"></uib-tab-heading>' +
-      '</uib-tab>' +
-      '</uib-tabset>' +
-      '</div>';
+    ['$templateCache', function($templateCache) {
+      var CUSTOM_UI_VIEW_TEMPLATE = '<div>' +
+          '<uib-tabset active="tabs.active" class="tab-container" type="{{type}}" vertical="{{vertical}}" justified="{{justified}}" class="{{class}}">' +
+          '<uib-tab class="tab {{tab.class}}" ng-repeat="tab in tabs" ' +
+          'disable="tab.disable" ng-click="go(tab)">' +
+          '<uib-tab-heading ng-bind-html="tab.heading"></uib-tab-heading>' +
+          '</uib-tab>' +
+          '</uib-tabset>' +
+          '</div>';
 
-    var INLINE_TEMPLATE = '<div>' +
-      '<uib-tabset active="tabs.active" class="tab-container" type="{{type}}" vertical="{{vertical}}" justified="{{justified}}" class="{{class}}">' +
-      '<uib-tab class="tab {{tab.class}}" ng-repeat="tab in tabs" ' +
-      'disable="tab.disable" ng-click="go(tab)">' +
-      '<ui-view></ui-view>' +
-      '<uib-tab-heading ng-bind-html="tab.heading"></uib-tab-heading>' +
-      '</uib-tab>' +
-      '</uib-tabset>' +
-      '</div>';
+      var INLINE_TEMPLATE = '<div>' +
+          '<uib-tabset active="tabs.active" class="tab-container" type="{{type}}" vertical="{{vertical}}" justified="{{justified}}" class="{{class}}">' +
+          '<uib-tab class="tab {{tab.class}}" ng-repeat="tab in tabs" ' +
+          'disable="tab.disable" ng-click="go(tab)">' +
+          '<uib-tab-heading ng-bind-html="tab.heading"></uib-tab-heading>' +
+          '</uib-tab>' +
+          '</uib-tabset>' +
+          '<ui-view></ui-view>' +
+          '</div>';
 
-    $templateCache.put('ui-router-tabs-custom-ui-view-template.html', CUSTOM_UI_VIEW_TEMPLATE);
-    $templateCache.put('ui-router-tabs-default-template.html', INLINE_TEMPLATE);
-}]
+      $templateCache.put('ui-router-tabs-custom-ui-view-template.html', CUSTOM_UI_VIEW_TEMPLATE);
+      $templateCache.put('ui-router-tabs-default-template.html', INLINE_TEMPLATE);
+    }]
 );

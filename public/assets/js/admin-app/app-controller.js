@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('AppController', ['$scope', '$http', 'AppPaths', function($scope, $http, AppPaths) {
+    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', function($scope, $http, AppPaths, AppData) {
         var self = this;
 
         self.menuList = [
@@ -29,8 +29,4 @@ angular.module('app')
                 disable: true
             }
         ];
-
-        $http.get('/admin/api/cur_user').then(function(response){
-            self.cur_user = response.data;
-        });
     }]);

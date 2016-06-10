@@ -22,6 +22,7 @@ Route::get('/logout', 'Auth\AuthController@logout');
 Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
         Route::get('/cur_user', 'Api\ApiController@cur_user');
+        Route::get('/site_settings_dictionary', 'Api\ApiController@site_settings_dictionary');
 
         Route::resource('settings', 'Api\SettingController');
         Route::resource('pages', 'Api\PageController');

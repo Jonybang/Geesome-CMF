@@ -226,12 +226,12 @@ ul.alert-dropdown {
     color: #df8a13;
 }
 
-.main-menu .nav-pills{
+.main-menu .tab-container{
     width: 10%;
     display: inline-block;
 }
 
-.main-menu .tab-content {
+.main-menu ui-view {
     width: 89%;
     display: inline-block;
     vertical-align: top;

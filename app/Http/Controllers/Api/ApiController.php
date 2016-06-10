@@ -20,4 +20,12 @@ class ApiController extends Controller
             200
         );
     }
+
+    public function site_settings_dictionary()
+    {
+        return Response::json(
+            \DB::table('settings')->lists('value', 'name'),
+            200
+        );
+    }
 }

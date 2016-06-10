@@ -9,7 +9,7 @@
             </div>
             <div class="panel-body">
                 <label>Title:</label>
-                <text-input ng-model="page.title" is-edit="true" has-error="hasErrors.title"></text-input>
+                <text-input ng-model="page.title" is-edit="true" has-error="hasErrors.title" ng-model-options="{debounce: 500}"></text-input>
 
                 <a href ng-click="subTitleDescriptionShow = !subTitleDescriptionShow" ng-class="{'dropup': subTitleDescriptionShow}">
                     Edit sub title and description <span class="caret"></span><br>
@@ -21,7 +21,6 @@
                     <label>Description:</label>
                     <text-input ng-model="page.description" has-error="hasErrors.description" type="textarea" is-edit="true"></text-input>
                 </div>
-
 
                 <label>Content:</label>
 
@@ -47,6 +46,9 @@
                     <wiz-toolbar-button command="h5">H5</wiz-toolbar-button>
                     <wiz-toolbar-button command="h6">H6</wiz-toolbar-button>
                 </wiz-markdown-editor>
+            </div>
+            <div class="panel-footer">
+                <label>Content preview:</label>
                 <wiz-markdown content="page.content"></wiz-markdown>
             </div>
         </div>
