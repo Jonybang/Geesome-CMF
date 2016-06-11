@@ -1,6 +1,7 @@
 angular.module('app')
     .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', function($scope, $http, AppData, Pages, Templates, Users) {
         $scope.page = new Pages();
+        $scope.page.is_menu_hide = true;
 
         //Get current user and set his id as author id
         function setCurUserAuthorId(){
@@ -11,9 +12,11 @@ angular.module('app')
         else
             setCurUserAuthorId();
 
+        var site_settings = {};
         //Get site settings and set default values to page object
         function setDefaultSettings(){
-            $scope.page.template_id =  AppData.site_settings.default_template_id;
+            site_settings = AppData.site_settings;
+            $scope.page.template_id =  site_settings.default_template_id;
         }
         if(AppData.site_settings.$promise)
             AppData.site_settings.$promise.then(setDefaultSettings);
@@ -22,7 +25,6 @@ angular.module('app')
 
         //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
         //if not: just insert replace spaces to dashes and get lowercase title for set alias
-        var site_settings = AppData.site_settings;
         var last_translate = '';
         $scope.$watch('page.title', function(title){
             if(!title)
@@ -45,21 +47,51 @@ angular.module('app')
 
         //Models for select inputs
         $scope.models = {
-            pages : Pages,
             templates: Templates,
+            pages : Pages,
             users: Users
         };
         //Fields for adder functional at select inputs
-        $scope.templatesFields = [
-            {
-                name: 'name',
-                label: 'Name'
-            },
-            {
-                name: 'path',
-                label: 'Path'
-            }
-        ];
+        $scope.fields = {
+            templates: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'path',
+                    label: 'Path'
+                }
+            ],
+            pages: [
+                {
+                    name: 'title',
+                    label: 'Title'
+                },
+                {
+                    name: 'template_id',
+                    label: 'Template',
+                    type: 'select',
+                    model: Templates,
+                    list: 'templates'
+                }
+            ],
+            users: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'email',
+                    label: 'Email'
+                },
+                {
+                    name: 'password',
+                    label: 'Password',
+                    type: 'password'
+                }
+            ]
+        };
 
         //Validate for require and save page
         $scope.savePage = function(){

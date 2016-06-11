@@ -60,13 +60,13 @@
             </div>
             <div class="panel-body">
                 <label>Template:</label>
-                <select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="templatesFields" ng-resource-fields="templatesFields" is-edit="true" adder="true"></select-input>
+                <select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" is-edit="true" adder="true"></select-input>
 
                 <label>Alias:</label>
                 <text-input ng-model="page.alias" has-error="hasErrors.alias" is-edit="true"></text-input>
 
                 <label>Published:
-                    <input ng-model="page.published" has-error="hasErrors.published" type="checkbox" class="form-control">
+                    <input ng-model="page.is_published" has-error="hasErrors.is_published" type="checkbox" class="form-control">
                 </label>
 
                 <a href ng-click="menuInfoShow = !menuInfoShow" ng-class="{'dropup': menuInfoShow}">
@@ -78,13 +78,17 @@
 
                     <label>Menu index:</label>
                     <text-input ng-model="page.menu_index" has-error="hasErrors.menu_index" is-edit="true"></text-input>
+
+                    <label>Is hide from menu:
+                        <input ng-model="page.is_menu_hide" has-error="hasErrors.is_menu_hide" type="checkbox" class="form-control">
+                    </label>
                 </div>
 
                 <label>Parent:</label>
-                <select-input ng-model="page.parent_id" has-error="hasErrors.parent_id" ng-resource="models.pages" ng-resource-fields="pagesFields" is-edit="true"></select-input>
+                <select-input ng-model="page.parent_page_id" has-error="hasErrors.parent_page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" is-edit="true" adder="true"></select-input>
 
                 <label>Author:</label>
-                <select-input ng-model="page.author_id" has-error="hasErrors.author_id" ng-resource="models.users" is-edit="true"></select-input>
+                <select-input ng-model="page.author_id" has-error="hasErrors.author_id" ng-resource="models.users" ng-resource-fields="fields.users" is-edit="true" adder="true"></select-input>
             </div>
         </div>
     </div>

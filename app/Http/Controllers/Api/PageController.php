@@ -21,7 +21,7 @@ class PageController extends Controller
                 ->leftJoin('pages_contents', 'pages_contents.page_id', '=', 'pages.id')
                 ->select(
                     'pages.id as id', 'title', 'alias', 'menu_title', 'sub_title', 'description',
-                    'menu_index', 'is_abstract', 'is_menu_hide',
+                    'menu_index', 'is_abstract', 'is_menu_hide', 'is_published',
                     'parent_page_id', 'author_id', 'template_id',
                     'pages_contents.content as content'
                 )

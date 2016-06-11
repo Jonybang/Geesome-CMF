@@ -20,6 +20,7 @@ class PagesTableSeeder extends Seeder
             $page = \App\Page::create([
                 'title' => $seed[0],
                 'alias' => $seed[1],
+                'is_published' => true,
                 'template_id' => \App\Template::where('path', $seed[2])->first()->id
             ]);
             $page->content = $seed[3];

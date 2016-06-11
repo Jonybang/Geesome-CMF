@@ -248,6 +248,16 @@ angular
 
 
             scope.options.fields.forEach(function(field, index){
+                if(field.model && field.list){
+                    if(!scope.options.lists[field.list]){
+                        scope.options.lists[field.list] = [];
+
+                        AEditHelpers.getResourceQuery(field.model, 'get').then(function(list){
+                            scope.options.lists[field.list] = list;
+                        });
+                    }
+                }
+
                 if(field.table_hide)
                     return;
 
@@ -272,19 +282,6 @@ angular
                             list_variable = 'ngModel';
                         else if(field.list)
                             list_variable = 'options.lists.' + field.list;
-
-                        var model_name = field.model ? field.list : null;
-                        if(model_name){
-                            list_variable = 'options.lists.' + model_name;
-
-                            if(!scope.options.lists[model_name]){
-                                scope.options.lists[model_name] = [];
-
-                                AEditHelpers.getResourceQuery(field.model, 'get').then(function(list){
-                                    scope.options.lists[model_name] = list;
-                                });
-                            }
-                        }
 
                         return AEditHelpers.generateDirectiveByConfig(field, {
                             item_name: item_name,
@@ -744,6 +741,10 @@ angular
                                     }) +
                                 '</div>' +
                             '</div>';
+
+                        if(field.model){
+                            scope[field.name + '_model'] = field.model;
+                        }
                     });
 
                     popoverTemplate += '' +
@@ -1062,6 +1063,9 @@ angular.module('a-edit')
                 if(field.url)
                     output += 'url="' + field.url + '" ';
 
+                if(field.model)
+                    output += 'ng-resource="' + field.name + '_model" ';
+
                 if(config.list_variable)
                     output += 'list="' + config.list_variable + '" ';
                 else if(config.lists_container)
@@ -1304,129 +1308,7 @@ angular.module('app')
             users_tpls: app_path + 'modules/users/templates/'
     });
 angular.module('app')
-    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', function($scope, $http, AppData, Pages, Templates, Users) {
-        $scope.page = new Pages();
-
-        //Get current user and set his id as author id
-        function setCurUserAuthorId(){
-            $scope.page.author_id =  AppData.cur_user.id;
-        }
-        if(AppData.cur_user.$promise)
-            AppData.cur_user.$promise.then(setCurUserAuthorId);
-        else
-            setCurUserAuthorId();
-
-        //Get site settings and set default values to page object
-        function setDefaultSettings(){
-            $scope.page.template_id =  AppData.site_settings.default_template_id;
-        }
-        if(AppData.site_settings.$promise)
-            AppData.site_settings.$promise.then(setDefaultSettings);
-        else
-            setDefaultSettings();
-
-        //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
-        //if not: just insert replace spaces to dashes and get lowercase title for set alias
-        var site_settings = AppData.site_settings;
-        var last_translate = '';
-        $scope.$watch('page.title', function(title){
-            if(!title)
-                return;
-
-            if((!$scope.page.alias || $scope.page.alias == last_translate) && site_settings.yandex_translate_api_key){
-                $http.get(
-                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + site_settings.yandex_translate_api_key +
-                    '&text=' + title +
-                    '&lang=en')
-                    .then(function(result){
-                        last_translate = result.data.text[0].replace(/\s+/g, '-').toLowerCase();
-                        $scope.page.alias = last_translate;
-                    });
-            } else {
-                $scope.page.alias = title.replace(/\s+/g, '-').toLowerCase();
-            }
-        });
-
-        //Models for select inputs
-        $scope.models = {
-            pages : Pages,
-            templates: Templates,
-            users: Users
-        };
-        //Fields for adder functional at select inputs
-        $scope.templatesFields = [
-            {
-                name: 'name',
-                label: 'Name'
-            },
-            {
-                name: 'path',
-                label: 'Path'
-            }
-        ];
-
-        //Validate for require and save page
-        $scope.savePage = function(){
-            $scope.hasErrors = {};
-            var required = ['title', 'template_id'];
-            required.forEach(function(reqField){
-                if(!$scope.page[reqField])
-                    $scope.hasErrors[reqField] = true;
-                else
-                    delete $scope.hasErrors[reqField];
-            });
-
-            if(!_.isEmpty($scope.hasErrors))
-                return;
-
-            $scope.page.$save().then(function(){
-                $scope.page = {};
-            })
-        }
-    }]);
-
-angular.module('app')
-    .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
-        $scope.logs = Logs.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            model: Logs,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User'
-                },
-                {
-                    name: 'logable_name',
-                    label: 'TableName'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('PagesController', ['$scope', 'Pages', 'Templates', function($scope, Pages, Templates) {
+    .controller('PagesController', ['$scope', 'Pages', 'Templates', 'Users', function($scope, Pages, Templates, Users) {
         $scope.pages = Pages.query();
 
         $scope.aGridOptions = {
@@ -1468,6 +1350,19 @@ angular.module('app')
                     list: 'templates'
                 },
                 {
+                    name: 'description',
+                    label: 'Description',
+                    table_hide: true
+                },
+                {
+                    name: 'author_id',
+                    label: 'Author',
+                    type: 'select',
+                    model: Users,
+                    list: 'users',
+                    table_hide: true
+                },
+                {
                     name: 'menu_title',
                     label: 'MenuTitle',
                     table_hide: true
@@ -1478,18 +1373,18 @@ angular.module('app')
                     table_hide: true
                 },
                 {
-                    name: 'description',
-                    label: 'Description',
+                    name: 'is_menu_hide',
+                    label: 'Is hide from menu',
+                    table_hide: true
+                },
+                {
+                    name: 'is_published',
+                    label: 'Is published',
                     table_hide: true
                 },
                 {
                     name: 'is_abstract',
                     label: 'Is abstract page',
-                    table_hide: true
-                },
-                {
-                    name: 'is_menu_hide',
-                    label: 'Is hide from menu',
                     table_hide: true
                 },
                 {
@@ -1500,6 +1395,121 @@ angular.module('app')
                 }
             ]
         };
+    }]);
+
+angular.module('app')
+    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', function($scope, $http, AppData, Pages, Templates, Users) {
+        $scope.page = new Pages();
+        $scope.page.is_menu_hide = true;
+
+        //Get current user and set his id as author id
+        function setCurUserAuthorId(){
+            $scope.page.author_id =  AppData.cur_user.id;
+        }
+        if(AppData.cur_user.$promise)
+            AppData.cur_user.$promise.then(setCurUserAuthorId);
+        else
+            setCurUserAuthorId();
+
+        var site_settings = {};
+        //Get site settings and set default values to page object
+        function setDefaultSettings(){
+            site_settings = AppData.site_settings;
+            $scope.page.template_id =  site_settings.default_template_id;
+        }
+        if(AppData.site_settings.$promise)
+            AppData.site_settings.$promise.then(setDefaultSettings);
+        else
+            setDefaultSettings();
+
+        //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
+        //if not: just insert replace spaces to dashes and get lowercase title for set alias
+        var last_translate = '';
+        $scope.$watch('page.title', function(title){
+            if(!title)
+                return;
+
+            if((!$scope.page.alias || $scope.page.alias == last_translate) && site_settings.yandex_translate_api_key){
+                $http.get(
+                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
+                    '?key=' + site_settings.yandex_translate_api_key +
+                    '&text=' + title +
+                    '&lang=en')
+                    .then(function(result){
+                        last_translate = result.data.text[0].replace(/\s+/g, '-').toLowerCase();
+                        $scope.page.alias = last_translate;
+                    });
+            } else {
+                $scope.page.alias = title.replace(/\s+/g, '-').toLowerCase();
+            }
+        });
+
+        //Models for select inputs
+        $scope.models = {
+            templates: Templates,
+            pages : Pages,
+            users: Users
+        };
+        //Fields for adder functional at select inputs
+        $scope.fields = {
+            templates: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'path',
+                    label: 'Path'
+                }
+            ],
+            pages: [
+                {
+                    name: 'title',
+                    label: 'Title'
+                },
+                {
+                    name: 'template_id',
+                    label: 'Template',
+                    type: 'select',
+                    model: Templates,
+                    list: 'templates'
+                }
+            ],
+            users: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'email',
+                    label: 'Email'
+                },
+                {
+                    name: 'password',
+                    label: 'Password',
+                    type: 'password'
+                }
+            ]
+        };
+
+        //Validate for require and save page
+        $scope.savePage = function(){
+            $scope.hasErrors = {};
+            var required = ['title', 'template_id'];
+            required.forEach(function(reqField){
+                if(!$scope.page[reqField])
+                    $scope.hasErrors[reqField] = true;
+                else
+                    delete $scope.hasErrors[reqField];
+            });
+
+            if(!_.isEmpty($scope.hasErrors))
+                return;
+
+            $scope.page.$save().then(function(){
+                $scope.page = {};
+            })
+        }
     }]);
 
 angular.module('app')
@@ -1575,6 +1585,45 @@ angular.module('app')
                     type: 'password',
                     label: 'Password',
                     required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
+        $scope.logs = Logs.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            model: Logs,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User'
+                },
+                {
+                    name: 'logable_name',
+                    label: 'TableName'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
                 }
             ]
         };

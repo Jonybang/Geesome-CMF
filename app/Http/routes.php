@@ -27,11 +27,13 @@ Route::get('/logout', 'Auth\AuthController@logout');
 Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
         Route::get('/cur_user', 'Api\ApiController@cur_user');
+        Route::get('/site_settings_dictionary', 'Api\ApiController@site_settings_dictionary');
 
         Route::resource('settings', 'Api\SettingController');
         Route::resource('pages', 'Api\PageController');
         Route::resource('templates', 'Api\TemplateController');
         Route::resource('logs', 'Api\LogController');
+        Route::resource('users', 'Api\UserController');
     });
 
 
@@ -55,7 +57,7 @@ Route::get('/{alias?}', function ($alias = null) {
 
     $sub_fields = [];
     $page_data = [];
-    if($page){
+    if($page && $page->is_published){
         $path = $page->template->path;
 
         $sub_fields = $page->sub_fields_values;

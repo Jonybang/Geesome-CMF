@@ -21,13 +21,8 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var concatCss = require('gulp-concat-css');
 
-//gulp.task('concatCSS', function() {
-//    return gulp.src('./public/**/*.css')
-//        .pipe(concatCss("a-edit.css"))
-//        .pipe(gulp.dest('./dist/'));
-//});
-
 var js_dir = 'public/assets/js/';
+var css_dir = 'public/assets/css/';
 var dist_dir = 'public/assets/dist/';
 
 var paths = {
@@ -35,6 +30,10 @@ var paths = {
         js_dir +'angular/awesome-edit/dist/a-edit.js',
         js_dir +'admin-app/app.js',
         js_dir +'admin-app/**/*.js'
+    ],
+    styles: [
+        js_dir + 'angular/awesome-edit/dist/a-edit.css',
+        css_dir + 'sb-admin.css'
     ]
 };
 
@@ -54,9 +53,15 @@ gulp.task('concatAdminAppJS', function() {
         .pipe(gulp.dest(dist_dir));
 });
 
-gulp.task('watch', function() {
-    gulp.watch(paths.scripts, ['concatAdminAppJS']);
-    //gulp.watch(paths.images, ['images']);
+gulp.task('concatAdminAppCSS', function() {
+    return gulp.src(paths.styles)
+        .pipe(concatCss("app.css"))
+        .pipe(gulp.dest(dist_dir));
 });
 
-gulp.task('default', ['concatAngularVendorJS', 'concatAdminAppJS', 'watch']);
+gulp.task('watch', function() {
+    gulp.watch(paths.scripts, ['concatAdminAppJS']);
+    gulp.watch(paths.styles, ['concatAdminAppCSS']);
+});
+
+gulp.task('default', ['concatAngularVendorJS', 'concatAdminAppJS', 'concatAdminAppCSS', 'watch']);

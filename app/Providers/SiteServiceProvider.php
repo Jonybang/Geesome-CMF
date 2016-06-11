@@ -16,7 +16,12 @@ class SiteServiceProvider extends ServiceProvider
         if(\Schema::hasTable('pages'))
             \View::share(
                 'menu_items',
-                \App\Page::where('is_menu_hide', false)->where('parent_page_id', 0)->with('child_pages')->get()
+                \App\Page
+                    ::where('is_menu_hide', false)
+                    ->where('is_published', true)
+                    ->where('is_deleted', false)
+                    ->where('parent_page_id', 0)
+                    ->with('child_pages')->get()
             );
 
         if(\Schema::hasTable('pages')){
