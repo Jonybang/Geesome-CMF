@@ -8,6 +8,10 @@ class Template extends Model
 {
     protected $table = 'templates';
 
+    protected $fillable = [
+        'name', 'path', 'description'
+    ];
+
     public function pages()
     {
         return $this->hasMany('App\Page', 'template_id');

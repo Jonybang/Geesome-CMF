@@ -59,4 +59,4 @@ gulp.task('watch', function() {
     //gulp.watch(paths.images, ['images']);
 });
 
-gulp.task('default', ['concatAngularVendorJS', 'concatAdminAppJS']);
+gulp.task('default', ['concatAngularVendorJS', 'concatAdminAppJS', 'watch']);
