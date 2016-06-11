@@ -1,7 +1,8 @@
 angular.module('app')
-    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', function($scope, $http, AppData, Pages, Templates, Users) {
+    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', function($scope, $http, AppData, Pages, Templates, Users, Tags) {
         $scope.page = new Pages();
         $scope.page.is_menu_hide = true;
+        $scope.page.tags_ids = [];
 
         //Get current user and set his id as author id
         function setCurUserAuthorId(){
@@ -48,8 +49,9 @@ angular.module('app')
         //Models for select inputs
         $scope.models = {
             templates: Templates,
-            pages : Pages,
-            users: Users
+            pages: Pages,
+            users: Users,
+            tags: Tags
         };
         //Fields for adder functional at select inputs
         $scope.fields = {
@@ -89,6 +91,12 @@ angular.module('app')
                     name: 'password',
                     label: 'Password',
                     type: 'password'
+                }
+            ],
+            tags: [
+                {
+                    name: 'name',
+                    label: 'Name'
                 }
             ]
         };

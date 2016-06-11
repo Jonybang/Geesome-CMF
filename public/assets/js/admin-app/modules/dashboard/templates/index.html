@@ -51,6 +51,11 @@
                 <label>Content preview:</label>
                 <wiz-markdown content="page.content"></wiz-markdown>
             </div>
+
+            <div class="panel-body">
+                <label>Tags:</label>
+                <select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" type="multiselect"></select-input>
+            </div>
         </div>
     </div>
     <div class="col-md-4">

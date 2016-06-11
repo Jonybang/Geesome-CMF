@@ -34,6 +34,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
         Route::resource('templates', 'Api\TemplateController');
         Route::resource('logs', 'Api\LogController');
         Route::resource('users', 'Api\UserController');
+        Route::resource('tags', 'Api\TagController');
     });
 
 

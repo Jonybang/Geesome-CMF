@@ -23,3 +23,7 @@ app.factory('Logs', ['$resource', function($resource) {
 app.factory('Users', ['$resource', function($resource) {
     return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Tags', ['$resource', function($resource) {
+    return $resource('admin/api/tags/:id', { id: '@id' }, defaultOptions);
+}]);

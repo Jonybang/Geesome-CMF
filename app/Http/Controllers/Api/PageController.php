@@ -39,10 +39,10 @@ class PageController extends Controller
 
     public function show($id)
     {
-        $page = Page::find($id);
+        $page = Page::with('tags')->find($id);
 
         return Response::json(
-            $this->getPageArrayWithContent(Page::find($id)),
+            $this->getPageArrayWithContent($page),
             200
         );
     }
@@ -53,6 +53,11 @@ class PageController extends Controller
 
         if(isset($data['content']))
             $page->content = $data['content'];
+
+        if(isset($data['tags_ids'])){
+            foreach($data['tags_ids'] as $tag_id)
+                $page->tags()->attach($tag_id);
+        }
 
         return Response::json(
             $this->getPageArrayWithContent($page),
@@ -67,6 +72,12 @@ class PageController extends Controller
 
         if(isset($data['content']))
             $page->content = $data['content'];
+
+        if(isset($data['tags_ids'])){
+            $page->tags()->detach();
+            foreach($data['tags_ids'] as $tag_id)
+                $page->tags()->attach($tag_id);
+        }
 
         return Response::json(
             $this->getPageArrayWithContent($page),

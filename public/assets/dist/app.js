@@ -633,7 +633,6 @@ angular
                 ngChange: '&',
                 onSave: '&',
                 //sub
-                multiselect: '=?',
                 adder: '=?',
                 placeholder: '@',
                 name: '@',
@@ -641,7 +640,7 @@ angular
             },
             link: function (scope, element, attrs, ngModel) {
                 scope.options = {
-                    value: ''
+                    value: scope.ngModel
                 };
 
                 scope.type = scope.type || 'select';
@@ -706,7 +705,7 @@ angular
                     if(Array.isArray(newVal)){
                         var names = [];
                         newVal.forEach(function(val){
-                            names.push(getNameById(val));
+                            names.push(AEditHelpers.getNameById(val));
                         });
                         scope.selectedName = names.join(', ');
                     } else {
@@ -764,7 +763,11 @@ angular
                     scope.popover.is_open = false;
                     AEditHelpers.getResourceQuery(new scope.ngResource(new_object), 'create').then(function(object){
                         scope.list.unshift(object);
-                        scope.ngModel = object.id;
+
+                        if(angular.isArray(scope.ngModel))
+                            scope.ngModel.push(object.id);
+                        else
+                            scope.ngModel = object.id;
                     });
                 }
             }
@@ -1295,6 +1298,10 @@ app.factory('Logs', ['$resource', function($resource) {
 app.factory('Users', ['$resource', function($resource) {
     return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Tags', ['$resource', function($resource) {
+    return $resource('admin/api/tags/:id', { id: '@id' }, defaultOptions);
+}]);
 var app_path = '/assets/js/admin-app/';
 angular.module('app')
     .constant('AppPaths', {
@@ -1307,6 +1314,45 @@ angular.module('app')
             logs_tpls: app_path + 'modules/logs/templates/',
             users_tpls: app_path + 'modules/users/templates/'
     });
+angular.module('app')
+    .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
+        $scope.logs = Logs.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            model: Logs,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User'
+                },
+                {
+                    name: 'logable_name',
+                    label: 'TableName'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
 angular.module('app')
     .controller('PagesController', ['$scope', 'Pages', 'Templates', 'Users', function($scope, Pages, Templates, Users) {
         $scope.pages = Pages.query();
@@ -1398,9 +1444,50 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', function($scope, $http, AppData, Pages, Templates, Users) {
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = Settings.query();
+        console.log(Settings.prototype);
+
+
+        $scope.aGridOptions = {
+            caption: 'All settings available in templates.',
+            orderBy: '-id',
+            model: Settings,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Setting',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value',
+                    required: true
+                },
+                {
+                    name: 'title',
+                    label: 'Title'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', function($scope, $http, AppData, Pages, Templates, Users, Tags) {
         $scope.page = new Pages();
         $scope.page.is_menu_hide = true;
+        $scope.page.tags_ids = [];
 
         //Get current user and set his id as author id
         function setCurUserAuthorId(){
@@ -1447,8 +1534,9 @@ angular.module('app')
         //Models for select inputs
         $scope.models = {
             templates: Templates,
-            pages : Pages,
-            users: Users
+            pages: Pages,
+            users: Users,
+            tags: Tags
         };
         //Fields for adder functional at select inputs
         $scope.fields = {
@@ -1489,6 +1577,12 @@ angular.module('app')
                     label: 'Password',
                     type: 'password'
                 }
+            ],
+            tags: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                }
             ]
         };
 
@@ -1510,46 +1604,6 @@ angular.module('app')
                 $scope.page = {};
             })
         }
-    }]);
-
-angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
-        console.log(Settings.prototype);
-
-
-        $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
-            orderBy: '-id',
-            model: Settings,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Setting',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value',
-                    required: true
-                },
-                {
-                    name: 'title',
-                    label: 'Title'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
-        };
     }]);
 
 angular.module('app')
@@ -1585,45 +1639,6 @@ angular.module('app')
                     type: 'password',
                     label: 'Password',
                     required: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
-        $scope.logs = Logs.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            model: Logs,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User'
-                },
-                {
-                    name: 'logable_name',
-                    label: 'TableName'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
                 }
             ]
         };
