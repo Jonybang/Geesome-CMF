@@ -16,8 +16,6 @@ class Page extends Model
     protected $casts = [
         'id' => 'integer',
         'menu_index' => 'integer',
-        'is_published' => 'boolean',
-        'is_main_page' => 'boolean',
         'parent_page_id' => 'integer',
         'author_id' => 'integer',
         'template_id' => 'integer'

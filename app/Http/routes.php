@@ -62,6 +62,10 @@ Route::get('/{alias?}', function ($alias = null) {
         $path = $page->template->path;
 
         $sub_fields = $page->sub_fields_values;
+        //make undefined sub_fields as empty strings
+        foreach($page->template->sub_fields as $sub_field)
+            if(!isset($sub_fields[$sub_field->name]))
+                $sub_fields[$sub_field->name] = '';
 
         foreach($page->template->controller_actions as $controller_action){
             $result = \App::call('App\\Http\\Controllers\\' . $controller_action->name, ['page' => $page]);

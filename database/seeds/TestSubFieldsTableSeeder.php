@@ -11,7 +11,10 @@ class TestSubFieldsTableSeeder extends Seeder
      */
     public function run()
     {
-        $sub_field = \App\SubField::create(['name' => 'testSF', 'sub_field_type_id' => \App\SubFieldType::where('name', 'text')->first()->id]);
+        $sub_field = \App\Template::where('path', 'page')->first()->sub_fields()->create([
+                'name' => 'testSF',
+                'sub_field_type_id' => \App\SubFieldType::where('name', 'text')->first()->id
+            ]);
         $seeds = [
             'test sub field text 1',
             'test sub field text 2',
