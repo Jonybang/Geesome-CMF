@@ -24,7 +24,7 @@ class CreatePagesTable extends Migration
 
             $table->boolean('is_abstract')->default(false);
             $table->boolean('is_published')->default(false);
-            $table->boolean('is_menu_hide')->default(false);
+            $table->boolean('is_menu_hide')->default(true);
             $table->boolean('is_deleted')->default(false);
 
             $table->integer('parent_page_id')->unsigned()->default(0);

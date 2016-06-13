@@ -57,6 +57,7 @@ class PageController extends Controller
         if(isset($data['tags_ids'])){
             foreach($data['tags_ids'] as $tag_id)
                 $page->tags()->attach($tag_id);
+            $page->save();
         }
 
         return Response::json(

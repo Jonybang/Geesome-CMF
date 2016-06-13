@@ -47,15 +47,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
     })->where('any', '.*');
 });
 
-Route::get('/{alias?}', function ($alias = null) {
+Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null) {
     $page = null;
+    //find by alias or get main page
     if($alias)
         $page = \App\Page::where('alias', $alias)->orWhere('id', $alias)->first();
     else{
         $main_page_id = \App\Setting::where('name', 'main_page')->first()->value;
         $page = \App\Page::find($main_page_id)->first();
     }
+    //dd($page);
 
+    //if page exist and published get all page data, else return 404 template
     $sub_fields = [];
     $page_data = [];
     if($page && $page->is_published){
@@ -67,13 +70,21 @@ Route::get('/{alias?}', function ($alias = null) {
             if(!isset($sub_fields[$sub_field->name]))
                 $sub_fields[$sub_field->name] = '';
 
+        //execute controller actions on page template and get data from they
         foreach($page->template->controller_actions as $controller_action){
-            $result = \App::call('App\\Http\\Controllers\\' . $controller_action->name, ['page' => $page]);
+            $result = \App::call('App\\Http\\Controllers\\' . $controller_action->name, [
+                'page' => $page,
+                'sub_alias' => $sub_alias
+            ]);
 
             if($result instanceof \Illuminate\Http\JsonResponse)
                 $result_data = (array)$result->getData();
             else
                 $result_data = $result;
+
+            //if action return data for render another template - set this template
+            if(isset($result_data['render_template']))
+                $path = $result_data['render_template'];
 
             $page_data = array_merge($page_data, $result_data);
         }

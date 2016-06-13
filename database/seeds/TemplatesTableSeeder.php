@@ -15,6 +15,7 @@ class TemplatesTableSeeder extends Seeder
             ['Главная', 'index'],
             ['Блог', 'blog'],
             ['Страница', 'page'],
+            ['Тег', 'tag'],
         ];
         foreach($seeds as $seed){
             DB::table('templates')->insert([

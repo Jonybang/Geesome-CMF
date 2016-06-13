@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', $page->title)
+@section('title', $tag->title)
 
 @section('header')
     <!-- Page Header -->
@@ -10,9 +10,8 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>{{$page->title}}</h1>
+                        <h1>{{$tag->name}}</h1>
                         <hr class="small">
-                        <span class="subheading">{{$page->sub_title}}</span>
                     </div>
                 </div>
             </div>
@@ -25,22 +24,22 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                @foreach($page->child_pages as $child_page)
+                @foreach($tag->pages as $page)
                     <div class="post-preview">
-                        <a href="/{{$child_page->alias}}">
+                        <a href="/{{$page->alias}}">
                             <h2 class="post-title">
-                                {{$child_page->title}}
+                                {{$page->title}}
                             </h2>
                             <h3 class="post-subtitle">
-                                {{$child_page->sub_title}}
+                                {{$page->sub_title}}
                             </h3>
                         </a>
-                        @if($child_page->author)
-                            <p class="post-meta">Posted by <a href="/users/{{$child_page->author->id}}">{{$child_page->author->name}}</a> on {{$child_page->created_at}}</p>
+                        @if($page->author)
+                            <p class="post-meta">Posted by <a href="/users/{{$page->author->id}}">{{$page->author->name}}</a> on {{$page->created_at}}</p>
                         @endif
-                        @if(count($child_page->tags))
+                        @if(count($page->tags))
                             <p class="post-tags">
-                                @foreach($child_page->tags as $tag)
+                                @foreach($page->tags as $tag)
                                     <a href="/tag/{{$tag->name}}">{{$tag->name}}</a>
                                 @endforeach
                             </p>

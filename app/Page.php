@@ -42,16 +42,12 @@ class Page extends Model
     }
     public function child_pages()
     {
-        return $this->hasMany('App\Page', 'parent_page_id');
+        return $this->hasMany('App\Page', 'parent_page_id')->orderBy('created_at', 'DESC');
     }
 
     public function logs()
     {
         return $this->morphMany('App\UserActionLog', 'logable');
-    }
-    public function pages()
-    {
-        return $this->hasMany('App\Page', 'page_id');
     }
 
     public function getSubFieldsValuesAttribute()

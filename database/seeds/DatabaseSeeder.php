@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(SubFieldTypesTableSeeder::class);
 
+        $this->call(TagPageTableSeeder::class);
+
         $this->call(TestSubFieldsTableSeeder::class);
         $this->call(TestControllerActionsTableSeeder::class);
     }

@@ -481,3 +481,13 @@ aside {
   padding-right: 0;
   padding-left: 0;
 }
+
+.post-tags {
+  font-size: 18px;
+  font-style: italic;
+  margin: 0;
+  margin-top: -20px;
+}
+.post-tags a {
+  color: #f05f40;
+}

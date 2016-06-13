@@ -21,7 +21,8 @@ class PagesTableSeeder extends Seeder
                 'title' => $seed[0],
                 'alias' => $seed[1],
                 'is_published' => true,
-                'template_id' => \App\Template::where('path', $seed[2])->first()->id
+                'template_id' => \App\Template::where('path', $seed[2])->first()->id,
+                'is_menu_hide' => false
             ]);
             $page->content = $seed[3];
         }

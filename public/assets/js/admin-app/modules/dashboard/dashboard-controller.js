@@ -1,12 +1,14 @@
 angular.module('app')
     .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', function($scope, $http, AppData, Pages, Templates, Users, Tags) {
-        $scope.page = new Pages();
-        $scope.page.is_menu_hide = true;
-        $scope.page.tags_ids = [];
+        var defaultPage = new Pages();
+        defaultPage.is_menu_hide = true;
+        defaultPage.tags_ids = [];
+        $scope.page = angular.copy(defaultPage);
 
         //Get current user and set his id as author id
         function setCurUserAuthorId(){
-            $scope.page.author_id =  AppData.cur_user.id;
+            defaultPage.author_id =  AppData.cur_user.id;
+            angular.extend($scope.page, defaultPage);
         }
         if(AppData.cur_user.$promise)
             AppData.cur_user.$promise.then(setCurUserAuthorId);
@@ -17,7 +19,8 @@ angular.module('app')
         //Get site settings and set default values to page object
         function setDefaultSettings(){
             site_settings = AppData.site_settings;
-            $scope.page.template_id =  site_settings.default_template_id;
+            defaultPage.template_id =  site_settings.default_template_id;
+            angular.extend($scope.page, defaultPage);
         }
         if(AppData.site_settings.$promise)
             AppData.site_settings.$promise.then(setDefaultSettings);
@@ -116,7 +119,7 @@ angular.module('app')
                 return;
 
             $scope.page.$save().then(function(){
-                $scope.page = {};
+                $scope.page = angular.copy(defaultPage);
             })
         }
     }]);
