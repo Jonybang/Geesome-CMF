@@ -10,7 +10,7 @@ class Page extends Model
     protected $table = 'pages';
 
     protected $fillable = [
-        'title', 'sub_title', 'alias', 'description', 'content', 'menu_index', 'is_published', 'is_menu_hide', 'is_published', 'parent_page_id', 'author_id', 'template_id'
+        'title', 'sub_title', 'alias', 'description', 'menu_index', 'is_published', 'is_menu_hide', 'is_published', 'parent_page_id', 'author_id', 'template_id'
     ];
 
     protected $casts = [
@@ -79,7 +79,7 @@ class Page extends Model
     private function contentRow(){
         return \DB::table('pages_contents')->where('page_id', $this->id)->first();
     }
-    public function getContentAttribute()
+    public function getContentTextAttribute()
     {
         $content_row = $this->contentRow();
         if($content_row)
@@ -88,7 +88,7 @@ class Page extends Model
             return '';
     }
 
-    public function setContentAttribute($value)
+    public function setContentTextAttribute($value)
     {
         $content_row = $this->contentRow();
         if($content_row)

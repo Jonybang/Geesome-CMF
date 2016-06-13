@@ -15,7 +15,7 @@ class CreatePagesContentsTable extends Migration
         Schema::create('pages_contents', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('page_id')->unsigned();
+            $table->integer('page_id')->unsigned()->nullable();
             $table->foreign('page_id')->references('id')->on('pages');
 
             $table->text('content')->nullable();

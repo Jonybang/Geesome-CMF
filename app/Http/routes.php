@@ -56,7 +56,6 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
         $main_page_id = \App\Setting::where('name', 'main_page')->first()->value;
         $page = \App\Page::find($main_page_id)->first();
     }
-    //dd($page);
 
     //if page exist and published get all page data, else return 404 template
     $sub_fields = [];

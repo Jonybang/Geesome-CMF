@@ -50,9 +50,10 @@ class PageController extends Controller
     {
         $data = $request->all();
         $page = Page::create($data);
+        $page->save();
 
         if(isset($data['content']))
-            $page->content = $data['content'];
+            $page->content_text = $data['content'];
 
         if(isset($data['tags_ids'])){
             foreach($data['tags_ids'] as $tag_id)
@@ -72,7 +73,7 @@ class PageController extends Controller
         $is_saved = $page->update($data);
 
         if(isset($data['content']))
-            $page->content = $data['content'];
+            $page->content_text = $data['content'];
 
         if(isset($data['tags_ids'])){
             $page->tags()->detach();
