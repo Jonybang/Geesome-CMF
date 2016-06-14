@@ -8,7 +8,8 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
         "orchestra/asset": "~3.0",
-        "orchestra/support-facades": "3.2.x-dev"
+        "orchestra/support-facades": "3.2.x-dev",
+        "graham-campbell/markdown": "^6.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

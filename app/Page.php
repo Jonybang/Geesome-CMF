@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Mockery\CountValidator\Exception;
+use GrahamCampbell\Markdown\Facades\Markdown;
 
 class Page extends Model
 {
@@ -83,7 +84,7 @@ class Page extends Model
     {
         $content_row = $this->contentRow();
         if($content_row)
-            return $content_row->content;
+            return Markdown::convertToHtml($content_row->content);
         else
             return '';
     }
