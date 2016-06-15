@@ -15,20 +15,35 @@ angular
                     controller: 'DashboardController',
                     templateUrl: AppPaths.dashboard_tpls + 'index.html'
                 })
-                .state('app.settings', {
-                    url: '/settings',
-                    controller: 'SettingsController',
-                    templateUrl: AppPaths.settings_tpls + 'index.html'
-                })
                 .state('app.pages', {
                     url: '/pages',
                     controller: 'PagesController',
                     templateUrl: AppPaths.pages_tpls + 'index.html'
                 })
+                .state('app.tags', {
+                    url: '/tags',
+                    controller: 'TagsController',
+                    templateUrl: AppPaths.tags_tpls + 'index.html'
+                })
+                .state('app.settings', {
+                    url: '/settings',
+                    controller: 'SettingsController',
+                    templateUrl: AppPaths.settings_tpls + 'index.html'
+                })
                 .state('app.logs', {
                     url: '/logs',
-                    controller: 'LogController',
+                    controller: 'LogsController',
                     templateUrl: AppPaths.logs_tpls + 'index.html'
+                })
+                .state('app.templates', {
+                    url: '/templates',
+                    controller: 'TemplatesController',
+                    templateUrl: AppPaths.templates_tpls + 'index.html'
+                })
+                .state('app.sub_fields', {
+                    url: '/sub_fields',
+                    controller: 'SubFieldsController',
+                    templateUrl: AppPaths.sub_fields_tpls + 'index.html'
                 })
                 .state('app.users', {
                     url: '/users',

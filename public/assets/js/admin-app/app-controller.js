@@ -8,16 +8,28 @@ angular.module('app')
                 route:   'app.dashboard'
             },
             {
-                heading: 'Settings',
-                route:   'app.settings'
-            },
-            {
                 heading: 'Pages',
                 route:   'app.pages'
             },
             {
+                heading: 'Tags',
+                route:   'app.tags'
+            },
+            {
+                heading: 'Settings',
+                route:   'app.settings'
+            },
+            {
                 heading: 'Logs',
                 route:   'app.logs'
+            },
+            {
+                heading: 'Templates',
+                route:   'app.templates'
+            },
+            {
+                heading: 'SubFields',
+                route:   'app.sub_fields'
             },
             {
                 heading: 'Users',

@@ -1,11 +1,11 @@
 angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
+    .controller('TemplatesController', ['$scope', 'Templates', function($scope, Templates) {
+        $scope.templates = Templates.query();
 
         $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
+            caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
             orderBy: '-id',
-            model: Settings,
+            model: Templates,
             fields: [
                 {
                     name: 'id',
@@ -16,21 +16,18 @@ angular.module('app')
                     name: 'name',
                     modal: 'self',
                     label: 'Name',
-                    new_placeholder: 'New Setting',
+                    new_placeholder: 'New Template',
                     required: true
                 },
                 {
-                    name: 'value',
-                    label: 'Value',
+                    name: 'path',
+                    label: 'Path',
                     required: true
-                },
-                {
-                    name: 'title',
-                    label: 'Title'
                 },
                 {
                     name: 'description',
-                    label: 'Description'
+                    label: 'Description',
+                    type: 'textarea'
                 }
             ]
         };

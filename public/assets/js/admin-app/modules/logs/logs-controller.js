@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
+    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
         $scope.logs = Logs.query();
 
         $scope.aGridOptions = {

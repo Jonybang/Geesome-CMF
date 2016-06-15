@@ -35,6 +35,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
         Route::resource('logs', 'Api\LogController');
         Route::resource('users', 'Api\UserController');
         Route::resource('tags', 'Api\TagController');
+        Route::resource('sub_fields', 'Api\SubFieldController');
+        Route::resource('sub_fields_types', 'Api\SubFieldTypeController');
+        Route::resource('sub_fields_values', 'Api\SubFieldValueController');
+        Route::resource('controller_actions', 'Api\ControllerActionController');
     });
 
 

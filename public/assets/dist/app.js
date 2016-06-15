@@ -993,21 +993,6 @@ angular
         };
     }]);
 
-//angular.module('a-edit').directive('selectAdder', [function() {
-//    return {
-//        restrict: 'C',
-//        link: function ($scope, $element, $attrs){
-//            $element.click(function($event){
-//                var $element = angular.element($event.target);
-//                if(!$element.hasClass('btn'))
-//                    $event.stopPropagation();
-//
-//                if($element.hasClass('btn-default'))
-//                    $event.stopPropagation();
-//            });
-//        }
-//    };
-//}]);
 /**
  * Created by jonybang on 04.07.15.
  */
@@ -1180,20 +1165,35 @@ angular
                     controller: 'DashboardController',
                     templateUrl: AppPaths.dashboard_tpls + 'index.html'
                 })
-                .state('app.settings', {
-                    url: '/settings',
-                    controller: 'SettingsController',
-                    templateUrl: AppPaths.settings_tpls + 'index.html'
-                })
                 .state('app.pages', {
                     url: '/pages',
                     controller: 'PagesController',
                     templateUrl: AppPaths.pages_tpls + 'index.html'
                 })
+                .state('app.tags', {
+                    url: '/tags',
+                    controller: 'TagsController',
+                    templateUrl: AppPaths.tags_tpls + 'index.html'
+                })
+                .state('app.settings', {
+                    url: '/settings',
+                    controller: 'SettingsController',
+                    templateUrl: AppPaths.settings_tpls + 'index.html'
+                })
                 .state('app.logs', {
                     url: '/logs',
-                    controller: 'LogController',
+                    controller: 'LogsController',
                     templateUrl: AppPaths.logs_tpls + 'index.html'
+                })
+                .state('app.templates', {
+                    url: '/templates',
+                    controller: 'TemplatesController',
+                    templateUrl: AppPaths.templates_tpls + 'index.html'
+                })
+                .state('app.sub_fields', {
+                    url: '/sub_fields',
+                    controller: 'SubFieldsController',
+                    templateUrl: AppPaths.sub_fields_tpls + 'index.html'
                 })
                 .state('app.users', {
                     url: '/users',
@@ -1227,16 +1227,28 @@ angular.module('app')
                 route:   'app.dashboard'
             },
             {
-                heading: 'Settings',
-                route:   'app.settings'
-            },
-            {
                 heading: 'Pages',
                 route:   'app.pages'
             },
             {
+                heading: 'Tags',
+                route:   'app.tags'
+            },
+            {
+                heading: 'Settings',
+                route:   'app.settings'
+            },
+            {
                 heading: 'Logs',
                 route:   'app.logs'
+            },
+            {
+                heading: 'Templates',
+                route:   'app.templates'
+            },
+            {
+                heading: 'SubFields',
+                route:   'app.sub_fields'
             },
             {
                 heading: 'Users',
@@ -1302,18 +1314,109 @@ app.factory('Users', ['$resource', function($resource) {
 app.factory('Tags', ['$resource', function($resource) {
     return $resource('admin/api/tags/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Templates', ['$resource', function($resource) {
+    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('SubFieldsTypes', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields_types/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubFieldsValues', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields_values/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubFields', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('ControllerActions', ['$resource', function($resource) {
+    return $resource('admin/api/controller_actions/:id', { id: '@id' }, defaultOptions);
+}]);
 var app_path = '/assets/js/admin-app/';
 angular.module('app')
     .constant('AppPaths', {
-            app: app_path,
-            app_tpls: app_path + 'templates/',
-            modules: app_path + 'modules/',
+            app:            app_path,
+            app_tpls:       app_path + 'templates/',
+            modules:        app_path + 'modules/',
             dashboard_tpls: app_path + 'modules/dashboard/templates/',
-            settings_tpls: app_path + 'modules/settings/templates/',
-            pages_tpls: app_path + 'modules/pages/templates/',
-            logs_tpls: app_path + 'modules/logs/templates/',
-            users_tpls: app_path + 'modules/users/templates/'
+            settings_tpls:  app_path + 'modules/settings/templates/',
+            pages_tpls:     app_path + 'modules/pages/templates/',
+            logs_tpls:      app_path + 'modules/logs/templates/',
+            users_tpls:     app_path + 'modules/users/templates/',
+            tags_tpls:      app_path + 'modules/tags/templates/',
+            templates_tpls: app_path + 'modules/templates/templates/',
+            sub_fields_tpls: app_path + 'modules/sub-fields/templates/'
     });
+angular.module('app')
+    .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', function($scope, SubFields, SubFieldsTypes) {
+        $scope.sub_fields_types = SubFieldsTypes.query();
+
+        $scope.aGridSubFieldsTypesOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: SubFieldsTypes,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Sub Field Type',
+                    required: true
+                }
+            ]
+        };
+
+        $scope.sub_fields = SubFields.query();
+
+        $scope.aGridSubFieldsOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: SubFields,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Sub Field',
+                    required: true
+                },
+                {
+                    name: 'title',
+                    label: 'Title'
+                },
+                {
+                    name: 'description',
+                    label: 'Description',
+                    type: 'textarea'
+                },
+                {
+                    name: 'config',
+                    label: 'Config',
+                    type: 'textarea'
+                },
+                {
+                    name: 'sub_field_type_id',
+                    label: 'Sub field type',
+                    type: 'select',
+                    list: 'sub_fields_types'
+                }
+            ],
+            lists: {
+                sub_fields_types: $scope.sub_fields_types
+            }
+        };
+    }]);
+
 angular.module('app')
     .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', function($scope, $http, AppData, Pages, Templates, Users, Tags) {
         var defaultPage = new Pages();
@@ -1441,7 +1544,7 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('LogController', ['$scope', 'Logs', function($scope, Logs) {
+    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
         $scope.logs = Logs.query();
 
         $scope.aGridOptions = {
@@ -1572,8 +1675,6 @@ angular.module('app')
 angular.module('app')
     .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
         $scope.settings = Settings.query();
-        console.log(Settings.prototype);
-
 
         $scope.aGridOptions = {
             caption: 'All settings available in templates.',
@@ -1604,6 +1705,66 @@ angular.module('app')
                 {
                     name: 'description',
                     label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
+        $scope.tags = Tags.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: Tags,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Tag',
+                    required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('TemplatesController', ['$scope', 'Templates', function($scope, Templates) {
+        $scope.templates = Templates.query();
+
+        $scope.aGridOptions = {
+            caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
+            orderBy: '-id',
+            model: Templates,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Template',
+                    required: true
+                },
+                {
+                    name: 'path',
+                    label: 'Path',
+                    required: true
+                },
+                {
+                    name: 'description',
+                    label: 'Description',
+                    type: 'textarea'
                 }
             ]
         };

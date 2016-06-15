@@ -17,6 +17,7 @@ class CreateTemplatesTable extends Migration
 
             $table->string('name');
             $table->string('path');
+            $table->text('description')->nullable();
 
             $table->timestamps();
         });
