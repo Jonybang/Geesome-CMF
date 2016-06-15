@@ -38,7 +38,8 @@ angular.module('app')
                     label: 'Template',
                     type: 'select',
                     model: Templates,
-                    list: 'templates'
+                    list: 'templates',
+                    required: true
                 },
                 {
                     name: 'description',
