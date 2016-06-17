@@ -1261,6 +1261,83 @@ angular.module('app')
             }
         ];
     }]);
+angular
+    .module('app')
+    .directive('sfText', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
+        return {
+            restrict: 'E',
+            templateUrl: AppPaths.app + 'directives/sf-text.html',
+            scope: {
+                /* SubFieldValues resource */
+                ngModel: '=',
+                pageResource: '=?',
+                templateResource: '=?'
+            },
+            link: function (scope, element) {
+
+            }
+        };
+    }]);
+angular
+    .module('app')
+    .directive('subFieldsList', ['$timeout', '$compile', 'AppPaths', 'SubFieldsValues', function($timeout, $compile, AppPaths, SubFieldsValues) {
+        return {
+            restrict: 'E',
+            scope: {
+                ngModel: '=',
+                pageResource: '=?',
+                templateResource: '=?',
+                api: '=?'
+            },
+            link: function (scope, element) {
+                var sub_fields_values_names = [];
+
+                function init(){
+                    var tplHtml = '';
+                    scope.resources = {};
+                    sub_fields_values_names = [];
+
+                    scope.ngModel.forEach(function(sub_field){
+                        scope.resources[sub_field.name] = sub_field;
+                        var sub_field_value_name = sub_field.name + '_value';
+                        scope.resources[sub_field_value_name] = new SubFieldsValues({sub_field_id: sub_field.id});
+                        sub_fields_values_names.push(sub_field_value_name);
+
+                        var directive = sub_field.sub_field_type.directive;
+                        tplHtml += '<label>' + (sub_field.title || sub_field.name) + '</label>';
+                        tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '" ' +
+                            'page-resource="pageResource" template-resource="templateResource" ' +
+                            'sub-field-resource="resources.' + sub_field.name + '"></' + directive + '>';
+                        tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div>';
+                    });
+
+                    var template = angular.element(tplHtml);
+
+                    var linkFn = $compile(template)(scope);
+                    element.html(linkFn);
+                }
+
+                scope.$watchCollection('ngModel', function(sub_fields){
+                    if(!sub_fields)
+                        return;
+
+                    init();
+                });
+
+                if(scope.api){
+                    scope.api.saveSubFieldsValues = function(pageResource){
+                        sub_fields_values_names.forEach(function(sf_val_name){
+                            var subFieldValueResource = scope.resources[sf_val_name];
+                            subFieldValueResource.page_id = pageResource.id;
+                            subFieldValueResource.$save();
+                        });
+
+                        init();
+                    }
+                }
+            }
+        };
+    }]);
 angular.module('app')
     .service('AppData', ['$http', function($http){
         var self = this;
@@ -1348,7 +1425,7 @@ angular.module('app')
             sub_fields_tpls: app_path + 'modules/sub-fields/templates/'
     });
 angular.module('app')
-    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', function($scope, $http, AppData, Pages, Templates, Users, Tags) {
+    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', function($scope, $http, AppData, Pages, Templates, Users, Tags, SubFields) {
         var defaultPage = new Pages();
         defaultPage.is_menu_hide = true;
         defaultPage.tags_ids = [];
@@ -1397,6 +1474,16 @@ angular.module('app')
                 $scope.page.alias = title.replace(/\s+/g, '-').toLowerCase();
             }
         });
+
+        $scope.$watch('page.template_id', function(template_id){
+            if(!template_id)
+                return;
+
+            SubFields.query({'template_id': template_id}).$promise.then(function(data){
+                $scope.sub_fields = data;
+            });
+        });
+        $scope.subFieldsApi = {};
 
         //Models for select inputs
         $scope.models = {
@@ -1467,7 +1554,8 @@ angular.module('app')
             if(!_.isEmpty($scope.hasErrors))
                 return;
 
-            $scope.page.$save().then(function(){
+            $scope.page.$save().then(function(result_page){
+                $scope.subFieldsApi.saveSubFieldsValues(result_page);
                 $scope.page = angular.copy(defaultPage);
             })
         }
@@ -1661,6 +1749,10 @@ angular.module('app')
                     label: 'Name',
                     new_placeholder: 'New Sub Field Type',
                     required: true
+                },
+                {
+                    name: 'directive',
+                    label: 'Angular directive name'
                 }
             ]
         };

@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', function($scope, $http, AppData, Pages, Templates, Users, Tags) {
+    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', function($scope, $http, AppData, Pages, Templates, Users, Tags, SubFields) {
         var defaultPage = new Pages();
         defaultPage.is_menu_hide = true;
         defaultPage.tags_ids = [];
@@ -48,6 +48,16 @@ angular.module('app')
                 $scope.page.alias = title.replace(/\s+/g, '-').toLowerCase();
             }
         });
+
+        $scope.$watch('page.template_id', function(template_id){
+            if(!template_id)
+                return;
+
+            SubFields.query({'template_id': template_id}).$promise.then(function(data){
+                $scope.sub_fields = data;
+            });
+        });
+        $scope.subFieldsApi = {};
 
         //Models for select inputs
         $scope.models = {
@@ -118,7 +128,8 @@ angular.module('app')
             if(!_.isEmpty($scope.hasErrors))
                 return;
 
-            $scope.page.$save().then(function(){
+            $scope.page.$save().then(function(result_page){
+                $scope.subFieldsApi.saveSubFieldsValues(result_page);
                 $scope.page = angular.copy(defaultPage);
             })
         }

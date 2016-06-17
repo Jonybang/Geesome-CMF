@@ -19,7 +19,7 @@ class Template extends Model
 
     public function sub_fields()
     {
-        return $this->belongsToMany('App\SubField', 'templates_sub_fields');
+        return $this->belongsToMany('App\SubField', 'templates_sub_fields')->with('sub_field_type');
     }
 
     public function controller_actions()

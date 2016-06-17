@@ -18,6 +18,10 @@ angular.module('app')
                     label: 'Name',
                     new_placeholder: 'New Sub Field Type',
                     required: true
+                },
+                {
+                    name: 'directive',
+                    label: 'Angular directive name'
                 }
             ]
         };

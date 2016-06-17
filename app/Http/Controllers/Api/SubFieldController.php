@@ -13,10 +13,16 @@ use App\Http\Controllers\Controller;
 
 class SubFieldController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $template_id = $request->input('template_id');
+        if($template_id)
+            $list = \App\Template::find($template_id)->sub_fields;
+        else
+            $list = SubField::all();
+
         return Response::json(
-            SubField::all()->toArray(),
+            $list->toArray(),
             200
         );
     }
