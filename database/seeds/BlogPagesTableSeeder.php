@@ -33,6 +33,16 @@ class BlogPagesTableSeeder extends Seeder
                 'context_id' => $context_id
             ]);
             $page->content_text = $seed[2];
+
+            $tags_ids = [];
+            for($i=0; $i<3; $i++){
+                $id = \App\Tag::orderByRaw("random()")->first()->id;
+                if(!in_array($id, $tags_ids))
+                    $page->tags()->attach($id);
+                $tags_ids[] = $id;
+            }
+            $page->save();
+
         }
     }
 }

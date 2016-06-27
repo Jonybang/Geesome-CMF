@@ -11,7 +11,7 @@ class Page extends Model
     protected $table = 'pages';
 
     protected $fillable = [
-        'title', 'sub_title', 'alias', 'description', 'menu_index', 'is_published', 'is_menu_hide', 'is_published', 'parent_page_id', 'author_id', 'template_id'
+        'title', 'sub_title', 'alias', 'description', 'menu_index', 'is_published', 'is_menu_hide', 'is_published', 'parent_page_id', 'author_id', 'template_id', 'context_id'
     ];
 
     protected $casts = [
