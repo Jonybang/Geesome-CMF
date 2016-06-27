@@ -36,6 +36,9 @@ class CreatePagesTable extends Migration
             $table->integer('template_id')->unsigned();
             $table->foreign('template_id')->references('id')->on('templates');
 
+            $table->integer('context_id')->unsigned();
+            $table->foreign('context_id')->references('id')->on('contexts');
+
             $table->timestamps();
         });
     }

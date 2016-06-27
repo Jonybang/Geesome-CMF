@@ -15,7 +15,8 @@ class TagPageTableSeeder extends Seeder
         $tag_template->pages()->create([
             'title' => 'Pages by tag',
             'alias' => 'tag',
-            'is_published' => true
+            'is_published' => true,
+            'context_id' => \App\Context::first()->id
         ]);
 
         $tag_template->controller_actions()->create([

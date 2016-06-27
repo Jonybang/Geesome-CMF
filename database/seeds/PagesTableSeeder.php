@@ -11,6 +11,11 @@ class PagesTableSeeder extends Seeder
      */
     public function run()
     {
+        $context = \App\Context::create([
+            'name' => 'Default',
+            'key' => 'default'
+        ]);
+
         $seeds = [
             ['Главная', '', 'index', 'Содержимое главной страницы'],
             ['Блог', 'blog', 'blog', ''],
@@ -22,7 +27,8 @@ class PagesTableSeeder extends Seeder
                 'alias' => $seed[1],
                 'is_published' => true,
                 'template_id' => \App\Template::where('path', $seed[2])->first()->id,
-                'is_menu_hide' => false
+                'is_menu_hide' => false,
+                'context_id' => $context->id
             ]);
             $page->content_text = $seed[3];
         }

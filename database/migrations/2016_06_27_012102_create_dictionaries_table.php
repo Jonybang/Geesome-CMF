@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSettingsTable extends Migration
+class CreateDictionariesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,17 +12,10 @@ class CreateSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('settings', function (Blueprint $table) {
+        Schema::create('dictionaries', function (Blueprint $table) {
             $table->increments('id');
 
             $table->string('name');
-            $table->string('value');
-
-            $table->string('title')->nullable();
-            $table->string('description')->nullable();
-
-            $table->integer('context_id')->unsigned()->nullable();
-            $table->foreign('context_id')->references('id')->on('contexts');
 
             $table->timestamps();
         });
@@ -35,6 +28,6 @@ class CreateSettingsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('settings');
+        Schema::drop('dictionaries');
     }
 }

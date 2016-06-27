@@ -12,8 +12,8 @@ angular.module('app')
                 route:   'app.pages'
             },
             {
-                heading: 'Tags',
-                route:   'app.tags'
+                heading: 'Dictionary',
+                route:   'app.dictionary'
             },
             {
                 heading: 'Settings',
@@ -22,6 +22,10 @@ angular.module('app')
             {
                 heading: 'Logs',
                 route:   'app.logs'
+            },
+            {
+                heading: 'Tags',
+                route:   'app.tags'
             },
             {
                 heading: 'Templates',

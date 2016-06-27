@@ -39,6 +39,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
         Route::resource('sub_fields_types', 'Api\SubFieldTypeController');
         Route::resource('sub_fields_values', 'Api\SubFieldValueController');
         Route::resource('controller_actions', 'Api\ControllerActionController');
+        Route::resource('dictionaries', 'Api\DictionaryController');
+        Route::resource('dictionaries_words', 'Api\DictionaryWordController');
     });
 
 

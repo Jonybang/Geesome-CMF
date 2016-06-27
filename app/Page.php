@@ -84,7 +84,7 @@ class Page extends Model
     {
         $content_row = $this->contentRow();
         if($content_row)
-            return Markdown::convertToHtml($content_row->content);
+            return Markdown::convertToHtml($content_row->value);
         else
             return '';
     }
@@ -93,10 +93,10 @@ class Page extends Model
     {
         $content_row = $this->contentRow();
         if($content_row)
-            \DB::table('pages_contents')->where('page_id', $this->id)->update(['content' => $value, 'updated_at' => new \DateTime()]);
+            \DB::table('pages_contents')->where('page_id', $this->id)->update(['value' => $value, 'updated_at' => new \DateTime()]);
         else if($value)
             \DB::table('pages_contents')->insert(
-                ['page_id' => $this->id, 'content' => $value, 'created_at' => new \DateTime()]
+                ['page_id' => $this->id, 'value' => $value, 'created_at' => new \DateTime()]
             );
     }
 }

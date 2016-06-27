@@ -26,9 +26,6 @@ angular.module('app')
             ]
         };
 
-        $scope.sub_fields_types.$promise.then(function(){
-
-        });
         $scope.sub_fields = SubFields.query();
 
         $scope.aGridSubFieldsOptions = {

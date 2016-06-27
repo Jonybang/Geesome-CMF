@@ -20,10 +20,10 @@ angular
                     controller: 'PagesController',
                     templateUrl: AppPaths.pages_tpls + 'index.html'
                 })
-                .state('app.tags', {
-                    url: '/tags',
-                    controller: 'TagsController',
-                    templateUrl: AppPaths.tags_tpls + 'index.html'
+                .state('app.dictionary', {
+                    url: '/dictionary',
+                    controller: 'DictionaryController',
+                    templateUrl: AppPaths.dictionary_tpls + 'index.html'
                 })
                 .state('app.settings', {
                     url: '/settings',
@@ -34,6 +34,11 @@ angular
                     url: '/logs',
                     controller: 'LogsController',
                     templateUrl: AppPaths.logs_tpls + 'index.html'
+                })
+                .state('app.tags', {
+                    url: '/tags',
+                    controller: 'TagsController',
+                    templateUrl: AppPaths.tags_tpls + 'index.html'
                 })
                 .state('app.templates', {
                     url: '/templates',

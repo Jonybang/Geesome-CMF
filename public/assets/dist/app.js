@@ -1177,10 +1177,10 @@ angular
                     controller: 'PagesController',
                     templateUrl: AppPaths.pages_tpls + 'index.html'
                 })
-                .state('app.tags', {
-                    url: '/tags',
-                    controller: 'TagsController',
-                    templateUrl: AppPaths.tags_tpls + 'index.html'
+                .state('app.dictionary', {
+                    url: '/dictionary',
+                    controller: 'DictionaryController',
+                    templateUrl: AppPaths.dictionary_tpls + 'index.html'
                 })
                 .state('app.settings', {
                     url: '/settings',
@@ -1191,6 +1191,11 @@ angular
                     url: '/logs',
                     controller: 'LogsController',
                     templateUrl: AppPaths.logs_tpls + 'index.html'
+                })
+                .state('app.tags', {
+                    url: '/tags',
+                    controller: 'TagsController',
+                    templateUrl: AppPaths.tags_tpls + 'index.html'
                 })
                 .state('app.templates', {
                     url: '/templates',
@@ -1238,8 +1243,8 @@ angular.module('app')
                 route:   'app.pages'
             },
             {
-                heading: 'Tags',
-                route:   'app.tags'
+                heading: 'Dictionary',
+                route:   'app.dictionary'
             },
             {
                 heading: 'Settings',
@@ -1248,6 +1253,10 @@ angular.module('app')
             {
                 heading: 'Logs',
                 route:   'app.logs'
+            },
+            {
+                heading: 'Tags',
+                route:   'app.tags'
             },
             {
                 heading: 'Templates',
@@ -1416,6 +1425,13 @@ app.factory('SubFields', ['$resource', function($resource) {
 app.factory('ControllerActions', ['$resource', function($resource) {
     return $resource('admin/api/controller_actions/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Dictionaries', ['$resource', function($resource) {
+    return $resource('admin/api/dictionaries/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('DictionariesWords', ['$resource', function($resource) {
+    return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
+}]);
 var app_path = '/assets/js/admin-app/';
 angular.module('app')
     .constant('AppPaths', {
@@ -1429,7 +1445,8 @@ angular.module('app')
             users_tpls:     app_path + 'modules/users/templates/',
             tags_tpls:      app_path + 'modules/tags/templates/',
             templates_tpls: app_path + 'modules/templates/templates/',
-            sub_fields_tpls: app_path + 'modules/sub-fields/templates/'
+            sub_fields_tpls: app_path + 'modules/sub-fields/templates/',
+            dictionary_tpls: app_path + 'modules/dictionary/templates/'
     });
 angular.module('app')
     .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', function($scope, $http, AppData, Pages, Templates, Users, Tags, SubFields) {
@@ -1566,6 +1583,67 @@ angular.module('app')
                 $scope.page = angular.copy(defaultPage);
             })
         }
+    }]);
+
+angular.module('app')
+    .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
+        $scope.dictionaries = Dictionaries.query();
+
+        $scope.aGridDictionariesOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: Dictionaries,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Dictionary',
+                    required: true
+                }
+            ]
+        };
+
+        $scope.dictionaries_words = DictionariesWords.query();
+
+        $scope.aGridDictionariesWordsOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: DictionariesWords,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Dictionary Word',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value'
+                },
+                {
+                    name: 'dictionary_id',
+                    label: 'Dictionary',
+                    type: 'select',
+                    list: 'dictionaries',
+                    required: true
+                }
+            ],
+            lists: {
+                dictionaries: $scope.dictionaries
+            }
+        };
     }]);
 
 angular.module('app')
@@ -1764,9 +1842,6 @@ angular.module('app')
             ]
         };
 
-        $scope.sub_fields_types.$promise.then(function(){
-
-        });
         $scope.sub_fields = SubFields.query();
 
         $scope.aGridSubFieldsOptions = {

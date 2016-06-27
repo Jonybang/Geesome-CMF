@@ -18,7 +18,7 @@ class CreatePagesContentsTable extends Migration
             $table->integer('page_id')->unsigned()->nullable();
             $table->foreign('page_id')->references('id')->on('pages');
 
-            $table->text('content')->nullable();
+            $table->text('value')->nullable();
 
             $table->timestamps();
         });

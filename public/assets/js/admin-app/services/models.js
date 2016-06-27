@@ -45,3 +45,10 @@ app.factory('SubFields', ['$resource', function($resource) {
 app.factory('ControllerActions', ['$resource', function($resource) {
     return $resource('admin/api/controller_actions/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Dictionaries', ['$resource', function($resource) {
+    return $resource('admin/api/dictionaries/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('DictionariesWords', ['$resource', function($resource) {
+    return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
+}]);
