@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', function($scope, $http, AppPaths, AppData) {
+    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', 'Pages', function($scope, $http, AppPaths, AppData, Pages) {
         var self = this;
 
         self.menuList = [
@@ -45,4 +45,6 @@ angular.module('app')
                 disable: true
             }
         ];
+
+        self.pages = Pages.query();
     }]);

@@ -1156,7 +1156,7 @@ angular.module('a-edit')
     }]);
 
 angular
-    .module('app', ['ngResource', 'a-edit', 'ui.router', 'ui.router.tabs', 'wiz.markdown'])
+    .module('app', ['ngResource', 'a-edit', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 
@@ -1230,7 +1230,7 @@ angular
         });
     }]);
 angular.module('app')
-    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', function($scope, $http, AppPaths, AppData) {
+    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', 'Pages', function($scope, $http, AppPaths, AppData, Pages) {
         var self = this;
 
         self.menuList = [
@@ -1276,6 +1276,8 @@ angular.module('app')
                 disable: true
             }
         ];
+
+        self.pages = Pages.query();
     }]);
 angular
     .module('app')
@@ -1449,67 +1451,6 @@ angular.module('app')
             dictionary_tpls: app_path + 'modules/dictionary/templates/'
     });
 angular.module('app')
-    .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
-        $scope.dictionaries = Dictionaries.query();
-
-        $scope.aGridDictionariesOptions = {
-            caption: '',
-            orderBy: '-id',
-            model: Dictionaries,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Dictionary',
-                    required: true
-                }
-            ]
-        };
-
-        $scope.dictionaries_words = DictionariesWords.query();
-
-        $scope.aGridDictionariesWordsOptions = {
-            caption: '',
-            orderBy: '-id',
-            model: DictionariesWords,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Dictionary Word',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value'
-                },
-                {
-                    name: 'dictionary_id',
-                    label: 'Dictionary',
-                    type: 'select',
-                    list: 'dictionaries',
-                    required: true
-                }
-            ],
-            lists: {
-                dictionaries: $scope.dictionaries
-            }
-        };
-    }]);
-
-angular.module('app')
     .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions', function($scope, $http, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
         defaultPage.is_menu_hide = true;
@@ -1659,6 +1600,67 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
+        $scope.dictionaries = Dictionaries.query();
+
+        $scope.aGridDictionariesOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: Dictionaries,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Dictionary',
+                    required: true
+                }
+            ]
+        };
+
+        $scope.dictionaries_words = DictionariesWords.query();
+
+        $scope.aGridDictionariesWordsOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: DictionariesWords,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Dictionary Word',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value'
+                },
+                {
+                    name: 'dictionary_id',
+                    label: 'Dictionary',
+                    type: 'select',
+                    list: 'dictionaries',
+                    required: true
+                }
+            ],
+            lists: {
+                dictionaries: $scope.dictionaries
+            }
+        };
+    }]);
+
+angular.module('app')
     .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
         $scope.logs = Logs.query();
 
@@ -1688,6 +1690,44 @@ angular.module('app')
                 {
                     name: 'logable_name',
                     label: 'TableName'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = Settings.query();
+
+        $scope.aGridOptions = {
+            caption: 'All settings available in templates.',
+            orderBy: '-id',
+            model: Settings,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Setting',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value',
+                    required: true
+                },
+                {
+                    name: 'title',
+                    label: 'Title'
                 },
                 {
                     name: 'description',
@@ -1783,44 +1823,6 @@ angular.module('app')
                     label: 'Content',
                     type: 'textarea',
                     table_hide: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
-
-        $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
-            orderBy: '-id',
-            model: Settings,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Setting',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value',
-                    required: true
-                },
-                {
-                    name: 'title',
-                    label: 'Title'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
                 }
             ]
         };
