@@ -13,27 +13,17 @@ use App\Http\Controllers\Controller;
 
 class PageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        //TODO: Разобраться с получением данных: числа получаю как строки
         return Response::json(
-            \DB::table('pages')
-                ->leftJoin('pages_contents', 'pages_contents.page_id', '=', 'pages.id')
-                ->select(
-                    'pages.id as id', 'title', 'alias', 'menu_title', 'sub_title', 'description',
-                    'menu_index', 'is_abstract', 'is_menu_hide', 'is_published',
-                    'parent_page_id', 'author_id', 'template_id',
-                    'pages_contents.content as content'
-                )
-                ->orderBy('id', 'desc')
-                ->get(),
+            Page::all()->toArray(),
             200
         );
     }
 
     private function getPageArrayWithContent($page){
         $page_data = $page->toArray();
-        $page_data['content'] = $page->content;
+        $page_data['content'] = $page->content_text;
         return $page_data;
     }
 
