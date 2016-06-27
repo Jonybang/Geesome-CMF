@@ -1,8 +1,9 @@
 angular.module('app')
-    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', function($scope, $http, AppData, Pages, Templates, Users, Tags, SubFields) {
+    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions', function($scope, $http, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
         defaultPage.is_menu_hide = true;
         defaultPage.tags_ids = [];
+        defaultPage.controller_actions_ids = [];
         $scope.page = angular.copy(defaultPage);
 
         //Get current user and set his id as author id
@@ -56,6 +57,10 @@ angular.module('app')
             SubFields.query({'template_id': template_id}).$promise.then(function(data){
                 $scope.sub_fields = data;
             });
+
+            ControllerActions.query({'template_id': template_id}).$promise.then(function(data){
+                $scope.page.controller_actions_ids = data.map(function(action){return action.id});
+            });
         });
         $scope.subFieldsApi = {};
 
@@ -64,7 +69,8 @@ angular.module('app')
             templates: Templates,
             pages: Pages,
             users: Users,
-            tags: Tags
+            tags: Tags,
+            controller_actions: ControllerActions
         };
         //Fields for adder functional at select inputs
         $scope.fields = {
@@ -107,6 +113,12 @@ angular.module('app')
                 }
             ],
             tags: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                }
+            ],
+            controller_actions: [
                 {
                     name: 'name',
                     label: 'Name'

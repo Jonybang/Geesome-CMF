@@ -77,6 +77,13 @@ class Page extends Model
         }
     }
 
+    public function setTagsIdsAttribute($value)
+    {
+        $this->tags()->detach();
+        foreach($value as $tag_id)
+            $this->tags()->attach($tag_id);
+    }
+
     private function contentRow(){
         return \DB::table('pages_contents')->where('page_id', $this->id)->first();
     }

@@ -47,9 +47,13 @@ class PageController extends Controller
             $page->content_text = $data['content'];
 
         if(isset($data['tags_ids'])){
-            foreach($data['tags_ids'] as $tag_id)
-                $page->tags()->attach($tag_id);
+            $page->tags_ids = $data['tags_ids'];
             $page->save();
+        }
+
+        if(isset($data['controller_actions_ids'])){
+            $page->template->controller_actions_ids = $data['controller_actions_ids'];
+            $page->template->save();
         }
 
         return Response::json(
@@ -67,9 +71,13 @@ class PageController extends Controller
             $page->content_text = $data['content'];
 
         if(isset($data['tags_ids'])){
-            $page->tags()->detach();
-            foreach($data['tags_ids'] as $tag_id)
-                $page->tags()->attach($tag_id);
+            $page->tags_ids = $data['tags_ids'];
+            $page->save();
+        }
+
+        if(isset($data['controller_actions_ids'])){
+            $page->template->controller_actions_ids = $data['controller_actions_ids'];
+            $page->template->save();
         }
 
         return Response::json(

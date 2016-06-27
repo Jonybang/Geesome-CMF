@@ -26,4 +26,11 @@ class Template extends Model
     {
         return $this->belongsToMany('App\ControllerAction', 'templates_controller_actions');
     }
+
+    public function setControllerActionsIdsAttribute($value)
+    {
+        $this->controller_actions()->detach();
+        foreach($value as $controller_action_id)
+            $this->controller_actions()->attach($controller_action_id);
+    }
 }

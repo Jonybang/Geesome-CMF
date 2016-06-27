@@ -13,10 +13,16 @@ use App\Http\Controllers\Controller;
 
 class ControllerActionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $template_id = $request->input('template_id');
+        if($template_id)
+            $list = \App\Template::find($template_id)->controller_actions;
+        else
+            $list = ControllerAction::all();
+
         return Response::json(
-            ControllerAction::all()->toArray(),
+            $list->toArray(),
             200
         );
     }
