@@ -39,7 +39,7 @@
         @foreach($page->child_pages as $child_page)
             <div class="row">
                 <div class="col-md-7">
-                    <a href="#">
+                    <a href="/{{$child_page->alias}}">
                         <img class="img-responsive" src="http://placehold.it/700x300" alt="">
                     </a>
                 </div>
