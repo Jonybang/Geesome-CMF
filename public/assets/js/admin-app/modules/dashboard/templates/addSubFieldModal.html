@@ -1,0 +1,34 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add Sub Field</h3>
+</div>
+<div class="modal-body">
+    <button class="btn btn-default" ng-click="mode='select'">Select existing</button> or <button class="btn btn-default" ng-click="mode='create'">create new</button>
+
+    <div ng-if="mode == 'select'">
+        <h4>Choose Sub Field</h4>
+        <select-input ng-model="subField.id" ng-resource="models.SubFields" has-error="hasErrors.subField_id" is-edit="true"></select-input>
+    </div>
+
+    <div ng-if="mode == 'create'">
+        <h4>Create Sub Field</h4>
+
+        <label>Name</label>
+        <text-input ng-model="subField.name" is-edit="true" has-error="hasErrors.name"></text-input>
+
+        <label>Sub Field Type</label>
+        <select-input ng-model="subField.sub_field_type_id" has-error="hasErrors.sub_field_type_id" ng-resource="models.SubFieldsTypes" ng-resource-fields="fields.sub_field_type" is-edit="true" adder="true"></select-input>
+
+        <label>Title</label>
+        <text-input ng-model="subField.title" is-edit="true" has-error="hasErrors.title"></text-input>
+
+        <label>Description</label>
+        <text-input ng-model="subField.description" is-edit="true" has-error="hasErrors.description" type="textarea"></text-input>
+
+        <label>Config</label>
+        <text-input ng-model="subField.config" is-edit="true" has-error="hasErrors.config" type="textarea"></text-input>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="ok()">Save</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

@@ -19,6 +19,21 @@ class SubField extends Model
     {
         return $this->belongsToMany('App\Template', 'templates_sub_fields');
     }
+
+    public function setTemplatesIdsAttribute($value)
+    {
+        $this->templates()->detach();
+        foreach($value as $template_id)
+            $this->templates()->attach($template_id);
+    }
+    public function getTemplatesIdsAttribute()
+    {
+        $ids = [];
+        foreach($this->templates as $template)
+            $ids[] = $template->id;
+        return $ids;
+    }
+
     public function type()
     {
         return $this->belongsTo('App\SubFieldType', 'id', 'sub_field_type_id');

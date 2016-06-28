@@ -1,5 +1,6 @@
 angular.module('app')
-    .controller('DashboardController', ['$scope', '$state', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions', function($scope, $state, $http, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('DashboardController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
 
         if($state.params.pageId){
@@ -57,13 +58,17 @@ angular.module('app')
             }
         });
 
+        function getSubFields(){
+            SubFields.query({'template_id': $scope.page.template_id}).$promise.then(function(data){
+                $scope.sub_fields = data;
+            });
+        }
+
         $scope.$watch('page.template_id', function(template_id){
             if(!template_id)
                 return;
 
-            SubFields.query({'template_id': template_id}).$promise.then(function(data){
-                $scope.sub_fields = data;
-            });
+            getSubFields();
 
             ControllerActions.query({'template_id': template_id}).$promise.then(function(data){
                 $scope.page.controller_actions_ids = data.map(function(action){return action.id});
@@ -170,4 +175,83 @@ angular.module('app')
         $scope.closeAlert = function(){
             $scope.alert = ''
         };
+
+        $scope.addSubField = function(){
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: AppPaths.dashboard_tpls + 'addSubFieldModal.html',
+                controller: ['$scope', 'subField', 'SubFieldsTypes', function($scope, subField, SubFieldsTypes){
+                    $scope.subField = subField;
+
+                    $scope.models = {
+                        SubFields: SubFields,
+                        SubFieldsTypes: SubFieldsTypes
+                    };
+                    $scope.fields = {
+                        sub_field_type: [
+                            {
+                                name: 'name',
+                                label: 'Name'
+                            },
+                            {
+                                name: 'directive',
+                                label: 'Directive'
+                            }
+                        ]
+                    };
+                    $scope.ok = function () {
+
+                        $scope.hasErrors = {};
+
+                        var required;
+                        if($scope.mode == 'create')
+                            required = ['name', 'sub_field_type_id'];
+                        else if($scope.mode == 'select')
+                            required = ['sub_field_id'];
+
+                        required.forEach(function(reqField){
+                            if(!$scope.subField[reqField])
+                                $scope.hasErrors[reqField] = true;
+                            else
+                                delete $scope.hasErrors[reqField];
+                        });
+
+                        if(!_.isEmpty($scope.hasErrors))
+                            return;
+
+
+                        if($scope.mode == 'select')
+                            $scope.subField = $scope.subField.$get();
+
+                        $scope.close($scope.subField);
+                    };
+
+                    $scope.cancel = function () {
+                        $scope.dismiss(false);
+                    };
+                }],
+                size: 'md',
+                resolve: {
+                    subField: function () {
+                        return new SubFields();
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (subField) {
+                if(subField.templates_ids)
+                    subField.templates_ids.push($scope.page.template_id);
+                else
+                    subField.templates_ids = [$scope.page.template_id];
+
+                if(subField.id)
+                    subField.$update();
+                else
+                    subField.$save();
+
+                getSubFields();
+            }, function () {
+                //$log.info('Modal dismissed at: ' + new Date());
+            });
+        }
     }]);

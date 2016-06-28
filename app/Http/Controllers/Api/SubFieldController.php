@@ -28,8 +28,11 @@ class SubFieldController extends Controller
     }
     public function show($id)
     {
+        $sub_field_data = SubField::find($id)->toArray();
+        $sub_field_data['templates_ids'] = $sub_field_data->templates_ids;
+
         return Response::json(
-            SubField::find($id)->toArray(),
+            $sub_field_data,
             200
         );
     }
@@ -37,8 +40,13 @@ class SubFieldController extends Controller
     {
         $data = $request->all();
 
+        $sub_field = SubField::create($data);
+        if(isset($data['templates_ids'])){
+            $sub_field->templates_ids = $data['templates_ids'];
+            $sub_field->save();
+        }
         return Response::json(
-            SubField::create($data)->toArray(),
+            $sub_field->toArray(),
             200
         );
     }
@@ -47,8 +55,14 @@ class SubFieldController extends Controller
         $data = $request->all();
         $is_saved = SubField::find($data['id'])->update($data);
 
+        $sub_field = SubField::find($data['id']);
+        if(isset($data['templates_ids'])){
+            $sub_field->templates_ids = $data['templates_ids'];
+            $sub_field->save();
+        }
+
         return Response::json(
-            SubField::find($data['id']),
+            $sub_field->toArray(),
             $is_saved ? 200 : 400
         );
     }
