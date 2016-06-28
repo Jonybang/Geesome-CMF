@@ -30,6 +30,7 @@ class DictionaryWordController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $data['context_id'] = \App\Context::first()->id;
 
         return Response::json(
             DictionaryWord::create($data)->toArray(),

@@ -11,9 +11,9 @@
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
                         <h1>{{$page->title}}</h1>
-                        {{$testSF}}<br>
-                        {{$jsonTestAction}}<br>
-                        {{$testAction}}<br>
+                        {{--{{$testSF}}<br>--}}
+                        {{--{{$jsonTestAction}}<br>--}}
+                        {{--{{$testAction}}<br>--}}
                         <hr class="small">
                         <span class="subheading">{{$page->sub_title}}</span>
                     </div>
