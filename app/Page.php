@@ -43,7 +43,7 @@ class Page extends Model
     }
     public function child_pages()
     {
-        return $this->hasMany('App\Page', 'parent_page_id')->orderBy('created_at', 'DESC');
+        return $this->hasMany('App\Page', 'parent_page_id')->orderBy('created_at', 'DESC')->with('child_pages');
     }
 
     public function logs()
@@ -83,6 +83,13 @@ class Page extends Model
         foreach($value as $tag_id)
             $this->tags()->attach($tag_id);
     }
+    public function getTagsIdsAttribute()
+    {
+        $ids = [];
+        foreach($this->tags as $tag)
+            $ids[] = $tag->id;
+        return $ids;
+    }
 
     private function contentRow(){
         return \DB::table('pages_contents')->where('page_id', $this->id)->first();
@@ -91,9 +98,13 @@ class Page extends Model
     {
         $content_row = $this->contentRow();
         if($content_row)
-            return Markdown::convertToHtml($content_row->value);
+            return $content_row->value;
         else
             return '';
+    }
+    public function getContentHtmlAttribute()
+    {
+        return Markdown::convertToHtml($this->content_text);
     }
 
     public function setContentTextAttribute($value)

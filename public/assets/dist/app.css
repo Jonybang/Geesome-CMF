@@ -265,7 +265,8 @@ ul.alert-dropdown {
   display: inline-block;
 }
 
-.main-menu ui-view {
+.main-menu ui-view,
+.pages-content {
   width: 89%;
   display: inline-block;
   vertical-align: top;
@@ -287,4 +288,40 @@ input.form-control[type=checkbox] {
 
 label {
   width: 100%;
+}
+
+.pages-tree {
+  width: 10%;
+  padding-top: 15px;
+  padding-left: 15px;
+  display: inline-block;
+}
+
+.pages-tree ul[dnd-list] {
+  padding-left: 20px;
+}
+
+ul[dnd-list],
+ul[dnd-list] > li {
+  position: relative;
+}
+
+ul[dnd-list] > li {
+  cursor: pointer;
+}
+
+ul[dnd-list] > li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+ul[dnd-list] > li:hover > a {
+  text-decoration: underline;
+}
+
+ul.child_pages.empty {
+  height: 25px;
+  bottom: -2px;
+  margin-top: -18px;
 }

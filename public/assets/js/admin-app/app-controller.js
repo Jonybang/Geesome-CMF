@@ -47,4 +47,8 @@ angular.module('app')
         ];
 
         self.pages = Pages.query();
+
+        self.activeTab = 'pages-tree';
+
+        self.tabs = [{title:'Pages Tree', name: 'pages-tree'}, {title: 'Database Manage', name:'db-manage'}];
     }]);

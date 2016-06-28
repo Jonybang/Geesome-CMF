@@ -10,6 +10,11 @@ angular
                     templateUrl: AppPaths.app_tpls + 'index.html',
                     abstract: true
                 })
+                .state('app.page', {
+                    url: '/page/:pageId',
+                    controller: 'DashboardController',
+                    templateUrl: AppPaths.dashboard_tpls + 'index.html'
+                })
                 .state('app.dashboard', {
                     url: '',
                     controller: 'DashboardController',

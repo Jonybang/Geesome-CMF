@@ -33,4 +33,11 @@ class Template extends Model
         foreach($value as $controller_action_id)
             $this->controller_actions()->attach($controller_action_id);
     }
+    public function getControllerActionsIdsAttribute()
+    {
+        $ids = [];
+        foreach($this->controller_actions as $action)
+            $ids[] = $action->id;
+        return $ids;
+    }
 }

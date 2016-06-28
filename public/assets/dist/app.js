@@ -1167,6 +1167,11 @@ angular
                     templateUrl: AppPaths.app_tpls + 'index.html',
                     abstract: true
                 })
+                .state('app.page', {
+                    url: '/page/:pageId',
+                    controller: 'DashboardController',
+                    templateUrl: AppPaths.dashboard_tpls + 'index.html'
+                })
                 .state('app.dashboard', {
                     url: '',
                     controller: 'DashboardController',
@@ -1278,6 +1283,10 @@ angular.module('app')
         ];
 
         self.pages = Pages.query();
+
+        self.activeTab = 'pages-tree';
+
+        self.tabs = [{title:'Pages Tree', name: 'pages-tree'}, {title: 'Database Manage', name:'db-manage'}];
     }]);
 angular
     .module('app')
@@ -1451,16 +1460,23 @@ angular.module('app')
             dictionary_tpls: app_path + 'modules/dictionary/templates/'
     });
 angular.module('app')
-    .controller('DashboardController', ['$scope', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions', function($scope, $http, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('DashboardController', ['$scope', '$state', '$http', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions', function($scope, $state, $http, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
-        defaultPage.is_menu_hide = true;
-        defaultPage.tags_ids = [];
-        defaultPage.controller_actions_ids = [];
-        $scope.page = angular.copy(defaultPage);
+
+        if($state.params.pageId){
+            $scope.page = Pages.get({id: $state.params.pageId});
+            $scope.page.id = $state.params.pageId;
+        } else {
+            defaultPage.is_menu_hide = true;
+            defaultPage.tags_ids = [];
+            defaultPage.controller_actions_ids = [];
+
+            $scope.page = angular.copy(defaultPage);
+        }
 
         //Get current user and set his id as author id
         function setCurUserAuthorId(){
-            defaultPage.author_id =  AppData.cur_user.id;
+            defaultPage.author_id = AppData.cur_user.id;
             angular.extend($scope.page, defaultPage);
         }
         if(AppData.cur_user.$promise)
@@ -1592,9 +1608,23 @@ angular.module('app')
             if(!_.isEmpty($scope.hasErrors))
                 return;
 
-            $scope.page.$save().then(function(result_page){
+            var is_new = $scope.page.id ? false : true;
+
+            var page_query;
+            if(is_new)
+                page_query = $scope.page.$save();
+            else
+                page_query = $scope.page.$update();
+
+            page_query.then(function(result_page){
                 $scope.subFieldsApi.saveSubFieldsValues(result_page);
-                $scope.page = angular.copy(defaultPage);
+
+                if(is_new)
+                    $scope.page = angular.copy(defaultPage);
+                else
+                    $scope.page = result_page;
+
+                $scope.alert = 'Page saved!'
             })
         }
     }]);
@@ -1700,44 +1730,6 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
-
-        $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
-            orderBy: '-id',
-            model: Settings,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Setting',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value',
-                    required: true
-                },
-                {
-                    name: 'title',
-                    label: 'Title'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
     .controller('PagesController', ['$scope', 'Pages', 'Templates', 'Users', function($scope, Pages, Templates, Users) {
         $scope.pages = Pages.query();
 
@@ -1823,6 +1815,44 @@ angular.module('app')
                     label: 'Content',
                     type: 'textarea',
                     table_hide: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = Settings.query();
+
+        $scope.aGridOptions = {
+            caption: 'All settings available in templates.',
+            orderBy: '-id',
+            model: Settings,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Setting',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value',
+                    required: true
+                },
+                {
+                    name: 'title',
+                    label: 'Title'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
                 }
             ]
         };

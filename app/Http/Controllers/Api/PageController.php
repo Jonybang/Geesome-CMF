@@ -16,7 +16,7 @@ class PageController extends Controller
     public function index(Request $request)
     {
         return Response::json(
-            Page::all()->toArray(),
+            Page::with('child_pages')->get()->toArray(),
             200
         );
     }
@@ -30,9 +30,11 @@ class PageController extends Controller
     public function show($id)
     {
         $page = Page::with('tags')->find($id);
+        $page_data = $this->getPageArrayWithContent($page);
+        $page_data['tags_ids'] = $page->tags_ids;
 
         return Response::json(
-            $this->getPageArrayWithContent($page),
+            $page_data,
             200
         );
     }
