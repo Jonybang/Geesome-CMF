@@ -12,10 +12,11 @@ class TemplatesTableSeeder extends Seeder
     public function run()
     {
         $seeds = [
-            ['Главная', 'index'],
-            ['Блог', 'blog'],
-            ['Страница', 'page'],
-            ['Тег', 'tag'],
+            ['Main', 'index'],
+            ['Blog', 'blog'],
+            ['Projects', 'projects'],
+            ['Page', 'page'],
+            ['Tag', 'tag'],
         ];
         foreach($seeds as $seed){
             DB::table('templates')->insert([

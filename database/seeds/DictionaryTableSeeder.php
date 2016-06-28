@@ -17,7 +17,8 @@ class DictionaryTableSeeder extends Seeder
 
         $seeds = [
             ['email', 'your-email@your-domain.com'],
-            ['phone', '123-456-6789']
+            ['phone', '123-456-6789'],
+            ['view-project', 'View Project']
         ];
 
         $context_id = \App\Context::first()->id;
