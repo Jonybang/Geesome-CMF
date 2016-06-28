@@ -51,11 +51,11 @@
 </div>
 
 <div ng-if="app.activeTab == 'pages-tree'">
-    <ul dnd-list="app.pages" class="pages-tree list-unstyled">
-        <li ng-repeat="page in app.pages"
+    <ul dnd-list="app.pages_tree" class="pages-tree list-unstyled">
+        <li ng-repeat="page in app.pages_tree"
             dnd-draggable="page"
             dnd-effect-allowed="move"
-            dnd-moved="app.pages.splice($index, 1)"
+            dnd-moved="app.pages_tree.splice($index, 1)"
             dnd-selected="models.selected = page"
             ng-class="{selected: models.selected === page}"
             ng-include="'list.html'"

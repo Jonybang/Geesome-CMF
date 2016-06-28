@@ -46,7 +46,7 @@ angular.module('app')
             }
         ];
 
-        self.pages = Pages.query();
+        self.pages_tree = Pages.query({tree_mode: true});
 
         self.activeTab = 'pages-tree';
 

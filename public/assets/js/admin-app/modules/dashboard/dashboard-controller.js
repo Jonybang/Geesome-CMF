@@ -165,5 +165,9 @@ angular.module('app')
 
                 $scope.alert = 'Page saved!'
             })
-        }
+        };
+
+        $scope.closeAlert = function(){
+            $scope.alert = ''
+        };
     }]);

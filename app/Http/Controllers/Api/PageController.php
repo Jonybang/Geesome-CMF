@@ -15,8 +15,13 @@ class PageController extends Controller
 {
     public function index(Request $request)
     {
+        if($request->input('tree_mode'))
+            $pages = Page::where('parent_page_id', 0)->with('child_pages')->get();
+        else
+            $pages = Page::all();
+
         return Response::json(
-            Page::with('child_pages')->get()->toArray(),
+            $pages->toArray(),
             200
         );
     }
