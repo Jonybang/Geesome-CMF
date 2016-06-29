@@ -67,10 +67,8 @@
                 <label>Tags:</label>
                 <select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" type="multiselect"></select-input>
 
-                <div ng-if="sub_fields.length">
-                    <h4>Sub fields:</h4>
-                    <sub-fields-list ng-model="sub_fields" page-resource="page" api="subFieldsApi"></sub-fields-list>
-                </div>
+                <h4>Sub fields:</h4>
+                <sub-fields-list ng-model="sub_fields" page-resource="page" api="subFieldsApi"></sub-fields-list>
                 <button class="btn btn-default" ng-click="addSubField()" title="Add SubField"><span class="glyphicon glyphicon-plus"></span></button>
             </div>
         </div>

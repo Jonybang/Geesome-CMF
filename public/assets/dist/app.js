@@ -1668,7 +1668,7 @@ angular.module('app')
                         if($scope.mode == 'create')
                             required = ['name', 'sub_field_type_id'];
                         else if($scope.mode == 'select')
-                            required = ['sub_field_id'];
+                            required = ['id'];
 
                         required.forEach(function(reqField){
                             if(!$scope.subField[reqField])
@@ -2046,6 +2046,41 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('TemplatesController', ['$scope', 'Templates', function($scope, Templates) {
+        $scope.templates = Templates.query();
+
+        $scope.aGridOptions = {
+            caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
+            orderBy: '-id',
+            model: Templates,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Template',
+                    required: true
+                },
+                {
+                    name: 'path',
+                    label: 'Path',
+                    required: true
+                },
+                {
+                    name: 'description',
+                    label: 'Description',
+                    type: 'textarea'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('UserController', ['$scope', 'Users', function($scope, Users) {
         $scope.users = Users.query();
 
@@ -2078,41 +2113,6 @@ angular.module('app')
                     type: 'password',
                     label: 'Password',
                     required: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('TemplatesController', ['$scope', 'Templates', function($scope, Templates) {
-        $scope.templates = Templates.query();
-
-        $scope.aGridOptions = {
-            caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
-            orderBy: '-id',
-            model: Templates,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Template',
-                    required: true
-                },
-                {
-                    name: 'path',
-                    label: 'Path',
-                    required: true
-                },
-                {
-                    name: 'description',
-                    label: 'Description',
-                    type: 'textarea'
                 }
             ]
         };

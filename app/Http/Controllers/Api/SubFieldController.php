@@ -28,8 +28,9 @@ class SubFieldController extends Controller
     }
     public function show($id)
     {
-        $sub_field_data = SubField::find($id)->toArray();
-        $sub_field_data['templates_ids'] = $sub_field_data->templates_ids;
+        $sub_field = SubField::find($id);
+        $sub_field_data = $sub_field->toArray();
+        $sub_field_data['templates_ids'] = $sub_field->templates_ids;
 
         return Response::json(
             $sub_field_data,

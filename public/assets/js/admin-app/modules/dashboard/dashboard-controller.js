@@ -207,7 +207,7 @@ angular.module('app')
                         if($scope.mode == 'create')
                             required = ['name', 'sub_field_type_id'];
                         else if($scope.mode == 'select')
-                            required = ['sub_field_id'];
+                            required = ['id'];
 
                         required.forEach(function(reqField){
                             if(!$scope.subField[reqField])
