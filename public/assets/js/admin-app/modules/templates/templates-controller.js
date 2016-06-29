@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('TemplatesController', ['$scope', 'Templates', function($scope, Templates) {
+    .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
         $scope.templates = Templates.query();
 
         $scope.aGridOptions = {
@@ -28,6 +28,22 @@ angular.module('app')
                     name: 'description',
                     label: 'Description',
                     type: 'textarea'
+                },
+                {
+                    name: 'sub_fields_ids',
+                    label: 'Sub fields',
+                    type: 'multiselect',
+                    model: SubFields,
+                    list: 'sub_fields',
+                    table_hide: true
+                },
+                {
+                    name: 'controller_actions_ids',
+                    label: 'Controller actions',
+                    type: 'multiselect',
+                    model: ControllerActions,
+                    list: 'controller_actions',
+                    table_hide: true
                 }
             ]
         };

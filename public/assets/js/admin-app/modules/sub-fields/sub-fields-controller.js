@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', function($scope, SubFields, SubFieldsTypes) {
+    .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'Templates', function($scope, SubFields, SubFieldsTypes, Templates) {
         $scope.sub_fields_types = SubFieldsTypes.query();
 
         $scope.aGridSubFieldsTypesOptions = {
@@ -64,6 +64,14 @@ angular.module('app')
                     label: 'Sub field type',
                     type: 'select',
                     list: 'sub_fields_types'
+                },
+                {
+                    name: 'templates_ids',
+                    label: 'Templates',
+                    type: 'multiselect',
+                    model: Templates,
+                    list: 'templates',
+                    table_hide: true
                 }
             ],
             lists: {

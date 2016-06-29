@@ -11,4 +11,9 @@ class SubFieldType extends Model
     protected $fillable = [
         'name', 'directive'
     ];
+
+    public function sub_fields()
+    {
+        return $this->hasMany('App\SubField', 'sub_field_type_id');
+    }
 }

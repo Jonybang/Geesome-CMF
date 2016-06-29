@@ -40,4 +40,32 @@ class Template extends Model
             $ids[] = $action->id;
         return $ids;
     }
+
+    public function setSubFieldsIdsAttribute($value)
+    {
+        $this->sub_fields()->detach();
+        foreach($value as $sub_field_id)
+            $this->sub_fields()->attach($sub_field_id);
+    }
+    public function getSubFieldsIdsAttribute()
+    {
+        $ids = [];
+        foreach($this->sub_fields as $sub_field)
+            $ids[] = $sub_field->id;
+        return $ids;
+    }
+
+    public function setPagesIdsAttribute($value)
+    {
+        $this->pages()->detach();
+        foreach($value as $page_id)
+            $this->pages()->attach($page_id);
+    }
+    public function getPagesIdsAttribute()
+    {
+        $ids = [];
+        foreach($this->pages as $page)
+            $ids[] = $page->id;
+        return $ids;
+    }
 }

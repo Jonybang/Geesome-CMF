@@ -22,27 +22,61 @@ class TemplateController extends Controller
     }
     public function show($id)
     {
+        $template = Template::find($id);
+        $template_data = $template->toArray();
+        $template_data['controller_actions_ids'] = $template->controller_actions_ids;
+        $template_data['sub_fields_ids'] = $template->sub_fields_ids;
+
         return Response::json(
-            Template::find($id)->toArray(),
+            $template_data,
             200
         );
     }
     public function store(Request $request)
     {
         $data = $request->all();
+        $template = Template::create($data);
+
+        if(isset($data['controller_actions_ids'])){
+            $template->controller_actions_ids = $data['controller_actions_ids'];
+            $template->save();
+        }
+        if(isset($data['sub_fields_ids'])){
+            $template->sub_fields_ids = $data['sub_fields_ids'];
+            $template->save();
+        }
+        if(isset($data['pages_ids'])){
+            $template->pages_ids = $data['pages_ids'];
+            $template->save();
+        }
 
         return Response::json(
-            Template::create($data)->toArray(),
+            $template->toArray(),
             200
         );
     }
     public function update(Request $request)
     {
         $data = $request->all();
-        $is_saved = Template::find($data['id'])->update($data);
+        $template = Template::find($data['id']);
+        $is_saved = $template->update($data);
+
+
+        if(isset($data['controller_actions_ids'])){
+            $template->controller_actions_ids = $data['controller_actions_ids'];
+            $template->save();
+        }
+        if(isset($data['sub_fields_ids'])){
+            $template->sub_fields_ids = $data['sub_fields_ids'];
+            $template->save();
+        }
+        if(isset($data['pages_ids'])){
+            $template->pages_ids = $data['pages_ids'];
+            $template->save();
+        }
 
         return Response::json(
-            Template::find($data['id']),
+            $template->toArray(),
             $is_saved ? 200 : 400
         );
     }
