@@ -20,7 +20,12 @@ angular
                     scope.ngModel.forEach(function(sub_field){
                         scope.resources[sub_field.name] = sub_field;
                         var sub_field_value_name = sub_field.name + '_value';
-                        scope.resources[sub_field_value_name] = new SubFieldsValues({sub_field_id: sub_field.id});
+
+                        if(scope.pageResource.id)
+                             SubFieldsValues.query({sub_field_id: sub_field.id, page_id: scope.pageResource.id}).$promise.then(function(result){scope.resources[sub_field_value_name] = result[0];});
+                        else
+                            scope.resources[sub_field_value_name] = new SubFieldsValues({sub_field_id: sub_field.id});
+
                         sub_fields_values_names.push(sub_field_value_name);
 
                         var directive = sub_field.sub_field_type.directive;
@@ -49,7 +54,11 @@ angular
                         sub_fields_values_names.forEach(function(sf_val_name){
                             var subFieldValueResource = scope.resources[sf_val_name];
                             subFieldValueResource.page_id = pageResource.id;
-                            subFieldValueResource.$save();
+
+                            if(subFieldValueResource.id)
+                                subFieldValueResource.$update();
+                            else
+                                subFieldValueResource.$save();
                         });
 
                         init();

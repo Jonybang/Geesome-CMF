@@ -13,10 +13,16 @@ use App\Http\Controllers\Controller;
 
 class SubFieldValueController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $data = $request->all();
+        if(isset($data['sub_field_id']) && isset($data['page_id']))
+            $sub_fields = SubFieldValue::where('sub_field_id', $data['sub_field_id'])->where('page_id', $data['page_id'])->get();
+        else
+            $sub_fields = SubFieldValue::all();
+
         return Response::json(
-            SubFieldValue::all()->toArray(),
+            $sub_fields->toArray(),
             200
         );
     }

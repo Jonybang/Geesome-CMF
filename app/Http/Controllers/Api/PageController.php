@@ -29,17 +29,16 @@ class PageController extends Controller
     private function getPageArrayWithContent($page){
         $page_data = $page->toArray();
         $page_data['content'] = $page->content_text;
+        $page_data['tags_ids'] = $page->tags_ids;
         return $page_data;
     }
 
     public function show($id)
     {
         $page = Page::with('tags')->find($id);
-        $page_data = $this->getPageArrayWithContent($page);
-        $page_data['tags_ids'] = $page->tags_ids;
 
         return Response::json(
-            $page_data,
+            $this->getPageArrayWithContent($page),
             200
         );
     }
