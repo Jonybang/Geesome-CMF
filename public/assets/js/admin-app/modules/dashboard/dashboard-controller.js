@@ -168,7 +168,9 @@ angular.module('app')
                 else
                     $scope.page = result_page;
 
-                $scope.alert = 'Page saved!'
+                $scope.alert = 'Page saved!';
+
+                $scope.app.refreshPagesTree();
             })
         };
 

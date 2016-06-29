@@ -51,17 +51,25 @@
 </div>
 
 <div ng-if="app.activeTab == 'pages-tree'">
-    <ul dnd-list="app.pages_tree" class="pages-tree list-unstyled">
-        <li ng-repeat="page in app.pages_tree"
-            dnd-draggable="page"
-            dnd-effect-allowed="move"
-            dnd-moved="app.pages_tree.splice($index, 1)"
-            dnd-selected="models.selected = page"
-            ng-class="{selected: models.selected === page}"
-            ng-include="'list.html'"
-            ui-sref="app.page({pageId: page.id})">
-        </li>
-    </ul>
+    <div class="pages-tree">
+        <div class="btn-group btn-group-justified">
+            <div class="btn-group" role="group">
+                <a class="btn btn-default btn-sm" href="/admin/page"><span class="glypicon glyphicon-plus"></span>Add page</a>
+            </div>
+        </div>
+
+        <ul dnd-list="app.pages_tree" class="list-unstyled margin-top">
+            <li ng-repeat="page in app.pages_tree"
+                dnd-draggable="page"
+                dnd-effect-allowed="move"
+                dnd-moved="app.pages_tree.splice($index, 1)"
+                dnd-selected="models.selected = page"
+                ng-class="{selected: models.selected === page}"
+                ng-include="'list.html'"
+                ui-sref="app.page({pageId: page.id})">
+            </li>
+        </ul>
+    </div>
     <div class="pages-content">
         <ui-view></ui-view>
     </div>

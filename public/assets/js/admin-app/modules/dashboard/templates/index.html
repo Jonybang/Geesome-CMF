@@ -1,13 +1,11 @@
-<h2 ng-if="!page.id">Welcome to Admin panel!</h2>
+<h2 ng-if="!page.id">Add new page!</h2>
 <h2 ng-if="page.id">Edit page data</h2>
 
 <button ng-if="!page.id" class="btn btn-success" ng-click="savePage()">Create page</button>
 <button ng-if="page.id" class="btn btn-primary" ng-click="savePage()">Save page</button>
 
 <br>
-
 <uib-alert ng-if="alert" type="success" close="closeAlert()" dismiss-on-timeout="3000">{{alert}}</uib-alert>
-
 <br>
 
 <div class="row">
@@ -118,7 +116,7 @@
                 </div>
 
                 <label>Parent:</label>
-                <select-input ng-model="page.parent_page_id" has-error="hasErrors.parent_page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" is-edit="true" adder="true"></select-input>
+                <select-input ng-model="page.parent_page_id" has-error="hasErrors.parent_page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" is-edit="true" adder="true" refresh-list-on="page"></select-input>
 
                 <label>Author:</label>
                 <select-input ng-model="page.author_id" has-error="hasErrors.author_id" ng-resource="models.users" ng-resource-fields="fields.users" is-edit="true" adder="true"></select-input>
