@@ -1328,7 +1328,7 @@ angular
                         scope.resources[sub_field.name] = sub_field;
                         var sub_field_value_name = sub_field.name + '_value';
 
-                        if(scope.pageResource.id)
+                        if(scope.pageResource && scope.pageResource.id)
                              SubFieldsValues.query({sub_field_id: sub_field.id, page_id: scope.pageResource.id}).$promise.then(function(result){scope.resources[sub_field_value_name] = result[0];});
                         else
                             scope.resources[sub_field_value_name] = new SubFieldsValues({sub_field_id: sub_field.id});
@@ -1349,12 +1349,14 @@ angular
                     element.html(linkFn);
                 }
 
-                scope.$watchCollection('ngModel', function(sub_fields){
-                    if(!sub_fields)
+                function checkForInit(){
+                    if(!scope.ngModel || (scope.pageResource && scope.pageResource.$promise && !scope.pageResource.$promise.$$state.status))
                         return;
 
                     init();
-                });
+                }
+                scope.$watchCollection('ngModel', checkForInit);
+                scope.$watchCollection('pageResource', checkForInit);
 
                 if(scope.api){
                     scope.api.saveSubFieldsValues = function(pageResource){
@@ -1956,6 +1958,31 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
+        $scope.tags = Tags.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: Tags,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Tag',
+                    required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', function($scope, SubFields, SubFieldsTypes) {
         $scope.sub_fields_types = SubFieldsTypes.query();
 
@@ -2026,31 +2053,6 @@ angular.module('app')
             lists: {
                 sub_fields_types: $scope.sub_fields_types
             }
-        };
-    }]);
-
-angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            model: Tags,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Tag',
-                    required: true
-                }
-            ]
         };
     }]);
 

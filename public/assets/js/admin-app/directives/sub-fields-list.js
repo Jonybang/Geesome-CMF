@@ -21,7 +21,7 @@ angular
                         scope.resources[sub_field.name] = sub_field;
                         var sub_field_value_name = sub_field.name + '_value';
 
-                        if(scope.pageResource.id)
+                        if(scope.pageResource && scope.pageResource.id)
                              SubFieldsValues.query({sub_field_id: sub_field.id, page_id: scope.pageResource.id}).$promise.then(function(result){scope.resources[sub_field_value_name] = result[0];});
                         else
                             scope.resources[sub_field_value_name] = new SubFieldsValues({sub_field_id: sub_field.id});
@@ -42,12 +42,14 @@ angular
                     element.html(linkFn);
                 }
 
-                scope.$watchCollection('ngModel', function(sub_fields){
-                    if(!sub_fields)
+                function checkForInit(){
+                    if(!scope.ngModel || (scope.pageResource && scope.pageResource.$promise && !scope.pageResource.$promise.$$state.status))
                         return;
 
                     init();
-                });
+                }
+                scope.$watchCollection('ngModel', checkForInit);
+                scope.$watchCollection('pageResource', checkForInit);
 
                 if(scope.api){
                     scope.api.saveSubFieldsValues = function(pageResource){
