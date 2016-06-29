@@ -40,7 +40,7 @@
             <div class="row">
                 <div class="col-md-7">
                     <a href="/{{$child_page->alias}}">
-                        <img class="img-responsive" src="{{$child_page->sub_fields_values['imageURL']}}" alt="">
+                        <img class="img-responsive" src="{{$child_page->sub_fields_values['imageLink']}}" alt="">
                     </a>
                 </div>
                 <div class="col-md-5">
