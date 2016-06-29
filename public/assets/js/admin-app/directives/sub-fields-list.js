@@ -22,7 +22,9 @@ angular
                         var sub_field_value_name = sub_field.name + '_value';
 
                         if(scope.pageResource && scope.pageResource.id)
-                             SubFieldsValues.query({sub_field_id: sub_field.id, page_id: scope.pageResource.id}).$promise.then(function(result){scope.resources[sub_field_value_name] = result[0];});
+                             SubFieldsValues.query({sub_field_id: sub_field.id, page_id: scope.pageResource.id}).$promise.then(function(result){
+                                 scope.resources[sub_field_value_name] = result[0] || new SubFieldsValues({sub_field_id: sub_field.id});
+                             });
                         else
                             scope.resources[sub_field_value_name] = new SubFieldsValues({sub_field_id: sub_field.id});
 
