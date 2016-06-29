@@ -1483,6 +1483,67 @@ angular.module('app')
             dictionary_tpls: app_path + 'modules/dictionary/templates/'
     });
 angular.module('app')
+    .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
+        $scope.dictionaries = Dictionaries.query();
+
+        $scope.aGridDictionariesOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: Dictionaries,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Dictionary',
+                    required: true
+                }
+            ]
+        };
+
+        $scope.dictionaries_words = DictionariesWords.query();
+
+        $scope.aGridDictionariesWordsOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: DictionariesWords,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Dictionary Word',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value'
+                },
+                {
+                    name: 'dictionary_id',
+                    label: 'Dictionary',
+                    type: 'select',
+                    list: 'dictionaries',
+                    required: true
+                }
+            ],
+            lists: {
+                dictionaries: $scope.dictionaries
+            }
+        };
+    }]);
+
+angular.module('app')
     .controller('DashboardController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
         function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
@@ -1520,25 +1581,33 @@ angular.module('app')
         else
             setDefaultSettings();
 
-        //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
-        //if not: just insert replace spaces to dashes and get lowercase title for set alias
-        var last_translate = '';
+        var old_alias = '';
         $scope.$watch('page.title', function(title){
             if(!title)
                 return;
 
-            if((!$scope.page.alias || $scope.page.alias == last_translate) && site_settings.yandex_translate_api_key){
+            function changeAlias(new_alias){
+                //Change alias if its empty or if it not touched by manual
+                if((!old_alias && $scope.page.alias) || (old_alias && $scope.page.alias != old_alias))
+                    return;
+
+                $scope.page.alias = new_alias;
+                old_alias = $scope.page.alias;
+            }
+
+            //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
+            //if not: just insert replace spaces to dashes and get lowercase title for set alias
+            if(title && site_settings.yandex_translate_api_key){
                 $http.get(
                     'https://translate.yandex.net/api/v1.5/tr.json/translate' +
                     '?key=' + site_settings.yandex_translate_api_key +
                     '&text=' + title +
                     '&lang=en')
                     .then(function(result){
-                        last_translate = result.data.text[0].replace(/\s+/g, '-').toLowerCase();
-                        $scope.page.alias = last_translate;
+                        changeAlias(result.data.text[0].replace(/\s+/g, '-').toLowerCase());
                     });
             } else {
-                $scope.page.alias = title.replace(/\s+/g, '-').toLowerCase();
+                changeAlias(title.replace(/\s+/g, '-').toLowerCase());
             }
         });
 
@@ -1622,8 +1691,8 @@ angular.module('app')
             ]
         };
 
-        //Validate for require and save page
         $scope.savePage = function(){
+            //Validate for require fields
             $scope.hasErrors = {};
             var required = ['title', 'template_id'];
             required.forEach(function(reqField){
@@ -1636,6 +1705,7 @@ angular.module('app')
             if(!_.isEmpty($scope.hasErrors))
                 return;
 
+            //If page is new - Create, if it not - Update
             var is_new = $scope.page.id ? false : true;
 
             var page_query;
@@ -1645,6 +1715,7 @@ angular.module('app')
                 page_query = $scope.page.$update();
 
             page_query.then(function(result_page){
+                //After save page - we have it id, so save sub fields
                 $scope.subFieldsApi.saveSubFieldsValues(result_page);
 
                 if(is_new)
@@ -1782,13 +1853,13 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
-        $scope.dictionaries = Dictionaries.query();
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = Settings.query();
 
-        $scope.aGridDictionariesOptions = {
-            caption: '',
+        $scope.aGridOptions = {
+            caption: 'All settings available in templates.',
             orderBy: '-id',
-            model: Dictionaries,
+            model: Settings,
             fields: [
                 {
                     name: 'id',
@@ -1799,46 +1870,23 @@ angular.module('app')
                     name: 'name',
                     modal: 'self',
                     label: 'Name',
-                    new_placeholder: 'New Dictionary',
-                    required: true
-                }
-            ]
-        };
-
-        $scope.dictionaries_words = DictionariesWords.query();
-
-        $scope.aGridDictionariesWordsOptions = {
-            caption: '',
-            orderBy: '-id',
-            model: DictionariesWords,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Dictionary Word',
+                    new_placeholder: 'New Setting',
                     required: true
                 },
                 {
                     name: 'value',
-                    label: 'Value'
+                    label: 'Value',
+                    required: true
                 },
                 {
-                    name: 'dictionary_id',
-                    label: 'Dictionary',
-                    type: 'select',
-                    list: 'dictionaries',
-                    required: true
+                    name: 'title',
+                    label: 'Title'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
                 }
-            ],
-            lists: {
-                dictionaries: $scope.dictionaries
-            }
+            ]
         };
     }]);
 
@@ -1928,44 +1976,6 @@ angular.module('app')
                     label: 'Content',
                     type: 'textarea',
                     table_hide: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
-
-        $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
-            orderBy: '-id',
-            model: Settings,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Setting',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value',
-                    required: true
-                },
-                {
-                    name: 'title',
-                    label: 'Title'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
                 }
             ]
         };

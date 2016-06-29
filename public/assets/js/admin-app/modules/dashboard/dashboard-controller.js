@@ -36,25 +36,33 @@ angular.module('app')
         else
             setDefaultSettings();
 
-        //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
-        //if not: just insert replace spaces to dashes and get lowercase title for set alias
-        var last_translate = '';
+        var old_alias = '';
         $scope.$watch('page.title', function(title){
             if(!title)
                 return;
 
-            if((!$scope.page.alias || $scope.page.alias == last_translate) && site_settings.yandex_translate_api_key){
+            function changeAlias(new_alias){
+                //Change alias if its empty or if it not touched by manual
+                if((!old_alias && $scope.page.alias) || (old_alias && $scope.page.alias != old_alias))
+                    return;
+
+                $scope.page.alias = new_alias;
+                old_alias = $scope.page.alias;
+            }
+
+            //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
+            //if not: just insert replace spaces to dashes and get lowercase title for set alias
+            if(title && site_settings.yandex_translate_api_key){
                 $http.get(
                     'https://translate.yandex.net/api/v1.5/tr.json/translate' +
                     '?key=' + site_settings.yandex_translate_api_key +
                     '&text=' + title +
                     '&lang=en')
                     .then(function(result){
-                        last_translate = result.data.text[0].replace(/\s+/g, '-').toLowerCase();
-                        $scope.page.alias = last_translate;
+                        changeAlias(result.data.text[0].replace(/\s+/g, '-').toLowerCase());
                     });
             } else {
-                $scope.page.alias = title.replace(/\s+/g, '-').toLowerCase();
+                changeAlias(title.replace(/\s+/g, '-').toLowerCase());
             }
         });
 
@@ -138,8 +146,8 @@ angular.module('app')
             ]
         };
 
-        //Validate for require and save page
         $scope.savePage = function(){
+            //Validate for require fields
             $scope.hasErrors = {};
             var required = ['title', 'template_id'];
             required.forEach(function(reqField){
@@ -152,6 +160,7 @@ angular.module('app')
             if(!_.isEmpty($scope.hasErrors))
                 return;
 
+            //If page is new - Create, if it not - Update
             var is_new = $scope.page.id ? false : true;
 
             var page_query;
@@ -161,6 +170,7 @@ angular.module('app')
                 page_query = $scope.page.$update();
 
             page_query.then(function(result_page){
+                //After save page - we have it id, so save sub fields
                 $scope.subFieldsApi.saveSubFieldsValues(result_page);
 
                 if(is_new)
