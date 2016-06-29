@@ -223,11 +223,11 @@ angular.module('app')
                         if($scope.mode == 'select')
                             $scope.subField = $scope.subField.$get();
 
-                        $scope.close($scope.subField);
+                        $scope.$close($scope.subField);
                     };
 
                     $scope.cancel = function () {
-                        $scope.dismiss(false);
+                        $scope.$dismiss(false);
                     };
                 }],
                 size: 'md',

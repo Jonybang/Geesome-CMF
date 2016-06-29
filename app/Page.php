@@ -53,9 +53,16 @@ class Page extends Model
 
     public function getSubFieldsValuesAttribute()
     {
-        return \DB::table('sub_fields_values')->where('page_id', $this->id)
+        $dictionary = \DB::table('sub_fields_values')->where('page_id', $this->id)
             ->join('sub_fields', 'sub_fields_values.sub_field_id', '=', 'sub_fields.id')
             ->lists('sub_fields_values.value', 'sub_fields.name');
+
+        //make undefined sub_fields as empty strings
+        foreach($this->template->sub_fields as $sub_field)
+            if(!isset($dictionary[$sub_field->name]))
+                $dictionary[$sub_field->name] = '';
+
+        return $dictionary;
     }
 
     public function getAliasAttribute()

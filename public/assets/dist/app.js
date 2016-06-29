@@ -1684,11 +1684,11 @@ angular.module('app')
                         if($scope.mode == 'select')
                             $scope.subField = $scope.subField.$get();
 
-                        $scope.close($scope.subField);
+                        $scope.$close($scope.subField);
                     };
 
                     $scope.cancel = function () {
-                        $scope.dismiss(false);
+                        $scope.$dismiss(false);
                     };
                 }],
                 size: 'md',
@@ -1947,6 +1947,31 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
+        $scope.tags = Tags.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            model: Tags,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Tag',
+                    required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', function($scope, SubFields, SubFieldsTypes) {
         $scope.sub_fields_types = SubFieldsTypes.query();
 
@@ -2017,31 +2042,6 @@ angular.module('app')
             lists: {
                 sub_fields_types: $scope.sub_fields_types
             }
-        };
-    }]);
-
-angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            model: Tags,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Tag',
-                    required: true
-                }
-            ]
         };
     }]);
 

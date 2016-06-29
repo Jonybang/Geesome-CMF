@@ -70,10 +70,6 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
         $path = $page->template->path;
 
         $sub_fields = $page->sub_fields_values;
-        //make undefined sub_fields as empty strings
-        foreach($page->template->sub_fields as $sub_field)
-            if(!isset($sub_fields[$sub_field->name]))
-                $sub_fields[$sub_field->name] = '';
 
         //execute controller actions on page template and get data from they
         foreach($page->template->controller_actions as $controller_action){

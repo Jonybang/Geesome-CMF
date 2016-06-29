@@ -40,7 +40,7 @@
             <div class="row">
                 <div class="col-md-7">
                     <a href="/{{$child_page->alias}}">
-                        <img class="img-responsive" src="http://placehold.it/700x300" alt="">
+                        <img class="img-responsive" src="{{$child_page->sub_fields_values['imageURL']}}" alt="">
                     </a>
                 </div>
                 <div class="col-md-5">
