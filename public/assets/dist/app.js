@@ -1947,31 +1947,6 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            model: Tags,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Tag',
-                    required: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
     .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', function($scope, SubFields, SubFieldsTypes) {
         $scope.sub_fields_types = SubFieldsTypes.query();
 
@@ -2046,13 +2021,13 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('TemplatesController', ['$scope', 'Templates', function($scope, Templates) {
-        $scope.templates = Templates.query();
+    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
+        $scope.tags = Tags.query();
 
         $scope.aGridOptions = {
-            caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
+            caption: '',
             orderBy: '-id',
-            model: Templates,
+            model: Tags,
             fields: [
                 {
                     name: 'id',
@@ -2063,18 +2038,8 @@ angular.module('app')
                     name: 'name',
                     modal: 'self',
                     label: 'Name',
-                    new_placeholder: 'New Template',
+                    new_placeholder: 'New Tag',
                     required: true
-                },
-                {
-                    name: 'path',
-                    label: 'Path',
-                    required: true
-                },
-                {
-                    name: 'description',
-                    label: 'Description',
-                    type: 'textarea'
                 }
             ]
         };
@@ -2113,6 +2078,41 @@ angular.module('app')
                     type: 'password',
                     label: 'Password',
                     required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('TemplatesController', ['$scope', 'Templates', function($scope, Templates) {
+        $scope.templates = Templates.query();
+
+        $scope.aGridOptions = {
+            caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
+            orderBy: '-id',
+            model: Templates,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Template',
+                    required: true
+                },
+                {
+                    name: 'path',
+                    label: 'Path',
+                    required: true
+                },
+                {
+                    name: 'description',
+                    label: 'Description',
+                    type: 'textarea'
                 }
             ]
         };
