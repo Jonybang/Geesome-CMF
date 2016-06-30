@@ -29,7 +29,18 @@ angular
                             required: true
                         }
                     ]
-                }
+                };
+
+                scope.gridOptions = defaultConfig;
+
+                scope.$watch('config', function(){
+                    if(scope.config)
+                        scope.gridOptions = angular.extend({}, defaultConfig, scope.config);
+                });
+
+                scope.$watch('ngModel', function(){
+                    scope.fakeModel = JSON.parse(scope.ngModel);
+                });
             }
 
         };
