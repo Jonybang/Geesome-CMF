@@ -7,7 +7,7 @@ angular.module('app')
             create: false,
             edit: false,
             orderBy: '-id',
-            model: Logs,
+            resource: Logs,
             fields: [
                 {
                     name: 'id',

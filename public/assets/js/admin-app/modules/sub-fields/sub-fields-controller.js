@@ -5,7 +5,7 @@ angular.module('app')
         $scope.aGridSubFieldsTypesOptions = {
             caption: '',
             orderBy: '-id',
-            model: SubFieldsTypes,
+            resource: SubFieldsTypes,
             fields: [
                 {
                     name: 'id',
@@ -31,7 +31,7 @@ angular.module('app')
         $scope.aGridSubFieldsOptions = {
             caption: '',
             orderBy: '-id',
-            model: SubFields,
+            resource: SubFields,
             fields: [
                 {
                     name: 'id',
@@ -74,7 +74,7 @@ angular.module('app')
                     name: 'templates_ids',
                     label: 'Templates',
                     type: 'multiselect',
-                    model: Templates,
+                    resource: Templates,
                     list: 'templates',
                     table_hide: true
                 }

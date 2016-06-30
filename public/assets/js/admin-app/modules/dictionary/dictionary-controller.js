@@ -5,7 +5,7 @@ angular.module('app')
         $scope.aGridDictionariesOptions = {
             caption: '',
             orderBy: '-id',
-            model: Dictionaries,
+            resource: Dictionaries,
             fields: [
                 {
                     name: 'id',
@@ -27,7 +27,7 @@ angular.module('app')
         $scope.aGridDictionariesWordsOptions = {
             caption: '',
             orderBy: '-id',
-            model: DictionariesWords,
+            resource: DictionariesWords,
             fields: [
                 {
                     name: 'id',

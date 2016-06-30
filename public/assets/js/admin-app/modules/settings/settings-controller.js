@@ -5,7 +5,7 @@ angular.module('app')
         $scope.aGridOptions = {
             caption: 'All settings available in templates.',
             orderBy: '-id',
-            model: Settings,
+            resource: Settings,
             fields: [
                 {
                     name: 'id',

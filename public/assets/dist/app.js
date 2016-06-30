@@ -50,167 +50,6 @@ angular
     
   }]);
 
-/**
- * Created by jonybang on 04.07.15.
- */
-angular.module('a-edit')
-    .factory('AEditConfig', [function() {
-       this.templates_path = 'templates/';
-       
-       return this;
-    }]);
-
-/**
- * Created by jonybang on 04.07.15.
- */
-angular.module('a-edit')
-    .factory('AEditHelpers', [function() {
-        var service = {
-            //config:
-            //  html_attributes
-            //  lists_container
-            //  list_variable
-            //  item_name
-            //  field_name
-            //  always_edit
-            generateDirectiveByConfig: function(field, config){
-                var output = '';
-                var directive = '';
-
-                switch(field.type){
-                    case 'select':
-                    case 'multiselect':
-                        directive = 'select-input';
-                        break;
-                    case 'date':
-                        directive = 'date-input';
-                        break;
-                    case 'bool':
-                        directive = 'bool-input';
-                        break;
-                    case 'file':
-                    case 'multifile':
-                        directive = 'file-upload';
-                        break;
-                    default:
-                        directive = 'text-input';
-                        break;
-                }
-
-                output += '<' + directive + ' ';
-
-                output += 'type="' + (field.type || '') + '" ' +
-                    'input-name="' + (field.input_name || '') + '" ';
-
-                if(field.width)
-                    output += 'width="' + field.width + '" ';
-
-                if(field.required)
-                    output += 'required="true" ';
-
-                if(field.url)
-                    output += 'url="' + field.url + '" ';
-
-                if(field.model)
-                    output += 'ng-resource="' + field.name + '_model" ';
-
-                if(config.list_variable)
-                    output += 'list="' + config.list_variable + '" ';
-                else if(config.lists_container)
-                    output += 'list="' + config.lists_container + '.' + field.list + '" ';
-
-                var item_name = angular.isUndefined(config.item_name) ? 'item' : config.item_name;
-                var field_name = angular.isUndefined(config.field_name) ? field.name : config.field_name;
-                var item_field = item_name + (field.name != 'self' ? '.' : '') + field_name;
-
-                var is_edit;
-                if(field.readonly)
-                    is_edit = 'false';
-                else if(config.always_edit)
-                    is_edit = 'true';
-                else
-                    is_edit = item_name + '.is_edit';
-                    
-                output += 'ng-model="' + item_field + '" ' +
-                    'on-save="save(' + item_name + ')" ' +
-                    'has-error="' + item_name + '.errors.' + field_name + '" ' +
-                    'ng-model-str="' + item_name + '.' +  field_name + '_str" ' +
-                    'ng-model-sub-str="' + item_name + '.' +  field_name + '_sub_str" ' +
-                    'is-edit="' + is_edit + '" '+
-                    'is-new="' + (config.is_new ? 'true': 'false') + '" '+
-                    'placeholder="' + ((config.always_edit ? field.new_placeholder : field.placeholder) || '') + '" ';
-
-                if(field.type == 'file' || field.type == 'multifile')
-                    output += 'uploader="' + item_name + '.' + field_name + '__uploader" ';
-
-                if(field.modal && !config.already_modal && field.modal == 'self')
-                    output += 'modal-model="' + item_name + '" ';
-
-                output += '></' + directive + '>';
-
-                return output;
-            },
-            getResourceQuery: function(obj, action){
-                
-                var possibleFunctions;
-                switch(action){
-                    case 'get':
-                        possibleFunctions = ['query', 'get'];
-                        break;
-                    case 'show':
-                        possibleFunctions = ['$get'];
-                        break;
-                    case 'create':
-                        possibleFunctions = ['$save', 'create'];
-                        break;
-                    case 'update':
-                        possibleFunctions = ['$update', 'update'];
-                        break;
-                    case 'delete':
-                        possibleFunctions = ['$delete', 'delete'];
-                        break;
-                }
-                
-                var query;
-                possibleFunctions.some(function(functionName){
-                    if(obj[functionName])
-                        query = obj[functionName]();
-                    
-                    return obj[functionName];
-                });
-                
-                if(!query){
-                    console.error('Undefined model resource! Override getResourceQuery function in AEditHelpers service for define custom resource function.')
-                }
-                return query.$promise || query;
-            },
-            isEmptyObject: function(obj) {
-                for(var prop in obj) {
-                    if (Object.prototype.hasOwnProperty.call(obj, prop)) {
-                        return false;
-                    }
-                }
-                return true;
-            },
-            getNameById: function (list, val){
-                var resultName = '';
-
-                if(!list || !list.length)
-                    return resultName;
-
-                list.some(function(obj){
-                    var result = obj.id == val;
-                    if(result)
-                        resultName = obj.name || obj.title;
-                    return result;
-                });
-                return resultName;
-            }
-        };
-
-        return service;
-    }]);
-
 angular
     .module('a-edit')
     .directive('aGrid', ['$timeout', '$compile', '$filter', 'AEditHelpers', 'AEditConfig', function($timeout, $compile, $filter, AEditHelpers, AEditConfig) {
@@ -337,7 +176,7 @@ angular
                             upload_item[attr] = value;
                         });
 
-                        var query = AEditHelpers.getResourceQuery(new scope.options.model(upload_item), 'create');
+                        var query = AEditHelpers.getResourceQuery(new scope.options.resource(upload_item), 'create');
                         query.then(function(created_item){
                             created_item.is_new = true;
 
@@ -414,11 +253,11 @@ angular
 
 
             scope.options.fields.forEach(function(field, index){
-                if(field.model && field.list){
+                if(field.resource && field.list){
                     if(!scope.options.lists[field.list]){
                         scope.options.lists[field.list] = [];
 
-                        AEditHelpers.getResourceQuery(field.model, 'get').then(function(list){
+                        AEditHelpers.getResourceQuery(field.resource, 'get').then(function(list){
                             scope.options.lists[field.list] = list;
                         });
                     }
@@ -568,7 +407,7 @@ angular
             var inputTagEnd = '';
 
             if(options && options.modal_link)
-                text = '<a a-model-modal="modalModel" on-save="save()" href>' + text + '</a>';
+                text = '<a a-modal-resource="modalResource" on-save="save()" href>' + text + '</a>';
             else if(type == 'textarea'){
                 text = '<pre ng-if="$parent.ngModel">{{$parent.ngModel}}</pre>';
 
@@ -614,7 +453,7 @@ angular
                 ngModelStr: '=?',
                 isNew: '=?',
                 isEdit: '=?',
-                modalModel: '=?',
+                modalResource: '=?',
                 hasError: '=?',
                 //callbacks
                 ngChange: '&',
@@ -628,7 +467,7 @@ angular
             },
             link: function (scope, element, attrs) {
                 scope.type = scope.type || 'text';
-                if(attrs.modalModel && scope.type == 'text')
+                if(attrs.modalResource && scope.type == 'text')
                     scope.type = "text_modal_link";
 
                 var template = typeTemplates[scope.type],
@@ -943,8 +782,8 @@ angular
                                 '</div>' +
                             '</div>';
 
-                        if(field.model){
-                            scope[field.name + '_model'] = field.model;
+                        if(field.resource){
+                            scope[field.name + '_resource'] = field.resource;
                         }
                     });
 
@@ -1098,14 +937,14 @@ angular
 angular
     .module('a-edit')
 
-    .directive('aModelModal', ['$timeout', '$log', '$cacheFactory', 'AEditHelpers', 'AEditConfig', '$uibModal', function($timeout, $log, $cacheFactory, AEditHelpers, AEditConfig, $uibModal) {
+    .directive('aModalResource', ['$timeout', '$log', '$cacheFactory', 'AEditHelpers', 'AEditConfig', '$uibModal', function($timeout, $log, $cacheFactory, AEditHelpers, AEditConfig, $uibModal) {
         var cache = $cacheFactory('aModal.Templates');
 
         return {
             restrict: 'A',
             scope: {
                 //require
-                aModelModal: '=',
+                aModalResource: '=',
                 isEdit: '=?',
                 options: '=?',
                 //callbacks
@@ -1113,11 +952,11 @@ angular
             },
             link: function (scope, element, attrs) {
 
-                var model_name = attrs.aModelModal;
+                var resource_name = attrs.aModalResource;
                 scope.options = scope.options || AEditConfig.currentOptions;
 
                 element.on("click", function () {
-                    var template = cache.get(model_name) || '';
+                    var template = cache.get(resource_name) || '';
                     if(!template){
                         template +=
                             '<div class="modal-header">' +
@@ -1146,7 +985,7 @@ angular
                                 '<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>' +
                             '</div>';
                             
-                        cache.put(model_name, template);
+                        cache.put(resource_name, template);
                     }
 
                     var modalInstance = $uibModal.open({
@@ -1155,7 +994,7 @@ angular
                         resolve: {
                             data: function () {
                                 return {
-                                    object: angular.copy(scope.aModelModal),
+                                    object: angular.copy(scope.aModalResource),
                                     lists: scope.options.lists,
                                     isEdit: scope.isEdit
                                 };
@@ -1182,7 +1021,7 @@ angular
                     });
 
                     modalInstance.result.then(function (object) {
-                        angular.extend(scope.aModelModal, object);
+                        angular.extend(scope.aModalResource, object);
                         
                         if(scope.onSave)
                             $timeout(scope.onSave);
@@ -1197,6 +1036,167 @@ angular
                 }
             }
         };
+    }]);
+
+/**
+ * Created by jonybang on 04.07.15.
+ */
+angular.module('a-edit')
+    .factory('AEditConfig', [function() {
+       this.templates_path = 'templates/';
+       
+       return this;
+    }]);
+
+/**
+ * Created by jonybang on 04.07.15.
+ */
+angular.module('a-edit')
+    .factory('AEditHelpers', [function() {
+        var service = {
+            //config:
+            //  html_attributes
+            //  lists_container
+            //  list_variable
+            //  item_name
+            //  field_name
+            //  always_edit
+            generateDirectiveByConfig: function(field, config){
+                var output = '';
+                var directive = '';
+
+                switch(field.type){
+                    case 'select':
+                    case 'multiselect':
+                        directive = 'select-input';
+                        break;
+                    case 'date':
+                        directive = 'date-input';
+                        break;
+                    case 'bool':
+                        directive = 'date-input';
+                        break;
+                    case 'file':
+                    case 'multifile':
+                        directive = 'file-upload';
+                        break;
+                    default:
+                        directive = 'text-input';
+                        break;
+                }
+
+                output += '<' + directive + ' ';
+
+                output += 'type="' + (field.type || '') + '" ' +
+                    'input-name="' + (field.input_name || '') + '" ';
+
+                if(field.width)
+                    output += 'width="' + field.width + '" ';
+
+                if(field.required)
+                    output += 'required="true" ';
+
+                if(field.url)
+                    output += 'url="' + field.url + '" ';
+
+                if(field.resource)
+                    output += 'ng-resource="' + field.name + '_resource" ';
+
+                if(config.list_variable)
+                    output += 'list="' + config.list_variable + '" ';
+                else if(config.lists_container)
+                    output += 'list="' + config.lists_container + '.' + field.list + '" ';
+
+                var item_name = angular.isUndefined(config.item_name) ? 'item' : config.item_name;
+                var field_name = angular.isUndefined(config.field_name) ? field.name : config.field_name;
+                var item_field = item_name + (field.name != 'self' ? '.' : '') + field_name;
+
+                var is_edit;
+                if(field.readonly)
+                    is_edit = 'false';
+                else if(config.always_edit)
+                    is_edit = 'true';
+                else
+                    is_edit = item_name + '.is_edit';
+                    
+                output += 'ng-model="' + item_field + '" ' +
+                    'on-save="save(' + item_name + ')" ' +
+                    'has-error="' + item_name + '.errors.' + field_name + '" ' +
+                    'ng-model-str="' + item_name + '.' +  field_name + '_str" ' +
+                    'ng-model-sub-str="' + item_name + '.' +  field_name + '_sub_str" ' +
+                    'is-edit="' + is_edit + '" '+
+                    'is-new="' + (config.is_new ? 'true': 'false') + '" '+
+                    'placeholder="' + ((config.always_edit ? field.new_placeholder : field.placeholder) || '') + '" ';
+
+                if(field.type == 'file' || field.type == 'multifile')
+                    output += 'uploader="' + item_name + '.' + field_name + '__uploader" ';
+
+                if(field.modal && !config.already_modal && field.modal == 'self')
+                    output += 'modal-resource="' + item_name + '" ';
+
+                output += '></' + directive + '>';
+
+                return output;
+            },
+            getResourceQuery: function(obj, action){
+                
+                var possibleFunctions;
+                switch(action){
+                    case 'get':
+                        possibleFunctions = ['query', 'get'];
+                        break;
+                    case 'show':
+                        possibleFunctions = ['$get'];
+                        break;
+                    case 'create':
+                        possibleFunctions = ['$save', 'create'];
+                        break;
+                    case 'update':
+                        possibleFunctions = ['$update', 'update'];
+                        break;
+                    case 'delete':
+                        possibleFunctions = ['$delete', 'delete'];
+                        break;
+                }
+                
+                var query;
+                possibleFunctions.some(function(functionName){
+                    if(obj[functionName])
+                        query = obj[functionName]();
+                    
+                    return obj[functionName];
+                });
+                
+                if(!query){
+                    console.error('Undefined model resource! Override getResourceQuery function in AEditHelpers service for define custom resource function.')
+                }
+                return query.$promise || query;
+            },
+            isEmptyObject: function(obj) {
+                for(var prop in obj) {
+                    if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+            getNameById: function (list, val){
+                var resultName = '';
+
+                if(!list || !list.length)
+                    return resultName;
+
+                list.some(function(obj){
+                    var result = obj.id == val;
+                    if(result)
+                        resultName = obj.name || obj.title;
+                    return result;
+                });
+                return resultName;
+            }
+        };
+
+        return service;
     }]);
 
 angular
@@ -1351,6 +1351,24 @@ angular
             },
             link: function (scope, element) {
 
+            }
+        };
+    }]);
+angular
+    .module('app')
+    .directive('sfJson', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
+        return {
+            restrict: 'E',
+            templateUrl: AppPaths.app + 'directives/sf-json.html',
+            scope: {
+                /* SubFieldValues resource */
+                ngModel: '=',
+                config: '=?',
+                pageResource: '=?',
+                templateResource: '=?'
+            },
+            link: function (scope, element) {
+                var defaultConfig
             }
         };
     }]);
@@ -1820,7 +1838,7 @@ angular.module('app')
         $scope.aGridDictionariesOptions = {
             caption: '',
             orderBy: '-id',
-            model: Dictionaries,
+            resource: Dictionaries,
             fields: [
                 {
                     name: 'id',
@@ -1842,7 +1860,7 @@ angular.module('app')
         $scope.aGridDictionariesWordsOptions = {
             caption: '',
             orderBy: '-id',
-            model: DictionariesWords,
+            resource: DictionariesWords,
             fields: [
                 {
                     name: 'id',
@@ -1883,7 +1901,7 @@ angular.module('app')
             create: false,
             edit: false,
             orderBy: '-id',
-            model: Logs,
+            resource: Logs,
             fields: [
                 {
                     name: 'id',
@@ -1920,7 +1938,7 @@ angular.module('app')
         $scope.aGridOptions = {
             caption: '',
             orderBy: '-id',
-            model: Pages,
+            resource: Pages,
             fields: [
                 {
                     name: 'id',
@@ -1952,7 +1970,7 @@ angular.module('app')
                     name: 'template_id',
                     label: 'Template',
                     type: 'select',
-                    model: Templates,
+                    resource: Templates,
                     list: 'templates',
                     required: true
                 },
@@ -1965,7 +1983,7 @@ angular.module('app')
                     name: 'author_id',
                     label: 'Author',
                     type: 'select',
-                    model: Users,
+                    resource: Users,
                     list: 'users',
                     table_hide: true
                 },
@@ -2013,7 +2031,7 @@ angular.module('app')
         $scope.aGridOptions = {
             caption: 'All settings available in templates.',
             orderBy: '-id',
-            model: Settings,
+            resource: Settings,
             fields: [
                 {
                     name: 'id',
@@ -2051,7 +2069,7 @@ angular.module('app')
         $scope.aGridSubFieldsTypesOptions = {
             caption: '',
             orderBy: '-id',
-            model: SubFieldsTypes,
+            resource: SubFieldsTypes,
             fields: [
                 {
                     name: 'id',
@@ -2077,7 +2095,7 @@ angular.module('app')
         $scope.aGridSubFieldsOptions = {
             caption: '',
             orderBy: '-id',
-            model: SubFields,
+            resource: SubFields,
             fields: [
                 {
                     name: 'id',
@@ -2120,7 +2138,7 @@ angular.module('app')
                     name: 'templates_ids',
                     label: 'Templates',
                     type: 'multiselect',
-                    model: Templates,
+                    resource: Templates,
                     list: 'templates',
                     table_hide: true
                 }
@@ -2138,7 +2156,7 @@ angular.module('app')
         $scope.aGridOptions = {
             caption: '',
             orderBy: '-id',
-            model: Tags,
+            resource: Tags,
             fields: [
                 {
                     name: 'id',
@@ -2163,7 +2181,7 @@ angular.module('app')
         $scope.aGridOptions = {
             caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
             orderBy: '-id',
-            model: Templates,
+            resource: Templates,
             fields: [
                 {
                     name: 'id',
@@ -2191,7 +2209,7 @@ angular.module('app')
                     name: 'sub_fields_ids',
                     label: 'Sub fields',
                     type: 'multiselect',
-                    model: SubFields,
+                    resource: SubFields,
                     list: 'sub_fields',
                     table_hide: true
                 },
@@ -2199,7 +2217,7 @@ angular.module('app')
                     name: 'controller_actions_ids',
                     label: 'Controller actions',
                     type: 'multiselect',
-                    model: ControllerActions,
+                    resource: ControllerActions,
                     list: 'controller_actions',
                     table_hide: true
                 }
@@ -2216,7 +2234,7 @@ angular.module('app')
             create: true,
             edit: true,
             orderBy: '-id',
-            model: Users,
+            resource: Users,
             fields: [
                 {
                     name: 'id',

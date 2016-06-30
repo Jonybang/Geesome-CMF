@@ -5,7 +5,7 @@ angular.module('app')
         $scope.aGridOptions = {
             caption: '',
             orderBy: '-id',
-            model: Pages,
+            resource: Pages,
             fields: [
                 {
                     name: 'id',
@@ -37,7 +37,7 @@ angular.module('app')
                     name: 'template_id',
                     label: 'Template',
                     type: 'select',
-                    model: Templates,
+                    resource: Templates,
                     list: 'templates',
                     required: true
                 },
@@ -50,7 +50,7 @@ angular.module('app')
                     name: 'author_id',
                     label: 'Author',
                     type: 'select',
-                    model: Users,
+                    resource: Users,
                     list: 'users',
                     table_hide: true
                 },

@@ -7,7 +7,7 @@ angular.module('app')
             create: true,
             edit: true,
             orderBy: '-id',
-            model: Users,
+            resource: Users,
             fields: [
                 {
                     name: 'id',

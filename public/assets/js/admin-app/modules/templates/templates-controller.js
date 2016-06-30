@@ -5,7 +5,7 @@ angular.module('app')
         $scope.aGridOptions = {
             caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
             orderBy: '-id',
-            model: Templates,
+            resource: Templates,
             fields: [
                 {
                     name: 'id',
@@ -33,7 +33,7 @@ angular.module('app')
                     name: 'sub_fields_ids',
                     label: 'Sub fields',
                     type: 'multiselect',
-                    model: SubFields,
+                    resource: SubFields,
                     list: 'sub_fields',
                     table_hide: true
                 },
@@ -41,7 +41,7 @@ angular.module('app')
                     name: 'controller_actions_ids',
                     label: 'Controller actions',
                     type: 'multiselect',
-                    model: ControllerActions,
+                    resource: ControllerActions,
                     list: 'controller_actions',
                     table_hide: true
                 }

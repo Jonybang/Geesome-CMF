@@ -5,7 +5,7 @@ angular.module('app')
         $scope.aGridOptions = {
             caption: '',
             orderBy: '-id',
-            model: Tags,
+            resource: Tags,
             fields: [
                 {
                     name: 'id',
