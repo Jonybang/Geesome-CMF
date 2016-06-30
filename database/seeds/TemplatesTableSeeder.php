@@ -14,8 +14,8 @@ class TemplatesTableSeeder extends Seeder
         $seeds = [
             ['Main', 'index'],
             ['Blog', 'blog'],
-            ['Projects', 'projects'],
             ['Page', 'page'],
+            ['Projects', 'projects'],
             ['Tag', 'tag'],
         ];
         foreach($seeds as $seed){

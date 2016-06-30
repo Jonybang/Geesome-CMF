@@ -13,15 +13,17 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UsersTableSeeder::class);
 
-        $this->call(TagsTableSeeder::class);
         $this->call(TemplatesTableSeeder::class);
         $this->call(PagesTableSeeder::class);
-
-        $this->call(BlogPagesTableSeeder::class);
 
         $this->call(SettingsTableSeeder::class);
 
         $this->call(SubFieldTypesTableSeeder::class);
+
+        $this->call(TagsTableSeeder::class);
+
+        $this->call(BlogPagesTableSeeder::class);
+        $this->call(ProjectPagesTableSeeder::class);
 
         $this->call(TagPageTableSeeder::class);
 

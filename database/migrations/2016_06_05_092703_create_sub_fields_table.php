@@ -19,6 +19,7 @@ class CreateSubFieldsTable extends Migration
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->json('config')->nullable();
+            $table->text('default_value')->nullable();
 
             $table->integer('sub_field_type_id')->unsigned();
             $table->foreign('sub_field_type_id')->references('id')->on('sub_field_types');

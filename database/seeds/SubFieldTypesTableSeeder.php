@@ -12,7 +12,7 @@ class SubFieldTypesTableSeeder extends Seeder
     public function run()
     {
         $seeds = [
-            'text', 'textarea', 'date', 'json'
+            'text', 'textarea', 'image', 'date', 'json'
         ];
         foreach($seeds as $seed){
             DB::table('sub_field_types')->insert([

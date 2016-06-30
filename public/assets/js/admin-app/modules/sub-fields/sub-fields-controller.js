@@ -60,6 +60,11 @@ angular.module('app')
                     type: 'textarea'
                 },
                 {
+                    name: 'default_value',
+                    label: 'Default value',
+                    type: 'textarea'
+                },
+                {
                     name: 'sub_field_type_id',
                     label: 'Sub field type',
                     type: 'select',

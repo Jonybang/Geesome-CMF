@@ -12,15 +12,16 @@ class TestSubFieldsTableSeeder extends Seeder
     public function run()
     {
         $sub_field = \App\Template::where('path', 'page')->first()->sub_fields()->create([
-                'name' => 'testSF',
-                'sub_field_type_id' => \App\SubFieldType::where('name', 'text')->first()->id
+                'name' => 'imageLink',
+                'title' => 'Image Path',
+                'sub_field_type_id' => \App\SubFieldType::where('name', 'image')->first()->id
             ]);
         $seeds = [
-            'test sub field text 1',
-            'test sub field text 2',
-            'test sub field text 3',
+            '/assets/img/project-3.jpg',
+            '/assets/img/project-2.png',
+            '/assets/img/project-1.jpg',
         ];
-        foreach(\App\Page::where('alias', 'blog')->first()->child_pages as $index => $page){
+        foreach(\App\Page::where('alias', 'projects')->first()->child_pages as $index => $page){
             $sub_field->sub_field_values()->save(new \App\SubFieldValue([
                 'page_id' => $page->id,
                 'value' => $seeds[$index]

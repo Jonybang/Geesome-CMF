@@ -42,7 +42,6 @@ class BlogPagesTableSeeder extends Seeder
                 $tags_ids[] = $id;
             }
             $page->save();
-
         }
     }
 }
