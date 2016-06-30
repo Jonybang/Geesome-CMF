@@ -1300,10 +1300,10 @@ angular.module('app')
     }]);
 angular
     .module('app')
-    .directive('sfText', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
+    .directive('sfImage', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
-            templateUrl: AppPaths.app + 'directives/sf-text.html',
+            templateUrl: AppPaths.app + 'directives/sf-image.html',
             scope: {
                 /* SubFieldValues resource */
                 ngModel: '=',
@@ -1831,6 +1831,45 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
+        $scope.logs = Logs.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            model: Logs,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User'
+                },
+                {
+                    name: 'logable_name',
+                    label: 'TableName'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('PagesController', ['$scope', 'Pages', 'Templates', 'Users', function($scope, Pages, Templates, Users) {
         $scope.pages = Pages.query();
 
@@ -1916,45 +1955,6 @@ angular.module('app')
                     label: 'Content',
                     type: 'textarea',
                     table_hide: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
-        $scope.logs = Logs.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            model: Logs,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User'
-                },
-                {
-                    name: 'logable_name',
-                    label: 'TableName'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
                 }
             ]
         };

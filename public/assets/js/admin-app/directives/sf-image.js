@@ -1,9 +1,9 @@
 angular
     .module('app')
-    .directive('sfText', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
+    .directive('sfImage', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
-            templateUrl: AppPaths.app + 'directives/sf-text.html',
+            templateUrl: AppPaths.app + 'directives/sf-image.html',
             scope: {
                 /* SubFieldValues resource */
                 ngModel: '=',
