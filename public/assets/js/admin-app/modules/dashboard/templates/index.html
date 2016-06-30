@@ -95,7 +95,7 @@
                 <text-input ng-model="page.alias" has-error="hasErrors.alias" is-edit="true"></text-input>
 
                 <label>Published:
-                    <input ng-model="page.is_published" has-error="hasErrors.is_published" type="checkbox" class="form-control">
+                    <bool-input ng-model="page.is_published" has-error="hasErrors.is_published" is-edit="true"></bool-input>
                 </label>
 
                 <div>
@@ -110,7 +110,7 @@
                         <text-input ng-model="page.menu_index" has-error="hasErrors.menu_index" is-edit="true"></text-input>
 
                         <label>Is hide from menu:
-                            <input ng-model="page.is_menu_hide" has-error="hasErrors.is_menu_hide" type="checkbox" class="form-control">
+                            <bool-input ng-model="page.is_menu_hide" has-error="hasErrors.is_published" is-edit="true"></bool-input>
                         </label>
                     </div>
                 </div>

@@ -67,16 +67,18 @@ angular.module('app')
                 {
                     name: 'is_menu_hide',
                     label: 'Is hide from menu',
+                    type: 'bool',
                     table_hide: true
                 },
                 {
                     name: 'is_published',
                     label: 'Is published',
-                    table_hide: true
+                    type: 'bool'
                 },
                 {
                     name: 'is_abstract',
                     label: 'Is abstract page',
+                    type: 'bool',
                     table_hide: true
                 },
                 {
