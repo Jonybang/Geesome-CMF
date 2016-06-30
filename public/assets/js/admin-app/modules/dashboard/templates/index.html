@@ -66,8 +66,7 @@
                 <select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" type="multiselect"></select-input>
 
                 <h4>Sub fields:</h4>
-                <sub-fields-list ng-model="sub_fields" page-resource="page" api="subFieldsApi"></sub-fields-list>
-                <button class="btn btn-default" ng-click="addSubField()" title="Add SubField"><span class="glyphicon glyphicon-plus"></span></button>
+                <sub-fields-manager ng-model="sub_fields" page-resource="page" api="subFieldsApi" refresh-sub-fields="getSubFields()"></sub-fields-manager>
             </div>
         </div>
     </div>
@@ -85,9 +84,12 @@
                         Edit template data <span class="caret"></span><br>
                     </a>
                     <div ng-if="templateInfoShow">
-                        <label>Controller Actions:</label>
-                        <select-input ng-model="page.controller_actions_ids" has-error="hasErrors.controller_actions_ids" ng-resource="models.controller_actions" ng-resource-fields="fields.controller_actions" is-edit="true" adder="true" type="multiselect"></select-input>
-                        <div><small>Add actions to some laravel controllers, than bind they to template by names(example: 'SomeController@someAction') for execute when page render and get data from action result returned.</small></div>
+                        <div class="alert alert-warning">
+                            <label>Controller Actions:</label>
+                            <select-input ng-model="page.controller_actions_ids" has-error="hasErrors.controller_actions_ids" ng-resource="models.controller_actions" ng-resource-fields="fields.controller_actions" is-edit="true" adder="true" type="multiselect"></select-input>
+
+                            <div><small>Add actions to some laravel controllers, than bind they to template by names(example: 'SomeController@someAction') for execute when page render and get data from action result returned.</small></div>
+                        </div>
                     </div>
                 </div>
 

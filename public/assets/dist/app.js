@@ -1373,14 +1373,15 @@ angular
     }]);
 angular
     .module('app')
-    .directive('subFieldsList', ['$timeout', '$compile', 'AppPaths', 'SubFieldsValues', function($timeout, $compile, AppPaths, SubFieldsValues) {
+    .directive('subFieldsManager', ['$timeout', '$compile', '$uibModal', 'AppPaths', 'SubFields', 'SubFieldsValues', function($timeout, $compile, $uibModal, AppPaths, SubFields, SubFieldsValues) {
         return {
             restrict: 'E',
             scope: {
                 ngModel: '=',
                 pageResource: '=?',
                 templateResource: '=?',
-                api: '=?'
+                api: '=?',
+                refreshSubFields: '&'
             },
             link: function (scope, element) {
                 var sub_fields_values_names = [];
@@ -1404,12 +1405,15 @@ angular
                         sub_fields_values_names.push(sub_field_value_name);
 
                         var directive = sub_field.sub_field_type.directive;
-                        tplHtml += '<label>' + (sub_field.title || sub_field.name) + '</label>';
+                        tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.name + ' } }">' + (sub_field.title || sub_field.name) + '</span></label>';
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
                             'sub-field-resource="resources.' + sub_field.name + '"></' + directive + '>';
                         tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div>';
                     });
+
+                    tplHtml += '<button class="btn btn-warning margin-top" ng-click="addSubField()" title="Add SubField"><span class="glyphicon glyphicon-plus"></span> Add sub field to current template</button>' +
+                        ' <span class="glyphicon glyphicon-question-sign" style="color: #8a6d3b;" uib-tooltip="Need to change template source code for take effect!"></span>';
 
                     var template = angular.element(tplHtml);
 
@@ -1440,6 +1444,86 @@ angular
 
                         init();
                     }
+                }
+
+                scope.addSubField = function(){
+                    var modalInstance = $uibModal.open({
+                        animation: true,
+                        templateUrl: AppPaths.app + 'directives/addSubFieldModal.html',
+                        controller: ['$scope', 'subField', 'SubFieldsTypes', function($scope, subField, SubFieldsTypes){
+                            $scope.subField = subField;
+
+                            $scope.models = {
+                                SubFields: SubFields,
+                                SubFieldsTypes: SubFieldsTypes
+                            };
+                            $scope.fields = {
+                                sub_field_type: [
+                                    {
+                                        name: 'name',
+                                        label: 'Name'
+                                    },
+                                    {
+                                        name: 'directive',
+                                        label: 'Directive'
+                                    }
+                                ]
+                            };
+                            $scope.ok = function () {
+
+                                $scope.hasErrors = {};
+
+                                var required;
+                                if($scope.mode == 'create')
+                                    required = ['name', 'sub_field_type_id'];
+                                else if($scope.mode == 'select')
+                                    required = ['id'];
+
+                                required.forEach(function(reqField){
+                                    if(!$scope.subField[reqField])
+                                        $scope.hasErrors[reqField] = true;
+                                    else
+                                        delete $scope.hasErrors[reqField];
+                                });
+
+                                if(!_.isEmpty($scope.hasErrors))
+                                    return;
+
+
+                                if($scope.mode == 'select')
+                                    $scope.subField = $scope.subField.$get();
+
+                                $scope.$close($scope.subField);
+                            };
+
+                            $scope.cancel = function () {
+                                $scope.$dismiss(false);
+                            };
+                        }],
+                        size: 'md',
+                        resolve: {
+                            subField: function () {
+                                return new SubFields();
+                            }
+                        }
+                    });
+
+                    modalInstance.result.then(function (subField) {
+                        if(subField.templates_ids)
+                            subField.templates_ids.push(scope.pageResource.template_id);
+                        else
+                            subField.templates_ids = [scope.pageResource.template_id];
+
+                        if(subField.id)
+                            subField.$update();
+                        else
+                            subField.$save();
+
+                        if(scope.refreshSubFields)
+                            $timeout(scope.refreshSubFields);
+                    }, function () {
+                        //$log.info('Modal dismissed at: ' + new Date());
+                    });
                 }
             }
         };
@@ -1606,17 +1690,17 @@ angular.module('app')
             }
         });
 
-        function getSubFields(){
+        $scope.getSubFields = function(){
             SubFields.query({'template_id': $scope.page.template_id}).$promise.then(function(data){
                 $scope.sub_fields = data;
             });
-        }
+        };
 
         $scope.$watch('page.template_id', function(template_id){
             if(!template_id)
                 return;
 
-            getSubFields();
+            $scope.getSubFields();
 
             ControllerActions.query({'template_id': template_id}).$promise.then(function(data){
                 $scope.page.controller_actions_ids = data.map(function(action){return action.id});
@@ -1727,85 +1811,6 @@ angular.module('app')
         $scope.closeAlert = function(){
             $scope.alert = ''
         };
-
-        $scope.addSubField = function(){
-            var modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: AppPaths.dashboard_tpls + 'addSubFieldModal.html',
-                controller: ['$scope', 'subField', 'SubFieldsTypes', function($scope, subField, SubFieldsTypes){
-                    $scope.subField = subField;
-
-                    $scope.models = {
-                        SubFields: SubFields,
-                        SubFieldsTypes: SubFieldsTypes
-                    };
-                    $scope.fields = {
-                        sub_field_type: [
-                            {
-                                name: 'name',
-                                label: 'Name'
-                            },
-                            {
-                                name: 'directive',
-                                label: 'Directive'
-                            }
-                        ]
-                    };
-                    $scope.ok = function () {
-
-                        $scope.hasErrors = {};
-
-                        var required;
-                        if($scope.mode == 'create')
-                            required = ['name', 'sub_field_type_id'];
-                        else if($scope.mode == 'select')
-                            required = ['id'];
-
-                        required.forEach(function(reqField){
-                            if(!$scope.subField[reqField])
-                                $scope.hasErrors[reqField] = true;
-                            else
-                                delete $scope.hasErrors[reqField];
-                        });
-
-                        if(!_.isEmpty($scope.hasErrors))
-                            return;
-
-
-                        if($scope.mode == 'select')
-                            $scope.subField = $scope.subField.$get();
-
-                        $scope.$close($scope.subField);
-                    };
-
-                    $scope.cancel = function () {
-                        $scope.$dismiss(false);
-                    };
-                }],
-                size: 'md',
-                resolve: {
-                    subField: function () {
-                        return new SubFields();
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (subField) {
-                if(subField.templates_ids)
-                    subField.templates_ids.push($scope.page.template_id);
-                else
-                    subField.templates_ids = [$scope.page.template_id];
-
-                if(subField.id)
-                    subField.$update();
-                else
-                    subField.$save();
-
-                getSubFields();
-            }, function () {
-                //$log.info('Modal dismissed at: ' + new Date());
-            });
-        }
     }]);
 
 angular.module('app')
@@ -1866,6 +1871,45 @@ angular.module('app')
             lists: {
                 dictionaries: $scope.dictionaries
             }
+        };
+    }]);
+
+angular.module('app')
+    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
+        $scope.logs = Logs.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            model: Logs,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User'
+                },
+                {
+                    name: 'logable_name',
+                    label: 'TableName'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
         };
     }]);
 
@@ -1957,45 +2001,6 @@ angular.module('app')
                     label: 'Content',
                     type: 'textarea',
                     table_hide: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
-        $scope.logs = Logs.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            model: Logs,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User'
-                },
-                {
-                    name: 'logable_name',
-                    label: 'TableName'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
                 }
             ]
         };
