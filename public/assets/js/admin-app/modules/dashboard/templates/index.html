@@ -16,7 +16,7 @@
             </div>
             <div class="panel-body">
                 <label>Title:</label>
-                <text-input ng-model="page.title" is-edit="true" has-error="hasErrors.title" ng-model-options="{debounce: 500}"></text-input>
+                <ae-text-input ng-model="page.title" is-edit="true" has-error="hasErrors.title" ng-model-options="{debounce: 500}"></ae-text-input>
 
                 <div>
                     <a href ng-click="subTitleDescriptionShow = !subTitleDescriptionShow" ng-class="{'dropup': subTitleDescriptionShow}">
@@ -24,10 +24,10 @@
                     </a>
                     <div ng-if="subTitleDescriptionShow">
                         <label>Sub title:</label>
-                        <text-input ng-model="page.sub_title" has-error="hasErrors.sub_title" is-edit="true"></text-input>
+                        <ae-text-input ng-model="page.sub_title" has-error="hasErrors.sub_title" is-edit="true"></ae-text-input>
 
                         <label>Description:</label>
-                        <text-input ng-model="page.description" has-error="hasErrors.description" type="textarea" is-edit="true"></text-input>
+                        <ae-text-input ng-model="page.description" has-error="hasErrors.description" type="textarea" is-edit="true"></ae-text-input>
                     </div>
                 </div>
 
@@ -63,7 +63,7 @@
 
             <div class="panel-body">
                 <label>Tags:</label>
-                <select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" type="multiselect"></select-input>
+                <ae-select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" type="multiselect"></ae-select-input>
 
                 <h4>Sub fields:</h4>
                 <sub-fields-manager ng-model="sub_fields" page-resource="page" api="subFieldsApi" refresh-sub-fields="getSubFields()"></sub-fields-manager>
@@ -77,7 +77,7 @@
             </div>
             <div class="panel-body">
                 <label>Template:</label>
-                <select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" is-edit="true" adder="true"></select-input>
+                <ae-select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" is-edit="true" adder="true"></ae-select-input>
 
                 <div>
                     <a href ng-click="templateInfoShow = !templateInfoShow" ng-class="{'dropup': templateInfoShow}">
@@ -86,7 +86,7 @@
                     <div ng-if="templateInfoShow">
                         <div class="alert alert-warning">
                             <label>Controller Actions:</label>
-                            <select-input ng-model="page.controller_actions_ids" has-error="hasErrors.controller_actions_ids" ng-resource="models.controller_actions" ng-resource-fields="fields.controller_actions" is-edit="true" adder="true" type="multiselect"></select-input>
+                            <ae-select-input ng-model="page.controller_actions_ids" has-error="hasErrors.controller_actions_ids" ng-resource="models.controller_actions" ng-resource-fields="fields.controller_actions" is-edit="true" adder="true" type="multiselect"></ae-select-input>
 
                             <div><small>Add actions to some laravel controllers, than bind they to template by names(example: 'SomeController@someAction') for execute when page render and get data from action result returned.</small></div>
                         </div>
@@ -94,10 +94,10 @@
                 </div>
 
                 <label>Alias:</label>
-                <text-input ng-model="page.alias" has-error="hasErrors.alias" is-edit="true"></text-input>
+                <ae-text-input ng-model="page.alias" has-error="hasErrors.alias" is-edit="true"></ae-text-input>
 
                 <label>Published:
-                    <bool-input ng-model="page.is_published" has-error="hasErrors.is_published" is-edit="true"></bool-input>
+                    <ae-bool-input ng-model="page.is_published" has-error="hasErrors.is_published" is-edit="true"></ae-bool-input>
                 </label>
 
                 <div>
@@ -106,22 +106,22 @@
                     </a>
                     <div ng-if="menuInfoShow">
                         <label>Menu title:</label>
-                        <text-input ng-model="page.menu_title" has-error="hasErrors.menu_title" is-edit="true"></text-input>
+                        <ae-text-input ng-model="page.menu_title" has-error="hasErrors.menu_title" is-edit="true"></ae-text-input>
 
                         <label>Menu index:</label>
-                        <text-input ng-model="page.menu_index" has-error="hasErrors.menu_index" is-edit="true"></text-input>
+                        <ae-text-input ng-model="page.menu_index" has-error="hasErrors.menu_index" is-edit="true"></ae-text-input>
 
                         <label>Is hide from menu:
-                            <bool-input ng-model="page.is_menu_hide" has-error="hasErrors.is_published" is-edit="true"></bool-input>
+                            <ae-bool-input ng-model="page.is_menu_hide" has-error="hasErrors.is_published" is-edit="true"></ae-bool-input>
                         </label>
                     </div>
                 </div>
 
                 <label>Parent:</label>
-                <select-input ng-model="page.parent_page_id" has-error="hasErrors.parent_page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" is-edit="true" adder="true" refresh-list-on="page"></select-input>
+                <ae-select-input ng-model="page.parent_page_id" has-error="hasErrors.parent_page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" is-edit="true" adder="true" refresh-list-on="page"></ae-select-input>
 
                 <label>Author:</label>
-                <select-input ng-model="page.author_id" has-error="hasErrors.author_id" ng-resource="models.users" ng-resource-fields="fields.users" is-edit="true" adder="true"></select-input>
+                <ae-select-input ng-model="page.author_id" has-error="hasErrors.author_id" ng-resource="models.users" ng-resource-fields="fields.users" is-edit="true" adder="true"></ae-select-input>
             </div>
         </div>
     </div>
