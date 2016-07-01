@@ -93,6 +93,6 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
         $path = '404';
     }
 
-    $page_data = array_merge($page_data, ['page' => $page], $sub_fields);
+    $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields], $sub_fields);
     return view('templates.' . $path, $page_data);
 });
