@@ -36,7 +36,7 @@ angular
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
                             'sub-field-resource="resources.' + sub_field.name + '"></' + directive + '>';
-                        tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div>';
+                        tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><hr>';
                     });
 
                     tplHtml += '<button class="btn btn-warning margin-top" ng-click="addSubField()" title="Add SubField"><span class="glyphicon glyphicon-plus"></span> Add sub field to current template</button>' +

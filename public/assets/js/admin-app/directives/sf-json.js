@@ -9,12 +9,14 @@ angular
                 ngModel: '=',
                 config: '=?',
                 pageResource: '=?',
-                templateResource: '=?'
+                templateResource: '=?',
+                subFieldResource: '=?'
             },
             link: function (scope, element) {
                 var defaultConfig = {
                     caption: 'For add data - fill first row fields, than save.',
                     orderBy: '-id',
+                    boldHeaders: false,
                     fields: [
                         {
                             name: 'json_id',
@@ -33,14 +35,25 @@ angular
 
                 scope.gridOptions = defaultConfig;
 
-                scope.$watch('config', function(){
-                    if(scope.config)
-                        scope.gridOptions = angular.extend({}, defaultConfig, scope.config);
+                scope.$watch('subFieldResource.config', function(config){
+                    if(!config)
+                        return;
+
+                    scope.gridOptions = angular.extend({}, defaultConfig, JSON.parse(config));
                 });
 
                 scope.$watch('ngModel', function(){
-                    scope.fakeModel = JSON.parse(scope.ngModel);
+                    if(scope.ngModel.value){
+                        if(JSON.parse(scope.ngModel.value) != scope.fakeModel)
+                            scope.fakeModel = JSON.parse(scope.ngModel.value);
+                    }
+                    else
+                        scope.fakeModel = [];
                 });
+
+                scope.changed = function(){
+                    scope.ngModel.value = JSON.stringify(scope.fakeModel);
+                }
             }
 
         };

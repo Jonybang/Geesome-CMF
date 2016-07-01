@@ -64,7 +64,9 @@
             <div class="panel-body">
                 <label>Tags:</label>
                 <ae-select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" type="multiselect"></ae-select-input>
+            </div>
 
+            <div class="panel-body">
                 <h4>Sub fields:</h4>
                 <sub-fields-manager ng-model="sub_fields" page-resource="page" api="subFieldsApi" refresh-sub-fields="getSubFields()"></sub-fields-manager>
             </div>
