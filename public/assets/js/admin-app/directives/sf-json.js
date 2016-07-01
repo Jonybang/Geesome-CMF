@@ -45,7 +45,7 @@ angular
                 scope.$watch('ngModel', function(){
                     if(!scope.ngModel)
                         return;
-                    
+
                     if(scope.ngModel.value){
                         if(JSON.parse(scope.ngModel.value) != scope.fakeModel)
                             scope.fakeModel = JSON.parse(scope.ngModel.value);

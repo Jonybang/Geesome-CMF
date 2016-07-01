@@ -32,4 +32,6 @@
             </div>
         </div>
     </div>
+
+    {{isset($imagesArray) ? $imagesArray : $imagesArray}}
 @endsection
