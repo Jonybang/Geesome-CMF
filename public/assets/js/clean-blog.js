@@ -84,4 +84,13 @@ $(function(){
             tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
         }
     });
+
+    $('.images-slider').slick({
+        dots: true,
+        infinite: true,
+        speed: 300,
+        slidesToShow: 1,
+        centerMode: true,
+        variableWidth: true
+    });
 });

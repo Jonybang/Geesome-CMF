@@ -33,5 +33,5 @@
         </div>
     </div>
 
-    {{isset($imagesArray) ? $imagesArray : $imagesArray}}
+    @include('chunks.imagesArraySlider')
 @endsection

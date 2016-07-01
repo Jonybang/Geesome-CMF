@@ -6,6 +6,9 @@
 
     <!-- Magnific Popup CSS -->
     <link href="assets/css/plugins/magnific-popup.css" rel="stylesheet">
+
+    <!-- Slick Slider CSS -->
+    <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
 @endsection
 
 @section('navbar')
@@ -109,6 +112,8 @@
     <script src="assets/js/plugins/jquery.easing.min.js"></script>
     <script src="assets/js/plugins/jquery.fittext.js"></script>
     <script src="assets/js/plugins/jquery.magnific-popup.min.js"></script>
+
+    <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="assets/js/clean-blog.js"></script>
