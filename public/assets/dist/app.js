@@ -1456,6 +1456,9 @@ angular
                 });
 
                 scope.$watch('ngModel', function(){
+                    if(!scope.ngModel)
+                        return;
+                    
                     if(scope.ngModel.value){
                         if(JSON.parse(scope.ngModel.value) != scope.fakeModel)
                             scope.fakeModel = JSON.parse(scope.ngModel.value);
@@ -1931,6 +1934,45 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
+        $scope.logs = Logs.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            resource: Logs,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User'
+                },
+                {
+                    name: 'logable_name',
+                    label: 'TableName'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
         $scope.dictionaries = Dictionaries.query();
 
@@ -1988,45 +2030,6 @@ angular.module('app')
             lists: {
                 dictionaries: $scope.dictionaries
             }
-        };
-    }]);
-
-angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
-        $scope.logs = Logs.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            resource: Logs,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User'
-                },
-                {
-                    name: 'logable_name',
-                    label: 'TableName'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
         };
     }]);
 
