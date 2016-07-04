@@ -33,11 +33,13 @@
 
 <script type="text/ng-template" id="list.html">
     <a href ng-click="page.hide_children = !page.hide_children" >{{page.title}}</a>
-    <ul dnd-list="page.child_pages" ng-class="['child_pages', {'empty':!page.child_pages.length}]">
-        <li ng-repeat="page in page.child_pages"
+    <ul dnd-list="page.child_pages_by_index"
+        dnd-drop="app.changeParent(event, index, item, page)"
+        ng-class="['child_pages', {'empty':!page.child_pages_by_index.length}]">
+        <li ng-repeat="page in page.child_pages_by_index"
             dnd-draggable="page"
             dnd-effect-allowed="move"
-            dnd-moved="$parent.$parent.page.child_pages.splice($index, 1)"
+            dnd-moved="$parent.$parent.page.child_pages_by_index.splice($index, 1)"
             dnd-selected="models.selected = page"
             ng-class="{selected: models.selected === page}"
             ng-include="'list.html'"
@@ -58,7 +60,9 @@
             </div>
         </div>
 
-        <ul dnd-list="app.pages_tree" class="list-unstyled margin-top">
+        <ul dnd-list="app.pages_tree"
+            dnd-drop="app.changeParent(event, index, item, {id: 0})"
+            class="list-unstyled margin-top">
             <li ng-repeat="page in app.pages_tree"
                 dnd-draggable="page"
                 dnd-effect-allowed="move"

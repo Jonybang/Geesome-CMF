@@ -45,6 +45,10 @@ class Page extends Model
     {
         return $this->hasMany('App\Page', 'parent_page_id')->orderBy('created_at', 'DESC')->with('child_pages');
     }
+    public function child_pages_by_index()
+    {
+        return $this->hasMany('App\Page', 'parent_page_id')->orderBy('menu_index', 'ASC')->with('child_pages_by_index');
+    }
 
     public function logs()
     {
