@@ -9,6 +9,7 @@
 
     <!-- Slick Slider CSS -->
     <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick-theme.css"/>
 @endsection
 
 @section('navbar')
