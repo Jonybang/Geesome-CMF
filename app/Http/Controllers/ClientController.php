@@ -8,8 +8,13 @@ use App\Http\Requests;
 
 class ClientController extends Controller
 {
+    public function get_projects(){
+
+        $projects = \App\Template::where('path', 'projects')->first()->pages->first()->child_pages;
+        return ['projects' => $projects];
+    }
+
     public function tag_by_alias($sub_alias = null){
-        //dd($sub_alias);
         $none_tag_data = ['render_template' => '404'];
         if(!$sub_alias)
             return $none_tag_data;

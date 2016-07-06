@@ -30,7 +30,8 @@ class DatabaseSeeder extends Seeder
         $this->call(DictionaryTableSeeder::class);
 
         $this->call(TestSubFieldsTableSeeder::class);
-        $this->call(TestControllerActionsTableSeeder::class);
+
+        $this->call(MainPageSeeder::class);
     }
 }
 
