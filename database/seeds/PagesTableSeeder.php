@@ -21,6 +21,7 @@ class PagesTableSeeder extends Seeder
             ['Blog', 'blog', 'blog', '', '', ''],
             ['Projects', 'projects', 'projects', '', '', ''],
             ['About', 'about', 'page', '', '', 'About page content'],
+            ['Feedback', 'feedback', 'form', '', '', 'Feedback page content'],
         ];
         foreach($seeds as $seed){
             $page = \App\Page::create([

@@ -32,6 +32,8 @@ class DatabaseSeeder extends Seeder
         $this->call(TestSubFieldsTableSeeder::class);
 
         $this->call(MainPageSeeder::class);
+
+        $this->call(FeedbackMailTemplateSeeder::class);
     }
 }
 

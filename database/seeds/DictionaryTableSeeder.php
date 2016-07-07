@@ -16,7 +16,7 @@ class DictionaryTableSeeder extends Seeder
         ]);
 
         $seeds = [
-            ['email', 'your-email@your-domain.com'],
+            ['email', env('SITE_ADMIN_EMAIL')],
             ['phone', '123-456-6789'],
             ['view-project', 'View Project']
         ];
