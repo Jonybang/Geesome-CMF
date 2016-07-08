@@ -25,7 +25,7 @@ class TestSubFieldsTableSeeder extends Seeder
                         'new_placeholder' => 'New Image'
                     ]
                 ]
-            ])
+            ], JSON_PRETTY_PRINT)
         ]);
 
         $sub_field = \App\Template::where('path', 'page')->first()->sub_fields()->create([

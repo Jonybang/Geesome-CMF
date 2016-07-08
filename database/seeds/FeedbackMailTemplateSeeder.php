@@ -15,7 +15,7 @@ class FeedbackMailTemplateSeeder extends Seeder
             'name' => 'Feedback to administrator',
             'key' => 'feedback_to_admin',
             'title' => 'Feedback from {{$site}} by {{$email}}',
-            'content' => '<h1>New feedback message from site {{$site}}!</h1><p><b>Name:</b>{{$fullname}}<br><b>Email:</b>{{$email}}<br><b>Message:</b><br><pre>{{$message}}</pre></p>'
+            'content' => "<h1>New feedback message from site {{\$site}}!</h1>\n<p>\n<b>Name:</b>{{\$fullname}}<br>\n<b>Email:</b>{{\$email}}<br>\n<b>Message:</b><br>\n<pre>{{\$message}}</pre>\n</p>"
         ]);
     }
 }

@@ -70,7 +70,7 @@ class MainPageSeeder extends Seeder
         ];
 
         $offers_config = json_encode([
-            'caption' => 'Add, edit and delete images links',
+            'caption' => 'Icons taked from http://fontawesome.io/icons/ by names',
             'search' => false,
             'create' => false,
             'fields' => [
@@ -87,7 +87,7 @@ class MainPageSeeder extends Seeder
                     'label' => 'Description'
                 ]
             ]
-        ]);
+        ], JSON_PRETTY_PRINT);
 
         foreach($main_blocks_sub_fields as $template_path => $sub_fields){
             $template = Template::where('path', $template_path)->first();
