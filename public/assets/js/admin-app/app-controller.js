@@ -4,10 +4,6 @@ angular.module('app')
 
         self.menuList = [
             {
-                heading: 'Dashboard',
-                route:   'app.dashboard'
-            },
-            {
                 heading: 'Pages',
                 route:   'app.pages'
             },

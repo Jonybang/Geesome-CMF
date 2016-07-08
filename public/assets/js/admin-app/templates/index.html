@@ -43,7 +43,7 @@
             dnd-selected="models.selected = page"
             ng-class="{selected: models.selected === page}"
             ng-include="'list.html'"
-            ui-sref="app.page({pageId: page.id})">
+            ui-sref="app.page_edit({pageId: page.id})">
         </li>
     </ul>
 </script>
@@ -70,7 +70,7 @@
                 dnd-selected="models.selected = page"
                 ng-class="{selected: models.selected === page}"
                 ng-include="'list.html'"
-                ui-sref="app.page({pageId: page.id})">
+                ui-sref="app.page_edit({pageId: page.id})">
             </li>
         </ul>
     </div>

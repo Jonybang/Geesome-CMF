@@ -1292,15 +1292,15 @@ angular
                     templateUrl: AppPaths.app_tpls + 'index.html',
                     abstract: true
                 })
-                .state('app.page', {
-                    url: '/page/:pageId',
-                    controller: 'DashboardController',
-                    templateUrl: AppPaths.dashboard_tpls + 'index.html'
-                })
-                .state('app.dashboard', {
+                .state('app.page_create', {
                     url: '',
-                    controller: 'DashboardController',
-                    templateUrl: AppPaths.dashboard_tpls + 'index.html'
+                    controller: 'PageFormController',
+                    templateUrl: AppPaths.page_form_tpls + 'index.html'
+                })
+                .state('app.page_edit', {
+                    url: '/page/:pageId',
+                    controller: 'PageFormController',
+                    templateUrl: AppPaths.page_form_tpls + 'index.html'
                 })
                 .state('app.pages', {
                     url: '/pages',
@@ -1369,10 +1369,6 @@ angular.module('app')
         var self = this;
 
         self.menuList = [
-            {
-                heading: 'Dashboard',
-                route:   'app.dashboard'
-            },
             {
                 heading: 'Pages',
                 route:   'app.pages'
@@ -1830,7 +1826,7 @@ angular.module('app')
             app:                    app_path,
             app_tpls:               app_path + 'templates/',
             modules:                app_path + 'modules/',
-            dashboard_tpls:         app_path + 'modules/dashboard/templates/',
+            page_form_tpls:         app_path + 'modules/page-form/templates/',
             settings_tpls:          app_path + 'modules/settings/templates/',
             pages_tpls:             app_path + 'modules/pages/templates/',
             mail_templates_tpls:    app_path + 'modules/mail-templates/templates/',
@@ -1842,7 +1838,151 @@ angular.module('app')
             dictionary_tpls:        app_path + 'modules/dictionary/templates/'
     });
 angular.module('app')
-    .controller('DashboardController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+    .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
+        $scope.dictionaries = Dictionaries.query();
+
+        $scope.aGridDictionariesOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Dictionaries,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Dictionary',
+                    required: true
+                }
+            ]
+        };
+
+        $scope.dictionaries_words = DictionariesWords.query();
+
+        $scope.aGridDictionariesWordsOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: DictionariesWords,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Dictionary Word',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value'
+                },
+                {
+                    name: 'dictionary_id',
+                    label: 'Dictionary',
+                    type: 'select',
+                    list: 'dictionaries',
+                    required: true
+                }
+            ],
+            lists: {
+                dictionaries: $scope.dictionaries
+            }
+        };
+    }]);
+
+angular.module('app')
+    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
+        $scope.logs = Logs.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            resource: Logs,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User'
+                },
+                {
+                    name: 'logable_name',
+                    label: 'Item Name'
+                },
+                {
+                    name: 'logable_type',
+                    label: 'Item Type'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('MailTemplatesController', ['$scope', 'MailTemplates', function($scope, MailTemplates) {
+        $scope.mail_templates = MailTemplates.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: MailTemplates,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Template name',
+                    new_placeholder: 'New Mail Template',
+                    required: true
+                },
+                {
+                    name: 'key',
+                    label: 'Template key',
+                    required: true
+                },
+                {
+                    name: 'title',
+                    label: 'Mail Title'
+                },
+                {
+                    name: 'content',
+                    label: 'Main Content',
+                    type: 'textarea',
+                    width: '500px'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
         function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
 
@@ -2029,150 +2169,6 @@ angular.module('app')
 
         $scope.closeAlert = function(){
             $scope.alert = ''
-        };
-    }]);
-
-angular.module('app')
-    .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
-        $scope.dictionaries = Dictionaries.query();
-
-        $scope.aGridDictionariesOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Dictionaries,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Dictionary',
-                    required: true
-                }
-            ]
-        };
-
-        $scope.dictionaries_words = DictionariesWords.query();
-
-        $scope.aGridDictionariesWordsOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: DictionariesWords,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Dictionary Word',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value'
-                },
-                {
-                    name: 'dictionary_id',
-                    label: 'Dictionary',
-                    type: 'select',
-                    list: 'dictionaries',
-                    required: true
-                }
-            ],
-            lists: {
-                dictionaries: $scope.dictionaries
-            }
-        };
-    }]);
-
-angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
-        $scope.logs = Logs.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            resource: Logs,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User'
-                },
-                {
-                    name: 'logable_name',
-                    label: 'Item Name'
-                },
-                {
-                    name: 'logable_type',
-                    label: 'Item Type'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('MailTemplatesController', ['$scope', 'MailTemplates', function($scope, MailTemplates) {
-        $scope.mail_templates = MailTemplates.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: MailTemplates,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Template name',
-                    new_placeholder: 'New Mail Template',
-                    required: true
-                },
-                {
-                    name: 'key',
-                    label: 'Template key',
-                    required: true
-                },
-                {
-                    name: 'title',
-                    label: 'Mail Title'
-                },
-                {
-                    name: 'content',
-                    label: 'Main Content',
-                    type: 'textarea',
-                    width: '500px'
-                }
-            ]
         };
     }]);
 

@@ -10,15 +10,15 @@ angular
                     templateUrl: AppPaths.app_tpls + 'index.html',
                     abstract: true
                 })
-                .state('app.page', {
-                    url: '/page/:pageId',
-                    controller: 'DashboardController',
-                    templateUrl: AppPaths.dashboard_tpls + 'index.html'
-                })
-                .state('app.dashboard', {
+                .state('app.page_create', {
                     url: '',
-                    controller: 'DashboardController',
-                    templateUrl: AppPaths.dashboard_tpls + 'index.html'
+                    controller: 'PageFormController',
+                    templateUrl: AppPaths.page_form_tpls + 'index.html'
+                })
+                .state('app.page_edit', {
+                    url: '/page/:pageId',
+                    controller: 'PageFormController',
+                    templateUrl: AppPaths.page_form_tpls + 'index.html'
                 })
                 .state('app.pages', {
                     url: '/pages',

@@ -4,7 +4,7 @@ angular.module('app')
             app:                    app_path,
             app_tpls:               app_path + 'templates/',
             modules:                app_path + 'modules/',
-            dashboard_tpls:         app_path + 'modules/dashboard/templates/',
+            page_form_tpls:         app_path + 'modules/page-form/templates/',
             settings_tpls:          app_path + 'modules/settings/templates/',
             pages_tpls:             app_path + 'modules/pages/templates/',
             mail_templates_tpls:    app_path + 'modules/mail-templates/templates/',
