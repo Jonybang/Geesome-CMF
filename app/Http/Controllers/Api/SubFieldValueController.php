@@ -47,10 +47,14 @@ class SubFieldValueController extends Controller
     public function update(Request $request)
     {
         $data = $request->all();
-        $is_saved = SubFieldValue::find($data['id'])->update($data);
+
         $obj = SubFieldValue::find($data['id']);
-        if ($is_saved)
-            UserActionLog::saveAction($obj,"update");
+        $prev_value = $obj->value;
+        $is_saved = $obj->update($data);
+
+        if ($is_saved && $prev_value != $obj->value)
+            UserActionLog::saveAction($obj, "update");
+
         return Response::json(
             $obj,
             $is_saved ? 200 : 400

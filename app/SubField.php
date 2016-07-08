@@ -46,4 +46,8 @@ class SubField extends Model
     {
         return $this->hasMany('App\SubFieldValue', 'sub_field_id');
     }
+
+    public function getTitleAttribute(){
+        return $this->attributes['title'] ? $this->attributes['title'] : $this->attributes['name'];
+    }
 }

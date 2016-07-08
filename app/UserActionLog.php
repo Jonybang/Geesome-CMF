@@ -17,14 +17,16 @@ class UserActionLog extends Model
         return $this->morphTo();
     }
 
-    public static function saveAction($logable,$action,$description = '')
+    public static function saveAction($logable, $action, $description = '')
     {
         $obj = UserActionLog::create([
-            'action'=>$action,
-            'description'=>$description,
-            'user_id'=> \Auth::user()->id
+            'action' => $action,
+            'description' => $description,
+            'user_id' => \Auth::user()->id
         ]);
+
         $obj->logable()->associate($logable);
+
         $obj->save();
     }
 }
