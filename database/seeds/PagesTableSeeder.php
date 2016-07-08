@@ -17,11 +17,13 @@ class PagesTableSeeder extends Seeder
         ]);
 
         $seeds = [
-            ['Main', '', 'index', 'Main page subtitle', 'Main page description', 'Main page content'],
-            ['Blog', 'blog', 'blog', '', '', ''],
-            ['Projects', 'projects', 'projects', '', '', ''],
-            ['About', 'about', 'page', '', '', 'About page content'],
-            ['Feedback', 'feedback', 'form', '', '', 'Feedback page content'],
+            ['Main', '', 'index', 'Main page subtitle', 'Main page description', 'Main page content', false],
+            ['Blog', 'blog', 'blog', '', '', '', false],
+            ['Projects', 'projects', 'projects', '', '', '', false],
+            ['About', 'about', 'page', '', '', 'About page content', false],
+            ['Feedback', 'feedback', 'form', '', '', 'Feedback page content', false],
+            ['Thanks for feedback', 'thanks-for-feedback', 'page', '', '', 'Thanks for feedback content', true],
+            ['Thanks for subscribe', 'thanks-for-subscribe', 'page', '', '', 'Thanks for subscribe content', true],
         ];
         foreach($seeds as $seed){
             $page = \App\Page::create([
@@ -31,7 +33,7 @@ class PagesTableSeeder extends Seeder
                 'template_id' => \App\Template::where('path', $seed[2])->first()->id,
                 'sub_title' => $seed[3],
                 'description' => $seed[4],
-                'is_menu_hide' => false,
+                'is_menu_hide' => $seed[6],
                 'context_id' => $context->id
             ]);
             $page->content_text = $seed[5];

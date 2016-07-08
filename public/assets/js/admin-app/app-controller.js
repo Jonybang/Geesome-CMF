@@ -16,6 +16,10 @@ angular.module('app')
                 route:   'app.mail_templates'
             },
             {
+                heading: 'Subscribers',
+                route:   'app.subscribers'
+            },
+            {
                 heading: 'Settings',
                 route:   'app.settings'
             },

@@ -56,3 +56,10 @@ app.factory('Dictionaries', ['$resource', function($resource) {
 app.factory('DictionariesWords', ['$resource', function($resource) {
     return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Subscribers', ['$resource', function($resource) {
+    return $resource('admin/api/subscribers/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubscribersGroups', ['$resource', function($resource) {
+    return $resource('admin/api/subscribers_groups/:id', { id: '@id' }, defaultOptions);
+}]);

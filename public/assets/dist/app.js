@@ -1303,15 +1303,20 @@ angular
                     controller: 'PagesController',
                     templateUrl: AppPaths.pages_tpls + 'index.html'
                 })
+                .state('app.dictionary', {
+                    url: '/dictionary',
+                    controller: 'DictionaryController',
+                    templateUrl: AppPaths.dictionary_tpls + 'index.html'
+                })
                 .state('app.mail_templates', {
                     url: '/mail_templates',
                     controller: 'MailTemplatesController',
                     templateUrl: AppPaths.mail_templates_tpls + 'index.html'
                 })
-                .state('app.dictionary', {
-                    url: '/dictionary',
-                    controller: 'DictionaryController',
-                    templateUrl: AppPaths.dictionary_tpls + 'index.html'
+                .state('app.subscribers', {
+                    url: '/subscribers',
+                    controller: 'SubscribersController',
+                    templateUrl: AppPaths.subscribers_tpls + 'index.html'
                 })
                 .state('app.settings', {
                     url: '/settings',
@@ -1376,6 +1381,10 @@ angular.module('app')
             {
                 heading: 'Mail Templates',
                 route:   'app.mail_templates'
+            },
+            {
+                heading: 'Subscribers',
+                route:   'app.subscribers'
             },
             {
                 heading: 'Settings',
@@ -1816,6 +1825,13 @@ app.factory('Dictionaries', ['$resource', function($resource) {
 app.factory('DictionariesWords', ['$resource', function($resource) {
     return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('Subscribers', ['$resource', function($resource) {
+    return $resource('admin/api/subscribers/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubscribersGroups', ['$resource', function($resource) {
+    return $resource('admin/api/subscribers_groups/:id', { id: '@id' }, defaultOptions);
+}]);
 var app_path = '/assets/js/admin-app/';
 angular.module('app')
     .constant('AppPaths', {
@@ -1831,7 +1847,8 @@ angular.module('app')
             tags_tpls:              app_path + 'modules/tags/templates/',
             templates_tpls:         app_path + 'modules/templates/templates/',
             sub_fields_tpls:        app_path + 'modules/sub-fields/templates/',
-            dictionary_tpls:        app_path + 'modules/dictionary/templates/'
+            dictionary_tpls:        app_path + 'modules/dictionary/templates/',
+            subscribers_tpls:       app_path + 'modules/subscribers/templates/'
     });
 angular.module('app')
     .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
@@ -2385,6 +2402,67 @@ angular.module('app')
             ],
             lists: {
                 sub_fields_types: $scope.sub_fields_types
+            }
+        };
+    }]);
+
+angular.module('app')
+    .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
+        $scope.subscribers_groups = SubscribersGroups.query();
+
+        $scope.aGridSubscribersGroupsOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: SubscribersGroups,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Sub Field Type',
+                    required: true
+                }
+            ]
+        };
+
+        $scope.subscribers = Subscribers.query();
+
+        $scope.aGridSubscribersOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Subscribers,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'email',
+                    modal: 'self',
+                    label: 'Email',
+                    new_placeholder: 'New Subscriber',
+                    required: true
+                },
+                {
+                    name: 'user_agent',
+                    label: 'User agent info',
+                    type: 'textarea'
+                },
+                {
+                    name: 'subscriber_group_id',
+                    label: 'Subscriber group',
+                    type: 'select',
+                    list: 'subscribers_groups'
+                }
+            ],
+            lists: {
+                subscribers_groups: $scope.subscribers_groups
             }
         };
     }]);

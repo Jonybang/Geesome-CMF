@@ -525,3 +525,7 @@ aside {
 .row-centered .text-center {
   text-align: center !important;
 }
+
+[class*="col-"].center-block {
+  float: none!important;
+}

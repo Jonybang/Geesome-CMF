@@ -13,5 +13,6 @@ angular.module('app')
             tags_tpls:              app_path + 'modules/tags/templates/',
             templates_tpls:         app_path + 'modules/templates/templates/',
             sub_fields_tpls:        app_path + 'modules/sub-fields/templates/',
-            dictionary_tpls:        app_path + 'modules/dictionary/templates/'
+            dictionary_tpls:        app_path + 'modules/dictionary/templates/',
+            subscribers_tpls:       app_path + 'modules/subscribers/templates/'
     });

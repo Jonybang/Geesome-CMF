@@ -25,15 +25,20 @@ angular
                     controller: 'PagesController',
                     templateUrl: AppPaths.pages_tpls + 'index.html'
                 })
+                .state('app.dictionary', {
+                    url: '/dictionary',
+                    controller: 'DictionaryController',
+                    templateUrl: AppPaths.dictionary_tpls + 'index.html'
+                })
                 .state('app.mail_templates', {
                     url: '/mail_templates',
                     controller: 'MailTemplatesController',
                     templateUrl: AppPaths.mail_templates_tpls + 'index.html'
                 })
-                .state('app.dictionary', {
-                    url: '/dictionary',
-                    controller: 'DictionaryController',
-                    templateUrl: AppPaths.dictionary_tpls + 'index.html'
+                .state('app.subscribers', {
+                    url: '/subscribers',
+                    controller: 'SubscribersController',
+                    templateUrl: AppPaths.subscribers_tpls + 'index.html'
                 })
                 .state('app.settings', {
                     url: '/settings',

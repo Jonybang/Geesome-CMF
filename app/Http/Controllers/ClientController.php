@@ -49,5 +49,14 @@ class ClientController extends Controller
 
             $message->to($data['admin_email'])->subject($data['mail_title']);
         });
+        return redirect('thanks-for-feedback')->withInput();
+    }
+
+    public function subscribe(Request $request){
+        \App\Subscriber::create([
+            'email' => $request->input('email'),
+            'user_agent' => $request->header('User-Agent')
+        ]);
+        return redirect('thanks-for-subscribe')->withInput();
     }
 }

@@ -24,6 +24,11 @@ class DictionaryTableSeeder extends Seeder
                 ['feedback.email', 'Email:'],
                 ['feedback.message', 'Message:'],
                 ['feedback.submit', 'Submit']
+            ],
+            'Subscribe Form' => [
+                ['subscribe.title', 'Subscribe for news'],
+                ['subscribe.email', 'Email'],
+                ['subscribe.submit', 'Subscribe!']
             ]
         ];
 

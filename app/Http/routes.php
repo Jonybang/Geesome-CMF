@@ -13,6 +13,7 @@
 
 Route::post('/send-message', ['as' => 'send-message', 'uses' => 'ClientController@sendFeedbackMessage']);
 
+Route::post('/subscribe', ['as' => 'subscribe', 'uses' => 'ClientController@subscribe']);
 
 Route::get('/login', ['as' => 'login', function(){
     return view('admin.login');
@@ -34,12 +35,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
         Route::resource('logs', 'Api\LogController');
         Route::resource('users', 'Api\UserController');
         Route::resource('tags', 'Api\TagController');
+
         Route::resource('sub_fields', 'Api\SubFieldController');
         Route::resource('sub_fields_types', 'Api\SubFieldTypeController');
         Route::resource('sub_fields_values', 'Api\SubFieldValueController');
+
         Route::resource('controller_actions', 'Api\ControllerActionController');
+
         Route::resource('dictionaries', 'Api\DictionaryController');
         Route::resource('dictionaries_words', 'Api\DictionaryWordController');
+
+        Route::resource('subscribers', 'Api\SubscriberController');
+        Route::resource('subscribers_groups', 'Api\SubscriberGroupController');
     });
 
 
