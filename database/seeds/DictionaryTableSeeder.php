@@ -11,25 +11,35 @@ class DictionaryTableSeeder extends Seeder
      */
     public function run()
     {
-        $dictionary = \App\Dictionary::create([
-            'name' => 'General'
-        ]);
+        $context_id = \App\Context::first()->id;
 
-        $seeds = [
-            ['email', env('SITE_ADMIN_EMAIL')],
-            ['phone', '123-456-6789'],
-            ['view-project', 'View Project']
+        $dictionaries = [
+            'General' => [
+                ['email', env('SITE_ADMIN_EMAIL')],
+                ['phone', '123-456-6789'],
+                ['view-project', 'View Project']
+            ],
+            'Feedback Form' => [
+                ['feedback.fullname', 'Fullname:'],
+                ['feedback.email', 'Email:'],
+                ['feedback.message', 'Message:'],
+                ['feedback.submit', 'Submit']
+            ]
         ];
 
-        $context_id = \App\Context::first()->id;
-        $dictionary_id = $dictionary->id;
-        foreach($seeds as $seed){
-            \DB::table('dictionary_words')->insert([
-                'name' => $seed[0],
-                'value' => $seed[1],
-                'context_id' => $context_id,
-                'dictionary_id' => $dictionary_id
+        foreach($dictionaries as $dictionary_name => $words){
+            $dictionary = \App\Dictionary::create([
+                'name' => $dictionary_name
             ]);
+
+            foreach($words as $seed){
+                \DB::table('dictionary_words')->insert([
+                    'name' => $seed[0],
+                    'value' => $seed[1],
+                    'context_id' => $context_id,
+                    'dictionary_id' => $dictionary->id
+                ]);
+            }
         }
     }
 }
