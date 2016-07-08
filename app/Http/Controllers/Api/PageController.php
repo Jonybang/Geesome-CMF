@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\UserActionLog;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;
@@ -61,7 +62,7 @@ class PageController extends Controller
             $page->template->controller_actions_ids = $data['controller_actions_ids'];
             $page->template->save();
         }
-
+        UserActionLog::saveAction($page,"create");
         return Response::json(
             $this->getPageArrayWithContent($page),
             200
@@ -85,7 +86,7 @@ class PageController extends Controller
             $page->template->controller_actions_ids = $data['controller_actions_ids'];
             $page->template->save();
         }
-
+        UserActionLog::saveAction($page,"update");
         return Response::json(
             $this->getPageArrayWithContent($page),
             $is_saved ? 200 : 400
@@ -93,8 +94,10 @@ class PageController extends Controller
     }
     public function destroy($id)
     {
+        $page = Page::find($id);
         $is_destroyed = Page::destroy($id);
-
+        if ($is_destroyed)
+            UserActionLog::saveAction($page,"destroy");
         return Response::json(
             $is_destroyed ? 200 : 400
         );

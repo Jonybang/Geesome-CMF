@@ -49,7 +49,7 @@ class TemplateController extends Controller
             $template->pages_ids = $data['pages_ids'];
             $template->save();
         }
-
+        UserActionLog::saveAction($template,"create");
         return Response::json(
             $template->toArray(),
             200
@@ -60,7 +60,6 @@ class TemplateController extends Controller
         $data = $request->all();
         $template = Template::find($data['id']);
         $is_saved = $template->update($data);
-
 
         if(isset($data['controller_actions_ids'])){
             $template->controller_actions_ids = $data['controller_actions_ids'];
@@ -74,16 +73,18 @@ class TemplateController extends Controller
             $template->pages_ids = $data['pages_ids'];
             $template->save();
         }
-
+        UserActionLog::saveAction($template,"update");
         return Response::json(
             $template->toArray(),
             $is_saved ? 200 : 400
         );
     }
     public function destroy($id)
-    {
+    {        
+        $obj = Template::find($id);
         $is_destroyed = Template::destroy($id);
-
+        if ($is_destroyed)
+            UserActionLog::saveAction($obj,"destroy");
         return Response::json(
             $is_destroyed ? 200 : 400
         );

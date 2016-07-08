@@ -46,6 +46,7 @@ class SubFieldController extends Controller
             $sub_field->templates_ids = $data['templates_ids'];
             $sub_field->save();
         }
+        UserActionLog::saveAction($sub_field,"create");
         return Response::json(
             $sub_field->toArray(),
             200
@@ -61,7 +62,8 @@ class SubFieldController extends Controller
             $sub_field->templates_ids = $data['templates_ids'];
             $sub_field->save();
         }
-
+        if ($is_saved)
+            UserActionLog::saveAction($sub_field,"update");
         return Response::json(
             $sub_field->toArray(),
             $is_saved ? 200 : 400
@@ -69,8 +71,10 @@ class SubFieldController extends Controller
     }
     public function destroy($id)
     {
+        $obj = SubField::find($id);
         $is_destroyed = SubField::destroy($id);
-
+        if ($is_destroyed)
+            UserActionLog::saveAction($obj,"destroy");
         return Response::json(
             $is_destroyed ? 200 : 400
         );

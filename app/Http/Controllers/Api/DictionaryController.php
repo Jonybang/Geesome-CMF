@@ -30,9 +30,10 @@ class DictionaryController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-
+        $obj = Dictionary::create($data);
+        UserActionLog::saveAction($obj,"create");
         return Response::json(
-            Dictionary::create($data)->toArray(),
+            $obj->toArray(),
             200
         );
     }
@@ -40,16 +41,20 @@ class DictionaryController extends Controller
     {
         $data = $request->all();
         $is_saved = Dictionary::find($data['id'])->update($data);
-
+        $obj =  Dictionary::find($data['id']);
+        if ($is_saved)
+            UserActionLog::saveAction($obj,"update");
         return Response::json(
-            Dictionary::find($data['id']),
+            $obj,
             $is_saved ? 200 : 400
         );
     }
     public function destroy($id)
     {
+        $obj = Dictionary::find($id);        
         $is_destroyed = Dictionary::destroy($id);
-
+        if ($is_destroyed)
+            UserActionLog::saveAction($obj,"destroy");
         return Response::json(
             $is_destroyed ? 200 : 400
         );

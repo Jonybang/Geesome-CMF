@@ -31,9 +31,10 @@ class DictionaryWordController extends Controller
     {
         $data = $request->all();
         $data['context_id'] = \App\Context::first()->id;
-
+        $obj = DictionaryWord::create($data);
+        UserActionLog::saveAction($obj,"create");
         return Response::json(
-            DictionaryWord::create($data)->toArray(),
+            $obj->toArray(),
             200
         );
     }
@@ -41,16 +42,20 @@ class DictionaryWordController extends Controller
     {
         $data = $request->all();
         $is_saved = DictionaryWord::find($data['id'])->update($data);
-
+        $obj =  DictionaryWord::find($data['id']);
+        if ($is_saved)
+            UserActionLog::saveAction($obj,"update");
         return Response::json(
-            DictionaryWord::find($data['id']),
+            $obj,
             $is_saved ? 200 : 400
         );
     }
     public function destroy($id)
     {
+        $obj = DictionaryWord::find($id);
         $is_destroyed = DictionaryWord::destroy($id);
-
+        if ($is_destroyed)
+            UserActionLog::saveAction($obj,"destroy");
         return Response::json(
             $is_destroyed ? 200 : 400
         );

@@ -36,8 +36,10 @@ class UserController extends ApiController
     {
         $data = $request->all();
         $data['password'] = bcrypt($data['password']);
+        $obj = User::create($data);
+        UserActionLog::saveAction($obj,"create");
         return Response::json(
-            User::create($data)->toArray(),
+            $obj->toArray(),
             200
         );
     }
@@ -47,16 +49,19 @@ class UserController extends ApiController
         if(isset($data['password']) && $data['password'])
             $data['password'] = bcrypt($data['password']);
         $is_saved = User::find($data['id'])->update($data);
-
+        $obj = User::find($data['id']);
+        UserActionLog::saveAction($obj,"update");
         return Response::json(
-            User::find($data['id']),
+            $obj,
             $is_saved ? 200 : 400
         );
     }
     public function destroy($id)
     {
+        $obj = User::find($id);
         $is_destroyed = User::destroy($id);
-
+        if ($is_destroyed)
+            UserActionLog::saveAction($obj,"destroy");
         return Response::json(
             $is_destroyed ? 200 : 400
         );

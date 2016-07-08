@@ -30,9 +30,10 @@ class TagController extends ApiController
     public function store(Request $request)
     {
         $data = $request->all();
-
+        $obj =  Tag::create($data);
+        UserActionLog::saveAction($obj,"create");
         return Response::json(
-            Tag::create($data)->toArray(),
+            $obj->toArray(),
             200
         );
     }
@@ -40,16 +41,20 @@ class TagController extends ApiController
     {
         $data = $request->all();
         $is_saved = Tag::find($data['id'])->update($data);
-
+        $obj = Tag::find($data['id']);
+        if ($is_saved)
+            UserActionLog::saveAction($obj,"update");
         return Response::json(
-            Tag::find($data['id']),
+            $obj,
             $is_saved ? 200 : 400
         );
     }
     public function destroy($id)
     {
+        $obj = Tag::find($id);
         $is_destroyed = Tag::destroy($id);
-
+        if ($is_destroyed)
+            UserActionLog::saveAction($obj,"destroy");
         return Response::json(
             $is_destroyed ? 200 : 400
         );

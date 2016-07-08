@@ -30,9 +30,10 @@ class SettingController extends ApiController
     public function store(Request $request)
     {
         $data = $request->all();
-
+        $obj = Setting::create($data);
+        UserActionLog::saveAction($obj,"create");
         return Response::json(
-            Setting::create($data)->toArray(),
+            $obj->toArray(),
             200
         );
     }
@@ -40,16 +41,20 @@ class SettingController extends ApiController
     {
         $data = $request->all();
         $is_saved = Setting::find($data['id'])->update($data);
-
+        $obj =  Setting::find($data['id']);
+        if ($is_saved)
+            UserActionLog::saveAction($obj,"update");
         return Response::json(
-            Setting::find($data['id']),
+            $obj,
             $is_saved ? 200 : 400
         );
     }
     public function destroy($id)
     {
+        $obj = Setting::find($id);
         $is_destroyed = Setting::destroy($id);
-
+        if ($is_destroyed)
+            UserActionLog::saveAction($obj,"destroy");
         return Response::json(
             $is_destroyed ? 200 : 400
         );
