@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\UserActionLog;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;

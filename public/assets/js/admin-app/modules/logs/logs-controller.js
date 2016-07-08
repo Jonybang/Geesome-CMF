@@ -27,7 +27,11 @@ angular.module('app')
                 },
                 {
                     name: 'logable_name',
-                    label: 'TableName'
+                    label: 'Item Name'
+                },
+                {
+                    name: 'logable_type',
+                    label: 'Item Type'
                 },
                 {
                     name: 'description',

@@ -1431,100 +1431,6 @@ angular.module('app')
 
         self.tabs = [{title:'Pages Tree', name: 'pages-tree'}, {title: 'Database Manage', name:'db-manage'}];
     }]);
-angular.module('app')
-    .service('AppData', ['$http', function($http){
-        var self = this;
-
-        var data_variables = {
-            'cur_user': '/admin/api/cur_user',
-            'site_settings': '/admin/api/site_settings_dictionary'
-        };
-
-        self.reload = function(){
-            angular.forEach(data_variables, function(url, var_name){
-                self[var_name] = {};
-                self[var_name].$promise = $http.get(url).then(function(response){
-                    angular.extend(self[var_name], response.data);
-                    self[var_name].$promise = null;
-                    return self[var_name];
-                });
-            });
-        };
-
-        self.reload();
-
-        return self;
-    }]);
-var app = angular.module('app');
-
-var defaultOptions = {
-    'update': { method: 'PUT' }
-};
-
-app.factory('Settings', ['$resource', function($resource) {
-    return $resource('admin/api/settings/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Pages', ['$resource', function($resource) {
-    return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Templates', ['$resource', function($resource) {
-    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Logs', ['$resource', function($resource) {
-    return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Users', ['$resource', function($resource) {
-    return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Tags', ['$resource', function($resource) {
-    return $resource('admin/api/tags/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Templates', ['$resource', function($resource) {
-    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('SubFieldsTypes', ['$resource', function($resource) {
-    return $resource('admin/api/sub_fields_types/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('SubFieldsValues', ['$resource', function($resource) {
-    return $resource('admin/api/sub_fields_values/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('SubFields', ['$resource', function($resource) {
-    return $resource('admin/api/sub_fields/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('ControllerActions', ['$resource', function($resource) {
-    return $resource('admin/api/controller_actions/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Dictionaries', ['$resource', function($resource) {
-    return $resource('admin/api/dictionaries/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('DictionariesWords', ['$resource', function($resource) {
-    return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
-}]);
-var app_path = '/assets/js/admin-app/';
-angular.module('app')
-    .constant('AppPaths', {
-            app:            app_path,
-            app_tpls:       app_path + 'templates/',
-            modules:        app_path + 'modules/',
-            dashboard_tpls: app_path + 'modules/dashboard/templates/',
-            settings_tpls:  app_path + 'modules/settings/templates/',
-            pages_tpls:     app_path + 'modules/pages/templates/',
-            logs_tpls:      app_path + 'modules/logs/templates/',
-            users_tpls:     app_path + 'modules/users/templates/',
-            tags_tpls:      app_path + 'modules/tags/templates/',
-            templates_tpls: app_path + 'modules/templates/templates/',
-            sub_fields_tpls: app_path + 'modules/sub-fields/templates/',
-            dictionary_tpls: app_path + 'modules/dictionary/templates/'
-    });
 angular
     .module('app')
     .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
@@ -1823,66 +1729,99 @@ angular
         };
     }]);
 angular.module('app')
-    .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
-        $scope.dictionaries = Dictionaries.query();
+    .service('AppData', ['$http', function($http){
+        var self = this;
 
-        $scope.aGridDictionariesOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Dictionaries,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Dictionary',
-                    required: true
-                }
-            ]
+        var data_variables = {
+            'cur_user': '/admin/api/cur_user',
+            'site_settings': '/admin/api/site_settings_dictionary'
         };
 
-        $scope.dictionaries_words = DictionariesWords.query();
-
-        $scope.aGridDictionariesWordsOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: DictionariesWords,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Dictionary Word',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value'
-                },
-                {
-                    name: 'dictionary_id',
-                    label: 'Dictionary',
-                    type: 'select',
-                    list: 'dictionaries',
-                    required: true
-                }
-            ],
-            lists: {
-                dictionaries: $scope.dictionaries
-            }
+        self.reload = function(){
+            angular.forEach(data_variables, function(url, var_name){
+                self[var_name] = {};
+                self[var_name].$promise = $http.get(url).then(function(response){
+                    angular.extend(self[var_name], response.data);
+                    self[var_name].$promise = null;
+                    return self[var_name];
+                });
+            });
         };
+
+        self.reload();
+
+        return self;
     }]);
+var app = angular.module('app');
 
+var defaultOptions = {
+    'update': { method: 'PUT' }
+};
+
+app.factory('Settings', ['$resource', function($resource) {
+    return $resource('admin/api/settings/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Pages', ['$resource', function($resource) {
+    return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Templates', ['$resource', function($resource) {
+    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Logs', ['$resource', function($resource) {
+    return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Users', ['$resource', function($resource) {
+    return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Tags', ['$resource', function($resource) {
+    return $resource('admin/api/tags/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Templates', ['$resource', function($resource) {
+    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('SubFieldsTypes', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields_types/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubFieldsValues', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields_values/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubFields', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('ControllerActions', ['$resource', function($resource) {
+    return $resource('admin/api/controller_actions/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Dictionaries', ['$resource', function($resource) {
+    return $resource('admin/api/dictionaries/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('DictionariesWords', ['$resource', function($resource) {
+    return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
+}]);
+var app_path = '/assets/js/admin-app/';
+angular.module('app')
+    .constant('AppPaths', {
+            app:            app_path,
+            app_tpls:       app_path + 'templates/',
+            modules:        app_path + 'modules/',
+            dashboard_tpls: app_path + 'modules/dashboard/templates/',
+            settings_tpls:  app_path + 'modules/settings/templates/',
+            pages_tpls:     app_path + 'modules/pages/templates/',
+            logs_tpls:      app_path + 'modules/logs/templates/',
+            users_tpls:     app_path + 'modules/users/templates/',
+            tags_tpls:      app_path + 'modules/tags/templates/',
+            templates_tpls: app_path + 'modules/templates/templates/',
+            sub_fields_tpls: app_path + 'modules/sub-fields/templates/',
+            dictionary_tpls: app_path + 'modules/dictionary/templates/'
+    });
 angular.module('app')
     .controller('DashboardController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
         function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
@@ -2075,6 +2014,67 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
+        $scope.dictionaries = Dictionaries.query();
+
+        $scope.aGridDictionariesOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Dictionaries,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Dictionary',
+                    required: true
+                }
+            ]
+        };
+
+        $scope.dictionaries_words = DictionariesWords.query();
+
+        $scope.aGridDictionariesWordsOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: DictionariesWords,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Dictionary Word',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value'
+                },
+                {
+                    name: 'dictionary_id',
+                    label: 'Dictionary',
+                    type: 'select',
+                    list: 'dictionaries',
+                    required: true
+                }
+            ],
+            lists: {
+                dictionaries: $scope.dictionaries
+            }
+        };
+    }]);
+
+angular.module('app')
     .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
         $scope.logs = Logs.query();
 
@@ -2103,7 +2103,11 @@ angular.module('app')
                 },
                 {
                     name: 'logable_name',
-                    label: 'TableName'
+                    label: 'Item Name'
+                },
+                {
+                    name: 'logable_type',
+                    label: 'Item Type'
                 },
                 {
                     name: 'description',
@@ -2207,6 +2211,44 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = Settings.query();
+
+        $scope.aGridOptions = {
+            caption: 'All settings available in templates.',
+            orderBy: '-id',
+            resource: Settings,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Setting',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value',
+                    required: true
+                },
+                {
+                    name: 'title',
+                    label: 'Title'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'Templates', function($scope, SubFields, SubFieldsTypes, Templates) {
         $scope.sub_fields_types = SubFieldsTypes.query();
 
@@ -2290,44 +2332,6 @@ angular.module('app')
             lists: {
                 sub_fields_types: $scope.sub_fields_types
             }
-        };
-    }]);
-
-angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
-
-        $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
-            orderBy: '-id',
-            resource: Settings,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Setting',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value',
-                    required: true
-                },
-                {
-                    name: 'title',
-                    label: 'Title'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
         };
     }]);
 
