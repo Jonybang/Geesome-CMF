@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/test', ['as' => 'test', function(){
-    return dd(\App::call('App\Http\Controllers\Api\ApiController@test', ['test'=>\Auth::user()])->getData());
-}]);
+Route::post('/send-message', ['as' => 'send-message', 'uses' => 'ClientController@sendFeedbackMessage']);
 
 
 Route::get('/login', ['as' => 'login', function(){

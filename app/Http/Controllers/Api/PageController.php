@@ -17,7 +17,7 @@ class PageController extends Controller
     public function index(Request $request)
     {
         if($request->input('tree_mode'))
-            $pages = Page::where('parent_page_id', 0)->with('child_pages')->get();
+            $pages = Page::where('parent_page_id', 0)->with('child_pages_by_index')->get();
         else
             $pages = Page::all();
 

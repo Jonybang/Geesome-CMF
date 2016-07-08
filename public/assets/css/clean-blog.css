@@ -491,3 +491,37 @@ aside {
 .post-tags a {
   color: #f05f40;
 }
+.row-centered {
+  text-align:center;
+}
+
+[class*="col-centered-"] {
+  display: block;
+  float:none;
+  /* reset the text-align */
+  text-align:left;
+  /* inline-block space fix */
+  margin-right:-4px;
+}
+
+/* Default BS breakpoints */
+@media (min-width: 768px) {
+  .col-centered-sm {
+    display: inline-block
+  }
+}
+
+@media (min-width: 992px) {
+  .col-centered-md {
+    display: inline-block
+  }
+}
+
+@media (min-width: 1200px) {
+  .col-centered-lg {
+    display: inline-block
+  }
+}
+.row-centered .text-center {
+  text-align: center !important;
+}

@@ -156,6 +156,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Collective\Html\HtmlServiceProvider::class,
+
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
 
         App\Providers\SiteServiceProvider::class,
@@ -207,9 +209,10 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
-        'Helper' => App\Helpers\Helper::class
+        'Helper' => App\Helpers\Helper::class,
 
-
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
     ],
 
 ];
