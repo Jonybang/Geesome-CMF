@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', function($scope, Logs) {
+    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
         $scope.logs = Logs.query();
 
         $scope.aGridOptions = {
@@ -23,7 +23,10 @@ angular.module('app')
                 },
                 {
                     name: 'user_id',
-                    label: 'User'
+                    label: 'User',
+                    type: 'select',
+                    list: 'users',
+                    resource: Users
                 },
                 {
                     name: 'logable_name',
