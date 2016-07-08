@@ -32,7 +32,7 @@ angular.module('app')
                     name: 'content',
                     label: 'Main Content',
                     type: 'textarea',
-                    width: '300px'
+                    width: '500px'
                 }
             ]
         };
