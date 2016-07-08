@@ -30,6 +30,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
         Route::resource('settings', 'Api\SettingController');
         Route::resource('pages', 'Api\PageController');
         Route::resource('templates', 'Api\TemplateController');
+        Route::resource('mail_templates', 'Api\MailTemplateController');
         Route::resource('logs', 'Api\LogController');
         Route::resource('users', 'Api\UserController');
         Route::resource('tags', 'Api\TagController');

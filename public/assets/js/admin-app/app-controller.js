@@ -16,6 +16,10 @@ angular.module('app')
                 route:   'app.dictionary'
             },
             {
+                heading: 'Mail Templates',
+                route:   'app.mail_templates'
+            },
+            {
                 heading: 'Settings',
                 route:   'app.settings'
             },

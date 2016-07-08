@@ -16,6 +16,10 @@ app.factory('Templates', ['$resource', function($resource) {
     return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('MailTemplates', ['$resource', function($resource) {
+    return $resource('admin/api/mail_templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
 app.factory('Logs', ['$resource', function($resource) {
     return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
 }]);

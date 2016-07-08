@@ -147,10 +147,15 @@ angular
                         tplBodyNewItem += '<' + headerEl + ' scope="row"></' + headerEl + '>';
                         tplBodyItem += '<' + headerEl + ' scope="row">{{item.' + field.name +'}}</' + headerEl + '>';
                     } else {
+                        var style = 'style="';
+                        if(field.width)
+                            style += 'width:' + field.width + ';';
+                        style += '"';
+
                         //for new item row
-                        tplBodyNewItem += '<td>';
+                        tplBodyNewItem += '<td><div ' + style + ' >';
                         //for regular item row
-                        tplBodyItem += '<td ng-dblclick="item.is_edit = !item.is_edit">';
+                        tplBodyItem += '<td ng-dblclick="item.is_edit = !item.is_edit"><div ' + style + ' >';
 
                         function getFieldDirective(is_new) {
                             var item_name = (is_new ? 'new_' : '' ) + 'item';
@@ -172,8 +177,8 @@ angular
                             });
                         }
 
-                        tplBodyNewItem += getFieldDirective(true) + '</td>';
-                        tplBodyItem += getFieldDirective(false) + '</td>';
+                        tplBodyNewItem += getFieldDirective(true) + '</div></td>';
+                        tplBodyItem += getFieldDirective(false) + '</div></td>';
                     }
                 });
 
@@ -506,7 +511,7 @@ angular
             '<div ng-if="isEdit" ng-class="input_class">' +
                 inputTagBegin +
                 ' class="form-control input-sm" placeholder="{{$parent.placeholder}}"' +
-                ' ng-model="$parent.ngModel" ng-enter="$parent.save()"' +
+                ' ng-model="$parent.ngModel" ' + (type != 'textarea' ? 'ng-enter="$parent.save()"' : '') +
                 ' ng-model-options="$parent.ngModelOptions || {}"' +
                 ' ng-style="{ \'width\' : $parent.width + \'px\'}">' +
                 inputTagEnd +
@@ -1302,6 +1307,11 @@ angular
                     controller: 'PagesController',
                     templateUrl: AppPaths.pages_tpls + 'index.html'
                 })
+                .state('app.mail_templates', {
+                    url: '/mail_templates',
+                    controller: 'MailTemplatesController',
+                    templateUrl: AppPaths.mail_templates_tpls + 'index.html'
+                })
                 .state('app.dictionary', {
                     url: '/dictionary',
                     controller: 'DictionaryController',
@@ -1370,6 +1380,10 @@ angular.module('app')
             {
                 heading: 'Dictionary',
                 route:   'app.dictionary'
+            },
+            {
+                heading: 'Mail Templates',
+                route:   'app.mail_templates'
             },
             {
                 heading: 'Settings',
@@ -1770,6 +1784,10 @@ app.factory('Templates', ['$resource', function($resource) {
     return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('MailTemplates', ['$resource', function($resource) {
+    return $resource('admin/api/mail_templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
 app.factory('Logs', ['$resource', function($resource) {
     return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
 }]);
@@ -1809,18 +1827,19 @@ app.factory('DictionariesWords', ['$resource', function($resource) {
 var app_path = '/assets/js/admin-app/';
 angular.module('app')
     .constant('AppPaths', {
-            app:            app_path,
-            app_tpls:       app_path + 'templates/',
-            modules:        app_path + 'modules/',
-            dashboard_tpls: app_path + 'modules/dashboard/templates/',
-            settings_tpls:  app_path + 'modules/settings/templates/',
-            pages_tpls:     app_path + 'modules/pages/templates/',
-            logs_tpls:      app_path + 'modules/logs/templates/',
-            users_tpls:     app_path + 'modules/users/templates/',
-            tags_tpls:      app_path + 'modules/tags/templates/',
-            templates_tpls: app_path + 'modules/templates/templates/',
-            sub_fields_tpls: app_path + 'modules/sub-fields/templates/',
-            dictionary_tpls: app_path + 'modules/dictionary/templates/'
+            app:                    app_path,
+            app_tpls:               app_path + 'templates/',
+            modules:                app_path + 'modules/',
+            dashboard_tpls:         app_path + 'modules/dashboard/templates/',
+            settings_tpls:          app_path + 'modules/settings/templates/',
+            pages_tpls:             app_path + 'modules/pages/templates/',
+            mail_templates_tpls:    app_path + 'modules/mail-templates/templates/',
+            logs_tpls:              app_path + 'modules/logs/templates/',
+            users_tpls:             app_path + 'modules/users/templates/',
+            tags_tpls:              app_path + 'modules/tags/templates/',
+            templates_tpls:         app_path + 'modules/templates/templates/',
+            sub_fields_tpls:        app_path + 'modules/sub-fields/templates/',
+            dictionary_tpls:        app_path + 'modules/dictionary/templates/'
     });
 angular.module('app')
     .controller('DashboardController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
@@ -2112,6 +2131,46 @@ angular.module('app')
                 {
                     name: 'description',
                     label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('MailTemplatesController', ['$scope', 'MailTemplates', function($scope, MailTemplates) {
+        $scope.mail_templates = MailTemplates.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: MailTemplates,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Template name',
+                    new_placeholder: 'New Mail Template',
+                    required: true
+                },
+                {
+                    name: 'key',
+                    label: 'Template key',
+                    required: true
+                },
+                {
+                    name: 'title',
+                    label: 'Mail Title'
+                },
+                {
+                    name: 'content',
+                    label: 'Main Content',
+                    type: 'textarea',
+                    width: '300px'
                 }
             ]
         };

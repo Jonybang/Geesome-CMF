@@ -25,6 +25,11 @@ angular
                     controller: 'PagesController',
                     templateUrl: AppPaths.pages_tpls + 'index.html'
                 })
+                .state('app.mail_templates', {
+                    url: '/mail_templates',
+                    controller: 'MailTemplatesController',
+                    templateUrl: AppPaths.mail_templates_tpls + 'index.html'
+                })
                 .state('app.dictionary', {
                     url: '/dictionary',
                     controller: 'DictionaryController',

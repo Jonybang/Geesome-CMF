@@ -6,32 +6,31 @@ use App\UserActionLog;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;
-use \App\User;
-use \App\Setting;
+use App\MailTemplate;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class SettingController extends ApiController
+class MailTemplateController extends Controller
 {
     public function index()
     {
         return Response::json(
-            Setting::all()->toArray(),
+            MailTemplate::all()->toArray(),
             200
         );
     }
     public function show($id)
     {
         return Response::json(
-            Setting::find($id)->toArray(),
+            MailTemplate::find($id)->toArray(),
             200
         );
     }
     public function store(Request $request)
     {
         $data = $request->all();
-        $obj = Setting::create($data);
+        $obj = MailTemplate::create($data);
         UserActionLog::saveAction($obj,"create");
         return Response::json(
             $obj->toArray(),
@@ -41,8 +40,8 @@ class SettingController extends ApiController
     public function update(Request $request)
     {
         $data = $request->all();
-        $is_saved = Setting::find($data['id'])->update($data);
-        $obj = Setting::find($data['id']);
+        $is_saved = MailTemplate::find($data['id'])->update($data);
+        $obj = MailTemplate::find($data['id']);
         if ($is_saved)
             UserActionLog::saveAction($obj,"update");
         return Response::json(
@@ -52,8 +51,8 @@ class SettingController extends ApiController
     }
     public function destroy($id)
     {
-        $obj = Setting::find($id);
-        $is_destroyed = Setting::destroy($id);
+        $obj = MailTemplate::find($id);
+        $is_destroyed = MailTemplate::destroy($id);
         if ($is_destroyed)
             UserActionLog::saveAction($obj,"destroy");
         return Response::json(
