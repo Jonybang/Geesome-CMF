@@ -71,7 +71,7 @@ class SendedMail extends Model
             'mail_content' => $this->mail_template->renderContent($render_data),
         ]);
 
-        Mail::send('layouts.email', ['body' => $data['mail_content']], function($message) use ($addresses, $data)
+        Mail::later(5, 'layouts.email', ['body' => $data['mail_content']], function($message) use ($addresses, $data)
         {
             $from_email = isset($data['from_email']) ? $data['from_email'] : $data['admin_email'];
             $from_title = isset($data['from_title']) ? $data['from_title'] : $data['site_url'];
@@ -91,5 +91,7 @@ class SendedMail extends Model
         $this->result_title = $data['mail_title'];
         $this->result_content = $data['mail_content'];
         $this->result_addresses = $addresses;
+
+        $this->save();
     }
 }

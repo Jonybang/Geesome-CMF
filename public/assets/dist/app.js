@@ -1873,7 +1873,7 @@ app.factory('SubscribersGroups', ['$resource', function($resource) {
     return $resource('admin/api/subscribers_groups/:id', { id: '@id' }, defaultOptions);
 }]);
 
-app.factory('SemdedMails', ['$resource', function($resource) {
+app.factory('SendedMails', ['$resource', function($resource) {
     return $resource('admin/api/sended_mails/:id', { id: '@id' }, defaultOptions);
 }]);
 var app_path = '/assets/js/admin-app/';
@@ -1897,6 +1897,7 @@ angular.module('app')
             sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
             dictionary_tpls:        app_modules_path + 'database-manage/dictionary/templates/',
             subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/',
+            sended_mails_tpls:       app_modules_path + 'database-manage/sended-mails/templates/',
 
             mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });
