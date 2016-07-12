@@ -1288,66 +1288,107 @@ angular
                     templateUrl: AppPaths.app_tpls + 'index.html',
                     abstract: true
                 })
-                .state('app.page_create', {
+
+                //=====================================================
+                // PAGE FORM
+                //=====================================================
+
+                .state('app.page', {
                     url: '',
-                    controller: 'PageFormController',
-                    templateUrl: AppPaths.page_form_tpls + 'index.html'
+                    template: '<ui-view></ui-view>',
+                    abstract: true
                 })
-                .state('app.page_edit', {
-                    url: '/page/:pageId',
-                    controller: 'PageFormController',
-                    templateUrl: AppPaths.page_form_tpls + 'index.html'
+                    .state('app.page.create', {
+                        url: '',
+                        controller: 'PageFormController',
+                        templateUrl: AppPaths.page_form_tpls + 'index.html'
+                    })
+                    .state('app.page.edit', {
+                        url: '/page/:pageId',
+                        controller: 'PageFormController',
+                        templateUrl: AppPaths.page_form_tpls + 'index.html'
+                    })
+
+                //=====================================================
+                // DATABASE MANAGE
+                //=====================================================
+
+                .state('app.db', {
+                    url: '/db',
+                    template: '<ui-view></ui-view>',
+                    abstract: true
                 })
-                .state('app.pages', {
-                    url: '/pages',
-                    controller: 'PagesController',
-                    templateUrl: AppPaths.pages_tpls + 'index.html'
+                    .state('app.db.pages', {
+                        url: '/pages',
+                        controller: 'PagesController',
+                        templateUrl: AppPaths.pages_tpls + 'index.html'
+                    })
+                    .state('app.db.dictionary', {
+                        url: '/dictionary',
+                        controller: 'DictionaryController',
+                        templateUrl: AppPaths.dictionary_tpls + 'index.html'
+                    })
+                    .state('app.db.mail_templates', {
+                        url: '/mail_templates',
+                        controller: 'MailTemplatesController',
+                        templateUrl: AppPaths.mail_templates_tpls + 'index.html'
+                    })
+                    .state('app.db.subscribers', {
+                        url: '/subscribers',
+                        controller: 'SubscribersController',
+                        templateUrl: AppPaths.subscribers_tpls + 'index.html'
+                    })
+                    .state('app.db.sended_mails', {
+                        url: '/sended_mails',
+                        controller: 'SendedMailsController',
+                        templateUrl: AppPaths.sended_mails_tpls + 'index.html'
+                    })
+                    .state('app.db.settings', {
+                        url: '/settings',
+                        controller: 'SettingsController',
+                        templateUrl: AppPaths.settings_tpls + 'index.html'
+                    })
+                    .state('app.db.logs', {
+                        url: '/logs',
+                        controller: 'LogsController',
+                        templateUrl: AppPaths.logs_tpls + 'index.html'
+                    })
+                    .state('app.db.tags', {
+                        url: '/tags',
+                        controller: 'TagsController',
+                        templateUrl: AppPaths.tags_tpls + 'index.html'
+                    })
+                    .state('app.db.templates', {
+                        url: '/templates',
+                        controller: 'TemplatesController',
+                        templateUrl: AppPaths.templates_tpls + 'index.html'
+                    })
+                    .state('app.db.sub_fields', {
+                        url: '/sub_fields',
+                        controller: 'SubFieldsController',
+                        templateUrl: AppPaths.sub_fields_tpls + 'index.html'
+                    })
+                    .state('app.db.users', {
+                        url: '/users',
+                        controller: 'UserController',
+                        templateUrl: AppPaths.users_tpls + 'index.html'
+                    })
+
+                //=====================================================
+                // DATABASE MANAGE
+                //=====================================================
+
+                .state('app.manage', {
+                    url: '/manage',
+                    template: '<ui-view></ui-view>',
+                    abstract: true
                 })
-                .state('app.dictionary', {
-                    url: '/dictionary',
-                    controller: 'DictionaryController',
-                    templateUrl: AppPaths.dictionary_tpls + 'index.html'
-                })
-                .state('app.mail_templates', {
-                    url: '/mail_templates',
-                    controller: 'MailTemplatesController',
-                    templateUrl: AppPaths.mail_templates_tpls + 'index.html'
-                })
-                .state('app.subscribers', {
-                    url: '/subscribers',
-                    controller: 'SubscribersController',
-                    templateUrl: AppPaths.subscribers_tpls + 'index.html'
-                })
-                .state('app.settings', {
-                    url: '/settings',
-                    controller: 'SettingsController',
-                    templateUrl: AppPaths.settings_tpls + 'index.html'
-                })
-                .state('app.logs', {
-                    url: '/logs',
-                    controller: 'LogsController',
-                    templateUrl: AppPaths.logs_tpls + 'index.html'
-                })
-                .state('app.tags', {
-                    url: '/tags',
-                    controller: 'TagsController',
-                    templateUrl: AppPaths.tags_tpls + 'index.html'
-                })
-                .state('app.templates', {
-                    url: '/templates',
-                    controller: 'TemplatesController',
-                    templateUrl: AppPaths.templates_tpls + 'index.html'
-                })
-                .state('app.sub_fields', {
-                    url: '/sub_fields',
-                    controller: 'SubFieldsController',
-                    templateUrl: AppPaths.sub_fields_tpls + 'index.html'
-                })
-                .state('app.users', {
-                    url: '/users',
-                    controller: 'UserController',
-                    templateUrl: AppPaths.users_tpls + 'index.html'
-                });
+                    .state('app.manage.mailing', {
+                        url: '/mailing',
+                        controller: 'MailingController',
+                        templateUrl: AppPaths.mailing_tpls + 'index.html'
+                    });
+
             $locationProvider.html5Mode(true).hashPrefix('!');
             $urlRouterProvider.otherwise("/admin");
         }])
@@ -1372,48 +1413,47 @@ angular.module('app')
         self.menuList = [
             {
                 heading: 'Pages',
-                route:   'app.pages'
+                route:   'app.db.pages'
             },
             {
                 heading: 'Dictionary',
-                route:   'app.dictionary'
+                route:   'app.db.dictionary'
             },
             {
                 heading: 'Mail Templates',
-                route:   'app.mail_templates'
+                route:   'app.db.mail_templates'
             },
             {
                 heading: 'Subscribers',
-                route:   'app.subscribers'
+                route:   'app.db.subscribers'
+            },
+            {
+                heading: 'Sended Mails',
+                route:   'app.db.sended_mails'
             },
             {
                 heading: 'Settings',
-                route:   'app.settings'
+                route:   'app.db.settings'
             },
             {
                 heading: 'Logs',
-                route:   'app.logs'
+                route:   'app.db.logs'
             },
             {
                 heading: 'Tags',
-                route:   'app.tags'
+                route:   'app.db.tags'
             },
             {
                 heading: 'Templates',
-                route:   'app.templates'
+                route:   'app.db.templates'
             },
             {
                 heading: 'SubFields',
-                route:   'app.sub_fields'
+                route:   'app.db.sub_fields'
             },
             {
                 heading: 'Users',
-                route:   'app.users'
-            },
-            {
-                heading: 'Accounts',
-                route:   'app.accounts',
-                disable: true
+                route:   'app.db.users'
             }
         ];
 
@@ -1832,6 +1872,10 @@ app.factory('Subscribers', ['$resource', function($resource) {
 app.factory('SubscribersGroups', ['$resource', function($resource) {
     return $resource('admin/api/subscribers_groups/:id', { id: '@id' }, defaultOptions);
 }]);
+
+app.factory('SemdedMails', ['$resource', function($resource) {
+    return $resource('admin/api/sended_mails/:id', { id: '@id' }, defaultOptions);
+}]);
 var app_path = '/assets/js/admin-app/';
 var app_modules_path = app_path + 'modules/';
 
@@ -1842,6 +1886,7 @@ angular.module('app')
             modules:                app_modules_path,
             db_manage_module:       app_modules_path + 'database-manage',
             page_form_tpls:         app_modules_path + 'page-form/templates/',
+
             settings_tpls:          app_modules_path + 'database-manage/settings/templates/',
             pages_tpls:             app_modules_path + 'database-manage/pages/templates/',
             mail_templates_tpls:    app_modules_path + 'database-manage/mail-templates/templates/',
@@ -1851,7 +1896,9 @@ angular.module('app')
             templates_tpls:         app_modules_path + 'database-manage/templates/templates/',
             sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
             dictionary_tpls:        app_modules_path + 'database-manage/dictionary/templates/',
-            subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/'
+            subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/',
+
+            mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });
 angular.module('app')
     .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
@@ -2285,6 +2332,63 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('SendedMailsController', ['$scope', 'SendedMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function($scope, SendedMails, MailTemplates, Pages, SubscribersGroups) {
+        $scope.sended_mails = SendedMails.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: SendedMails,
+            create: false,
+            edit: false,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'result_title',
+                    modal: 'self',
+                    label: 'Result Title'
+                },
+                {
+                    name: 'result_content',
+                    label: 'Result Content',
+                    type: 'textarea'
+                },
+                {
+                    name: 'result_addresses',
+                    label: 'Addresses Mail',
+                    type: 'textarea'
+                },
+                {
+                    name: 'mail_template_id',
+                    label: 'Mail template',
+                    type: 'select',
+                    resource: MailTemplates,
+                    list: 'mail_templates'
+                },
+                {
+                    name: 'page_id',
+                    label: 'Source page',
+                    type: 'select',
+                    resource: Pages,
+                    list: 'pages'
+                },
+                {
+                    name: 'subscribers_groups_ids',
+                    label: 'Subscribers groups',
+                    type: 'multiselect',
+                    resource: SubscribersGroups,
+                    list: 'subscribers_groups',
+                    table_hide: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
         $scope.settings = Settings.query();
 
@@ -2429,8 +2533,19 @@ angular.module('app')
                     label: 'Name',
                     new_placeholder: 'New Sub Field Type',
                     required: true
+                },
+                {
+                    name: 'subscribers_ids',
+                    label: 'Subscribers',
+                    type: 'multiselect',
+                    resource: Subscribers,
+                    list: 'subscribers',
+                    table_hide: true
                 }
-            ]
+            ],
+            lists: {
+                subscribers: $scope.subscribers
+            }
         };
 
         $scope.subscribers = Subscribers.query();
@@ -2446,11 +2561,20 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'email',
+                    name: 'mail',
                     modal: 'self',
-                    label: 'Email',
+                    label: 'Mail',
                     new_placeholder: 'New Subscriber',
                     required: true
+                },
+                {
+                    name: 'provider',
+                    label: 'Provider',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'user_agent',
@@ -2458,10 +2582,12 @@ angular.module('app')
                     type: 'textarea'
                 },
                 {
-                    name: 'subscriber_group_id',
-                    label: 'Subscriber group',
-                    type: 'select',
-                    list: 'subscribers_groups'
+                    name: 'groups_ids',
+                    label: 'Subscribers groups',
+                    type: 'multiselect',
+                    resource: SubscribersGroups,
+                    list: 'subscribers_groups',
+                    table_hide: true
                 }
             ],
             lists: {
@@ -2581,5 +2707,196 @@ angular.module('app')
                     required: true
                 }
             ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
+        var defaultPage = new Pages();
+
+        if($state.params.pageId){
+            $scope.page = Pages.get({id: $state.params.pageId});
+            $scope.page.id = $state.params.pageId;
+        } else {
+            defaultPage.is_menu_hide = true;
+            defaultPage.tags_ids = [];
+            defaultPage.controller_actions_ids = [];
+
+            $scope.page = angular.copy(defaultPage);
+        }
+
+        //Get current user and set his id as author id
+        function setCurUserAuthorId(){
+            defaultPage.author_id = AppData.cur_user.id;
+            angular.extend($scope.page, defaultPage);
+        }
+        if(AppData.cur_user.$promise)
+            AppData.cur_user.$promise.then(setCurUserAuthorId);
+        else
+            setCurUserAuthorId();
+
+        var site_settings = {};
+        //Get site settings and set default values to page object
+        function setDefaultSettings(){
+            site_settings = AppData.site_settings;
+            defaultPage.template_id =  site_settings.default_template_id;
+            angular.extend($scope.page, defaultPage);
+        }
+        if(AppData.site_settings.$promise)
+            AppData.site_settings.$promise.then(setDefaultSettings);
+        else
+            setDefaultSettings();
+
+        var old_alias = '';
+        $scope.$watch('page.title', function(title){
+            if(!title)
+                return;
+
+            function changeAlias(new_alias){
+                //Change alias if its empty or if it not touched by manual
+                if((!old_alias && $scope.page.alias) || (old_alias && $scope.page.alias != old_alias))
+                    return;
+
+                $scope.page.alias = new_alias;
+                old_alias = $scope.page.alias;
+            }
+
+            //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
+            //if not: just insert replace spaces to dashes and get lowercase title for set alias
+            if(title && site_settings.yandex_translate_api_key){
+                $http.get(
+                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
+                    '?key=' + site_settings.yandex_translate_api_key +
+                    '&text=' + title +
+                    '&lang=en')
+                    .then(function(result){
+                        changeAlias(result.data.text[0].replace(/\s+/g, '-').toLowerCase());
+                    });
+            } else {
+                changeAlias(title.replace(/\s+/g, '-').toLowerCase());
+            }
+        });
+
+        $scope.getSubFields = function(){
+            SubFields.query({'template_id': $scope.page.template_id}).$promise.then(function(data){
+                $scope.sub_fields = data;
+            });
+        };
+
+        $scope.$watch('page.template_id', function(template_id){
+            if(!template_id)
+                return;
+
+            $scope.getSubFields();
+
+            ControllerActions.query({'template_id': template_id}).$promise.then(function(data){
+                $scope.page.controller_actions_ids = data.map(function(action){return action.id});
+            });
+        });
+        $scope.subFieldsApi = {};
+
+        //Models for select inputs
+        $scope.models = {
+            templates: Templates,
+            pages: Pages,
+            users: Users,
+            tags: Tags,
+            controller_actions: ControllerActions
+        };
+        //Fields for adder functional at select inputs
+        $scope.fields = {
+            templates: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'path',
+                    label: 'Path'
+                }
+            ],
+            pages: [
+                {
+                    name: 'title',
+                    label: 'Title'
+                },
+                {
+                    name: 'template_id',
+                    label: 'Template',
+                    type: 'select',
+                    model: Templates,
+                    list: 'templates'
+                }
+            ],
+            users: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'email',
+                    label: 'Email'
+                },
+                {
+                    name: 'password',
+                    label: 'Password',
+                    type: 'password'
+                }
+            ],
+            tags: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                }
+            ],
+            controller_actions: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                }
+            ]
+        };
+
+        $scope.savePage = function(){
+            //Validate for require fields
+            $scope.hasErrors = {};
+            var required = ['title', 'template_id'];
+            required.forEach(function(reqField){
+                if(!$scope.page[reqField])
+                    $scope.hasErrors[reqField] = true;
+                else
+                    delete $scope.hasErrors[reqField];
+            });
+
+            if(!_.isEmpty($scope.hasErrors))
+                return;
+
+            //If page is new - Create, if it not - Update
+            var is_new = $scope.page.id ? false : true;
+
+            var page_query;
+            if(is_new)
+                page_query = $scope.page.$save();
+            else
+                page_query = $scope.page.$update();
+
+            page_query.then(function(result_page){
+                //After save page - we have it id, so save sub fields
+                $scope.subFieldsApi.saveSubFieldsValues(result_page);
+
+                if(is_new)
+                    $scope.page = angular.copy(defaultPage);
+                else
+                    $scope.page = result_page;
+
+                $scope.alert = 'Page saved!';
+
+                $scope.app.refreshPagesTree();
+            })
+        };
+
+        $scope.closeAlert = function(){
+            $scope.alert = ''
         };
     }]);

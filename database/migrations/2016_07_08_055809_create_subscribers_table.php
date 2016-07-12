@@ -15,11 +15,10 @@ class CreateSubscribersTable extends Migration
         Schema::create('subscribers', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('email');
-            $table->text('user_agent');
-
-            $table->integer('subscriber_group_id')->unsigned()->nullable();
-            $table->foreign('subscriber_group_id')->references('id')->on('subscriber_groups');
+            $table->string('name')->nullable();
+            $table->string('mail');
+            $table->string('provider');
+            $table->text('user_agent')->nullable();
 
             $table->timestamps();
         });

@@ -9,13 +9,28 @@ class Subscriber extends Model
     protected $table = 'subscribers';
     //
     protected $fillable = [
-        'email',
-        'user_agent',
-        'subscriber_group_id'
+        'name',
+        'mail',
+        'provider',
+        'user_agent'
     ];
 
-    public function group()
+    public function groups()
     {
-        return $this->belongsTo('App\SubFieldType', 'id', 'subscriber_group_id');
+        return $this->belongsToMany('App\SubscriberGroup', 'subscribers_subscriber_groups', 'subscriber_id', 'subscriber_group_id');
+    }
+
+    public function setGroupsIdsAttribute($value)
+    {
+        $this->groups()->detach();
+        foreach($value as $group_id)
+            $this->groups()->attach($group_id);
+    }
+    public function getGroupsIdsAttribute()
+    {
+        $ids = [];
+        foreach($this->groups as $group)
+            $ids[] = $group->id;
+        return $ids;
     }
 }

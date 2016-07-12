@@ -11,23 +11,37 @@
 |
 */
 
-Route::post('/send-message', ['as' => 'send-message', 'uses' => 'ClientController@sendFeedbackMessage']);
+//========================================================================================================
+// CUSTOM ACTIONS
+//========================================================================================================
 
+Route::post('/send-message', ['as' => 'send-message', 'uses' => 'ClientController@sendFeedbackMessage']);
 Route::post('/subscribe', ['as' => 'subscribe', 'uses' => 'ClientController@subscribe']);
+
+//========================================================================================================
+// AUTHENTICATE
+//========================================================================================================
 
 Route::get('/login', ['as' => 'login', function(){
     return view('admin.login');
 }]);
-
 Route::post('/login', 'Auth\AuthController@authenticate');
-
 Route::get('/logout', 'Auth\AuthController@logout');
+
+//========================================================================================================
+// ADMIN AND API
+//========================================================================================================
 
 Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
+        //Sub data
         Route::get('/cur_user', 'Api\ApiController@cur_user');
         Route::get('/site_settings_dictionary', 'Api\ApiController@site_settings_dictionary');
 
+        //Sub actions
+        Route::post('/cur_user', 'Api\ApiController@send_mail');
+
+        //REST API
         Route::resource('settings', 'Api\SettingController');
         Route::resource('pages', 'Api\PageController');
         Route::resource('templates', 'Api\TemplateController');
@@ -47,17 +61,22 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
 
         Route::resource('subscribers', 'Api\SubscriberController');
         Route::resource('subscribers_groups', 'Api\SubscriberGroupController');
+        Route::resource('sended_mails', 'Api\SendedMailController');
     });
-
 
     Route::get('/', function () {
         return view('admin.index');
     });
 
+    //For angular HTML5 routes
     Route::get('{any}', function ($any) {
         return view('admin.index');
     })->where('any', '.*');
 });
+
+//========================================================================================================
+// CMS CORE - RENDER PAGE AND SET DATA FOR TEMPLATE
+//========================================================================================================
 
 Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null) {
     $page = null;

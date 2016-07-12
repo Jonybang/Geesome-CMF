@@ -18,8 +18,19 @@ angular.module('app')
                     label: 'Name',
                     new_placeholder: 'New Sub Field Type',
                     required: true
+                },
+                {
+                    name: 'subscribers_ids',
+                    label: 'Subscribers',
+                    type: 'multiselect',
+                    resource: Subscribers,
+                    list: 'subscribers',
+                    table_hide: true
                 }
-            ]
+            ],
+            lists: {
+                subscribers: $scope.subscribers
+            }
         };
 
         $scope.subscribers = Subscribers.query();
@@ -35,11 +46,20 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'email',
+                    name: 'mail',
                     modal: 'self',
-                    label: 'Email',
+                    label: 'Mail',
                     new_placeholder: 'New Subscriber',
                     required: true
+                },
+                {
+                    name: 'provider',
+                    label: 'Provider',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'user_agent',
@@ -47,10 +67,12 @@ angular.module('app')
                     type: 'textarea'
                 },
                 {
-                    name: 'subscriber_group_id',
-                    label: 'Subscriber group',
-                    type: 'select',
-                    list: 'subscribers_groups'
+                    name: 'groups_ids',
+                    label: 'Subscribers groups',
+                    type: 'multiselect',
+                    resource: SubscribersGroups,
+                    list: 'subscribers_groups',
+                    table_hide: true
                 }
             ],
             lists: {

@@ -17,7 +17,7 @@ class CreateMailTemplatesTable extends Migration
 
             $table->string('name');
             $table->string('key');
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->text('content');
 
             $table->timestamps();

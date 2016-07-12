@@ -33,28 +33,32 @@ class ClientController extends Controller
 
         $request_data = $request->all();
         $site = substr(env('APP_URL'), 7);
-        $request_data['site'] = $site;
 
-        $data = [
-            'admin_email' => \App\Setting::where('name', 'feedback_email')->first()->value,
-            'site_url' => $site,
-            'request' => $request_data,
-            'mail_title' => $mail_template->renderTitle($request_data),
-            'mail_content' => $mail_template->renderContent($request_data),
-        ];
+        $mail = new \App\SendedMail([
+            'mail_template_id' => $mail_template->id
+        ]);
 
-        Mail::send('layouts.email', ['body' => $data['mail_content']], function($message) use ($data)
-        {
-            $message->from($data['request']['email'], '[' . $data['site_url'] . '] feedback form');
+        $mail_data = array_merge(
+            [
+                'from_email' => $request_data['email'],
+                'from_title' => '[' . $site . '] feedback form'
+            ],
+            $request_data
+        );
 
-            $message->to($data['admin_email'])->subject($data['mail_title']);
-        });
+        $mail->sendMailsToAddresses(
+            [ \App\Setting::where('name', 'admin_email')->first()->value ],
+            $mail_data
+        );
+
+        $mail->save();
         return redirect('thanks-for-feedback')->withInput();
     }
 
     public function subscribe(Request $request){
         \App\Subscriber::create([
-            'email' => $request->input('email'),
+            'mail' => $request->input('email'),
+            'provider' => 'email',
             'user_agent' => $request->header('User-Agent')
         ]);
         return redirect('thanks-for-subscribe')->withInput();

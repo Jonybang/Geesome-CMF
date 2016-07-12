@@ -31,6 +31,12 @@ class SubscriberController extends Controller
     {
         $data = $request->all();
         $obj = Subscriber::create($data);
+
+        if(isset($data['groups_ids'])){
+            $obj->groups_ids = $data['groups_ids'];
+            $obj->save();
+        }
+
         UserActionLog::saveAction($obj,"create");
         return Response::json(
             $obj->toArray(),
@@ -42,6 +48,12 @@ class SubscriberController extends Controller
         $data = $request->all();
         $is_saved = Subscriber::find($data['id'])->update($data);
         $obj =  Subscriber::find($data['id']);
+
+        if(isset($data['groups_ids'])){
+            $obj->groups_ids = $data['groups_ids'];
+            $obj->save();
+        }
+
         if ($is_saved)
             UserActionLog::saveAction($obj,"update");
         return Response::json(

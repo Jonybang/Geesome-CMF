@@ -1,0 +1,75 @@
+<h2>Mailing manager</h2>
+
+<button class="btn btn-primary" ng-click="send()">Send emails</button>
+
+<br>
+<uib-alert ng-if="alert" type="success" close="closeAlert()" dismiss-on-timeout="3000">{{alert}}</uib-alert>
+<br>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Mailing data</h3>
+            </div>
+            <div class="panel-body">
+                <label>Subscribers group:</label>
+                <ae-select-input ng-model="mail.subscriber" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" type="multiselect"></ae-select-input>
+
+                <div>
+                    <a href ng-click="subTitleDescriptionShow = !subTitleDescriptionShow" ng-class="{'dropup': subTitleDescriptionShow}">
+                        Edit sub title and description <span class="caret"></span><br>
+                    </a>
+                    <div ng-if="subTitleDescriptionShow">
+                        <label>Sub title:</label>
+                        <ae-text-input ng-model="page.sub_title" has-error="hasErrors.sub_title" is-edit="true"></ae-text-input>
+
+                        <label>Description:</label>
+                        <ae-text-input ng-model="page.description" has-error="hasErrors.description" type="textarea" is-edit="true"></ae-text-input>
+                    </div>
+                </div>
+
+                <label>Content:</label>
+
+                <wiz-markdown-editor content="page.content" textareaclass="form-control">
+                    <wiz-toolbar-button command="bold">Bold</wiz-toolbar-button>
+                    <wiz-toolbar-button command="italic">Italic</wiz-toolbar-button>
+                    <wiz-toolbar-button command="undo">UNDO</wiz-toolbar-button>
+                    <wiz-toolbar-button command="redo">REDO</wiz-toolbar-button>
+                    <wiz-toolbar-button command="heading">HEADING</wiz-toolbar-button>
+                    <wiz-toolbar-button command="code">CODE</wiz-toolbar-button>
+                    <wiz-toolbar-button command="ullist">ULLIST</wiz-toolbar-button>
+                    <wiz-toolbar-button command="ollist">OLLIST</wiz-toolbar-button>
+                    <wiz-toolbar-button command="indent">INDENT</wiz-toolbar-button>
+                    <wiz-toolbar-button command="outdent">OUTDENT</wiz-toolbar-button>
+                    <wiz-toolbar-button command="link">LINK</wiz-toolbar-button>
+                    <wiz-toolbar-button command="img">IMG</wiz-toolbar-button>
+                    <wiz-toolbar-button command="hr">HR</wiz-toolbar-button>
+                    <wiz-toolbar-button command="h0">H0</wiz-toolbar-button>
+                    <wiz-toolbar-button command="h1">H1</wiz-toolbar-button>
+                    <wiz-toolbar-button command="h2">H2</wiz-toolbar-button>
+                    <wiz-toolbar-button command="h3">H3</wiz-toolbar-button>
+                    <wiz-toolbar-button command="h4">H4</wiz-toolbar-button>
+                    <wiz-toolbar-button command="h5">H5</wiz-toolbar-button>
+                    <wiz-toolbar-button command="h6">H6</wiz-toolbar-button>
+                </wiz-markdown-editor>
+            </div>
+            <div class="panel-footer">
+                <label>Content preview:</label>
+                <wiz-markdown content="page.content"></wiz-markdown>
+            </div>
+
+            <div class="panel-body">
+                <label>Tags:</label>
+                <ae-select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" type="multiselect"></ae-select-input>
+            </div>
+
+            <div class="panel-body">
+                <h4>Sub fields:</h4>
+                <sub-fields-manager ng-model="sub_fields" page-resource="page" api="subFieldsApi" refresh-sub-fields="getSubFields()"></sub-fields-manager>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="btn btn-primary" ng-click="send()">Send emails</button>

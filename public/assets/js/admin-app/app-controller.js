@@ -5,48 +5,47 @@ angular.module('app')
         self.menuList = [
             {
                 heading: 'Pages',
-                route:   'app.pages'
+                route:   'app.db.pages'
             },
             {
                 heading: 'Dictionary',
-                route:   'app.dictionary'
+                route:   'app.db.dictionary'
             },
             {
                 heading: 'Mail Templates',
-                route:   'app.mail_templates'
+                route:   'app.db.mail_templates'
             },
             {
                 heading: 'Subscribers',
-                route:   'app.subscribers'
+                route:   'app.db.subscribers'
+            },
+            {
+                heading: 'Sended Mails',
+                route:   'app.db.sended_mails'
             },
             {
                 heading: 'Settings',
-                route:   'app.settings'
+                route:   'app.db.settings'
             },
             {
                 heading: 'Logs',
-                route:   'app.logs'
+                route:   'app.db.logs'
             },
             {
                 heading: 'Tags',
-                route:   'app.tags'
+                route:   'app.db.tags'
             },
             {
                 heading: 'Templates',
-                route:   'app.templates'
+                route:   'app.db.templates'
             },
             {
                 heading: 'SubFields',
-                route:   'app.sub_fields'
+                route:   'app.db.sub_fields'
             },
             {
                 heading: 'Users',
-                route:   'app.users'
-            },
-            {
-                heading: 'Accounts',
-                route:   'app.accounts',
-                disable: true
+                route:   'app.db.users'
             }
         ];
 
