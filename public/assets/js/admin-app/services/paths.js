@@ -1,18 +1,21 @@
 var app_path = '/assets/js/admin-app/';
+var app_modules_path = app_path + 'modules/';
+
 angular.module('app')
     .constant('AppPaths', {
             app:                    app_path,
             app_tpls:               app_path + 'templates/',
-            modules:                app_path + 'modules/',
-            page_form_tpls:         app_path + 'modules/page-form/templates/',
-            settings_tpls:          app_path + 'modules/settings/templates/',
-            pages_tpls:             app_path + 'modules/pages/templates/',
-            mail_templates_tpls:    app_path + 'modules/mail-templates/templates/',
-            logs_tpls:              app_path + 'modules/logs/templates/',
-            users_tpls:             app_path + 'modules/users/templates/',
-            tags_tpls:              app_path + 'modules/tags/templates/',
-            templates_tpls:         app_path + 'modules/templates/templates/',
-            sub_fields_tpls:        app_path + 'modules/sub-fields/templates/',
-            dictionary_tpls:        app_path + 'modules/dictionary/templates/',
-            subscribers_tpls:       app_path + 'modules/subscribers/templates/'
+            modules:                app_modules_path,
+            db_manage_module:       app_modules_path + 'database-manage',
+            page_form_tpls:         app_modules_path + 'page-form/templates/',
+            settings_tpls:          app_modules_path + 'database-manage/settings/templates/',
+            pages_tpls:             app_modules_path + 'database-manage/pages/templates/',
+            mail_templates_tpls:    app_modules_path + 'database-manage/mail-templates/templates/',
+            logs_tpls:              app_modules_path + 'database-manage/logs/templates/',
+            users_tpls:             app_modules_path + 'database-manage/users/templates/',
+            tags_tpls:              app_modules_path + 'database-manage/tags/templates/',
+            templates_tpls:         app_modules_path + 'database-manage/templates/templates/',
+            sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
+            dictionary_tpls:        app_modules_path + 'database-manage/dictionary/templates/',
+            subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/'
     });
