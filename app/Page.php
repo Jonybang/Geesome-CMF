@@ -81,11 +81,7 @@ class Page extends Model
 
     public function getMenuTitleAttribute()
     {
-        try {
-            return $this->menu_title ? $this->menu_title : $this->title;
-        } catch(\ErrorException $e){
-            return $this->title;
-        }
+        return isset($this->attributes['menu_title']) ? $this->attributes['menu_title'] : $this->title;
     }
 
     public function setTagsIdsAttribute($value)

@@ -25,7 +25,8 @@ angular.module('app')
                     type: 'multiselect',
                     resource: Subscribers,
                     list: 'subscribers',
-                    table_hide: true
+                    table_hide: true,
+                    or_name_field: 'mail'
                 }
             ],
             lists: {

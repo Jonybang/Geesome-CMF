@@ -33,4 +33,9 @@ class Subscriber extends Model
             $ids[] = $group->id;
         return $ids;
     }
+
+    public function getNameAttribute()
+    {
+        return isset($this->attributes['name']) ? $this->attributes['name'] : $this->email;
+    }
 }

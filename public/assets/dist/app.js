@@ -484,7 +484,7 @@ angular
             var inputTagEnd = '';
 
             if(options && options.modal_link)
-                text = '<a a-modal-resource="modalResource" on-save="save()" href>' + text + '</a>';
+                text = '<a a-modal-resource="modalResource" a-modal-options="modalOptions" on-save="save()" href>' + text + '</a>';
             else if(type == 'textarea'){
                 text = '<pre ng-if="$parent.ngModel">{{$parent.ngModel}}</pre>';
 
@@ -531,6 +531,7 @@ angular
                 isNew: '=?',
                 isEdit: '=?',
                 modalResource: '=?',
+                modalOptions: '=?',
                 hasError: '=?',
                 //callbacks
                 ngChange: '&',
@@ -682,7 +683,7 @@ angular
             };
             if(type == 'multiselect'){
                 uiSelect.tags = 'multiple close-on-select="false" ';
-                uiSelect.match = '$item.name || $item.title';
+                uiSelect.match = '$item[$parent.nameField] || $item.name || $item[$parent.orNameField]';
             }
             if(options.adder){
                 uiSelect.subClasses = 'btn-group select-adder';
@@ -699,7 +700,7 @@ angular
                         '</ui-select-match>' +
 
                         '<ui-select-choices repeat="item.id as item in $parent.list | filter: $select.search track by $index">' +
-                            '<div ng-bind-html="item.name || item.title | highlight: $select.search"></div>' +
+                            '<div ng-bind-html="(item[$parent.nameField] || item.name || item[$parent.orNameField]) | highlight: $select.search"></div>' +
                         '</ui-select-choices>' +
                     '</ui-select>';
 
@@ -749,6 +750,8 @@ angular
                 onSave: '&',
                 //sub
                 adder: '=?',
+                nameField: '@',
+                orNameField: '@',
                 placeholder: '@',
                 name: '@',
                 type: '@' //select or multiselect
@@ -823,11 +826,11 @@ angular
                     if(Array.isArray(newVal)){
                         var names = [];
                         newVal.forEach(function(val){
-                            names.push(AEditHelpers.getNameById(scope.list, val));
+                            names.push(AEditHelpers.getNameById(scope.list, val, scope.nameField, scope.orNameField));
                         });
                         scope.selectedName = names.join(', ');
                     } else {
-                        scope.selectedName = AEditHelpers.getNameById(scope.list, newVal);
+                        scope.selectedName = AEditHelpers.getNameById(scope.list, newVal, scope.nameField, scope.orNameField);
                     }
 
                     scope.ngModelStr = scope.selectedName;
@@ -1022,15 +1025,15 @@ angular
             scope: {
                 //require
                 aModalResource: '=',
+                aModalOptions: '=?',
                 isEdit: '=?',
-                options: '=?',
                 //callbacks
                 onSave: '&'
             },
             link: function (scope, element, attrs) {
 
-                var resource_name = attrs.aModalResource;
-                scope.options = scope.options || AEditConfig.currentOptions;
+                var resource_name = attrs.aModalResource + new Date().getTime();
+                scope.options = scope.aModalOptions || AEditConfig.currentOptions;
 
                 element.on("click", function () {
                     var template = cache.get(resource_name) || '';
@@ -1205,11 +1208,18 @@ angular.module('a-edit')
                     'is-new="' + (config.is_new ? 'true': 'false') + '" '+
                     'placeholder="' + ((config.always_edit ? field.new_placeholder : field.placeholder) || '') + '" ';
 
-                if(field.type == 'file' || field.type == 'multifile')
+                if(directive == 'file-upload')
                     output += 'uploader="' + item_name + '.' + field_name + '__uploader" ';
 
-                if(field.modal && !config.already_modal && field.modal == 'self')
+                if(directive == 'select-input'){
+                    output += 'name-field="' + (field.name_field || '') + '" ';
+                    output += 'or-name-field="' + field.or_name_field + '" ';
+                }
+
+                if(field.modal && !config.already_modal && field.modal == 'self'){
                     output += 'modal-resource="' + item_name + '" ';
+                    output += 'modal-options="actualOptions" ';
+                }
 
                 output += '></ae-' + directive + '>';
 
@@ -1257,7 +1267,7 @@ angular.module('a-edit')
                 }
                 return true;
             },
-            getNameById: function (list, val){
+            getNameById: function (list, val, nameField, orNameField){
                 var resultName = '';
 
                 if(!list || !list.length)
@@ -1266,7 +1276,7 @@ angular.module('a-edit')
                 list.some(function(obj){
                     var result = obj.id == val;
                     if(result)
-                        resultName = obj.name || obj.title;
+                        resultName = obj[nameField] || obj.name || obj[orNameField];
                     return result;
                 });
                 return resultName;
@@ -2541,7 +2551,8 @@ angular.module('app')
                     type: 'multiselect',
                     resource: Subscribers,
                     list: 'subscribers',
-                    table_hide: true
+                    table_hide: true,
+                    or_name_field: 'mail'
                 }
             ],
             lists: {

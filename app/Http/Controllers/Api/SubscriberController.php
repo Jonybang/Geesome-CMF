@@ -22,8 +22,12 @@ class SubscriberController extends Controller
     }
     public function show($id)
     {
+        $obj = Subscriber::find($id);
+        $obj_data = $obj->toArray();
+        $obj_data['groups_ids'] = $obj->groups_ids;
+
         return Response::json(
-            Subscriber::find($id)->toArray(),
+            $obj_data,
             200
         );
     }
