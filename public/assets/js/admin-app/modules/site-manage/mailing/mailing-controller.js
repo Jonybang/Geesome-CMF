@@ -83,7 +83,7 @@ angular.module('app')
                 $scope.hasErrors = {};
                 var required = ['subscribers_groups_ids', 'mail_template_id'];
                 required.forEach(function(reqField){
-                    if(!$scope.mail[reqField] || (angular.isArray($scope.mail[reqField]) || !$scope.mail[reqField].length))
+                    if(!$scope.mail[reqField] || (angular.isArray($scope.mail[reqField]) && !$scope.mail[reqField].length))
                         $scope.hasErrors[reqField] = true;
                     else
                         delete $scope.hasErrors[reqField];

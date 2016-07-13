@@ -32,7 +32,7 @@ class SendedMailController extends Controller
         $data = $request->all();
         $obj = new SendedMail($data);
 
-        $obj->sendMailsToAddresses($data['subscribers_groups_ids']);
+        $obj->sendMailsToSubscribersGroups($data['subscribers_groups_ids']);
         $obj->save();
 
         $obj->subscribers_groups_ids = $data['subscribers_groups_ids'];

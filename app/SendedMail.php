@@ -80,7 +80,6 @@ class SendedMail extends Model
 
             $message->from($from_email, $from_title);
             $message->subject($data['mail_title']);
-
             $message->to($addresses[0]);
 
             if(count($addresses) > 1){
