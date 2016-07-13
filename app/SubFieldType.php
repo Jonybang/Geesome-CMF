@@ -9,7 +9,9 @@ class SubFieldType extends Model
     protected $table = 'sub_field_types';
     //
     protected $fillable = [
-        'name', 'directive'
+        'key',
+        'name',
+        'directive'
     ];
 
     public function sub_fields()

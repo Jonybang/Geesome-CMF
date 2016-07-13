@@ -11,7 +11,9 @@ class MailTemplate extends Model
     protected $table = 'mail_templates';
 
     protected $fillable = [
-        'name', 'title', 'content'
+        'key',
+        'name',
+        'content'
     ];
 
     public function renderTitle($data){

@@ -15,7 +15,8 @@ class CreateSubFieldTypesTable extends Migration
         Schema::create('sub_field_types', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name');
+            $table->string('key');
+            $table->string('name')->nullable();
             $table->string('directive')->nullable();
 
             $table->timestamps();

@@ -17,7 +17,7 @@ class ProjectPagesTableSeeder extends Seeder
             ['Project 3', 'Project 3 sub title', 'Project 3 description', 'Project 3 content'],
         ];
 
-        $template_id = \App\Template::where('path', 'page')->first()->id;
+        $template_id = \App\Template::where('key', 'page')->first()->id;
         $page_id = \App\Page::where('alias', 'projects')->first()->id;
         $author_id = \App\User::first()->id;
         $context_id = \App\Context::first()->id;

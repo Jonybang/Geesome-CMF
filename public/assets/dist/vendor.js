@@ -382,6 +382,7 @@ start:function(){function b(c){F=!0;w();ha(a,v);g.complete(c)}if(g)return g;g=ne
 c.event,c.classes,c.options)}return function(a){if(a.from&&a.to){var b=d(a.from),m=d(a.to);if(b||m)return{start:function(){function a(){return function(){s(d,function(a){a.end()})}}var d=[];b&&d.push(b.start());m&&d.push(m.start());c.all(d,function(a){e.complete(a)});var e=new c({end:a(),cancel:a()});return e}}}else return d(a)}}]}])})(window,window.angular);
 //# sourceMappingURL=angular-animate.min.js.map
 
+angular.module("rt.debounce",[]).factory("debounce",["$timeout",function(a){return function(b,c){function d(){j=c.apply(i||this,h||[]),i=h=null}function e(){k&&(a.cancel(k),k=null)}function f(){i=this,h=arguments,e(),k=a(d,b)}function g(){var a=!!i;return a&&(e(),d()),a}var h,i,j,k;return f.flush=function(){return g()||k||d(),j},f.flushPending=function(){return g(),j},f.cancel=e,f}}]);
 /**
  * angular-drag-and-drop-lists v1.4.0
  *

@@ -13,11 +13,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Sub Field Type',
+                    label: 'Subscriber group key',
+                    new_placeholder: 'New Subscriber group',
                     required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'subscribers_ids',
@@ -73,7 +77,8 @@ angular.module('app')
                     type: 'multiselect',
                     resource: SubscribersGroups,
                     list: 'subscribers_groups',
-                    table_hide: true
+                    table_hide: true,
+                    or_name_field: 'key'
                 }
             ],
             lists: {

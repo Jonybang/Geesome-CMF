@@ -11,7 +11,7 @@ class TagPageTableSeeder extends Seeder
      */
     public function run()
     {
-        $tag_template = \App\Template::where('path', 'tag')->first();
+        $tag_template = \App\Template::where('key', 'tag')->first();
         $tag_template->pages()->create([
             'title' => 'Pages by tag',
             'alias' => 'tag',
@@ -20,7 +20,7 @@ class TagPageTableSeeder extends Seeder
         ]);
 
         $tag_template->controller_actions()->create([
-            'name' => 'ClientController@tag_by_alias'
+            'key' => 'ClientController@tag_by_alias'
         ]);
     }
 }

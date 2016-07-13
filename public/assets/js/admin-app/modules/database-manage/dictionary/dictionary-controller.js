@@ -13,11 +13,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
+                    label: 'Dictionary key',
                     new_placeholder: 'New Dictionary',
                     required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Dictionary name'
                 }
             ]
         };
@@ -35,9 +39,9 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
+                    label: 'Key',
                     new_placeholder: 'New Dictionary Word',
                     required: true
                 },
@@ -50,6 +54,7 @@ angular.module('app')
                     label: 'Dictionary',
                     type: 'select',
                     list: 'dictionaries',
+                    or_name_field: 'key',
                     required: true
                 }
             ],

@@ -9,6 +9,7 @@ class SubscriberGroup extends Model
     protected $table = 'subscriber_groups';
     //
     protected $fillable = [
+        'key',
         'name'
     ];
 

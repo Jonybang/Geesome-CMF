@@ -14,7 +14,8 @@ class CreateSubscriberGroupsTable extends Migration
     {
         Schema::create('subscriber_groups', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('key');
+            $table->string('name')->nullable();
             $table->timestamps();
         });
     }

@@ -6,26 +6,29 @@
 
     <div ng-if="mode == 'select'">
         <h4>Choose Sub Field</h4>
-        <ae-select-input ng-model="subField.id" ng-resource="models.SubFields" has-error="hasErrors.subField_id" is-edit="true"></ae-select-input>
+        <ae-select-input ng-model="subField.id" or-name-field="key" ng-resource="models.SubFields" has-error="hasErrors.subField_id" is-edit="true"></ae-select-input>
     </div>
 
     <div ng-if="mode == 'create'">
         <h4>Create Sub Field</h4>
 
-        <label>Name</label>
-        <ae-text-input ng-model="subField.name" is-edit="true" has-error="hasErrors.name"></ae-text-input>
+        <label>Key</label>
+        <ae-text-input ng-model="subField.key" is-edit="true" has-error="hasErrors.name"></ae-text-input>
 
         <label>Sub Field Type</label>
-        <ae-select-input ng-model="subField.sub_field_type_id" has-error="hasErrors.sub_field_type_id" ng-resource="models.SubFieldsTypes" ng-resource-fields="fields.sub_field_type" is-edit="true" adder="true"></ae-select-input>
+        <ae-select-input ng-model="subField.sub_field_type_id" or-name-field="key" has-error="hasErrors.sub_field_type_id" ng-resource="models.SubFieldsTypes" ng-resource-fields="fields.sub_field_type" is-edit="true" adder="true"></ae-select-input>
 
-        <label>Title</label>
-        <ae-text-input ng-model="subField.title" is-edit="true" has-error="hasErrors.title"></ae-text-input>
+        <label>Name</label>
+        <ae-text-input ng-model="subField.name" is-edit="true" has-error="hasErrors.name"></ae-text-input>
 
         <label>Description</label>
         <ae-text-input ng-model="subField.description" is-edit="true" has-error="hasErrors.description" type="textarea"></ae-text-input>
 
         <label>Config</label>
         <ae-text-input ng-model="subField.config" is-edit="true" has-error="hasErrors.config" type="textarea"></ae-text-input>
+
+        <label>Default value</label>
+        <ae-text-input ng-model="subField.default_value" is-edit="true" has-error="hasErrors.default_value"></ae-text-input>
     </div>
 </div>
 <div class="modal-footer">

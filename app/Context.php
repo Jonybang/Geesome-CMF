@@ -9,6 +9,8 @@ class Context extends Model
     protected $table = 'contexts';
 
     protected $fillable = [
-        'name', 'key'
+        'key',
+        'name',
+        'description'
     ];
 }

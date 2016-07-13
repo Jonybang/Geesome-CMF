@@ -17,7 +17,7 @@ class BlogPagesTableSeeder extends Seeder
             ['Science has not yet mastered prophecy', 'We predict too much for the next year and yet far too little for the next ten.', 'Содержимое cтатьи 3'],
         ];
 
-        $template_id = \App\Template::where('path', 'page')->first()->id;
+        $template_id = \App\Template::where('key', 'page')->first()->id;
         $page_id = \App\Page::where('alias', 'blog')->first()->id;
         $author_id = \App\User::first()->id;
         $context_id = \App\Context::first()->id;

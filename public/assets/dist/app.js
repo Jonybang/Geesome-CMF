@@ -842,6 +842,8 @@ angular
                 };
 
                 if(scope.adder){
+                    scope.new_object = {};
+
                     var popoverTemplate = '' +
                         '<div ng-click="popoverContentClick($event)">';
 
@@ -853,7 +855,7 @@ angular
                                 '</div>' +
                                 '<div>' +
                                     AEditHelpers.generateDirectiveByConfig(field, {
-                                        item_name: 'new_object',
+                                        item_name: '$parent.new_object',
                                         lists_container: 'lists',
                                         always_edit: true,
                                         is_new: true
@@ -864,6 +866,10 @@ angular
 
                         if(field.resource){
                             scope[field.name + '_resource'] = field.resource;
+                        }
+
+                        if(field.type == 'multiselect'){
+                            scope.new_object[field.name] = [];
                         }
                     });
 
@@ -1287,7 +1293,7 @@ angular.module('a-edit')
     }]);
 
 angular
-    .module('app', ['ngResource', 'ui.bootstrap', 'a-edit', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists'])
+    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'a-edit'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 
@@ -1394,7 +1400,7 @@ angular
                     abstract: true
                 })
                     .state('app.manage.mailing', {
-                        url: '/mailing',
+                        url: '/mailing/:sendedMailId',
                         controller: 'MailingController',
                         templateUrl: AppPaths.mailing_tpls + 'index.html'
                     });
@@ -1657,8 +1663,8 @@ angular
                     sub_fields_values_names = [];
 
                     scope.ngModel.forEach(function(sub_field){
-                        scope.resources[sub_field.name] = sub_field;
-                        var sub_field_value_name = sub_field.name + '_value';
+                        scope.resources[sub_field.key] = sub_field;
+                        var sub_field_value_name = sub_field.key + '_value';
 
                         if(scope.pageResource && scope.pageResource.id)
                              SubFieldsValues.query({sub_field_id: sub_field.id, page_id: scope.pageResource.id}).$promise.then(function(result){
@@ -1670,10 +1676,10 @@ angular
                         sub_fields_values_names.push(sub_field_value_name);
 
                         var directive = sub_field.sub_field_type.directive;
-                        tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.name + ' } }">' + (sub_field.title || sub_field.name) + '</span></label>';
+                        tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.key + ' } }">' + (sub_field.name || sub_field.key) + '</span></label>';
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
-                            'sub-field-resource="resources.' + sub_field.name + '"></' + directive + '>';
+                            'sub-field-resource="resources.' + sub_field.key + '"></' + directive + '>';
                         tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><hr>';
                     });
 
@@ -1725,6 +1731,10 @@ angular
                             $scope.fields = {
                                 sub_field_type: [
                                     {
+                                        name: 'key',
+                                        label: 'Key'
+                                    },
+                                    {
                                         name: 'name',
                                         label: 'Name'
                                     },
@@ -1740,7 +1750,7 @@ angular
 
                                 var required;
                                 if($scope.mode == 'create')
-                                    required = ['name', 'sub_field_type_id'];
+                                    required = ['key', 'sub_field_type_id'];
                                 else if($scope.mode == 'select')
                                     required = ['id'];
 
@@ -2013,8 +2023,8 @@ angular.module('app')
                     label: 'Name'
                 },
                 {
-                    name: 'path',
-                    label: 'Path'
+                    name: 'key',
+                    label: 'Key(Path in templates directory)'
                 }
             ],
             pages: [
@@ -2027,7 +2037,8 @@ angular.module('app')
                     label: 'Template',
                     type: 'select',
                     model: Templates,
-                    list: 'templates'
+                    list: 'templates',
+                    or_name_field: 'key'
                 }
             ],
             users: [
@@ -2052,6 +2063,10 @@ angular.module('app')
                 }
             ],
             controller_actions: [
+                {
+                    name: 'key',
+                    label: 'Key(ControllerName@actionName)'
+                },
                 {
                     name: 'name',
                     label: 'Name'
@@ -2117,11 +2132,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
+                    label: 'Dictionary key',
                     new_placeholder: 'New Dictionary',
                     required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Dictionary name'
                 }
             ]
         };
@@ -2139,9 +2158,9 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
+                    label: 'Key',
                     new_placeholder: 'New Dictionary Word',
                     required: true
                 },
@@ -2154,6 +2173,7 @@ angular.module('app')
                     label: 'Dictionary',
                     type: 'select',
                     list: 'dictionaries',
+                    or_name_field: 'key',
                     required: true
                 }
             ],
@@ -2224,16 +2244,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Template name',
-                    new_placeholder: 'New Mail Template',
-                    required: true
-                },
-                {
                     name: 'key',
                     label: 'Template key',
-                    required: true
+                    modal: 'self',
+                    required: true,
+                    new_placeholder: 'New Mail Template'
+                },
+                {
+                    name: 'name',
+                    label: 'Template name'
                 },
                 {
                     name: 'title',
@@ -2414,9 +2433,9 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
+                    label: 'Setting key',
                     new_placeholder: 'New Setting',
                     required: true
                 },
@@ -2452,11 +2471,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
+                    label: 'Sub field type key',
                     new_placeholder: 'New Sub Field Type',
                     required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'directive',
@@ -2478,15 +2501,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
+                    label: 'Sub field key',
                     new_placeholder: 'New Sub Field',
                     required: true
                 },
                 {
-                    name: 'title',
-                    label: 'Title'
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'description',
@@ -2507,7 +2530,8 @@ angular.module('app')
                     name: 'sub_field_type_id',
                     label: 'Sub field type',
                     type: 'select',
-                    list: 'sub_fields_types'
+                    list: 'sub_fields_types',
+                    or_name_field: 'key'
                 },
                 {
                     name: 'templates_ids',
@@ -2515,7 +2539,8 @@ angular.module('app')
                     type: 'multiselect',
                     resource: Templates,
                     list: 'templates',
-                    table_hide: true
+                    table_hide: true,
+                    or_name_field: 'key'
                 }
             ],
             lists: {
@@ -2539,11 +2564,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Sub Field Type',
+                    label: 'Subscriber group key',
+                    new_placeholder: 'New Subscriber group',
                     required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'subscribers_ids',
@@ -2599,7 +2628,8 @@ angular.module('app')
                     type: 'multiselect',
                     resource: SubscribersGroups,
                     list: 'subscribers_groups',
-                    table_hide: true
+                    table_hide: true,
+                    or_name_field: 'key'
                 }
             ],
             lists: {
@@ -2648,16 +2678,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
+                    name: 'key',
+                    label: 'Template key',
                     new_placeholder: 'New Template',
                     required: true
                 },
                 {
-                    name: 'path',
-                    label: 'Path',
-                    required: true
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name'
                 },
                 {
                     name: 'description',
@@ -2723,192 +2752,109 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
-        var defaultPage = new Pages();
+    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'MailTemplates', 'SendedMails', 'SubscribersGroups', 'Subscribers',
+        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, MailTemplates, SendedMails, SubscribersGroups, Subscribers) {
+            var defaultMail = new SendedMails();
 
-        if($state.params.pageId){
-            $scope.page = Pages.get({id: $state.params.pageId});
-            $scope.page.id = $state.params.pageId;
-        } else {
-            defaultPage.is_menu_hide = true;
-            defaultPage.tags_ids = [];
-            defaultPage.controller_actions_ids = [];
+            if($state.params.sendedMailId){
+                $scope.mail = SendedMails.get({id: $state.params.sendedMailId});
+                $scope.mail.id = $state.params.sendedMailId;
+            } else {
+                defaultMail.subscribers_groups_ids = [];
 
-            $scope.page = angular.copy(defaultPage);
-        }
+                $scope.mail = angular.copy(defaultMail);
+            }
 
-        //Get current user and set his id as author id
-        function setCurUserAuthorId(){
-            defaultPage.author_id = AppData.cur_user.id;
-            angular.extend($scope.page, defaultPage);
-        }
-        if(AppData.cur_user.$promise)
-            AppData.cur_user.$promise.then(setCurUserAuthorId);
-        else
-            setCurUserAuthorId();
+            $scope.getSendedMails = function(){
+                $scope.sended_mails = SendedMails.query();
+            };
+            $scope.getSendedMails();
 
-        var site_settings = {};
-        //Get site settings and set default values to page object
-        function setDefaultSettings(){
-            site_settings = AppData.site_settings;
-            defaultPage.template_id =  site_settings.default_template_id;
-            angular.extend($scope.page, defaultPage);
-        }
-        if(AppData.site_settings.$promise)
-            AppData.site_settings.$promise.then(setDefaultSettings);
-        else
-            setDefaultSettings();
+            //Models for select inputs
+            $scope.models = {
+                subscribers_groups: SubscribersGroups,
+                mail_templates: MailTemplates,
+                pages: Pages
+            };
+            //Fields for adder functional at select inputs
+            $scope.fields = {
+                subscribers_groups: [
+                    {
+                        name: 'key',
+                        label: 'Key',
+                        required:true
+                    },
+                    {
+                        name: 'name',
+                        label: 'Name'
+                    },
+                    {
+                        name: 'subscribers_ids',
+                        label: 'Subscribers',
+                        type: 'multiselect',
+                        model: Subscribers,
+                        list: 'subscribers'
+                    }
+                ],
+                mail_templates: [
+                    {
+                        name: 'key',
+                        label: 'Key',
+                        required:true
+                    },
+                    {
+                        name: 'name',
+                        label: 'Name'
+                    },
+                    {
+                        name: 'title',
+                        label: 'Title template'
+                    },
+                    {
+                        name: 'content',
+                        label: 'Content template',
+                        type: 'textarea'
+                    }
+                ],
+                pages: [
+                    {
+                        name: 'title',
+                        label: 'Title'
+                    },
+                    {
+                        name: 'template_id',
+                        label: 'Template',
+                        type: 'select',
+                        model: Templates,
+                        list: 'templates'
+                    }
+                ]
+            };
 
-        var old_alias = '';
-        $scope.$watch('page.title', function(title){
-            if(!title)
-                return;
+            $scope.sendMail = function(){
+                //Validate for require fields
+                $scope.hasErrors = {};
+                var required = ['subscribers_groups_ids', 'mail_template_id'];
+                required.forEach(function(reqField){
+                    if(!$scope.mail[reqField] || (angular.isArray($scope.mail[reqField]) || !$scope.mail[reqField].length))
+                        $scope.hasErrors[reqField] = true;
+                    else
+                        delete $scope.hasErrors[reqField];
+                });
 
-            function changeAlias(new_alias){
-                //Change alias if its empty or if it not touched by manual
-                if((!old_alias && $scope.page.alias) || (old_alias && $scope.page.alias != old_alias))
+                if(!_.isEmpty($scope.hasErrors))
                     return;
 
-                $scope.page.alias = new_alias;
-                old_alias = $scope.page.alias;
-            }
+                $scope.mail.$save().then(function(result){
+                    $scope.mail = angular.copy(defaultMail);
 
-            //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
-            //if not: just insert replace spaces to dashes and get lowercase title for set alias
-            if(title && site_settings.yandex_translate_api_key){
-                $http.get(
-                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + site_settings.yandex_translate_api_key +
-                    '&text=' + title +
-                    '&lang=en')
-                    .then(function(result){
-                        changeAlias(result.data.text[0].replace(/\s+/g, '-').toLowerCase());
-                    });
-            } else {
-                changeAlias(title.replace(/\s+/g, '-').toLowerCase());
-            }
-        });
+                    $scope.alert = 'Mail sended!';
 
-        $scope.getSubFields = function(){
-            SubFields.query({'template_id': $scope.page.template_id}).$promise.then(function(data){
-                $scope.sub_fields = data;
-            });
-        };
+                    $scope.getSendedMails();
+                })
+            };
 
-        $scope.$watch('page.template_id', function(template_id){
-            if(!template_id)
-                return;
-
-            $scope.getSubFields();
-
-            ControllerActions.query({'template_id': template_id}).$promise.then(function(data){
-                $scope.page.controller_actions_ids = data.map(function(action){return action.id});
-            });
-        });
-        $scope.subFieldsApi = {};
-
-        //Models for select inputs
-        $scope.models = {
-            templates: Templates,
-            pages: Pages,
-            users: Users,
-            tags: Tags,
-            controller_actions: ControllerActions
-        };
-        //Fields for adder functional at select inputs
-        $scope.fields = {
-            templates: [
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'path',
-                    label: 'Path'
-                }
-            ],
-            pages: [
-                {
-                    name: 'title',
-                    label: 'Title'
-                },
-                {
-                    name: 'template_id',
-                    label: 'Template',
-                    type: 'select',
-                    model: Templates,
-                    list: 'templates'
-                }
-            ],
-            users: [
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'email',
-                    label: 'Email'
-                },
-                {
-                    name: 'password',
-                    label: 'Password',
-                    type: 'password'
-                }
-            ],
-            tags: [
-                {
-                    name: 'name',
-                    label: 'Name'
-                }
-            ],
-            controller_actions: [
-                {
-                    name: 'name',
-                    label: 'Name'
-                }
-            ]
-        };
-
-        $scope.savePage = function(){
-            //Validate for require fields
-            $scope.hasErrors = {};
-            var required = ['title', 'template_id'];
-            required.forEach(function(reqField){
-                if(!$scope.page[reqField])
-                    $scope.hasErrors[reqField] = true;
-                else
-                    delete $scope.hasErrors[reqField];
-            });
-
-            if(!_.isEmpty($scope.hasErrors))
-                return;
-
-            //If page is new - Create, if it not - Update
-            var is_new = $scope.page.id ? false : true;
-
-            var page_query;
-            if(is_new)
-                page_query = $scope.page.$save();
-            else
-                page_query = $scope.page.$update();
-
-            page_query.then(function(result_page){
-                //After save page - we have it id, so save sub fields
-                $scope.subFieldsApi.saveSubFieldsValues(result_page);
-
-                if(is_new)
-                    $scope.page = angular.copy(defaultPage);
-                else
-                    $scope.page = result_page;
-
-                $scope.alert = 'Page saved!';
-
-                $scope.app.refreshPagesTree();
-            })
-        };
-
-        $scope.closeAlert = function(){
-            $scope.alert = ''
-        };
+            $scope.closeAlert = function(){
+                $scope.alert = ''
+            };
     }]);

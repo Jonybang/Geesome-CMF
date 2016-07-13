@@ -13,9 +13,9 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
+                    label: 'Setting key',
                     new_placeholder: 'New Setting',
                     required: true
                 },

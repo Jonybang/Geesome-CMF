@@ -11,7 +11,7 @@ class ClientController extends Controller
 {
     public function get_projects(){
 
-        $projects = \App\Template::where('path', 'projects')->first()->pages->first()->child_pages;
+        $projects = \App\Template::where('key', 'projects')->first()->pages->first()->child_pages;
         return ['projects' => $projects];
     }
 
@@ -32,7 +32,7 @@ class ClientController extends Controller
         $mail_template = \App\MailTemplate::where('key', 'feedback_to_admin')->first();
 
         $request_data = $request->all();
-        $site = substr(env('APP_URL'), 7);
+        $site = \App\Setting::where('key', 'feedback_to_admin')->first();
 
         $mail = new \App\SendedMail([
             'mail_template_id' => $mail_template->id
@@ -47,7 +47,7 @@ class ClientController extends Controller
         );
 
         $mail->sendMailsToAddresses(
-            [ \App\Setting::where('name', 'admin_email')->first()->value ],
+            [ \App\Setting::where('key', 'admin_email')->first()->value ],
             $mail_data
         );
 

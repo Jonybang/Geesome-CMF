@@ -9,6 +9,9 @@ class DictionaryWord extends Model
     protected $table = 'dictionary_words';
 
     protected $fillable = [
-        'name', 'value', 'dictionary_id', 'context_id'
+        'key',
+        'value',
+        'dictionary_id',
+        'context_id'
     ];
 }

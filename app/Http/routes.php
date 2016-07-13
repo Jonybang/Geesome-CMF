@@ -84,7 +84,7 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
     if($alias)
         $page = \App\Page::where('alias', $alias)->orWhere('id', $alias)->first();
     else{
-        $main_page_id = \App\Setting::where('name', 'main_page')->first()->value;
+        $main_page_id = \App\Setting::where('key', 'main_page')->first()->value;
         $page = \App\Page::find($main_page_id)->first();
     }
 
@@ -92,13 +92,13 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
     $sub_fields = [];
     $page_data = [];
     if($page && $page->is_published){
-        $path = $page->template->path;
+        $path = $page->template->key;
 
         $sub_fields = $page->sub_fields_values;
 
         //execute controller actions on page template and get data from they
         foreach($page->template->controller_actions as $controller_action){
-            $result = \App::call('App\\Http\\Controllers\\' . $controller_action->name, [
+            $result = \App::call('App\\Http\\Controllers\\' . $controller_action->key, [
                 'page' => $page,
                 'sub_alias' => $sub_alias
             ]);

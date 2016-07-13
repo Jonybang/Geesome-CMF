@@ -19,8 +19,8 @@ angular
                     sub_fields_values_names = [];
 
                     scope.ngModel.forEach(function(sub_field){
-                        scope.resources[sub_field.name] = sub_field;
-                        var sub_field_value_name = sub_field.name + '_value';
+                        scope.resources[sub_field.key] = sub_field;
+                        var sub_field_value_name = sub_field.key + '_value';
 
                         if(scope.pageResource && scope.pageResource.id)
                              SubFieldsValues.query({sub_field_id: sub_field.id, page_id: scope.pageResource.id}).$promise.then(function(result){
@@ -32,10 +32,10 @@ angular
                         sub_fields_values_names.push(sub_field_value_name);
 
                         var directive = sub_field.sub_field_type.directive;
-                        tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.name + ' } }">' + (sub_field.title || sub_field.name) + '</span></label>';
+                        tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.key + ' } }">' + (sub_field.name || sub_field.key) + '</span></label>';
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
-                            'sub-field-resource="resources.' + sub_field.name + '"></' + directive + '>';
+                            'sub-field-resource="resources.' + sub_field.key + '"></' + directive + '>';
                         tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><hr>';
                     });
 
@@ -87,6 +87,10 @@ angular
                             $scope.fields = {
                                 sub_field_type: [
                                     {
+                                        name: 'key',
+                                        label: 'Key'
+                                    },
+                                    {
                                         name: 'name',
                                         label: 'Name'
                                     },
@@ -102,7 +106,7 @@ angular
 
                                 var required;
                                 if($scope.mode == 'create')
-                                    required = ['name', 'sub_field_type_id'];
+                                    required = ['key', 'sub_field_type_id'];
                                 else if($scope.mode == 'select')
                                     required = ['id'];
 

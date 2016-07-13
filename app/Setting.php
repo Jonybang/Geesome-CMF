@@ -9,7 +9,10 @@ class Setting extends Model
     protected $table = 'settings';
 
     protected $fillable = [
-        'title', 'description', 'name', 'value'
+        'key',
+        'value',
+        'name',
+        'description'
     ];
 
     public function logs()

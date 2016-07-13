@@ -12,7 +12,12 @@ class SubField extends Model
     ];
 
     protected $fillable = [
-        'title', 'name', 'description', 'config', 'default_value', 'sub_field_type_id'
+        'key',
+        'name',
+        'description',
+        'config',
+        'default_value',
+        'sub_field_type_id'
     ];
 
     public function templates()

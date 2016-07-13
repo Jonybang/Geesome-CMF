@@ -15,8 +15,9 @@ class CreateContextsTable extends Migration
         Schema::create('contexts', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name');
-            $table->string('key')->nullable();
+            $table->string('key');
+            $table->string('name')->nullable();
+            $table->text('description')->nullable();
 
             $table->timestamps();
         });

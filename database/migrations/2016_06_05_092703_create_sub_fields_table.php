@@ -15,8 +15,8 @@ class CreateSubFieldsTable extends Migration
         Schema::create('sub_fields', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name');
-            $table->string('title')->nullable();
+            $table->string('key');
+            $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->json('config')->nullable();
             $table->text('default_value')->nullable();

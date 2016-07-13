@@ -15,7 +15,7 @@ class CreateDictionaryWordsTable extends Migration
         Schema::create('dictionary_words', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name');
+            $table->string('key');
             $table->string('value')->nullable();
 
             $table->integer('dictionary_id')->unsigned();

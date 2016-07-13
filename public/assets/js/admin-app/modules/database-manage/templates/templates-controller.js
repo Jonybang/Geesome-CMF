@@ -13,16 +13,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
+                    name: 'key',
+                    label: 'Template key',
                     new_placeholder: 'New Template',
                     required: true
                 },
                 {
-                    name: 'path',
-                    label: 'Path',
-                    required: true
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name'
                 },
                 {
                     name: 'description',

@@ -27,7 +27,7 @@ class SiteServiceProvider extends ServiceProvider
         if(\Schema::hasTable('pages')){
             $settings = \App\Setting::get();
             foreach($settings as $setting)
-                \View::share($setting->name, $setting->value);
+                \View::share($setting->key, $setting->value);
         }
     }
 

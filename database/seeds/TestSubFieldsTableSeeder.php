@@ -11,10 +11,10 @@ class TestSubFieldsTableSeeder extends Seeder
      */
     public function run()
     {
-        \App\Template::where('path', 'page')->first()->sub_fields()->create([
-            'name' => 'imagesArray',
-            'title' => 'Images slider',
-            'sub_field_type_id' => \App\SubFieldType::where('name', 'json')->first()->id,
+        \App\Template::where('key', 'page')->first()->sub_fields()->create([
+            'key' => 'imagesArray',
+            'name' => 'Images slider',
+            'sub_field_type_id' => \App\SubFieldType::where('key', 'json')->first()->id,
             'config' => json_encode([
                 'caption' => 'Add, edit and delete images links',
                 'search' => false,
@@ -28,10 +28,10 @@ class TestSubFieldsTableSeeder extends Seeder
             ], JSON_PRETTY_PRINT)
         ]);
 
-        $sub_field = \App\Template::where('path', 'page')->first()->sub_fields()->create([
-                'name' => 'imageLink',
-                'title' => 'Image Path',
-                'sub_field_type_id' => \App\SubFieldType::where('name', 'image')->first()->id
+        $sub_field = \App\Template::where('key', 'page')->first()->sub_fields()->create([
+                'key' => 'imageLink',
+                'name' => 'Image Path',
+                'sub_field_type_id' => \App\SubFieldType::where('key', 'image')->first()->id
             ]);
         $seeds = [
             '/assets/img/project-3.jpg',

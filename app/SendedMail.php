@@ -58,13 +58,15 @@ class SendedMail extends Model
     }
 
     public function sendMailsToAddresses($addresses, $sub_data = []){
-        $render_data = array_merge($sub_data, [
-            'site_url' => substr(env('APP_URL'), 7),
-            'admin_email' => \App\Setting::where('name', 'admin_email')->first()->value
-        ]);
 
-        if($this->page)
-            $render_data = array_merge($render_data, $this->page->toArray());
+        $settings = \DB::table('settings')->lists('value', 'key');
+        $render_data = array_merge($sub_data, $settings);
+
+        if($this->page){
+            $page_data = $this->page->toArray();
+            $render_data = array_merge($render_data, $page_data);
+            $render_data['page_url'] = $settings['site_url'] . $page_data['alias'];
+        }
 
         $data = array_merge($render_data,[
             'mail_title' => $this->mail_template->renderTitle($render_data),

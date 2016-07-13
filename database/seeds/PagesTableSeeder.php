@@ -30,7 +30,7 @@ class PagesTableSeeder extends Seeder
                 'title' => $seed[0],
                 'alias' => $seed[1],
                 'is_published' => true,
-                'template_id' => \App\Template::where('path', $seed[2])->first()->id,
+                'template_id' => \App\Template::where('key', $seed[2])->first()->id,
                 'sub_title' => $seed[3],
                 'description' => $seed[4],
                 'is_menu_hide' => $seed[6],

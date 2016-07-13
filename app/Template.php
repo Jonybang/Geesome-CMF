@@ -9,7 +9,9 @@ class Template extends Model
     protected $table = 'templates';
 
     protected $fillable = [
-        'name', 'path', 'description'
+        'name',
+        'key',
+        'description'
     ];
 
     public function pages()

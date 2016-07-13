@@ -13,11 +13,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
+                    label: 'Sub field type key',
                     new_placeholder: 'New Sub Field Type',
                     required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'directive',
@@ -39,15 +43,15 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
+                    name: 'key',
                     modal: 'self',
-                    label: 'Name',
+                    label: 'Sub field key',
                     new_placeholder: 'New Sub Field',
                     required: true
                 },
                 {
-                    name: 'title',
-                    label: 'Title'
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'description',
@@ -68,7 +72,8 @@ angular.module('app')
                     name: 'sub_field_type_id',
                     label: 'Sub field type',
                     type: 'select',
-                    list: 'sub_fields_types'
+                    list: 'sub_fields_types',
+                    or_name_field: 'key'
                 },
                 {
                     name: 'templates_ids',
@@ -76,7 +81,8 @@ angular.module('app')
                     type: 'multiselect',
                     resource: Templates,
                     list: 'templates',
-                    table_hide: true
+                    table_hide: true,
+                    or_name_field: 'key'
                 }
             ],
             lists: {

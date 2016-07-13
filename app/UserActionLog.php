@@ -9,7 +9,9 @@ class UserActionLog extends Model
     protected $table = 'user_action_logs';
 
     protected $fillable = [
-        'action', 'description', 'user_id'
+        'action',
+        'description',
+        'user_id'
     ];
 
     public function logable()

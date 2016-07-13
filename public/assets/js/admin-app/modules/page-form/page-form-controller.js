@@ -100,8 +100,8 @@ angular.module('app')
                     label: 'Name'
                 },
                 {
-                    name: 'path',
-                    label: 'Path'
+                    name: 'key',
+                    label: 'Key(Path in templates directory)'
                 }
             ],
             pages: [
@@ -114,7 +114,8 @@ angular.module('app')
                     label: 'Template',
                     type: 'select',
                     model: Templates,
-                    list: 'templates'
+                    list: 'templates',
+                    or_name_field: 'key'
                 }
             ],
             users: [
@@ -139,6 +140,10 @@ angular.module('app')
                 }
             ],
             controller_actions: [
+                {
+                    name: 'key',
+                    label: 'Key(ControllerName@actionName)'
+                },
                 {
                     name: 'name',
                     label: 'Name'

@@ -9,7 +9,9 @@ class SubFieldValue extends Model
     protected $table = 'sub_fields_values';
 
     protected $fillable = [
-        'sub_field_id', 'page_id', 'value'
+        'sub_field_id',
+        'page_id',
+        'value'
     ];
 
     public function page()

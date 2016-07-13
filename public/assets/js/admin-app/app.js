@@ -1,5 +1,5 @@
 angular
-    .module('app', ['ngResource', 'ui.bootstrap', 'a-edit', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists'])
+    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'a-edit'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 
@@ -106,7 +106,7 @@ angular
                     abstract: true
                 })
                     .state('app.manage.mailing', {
-                        url: '/mailing',
+                        url: '/mailing/:sendedMailId',
                         controller: 'MailingController',
                         templateUrl: AppPaths.mailing_tpls + 'index.html'
                     });

@@ -16,7 +16,7 @@ class SubFieldTypesTableSeeder extends Seeder
         ];
         foreach($seeds as $seed){
             DB::table('sub_field_types')->insert([
-                'name' => $seed,
+                'key' => $seed,
                 'directive' => 'sf-' . $seed
             ]);
         }

@@ -22,7 +22,7 @@ class TemplatesTableSeeder extends Seeder
         foreach($seeds as $seed){
             DB::table('templates')->insert([
                 'name' => $seed[0],
-                'path' => $seed[1]
+                'key' => $seed[1]
             ]);
         }
     }

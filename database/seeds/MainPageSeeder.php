@@ -17,7 +17,7 @@ class MainPageSeeder extends Seeder
      */
     public function run()
     {
-        $main_template = Template::where('path', 'index')->first();
+        $main_template = Template::where('key', 'index')->first();
         $main_page = $main_template->pages()->first();
 
         $controller_actions = [
@@ -25,7 +25,7 @@ class MainPageSeeder extends Seeder
         ];
         foreach($controller_actions as $name){
             $controller_action = new ControllerAction([
-                'name' => $name
+                'key' => $name
             ]);
             $main_template->controller_actions()->save($controller_action);
         }
@@ -39,7 +39,7 @@ class MainPageSeeder extends Seeder
         foreach($main_blocks as $block){
             $page = Page::create([
                 'title' => $block[0],
-                'template_id' => Template::create(['path' => $block[2], 'name' => $block[3]])->id,
+                'template_id' => Template::create(['key' => $block[2], 'name' => $block[3]])->id,
                 'context_id' => \App\Context::first()->id,
                 'parent_page_id' => $main_page->id,
                 'is_published' => 1
@@ -90,18 +90,18 @@ class MainPageSeeder extends Seeder
         ], JSON_PRETTY_PRINT);
 
         foreach($main_blocks_sub_fields as $template_path => $sub_fields){
-            $template = Template::where('path', $template_path)->first();
+            $template = Template::where('key', $template_path)->first();
             $page = $template->pages->first();
 
             foreach($sub_fields as $sub_field){
-                $exist_sub_field = SubField::where('name', $sub_field[0])->first();
+                $exist_sub_field = SubField::where('key', $sub_field[0])->first();
 
                 if($exist_sub_field)
                     $template->sub_fields()->attach($exist_sub_field->id);
                 else
                     $exist_sub_field = $template->sub_fields()->save(new SubField([
-                            'name' => $sub_field[0],
-                            'sub_field_type_id' => SubFieldType::where('name', $sub_field[1])->first()->id,
+                            'key' => $sub_field[0],
+                            'sub_field_type_id' => SubFieldType::where('key', $sub_field[1])->first()->id,
                             'config' => $sub_field[0] == 'offers' ? $offers_config : null
                         ])
                     );

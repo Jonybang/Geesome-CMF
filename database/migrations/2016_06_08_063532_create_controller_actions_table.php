@@ -15,7 +15,8 @@ class CreateControllerActionsTable extends Migration
         Schema::create('controller_actions', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name');
+            $table->string('key');
+            $table->string('name')->nullable();
             $table->text('description')->nullable();
 
             $table->timestamps();

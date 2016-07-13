@@ -26,14 +26,16 @@ class ApiController extends Controller
     public function site_settings_dictionary()
     {
         return Response::json(
-            \DB::table('settings')->lists('value', 'name'),
+            \DB::table('settings')->lists('value', 'key'),
             200
         );
     }
 
-    public function send_mail(Request $request)
+    public function resend_mail(Request $request)
     {
         $data = $request->all();
+
+
 
         $mail = new SendedMail([
             'mail_template_id' => $data['mail_template_id'],

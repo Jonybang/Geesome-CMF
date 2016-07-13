@@ -11,7 +11,18 @@ class Page extends Model
     protected $table = 'pages';
 
     protected $fillable = [
-        'title', 'sub_title', 'alias', 'description', 'menu_index', 'is_published', 'is_menu_hide', 'is_published', 'parent_page_id', 'author_id', 'template_id', 'context_id'
+        'title',
+        'sub_title',
+        'alias',
+        'description',
+        'menu_index',
+        'is_published',
+        'is_menu_hide',
+        'is_published',
+        'parent_page_id',
+        'author_id',
+        'template_id',
+        'context_id'
     ];
 
     protected $casts = [
@@ -59,12 +70,12 @@ class Page extends Model
     {
         $dictionary = \DB::table('sub_fields_values')->where('page_id', $this->id)
             ->join('sub_fields', 'sub_fields_values.sub_field_id', '=', 'sub_fields.id')
-            ->lists('sub_fields_values.value', 'sub_fields.name');
+            ->lists('sub_fields_values.value', 'sub_fields.key');
 
         //make undefined sub_fields as empty strings
         foreach($this->template->sub_fields as $sub_field)
-            if(!isset($dictionary[$sub_field->name]))
-                $dictionary[$sub_field->name] = '';
+            if(!isset($dictionary[$sub_field->key]))
+                $dictionary[$sub_field->key] = '';
 
         return $dictionary;
     }

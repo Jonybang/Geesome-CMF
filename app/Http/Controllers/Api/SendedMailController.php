@@ -30,14 +30,15 @@ class SendedMailController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $obj = SendedMail::create($data);
+        $obj = new SendedMail($data);
 
-        if(isset($data['subscribers_groups_ids'])){
-            $obj->subscribers_groups_ids = $data['subscribers_groups_ids'];
-            $obj->save();
-        }
+        $obj->sendMailsToAddresses($data['subscribers_groups_ids']);
+        $obj->save();
 
-        UserActionLog::saveAction($obj,"create");
+        $obj->subscribers_groups_ids = $data['subscribers_groups_ids'];
+        $obj->save();
+
+        UserActionLog::saveAction($obj, "send_mail");
         return Response::json(
             $obj->toArray(),
             200
@@ -47,7 +48,7 @@ class SendedMailController extends Controller
     {
         $data = $request->all();
         $is_saved = SendedMail::find($data['id'])->update($data);
-        $obj =  SendedMail::find($data['id']);
+        $obj = SendedMail::find($data['id']);
 
         if(isset($data['subscribers_groups_ids'])){
             $obj->subscribers_groups_ids = $data['subscribers_groups_ids'];
