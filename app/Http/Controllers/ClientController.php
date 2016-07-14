@@ -32,13 +32,13 @@ class ClientController extends Controller
         $mail_template = \App\MailTemplate::where('key', 'feedback_to_admin')->first();
 
         $request_data = $request->all();
-        $site = \App\Setting::where('key', 'feedback_to_admin')->first();
+        $site = \App\Setting::where('key', 'site_url')->first()->value;
 
         $mail = new \App\SendedMail([
             'mail_template_id' => $mail_template->id
         ]);
 
-        $mail_data = array_merge(
+        $mail->sub_data = array_merge(
             [
                 'from_email' => $request_data['email'],
                 'from_title' => '[' . $site . '] feedback form'
@@ -46,10 +46,7 @@ class ClientController extends Controller
             $request_data
         );
 
-        $mail->sendMailsToAddresses(
-            [ \App\Setting::where('key', 'admin_email')->first()->value ],
-            $mail_data
-        );
+        $mail->sendMailsToAddresses([ \App\Setting::where('key', 'admin_email')->first()->value ]);
 
         $mail->save();
         return redirect('thanks-for-feedback')->withInput();

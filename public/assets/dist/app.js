@@ -2776,9 +2776,19 @@ angular.module('app')
 
             if($state.params.sendedMailId){
                 $scope.mail = SendedMails.get({id: $state.params.sendedMailId});
+
+                $scope.mail.$promise.then(function(mail){
+                    $scope.mail.sub_data_array = [];
+
+                    angular.forEach(mail.sub_data, function(value, key){
+                        $scope.mail.sub_data_array.push({key: key, value: value})
+                    });
+                });
+
                 $scope.mail.id = $state.params.sendedMailId;
             } else {
                 defaultMail.subscribers_groups_ids = [];
+                defaultMail.sub_data_array = [];
                 $scope.mail = angular.copy(defaultMail);
             }
 
@@ -2861,7 +2871,7 @@ angular.module('app')
             //======================================
 
             function getSubscribersListByGroups(){
-                if(!$scope.mail.subscribers_groups_ids.length){
+                if(!$scope.mail.subscribers_groups_ids || !$scope.mail.subscribers_groups_ids.length){
                     $scope.status.subscribers_list = {
                         error: 'Subscribers groups not select'
                     };
@@ -2925,6 +2935,13 @@ angular.module('app')
                     return;
                 }
 
+                if($scope.mail.sub_data_array.length){
+                    $scope.mail.sub_data = {};
+                    $scope.mail.sub_data_array.forEach(function(sub_item){
+                        $scope.mail.sub_data[sub_item.key] = sub_item.value;
+                    });
+                }
+
                 $http.post('/admin/api/preview_mail', $scope.mail).then(function(response){
                     $scope.preview_mail = response.data;
                     $scope.status.preview_mail = {};
@@ -2949,6 +2966,8 @@ angular.module('app')
 
             $scope.$watch('mail.mail_template.title', loadingRenderPreview);
             $scope.$watch('mail.mail_template.content', loadingRenderPreview);
+
+            $scope.$watch('mail.sub_data_array', loadingRenderPreview, true);
 
             $scope.saveMailTemplate = function(){
                 $scope.mail.mail_template.$update().then(function(){
@@ -2981,6 +3000,12 @@ angular.module('app')
 
                 $scope.status.mail.loading = true;
 
+                $scope.mail.sub_data = {};
+                $scope.mail.sub_data_array.forEach(function(sub_item){
+                    $scope.mail.sub_data[sub_item.key] = sub_item.value;
+                });
+
+                //always create new mail
                 $scope.mail.id = null;
                 $scope.mail.$save().then(function(result){
                     $scope.mail = angular.copy(defaultMail);
@@ -2998,4 +3023,8 @@ angular.module('app')
             $scope.closeAlert = function(){
                 $scope.alert = ''
             };
+
+            $scope.addNewSubItem = function(){
+                angular.merge($scope.mail.sub_data, {'':''});
+            }
     }]);

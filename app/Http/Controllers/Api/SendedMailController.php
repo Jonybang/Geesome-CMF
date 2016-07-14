@@ -40,6 +40,10 @@ class SendedMailController extends Controller
         $obj->save();
 
         $obj->subscribers_groups_ids = $data['subscribers_groups_ids'];
+
+        if(isset($data['sub_data']))
+            $obj->sub_data = $data['sub_data'];
+
         $obj->save();
 
         UserActionLog::saveAction($obj, "send_mail");

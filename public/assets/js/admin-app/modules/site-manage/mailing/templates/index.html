@@ -102,6 +102,31 @@
 
                 <label>Page object for use in template:</label>
                 <ae-select-input ng-model="mail.page_id" name-field="title" has-error="hasErrors.page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" is-edit="true" adder="true"></ae-select-input>
+
+                <div>
+                    <a href ng-click="subVariablesShow = !subVariablesShow" ng-class="{'dropup': subVariablesShow}">
+                        Add sub variables
+                        <span class="caret"></span><br>
+                    </a>
+                    <div ng-if="subVariablesShow" class="alert alert-info">
+                        <div ng-repeat="sub_item in mail.sub_data_array">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <input type="text" ng-model="sub_item.key" class="form-control input-sm" placeholder="Key">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" ng-model="sub_item.value" class="form-control input-sm" placeholder="Value">
+                                </div>
+
+                                <button class="btn btn-default btn-sm" ng-click="mail.sub_data_array.splice($index, 1)"><span class="glyphicon glyphicon-remove"></span></button>
+                            </form>
+                            <br>
+                        </div>
+                        {{mail.sub_data_array}}
+                        <button class="btn btn-default btn-sm" ng-click="mail.sub_data_array.push({})"><span class="glyphicon glyphicon-plus"></span> Add sub variable</button>
+                    </div>
+                </div>
             </div>
             <div class="panel-footer">
                 <h4>Mail preview:</h4>
@@ -136,6 +161,8 @@
                         <p class="list-group-item-text">{{sended_mail.result_content | limitTo: 50}}...</p>
                     </a>
                 </div>
+                
+                Or create <a href="/admin/manage/mailing/" class="btn btn-success">New mail</a>
             </div>
         </div>
     </div>

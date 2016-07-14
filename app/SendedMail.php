@@ -10,11 +10,17 @@ class SendedMail extends Model
     protected $table = 'sended_mails';
 
     protected $fillable = [
-        'result_title', 'result_content', 'result_addresses', 'mail_template_id', 'page_id'
+        'result_title',
+        'result_content',
+        'sub_data',
+        'result_addresses',
+        'mail_template_id',
+        'page_id'
     ];
 
     protected $casts = [
-        'result_addresses' => 'array'
+        'result_addresses' => 'array',
+        'sub_data' => 'array'
     ];
 
     public function mail_template()
@@ -46,7 +52,7 @@ class SendedMail extends Model
         return $ids;
     }
 
-    public function sendMailsToSubscribersGroups($subscribers_groups_ids, $sub_data = []){
+    public function sendMailsToSubscribersGroups($subscribers_groups_ids){
         $addresses = [];
         foreach($subscribers_groups_ids as $subscriber_groups_id){
             $subscriber_group = SubscriberGroup::find($subscriber_groups_id);
@@ -54,12 +60,11 @@ class SendedMail extends Model
                 $addresses = array_merge($addresses, $subscriber_group->subscribers_mails);
             }
         }
-        $this->sendMailsToAddresses($addresses, $sub_data);
+        $this->sendMailsToAddresses($addresses);
     }
 
-    public function sendMailsToAddresses($addresses, $sub_data = []){
-
-        $data = $this->prepareMailData($sub_data);
+    public function sendMailsToAddresses($addresses){
+        $data = $this->prepareMailData($this->sub_data);
 
         Mail::later(5, 'layouts.email', ['body' => $data['mail_content']], function($message) use ($addresses, $data)
         {
@@ -84,9 +89,9 @@ class SendedMail extends Model
         $this->save();
     }
 
-    public function prepareMailData($sub_data = []){
+    public function prepareMailData(){
         $settings = \DB::table('settings')->lists('value', 'key');
-        $render_data = array_merge($sub_data, $settings);
+        $render_data = array_merge($this->sub_data, $settings);
 
         if($this->page){
             $page_data = $this->page->toArray();

@@ -19,6 +19,7 @@ class CreateSendedMailsTable extends Migration
             $table->text('result_content');
 
             $table->json('result_addresses');
+            $table->json('sub_data');
 
             $table->integer('mail_template_id')->unsigned();
             $table->foreign('mail_template_id')->references('id')->on('mail_templates');
