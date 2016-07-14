@@ -22,8 +22,12 @@ class SendedMailController extends Controller
     }
     public function show($id)
     {
+        $obj = SendedMail::find($id);
+        $obj_data = $obj->toArray();
+        $obj_data['subscribers_groups_ids'] = $obj->subscribers_groups_ids;
+
         return Response::json(
-            SendedMail::find($id)->toArray(),
+            $obj_data,
             200
         );
     }

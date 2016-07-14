@@ -86,7 +86,8 @@ angular.module('app')
             $scope.status = {
                 subscribers_list: {},
                 mail_template: {},
-                preview_mail: {}
+                preview_mail: {},
+                mail: {}
             };
 
             //======================================
@@ -183,6 +184,12 @@ angular.module('app')
             $scope.$watch('mail.mail_template.title', loadingRenderPreview);
             $scope.$watch('mail.mail_template.content', loadingRenderPreview);
 
+            $scope.saveMailTemplate = function(){
+                $scope.mail.mail_template.$update().then(function(){
+                    $scope.status.mail_template = {};
+                })
+            };
+
             //======================================
             //SEND MAIL
             //======================================
@@ -201,12 +208,24 @@ angular.module('app')
                 if(!_.isEmpty($scope.hasErrors))
                     return;
 
+                if($scope.status.mail_template.dirty){
+                    if(!confirm('Are you sure want to send mail without last not saved changes in mail template? For save changes click "Save mail template" button.'))
+                        return;
+                }
+
+                $scope.status.mail.loading = true;
+
+                $scope.mail.id = null;
                 $scope.mail.$save().then(function(result){
                     $scope.mail = angular.copy(defaultMail);
 
                     $scope.alert = 'Mail sended!';
 
                     $scope.getSendedMails();
+
+                    $scope.status.mail = {};
+                }, function(){
+                    $scope.status.mail.error = true;
                 })
             };
 

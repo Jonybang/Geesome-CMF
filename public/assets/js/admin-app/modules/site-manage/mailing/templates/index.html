@@ -1,6 +1,7 @@
 <h2>Mailing manager</h2>
 
 <button class="btn btn-primary" ng-click="sendMail()">Send mail</button>
+<loading-gif lg-if="status.mail.loading"></loading-gif>
 
 <br>
 <uib-alert ng-if="alert" type="success" close="closeAlert()" dismiss-on-timeout="3000">{{alert}}</uib-alert>
@@ -33,7 +34,7 @@
                 </div>
 
                 <label>Mail template:</label>
-                <ae-select-input ng-model="mail.mail_template_id" or-name-field="key" has-error="hasErrors.template_id" ng-resource="models.mail_templates" ng-resource-fields="fields.mail_templates" is-edit="true" adder="true"></ae-select-input>
+                <ae-select-input ng-model="mail.mail_template_id" or-name-field="key" has-error="hasErrors.mail_template_id" ng-resource="models.mail_templates" ng-resource-fields="fields.mail_templates" is-edit="true" adder="true"></ae-select-input>
 
                 <div>
                     <a href ng-click="subTemplateEditShow = !subTemplateEditShow" ng-class="{'dropup': subTemplateEditShow}">
@@ -91,7 +92,7 @@
 
                         <br>
 
-                        <button class="btn btn-primary" ng-if="status.mail_template.dirty">Save mail template</button>
+                        <button class="btn btn-primary" ng-if="status.mail_template.dirty" ng-click="saveMailTemplate()">Save mail template</button>
 
                         <span ng-if="status.mail_template.loading">Loading....</span>
 
@@ -131,8 +132,8 @@
                        ng-repeat="sended_mail in sended_mails"
                        ui-sref="app.manage.mailing({sendedMailId: sended_mail.id})"
                        ng-class="['list-group-item', {'active':mail.id == sended_mail.id}]">
-                        <h4 class="list-group-item-heading">{{sended_mails.result_title}}</h4>
-                        <p class="list-group-item-text">{{sended_mails.result_content | limitTo: 50}}...</p>
+                        <h5 class="list-group-item-heading">{{sended_mail.result_title}}</h5>
+                        <p class="list-group-item-text">{{sended_mail.result_content | limitTo: 50}}...</p>
                     </a>
                 </div>
             </div>
@@ -141,3 +142,4 @@
 </div>
 
 <button class="btn btn-primary" ng-click="sendMail()">Send mail</button>
+<loading-gif lg-if="status.mail.loading"></loading-gif>
