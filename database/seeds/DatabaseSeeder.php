@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(MainPageSeeder::class);
 
-        $this->call(FeedbackMailTemplateSeeder::class);
+        $this->call(MailingSeeder::class);
     }
 }
 

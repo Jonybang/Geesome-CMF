@@ -55,12 +55,10 @@ class PageController extends Controller
 
         if(isset($data['tags_ids'])){
             $page->tags_ids = $data['tags_ids'];
-            $page->save();
         }
 
         if(isset($data['controller_actions_ids'])){
             $page->template->controller_actions_ids = $data['controller_actions_ids'];
-            $page->template->save();
         }
         UserActionLog::saveAction($page,"create");
         return Response::json(
@@ -84,7 +82,6 @@ class PageController extends Controller
 
         if(isset($data['controller_actions_ids'])){
             $page->template->controller_actions_ids = $data['controller_actions_ids'];
-            $page->template->save();
         }
         UserActionLog::saveAction($page,"update");
         return Response::json(

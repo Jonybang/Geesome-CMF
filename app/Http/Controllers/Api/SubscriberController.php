@@ -38,7 +38,6 @@ class SubscriberController extends Controller
 
         if(isset($data['groups_ids'])){
             $obj->groups_ids = $data['groups_ids'];
-            $obj->save();
         }
 
         UserActionLog::saveAction($obj,"create");
@@ -55,7 +54,6 @@ class SubscriberController extends Controller
 
         if(isset($data['groups_ids'])){
             $obj->groups_ids = $data['groups_ids'];
-            $obj->save();
         }
 
         if ($is_saved)

@@ -40,15 +40,12 @@ class TemplateController extends Controller
 
         if(isset($data['controller_actions_ids'])){
             $template->controller_actions_ids = $data['controller_actions_ids'];
-            $template->save();
         }
         if(isset($data['sub_fields_ids'])){
             $template->sub_fields_ids = $data['sub_fields_ids'];
-            $template->save();
         }
         if(isset($data['pages_ids'])){
             $template->pages_ids = $data['pages_ids'];
-            $template->save();
         }
         UserActionLog::saveAction($template,"create");
         return Response::json(
@@ -64,15 +61,12 @@ class TemplateController extends Controller
 
         if(isset($data['controller_actions_ids'])){
             $template->controller_actions_ids = $data['controller_actions_ids'];
-            $template->save();
         }
         if(isset($data['sub_fields_ids'])){
             $template->sub_fields_ids = $data['sub_fields_ids'];
-            $template->save();
         }
         if(isset($data['pages_ids'])){
             $template->pages_ids = $data['pages_ids'];
-            $template->save();
         }
         UserActionLog::saveAction($template,"update");
         return Response::json(

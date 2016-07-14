@@ -88,7 +88,7 @@
                     <div ng-if="templateInfoShow">
                         <div class="alert alert-warning">
                             <label>Controller Actions:</label>
-                            <ae-select-input ng-model="page.controller_actions_ids" has-error="hasErrors.controller_actions_ids" ng-resource="models.controller_actions" ng-resource-fields="fields.controller_actions" is-edit="true" adder="true" type="multiselect"></ae-select-input>
+                            <ae-select-input ng-model="page.controller_actions_ids" or-name-field="key" has-error="hasErrors.controller_actions_ids" ng-resource="models.controller_actions" ng-resource-fields="fields.controller_actions" is-edit="true" adder="true" type="multiselect"></ae-select-input>
 
                             <div><small>Add actions to some laravel controllers, than bind they to template by names(example: 'SomeController@someAction') for execute when page render and get data from action result returned.</small></div>
                         </div>

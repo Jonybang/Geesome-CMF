@@ -46,18 +46,28 @@ class ClientController extends Controller
             $request_data
         );
 
-        $mail->sendMailsToAddresses([ \App\Setting::where('key', 'admin_email')->first()->value ]);
+        $subscribers_groups_ids = [ \App\SubscriberGroup::where('key', 'admin')->first()->id ];
+        $mail->sendMailsToSubscribersGroups($subscribers_groups_ids);
 
         $mail->save();
+
+        $mail->subscribers_groups_ids = $subscribers_groups_ids;
+
         return redirect('thanks-for-feedback')->withInput();
     }
 
     public function subscribe(Request $request){
-        \App\Subscriber::create([
+        $subscriber = \App\Subscriber::create([
             'mail' => $request->input('email'),
             'provider' => 'email',
             'user_agent' => $request->header('User-Agent')
         ]);
+
+        $subscriber_group = \App\SubscriberGroup::where('key', 'general')->first();
+        if($subscriber_group){
+            $subscriber_group->subscribers()->attach($subscriber->id);
+        }
+
         return redirect('thanks-for-subscribe')->withInput();
     }
 }

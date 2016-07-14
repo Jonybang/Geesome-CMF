@@ -45,7 +45,6 @@ class SubFieldController extends Controller
         $sub_field = SubField::create($data);
         if(isset($data['templates_ids'])){
             $sub_field->templates_ids = $data['templates_ids'];
-            $sub_field->save();
         }
         UserActionLog::saveAction($sub_field,"create");
         return Response::json(
@@ -61,7 +60,6 @@ class SubFieldController extends Controller
         $sub_field = SubField::find($data['id']);
         if(isset($data['templates_ids'])){
             $sub_field->templates_ids = $data['templates_ids'];
-            $sub_field->save();
         }
         if ($is_saved)
             UserActionLog::saveAction($sub_field,"update");

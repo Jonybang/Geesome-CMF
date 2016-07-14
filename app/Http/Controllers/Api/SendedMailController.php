@@ -55,12 +55,11 @@ class SendedMailController extends Controller
     public function update(Request $request)
     {
         $data = $request->all();
-        $is_saved = SendedMail::find($data['id'])->update($data);
         $obj = SendedMail::find($data['id']);
+        $is_saved = $obj->update($data);
 
         if(isset($data['subscribers_groups_ids'])){
             $obj->subscribers_groups_ids = $data['subscribers_groups_ids'];
-            $obj->save();
         }
 
         if ($is_saved)

@@ -154,7 +154,7 @@
 
                 <div class="list-group">
                     <a href
-                       ng-repeat="sended_mail in sended_mails"
+                       ng-repeat="sended_mail in sended_mails | orderBy: '-id'"
                        ui-sref="app.manage.mailing({sendedMailId: sended_mail.id})"
                        ng-class="['list-group-item', {'active':mail.id == sended_mail.id}]">
                         <h5 class="list-group-item-heading">{{sended_mail.result_title}}</h5>

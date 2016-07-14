@@ -85,13 +85,11 @@ class SendedMail extends Model
         $this->result_title = $data['mail_title'];
         $this->result_content = $data['mail_content'];
         $this->result_addresses = $addresses;
-
-        $this->save();
     }
 
     public function prepareMailData(){
         $settings = \DB::table('settings')->lists('value', 'key');
-        $render_data = array_merge($this->sub_data, $settings);
+        $render_data = array_merge($this->sub_data ? $this->sub_data : [], $settings);
 
         if($this->page){
             $page_data = $this->page->toArray();
