@@ -20,11 +20,16 @@ class SubscriberGroupController extends Controller
             200
         );
     }
-    public function show($id)
+    public function show($id, Request $request)
     {
-        $obj = SubscriberGroup::find($id);
+        if($request->input('with_subscribers'))
+            $obj = SubscriberGroup::with('subscribers')->find($id);
+        else
+            $obj = SubscriberGroup::find($id);
+
         $obj_data = $obj->toArray();
         $obj_data['subscribers_ids'] = $obj->subscribers_ids;
+
 
         return Response::json(
             $obj_data,

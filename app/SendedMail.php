@@ -59,19 +59,7 @@ class SendedMail extends Model
 
     public function sendMailsToAddresses($addresses, $sub_data = []){
 
-        $settings = \DB::table('settings')->lists('value', 'key');
-        $render_data = array_merge($sub_data, $settings);
-
-        if($this->page){
-            $page_data = $this->page->toArray();
-            $render_data = array_merge($render_data, $page_data);
-            $render_data['page_url'] = $settings['site_url'] . $page_data['alias'];
-        }
-
-        $data = array_merge($render_data,[
-            'mail_title' => $this->mail_template->renderTitle($render_data),
-            'mail_content' => $this->mail_template->renderContent($render_data),
-        ]);
+        $data = $this->prepareMailData($sub_data);
 
         Mail::later(5, 'layouts.email', ['body' => $data['mail_content']], function($message) use ($addresses, $data)
         {
@@ -94,5 +82,23 @@ class SendedMail extends Model
         $this->result_addresses = $addresses;
 
         $this->save();
+    }
+
+    public function prepareMailData($sub_data = []){
+        $settings = \DB::table('settings')->lists('value', 'key');
+        $render_data = array_merge($sub_data, $settings);
+
+        if($this->page){
+            $page_data = $this->page->toArray();
+            $render_data = array_merge($render_data, $page_data);
+            $render_data['page_url'] = $settings['site_url'] . $page_data['alias'];
+        }
+
+        $data = array_merge($render_data,[
+            'mail_title' => $this->mail_template->renderTitle($render_data),
+            'mail_content' => $this->mail_template->renderContent($render_data),
+        ]);
+
+        return $data;
     }
 }

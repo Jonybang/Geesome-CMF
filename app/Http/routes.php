@@ -39,7 +39,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
         Route::get('/site_settings_dictionary', 'Api\ApiController@site_settings_dictionary');
 
         //Sub actions
-        Route::post('/cur_user', 'Api\ApiController@send_mail');
+        Route::post('/preview_mail', 'Api\ApiController@preview_mail');
 
         //REST API
         Route::resource('settings', 'Api\SettingController');

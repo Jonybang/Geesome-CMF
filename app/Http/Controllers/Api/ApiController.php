@@ -31,18 +31,23 @@ class ApiController extends Controller
         );
     }
 
-    public function resend_mail(Request $request)
+    public function preview_mail(Request $request)
     {
         $data = $request->all();
 
-
-
         $mail = new SendedMail([
-            'mail_template_id' => $data['mail_template_id'],
-            'page_id' => $data['page_id']
+            'mail_template_id' => $data['mail_template_id']
         ]);
 
-        $mail->sendMailsToSubscribersGroups($data['subscribers_groups_ids']);
-        $mail->save();
+        if(isset($data['mail_template']['title']))
+            $mail->mail_template->title = $data['mail_template']['title'];
+
+        if(isset($data['mail_template']['content']))
+            $mail->mail_template->content = $data['mail_template']['content'];
+
+        if(isset($data['page_id']))
+            $mail->page_id = $data['page_id'];
+
+        return $mail->prepareMailData();
     }
 }
