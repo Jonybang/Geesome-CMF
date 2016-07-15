@@ -26,15 +26,15 @@ Due to use Laravel framework in backend - this CMF uses all its advantages and r
 
 General entities:  
 - [Page](app/Page.php) - page entity for store title, alias(uri), description, content, is_published flag and other general page info. Resources - analog of MODX;
-- [Template](app/Template.php) - entity with key field, indicating the path at laravel template in [resources/views/templates](resources/views/templates) folder, which the used for render page with his data in {{$page}} variable. Template - analog of MODX;
-- [SubField](app/SubField.php) - bind to templates for input and output sub data in pages(as images, sliders data, additional text blocks and etc.). Template Variables(TV) - analog of MODX;
+- [Template](app/Template.php) - entity with [key](database/migrations/2016_06_05_030526_create_templates_table.php#L18) field, indicating the path at laravel template in [resources/views/templates](resources/views/templates) folder, which the used for render page with his data in {{$page}} variable. Template - analog of MODX;
+- [SubField](app/SubField.php) - bind to templates for input and output sub data in pages(as images, sliders data, additional text blocks and etc.). Available in templates as variable named by [key](database/migrations/2016_06_05_092703_create_sub_fields_table.php#L18) field. Template Variables(TV) - analog of MODX;
 - [ControllerAction](app/ControllerAction.php) - bind to templates for execute some laravel CustomController@myAction when page rendered and get data from it. Snippets - analog of MODX;
 - [Setting](app/Setting.php) - some variables for change backend and fronted logic or mode. Also available in templates;
-- [Dictionary](app/Dictionary.php) and [DictionaryWord](app/DictionaryWord.php) - certain general phrases, which are not related to any page or other custom entity(as 'Subscribe', 'Copyright' and etc.). Also available in templates.
+- [Dictionary](app/Dictionary.php) and [DictionaryWord](app/DictionaryWord.php) - certain general phrases(as 'Subscribe', 'Copyright' and etc.), which are not related to any page or other custom entity. Also available in templates as variable named by [key](database/migrations/2016_06_05_050515_create_settings_table.php#L18) field.
 
 Sub entites:  
 - [UserActionLog](app/UserActionLog.php) - logs about users actions with all entities (create, update, delete);
-- [SubscriberGroup](app/SubscriberGroup.php) and [Subscriber](app/Subscriber.php)  - created for оrganization of mailing about news ot other important site events;
+- [SubscriberGroup](app/SubscriberGroup.php) and [Subscriber](app/Subscriber.php) - created for оrganization of mailing about news ot other important site events;
 - [MailTemplate](app/MailTemplate.php) - templates of sending mails with support of [Blade](https://laravel.com/docs/5.0/templates) syntax(in the main for place variables), stored in database, and editable from admin panel;
 - [SendedMail](app/SendedMail.php) - for possibly of resend previosly sended mails.
 
