@@ -31,10 +31,10 @@ General entities:
 - [Dictionary](app/Dictionary.php) and [DictionaryWord](app/DictionaryWord.php) - certain general phrases, which are not related to any page or other custom entity(as 'Subscribe', 'Copyright' and etc.). Also available in templates.
 
 Sub entites:  
-- UserActionLog - logs about users actions with all entities (create, update, delete);
-- SubscriberGroup and Subscriber - created for оrganization of mailing about news ot other important site events;
-- MailTemplate - templates of sending mails with support of [Blade](https://laravel.com/docs/5.0/templates) syntax(in the main for place variables), stored in database, and editable from admin panel;
-- SendedMail - for possibly of resend previosly sended mails.
+- [UserActionLog](app/UserActionLog.php) - logs about users actions with all entities (create, update, delete);
+- [SubscriberGroup](app/SubscriberGroup.php) and [Subscriber](app/Subscriber.php)  - created for оrganization of mailing about news ot other important site events;
+- [MailTemplate](app/MailTemplate.php) - templates of sending mails with support of [Blade](https://laravel.com/docs/5.0/templates) syntax(in the main for place variables), stored in database, and editable from admin panel;
+- [SendedMail](app/SendedMail.php) - for possibly of resend previosly sended mails.
 
 ## Official Documentation
 
@@ -44,10 +44,11 @@ The project is now on beta version, and soon, when the first version - his will 
 
 Now backend core is located in [app/Http/routes.php](https://github.com/Jonybang/Lanit-Laravel-CMF/blob/master/app/Http/routes.php) file.
 
-Forntend core(Admin panel) located in [public/assets/js/admin-app](https://github.com/Jonybang/Lanit-Laravel-CMF/tree/master/public/assets/js/admin-app) folder and used [Awesome edit](https://github.com/Jonybang/awesome-edit) angular module for manage database tables and admin forms. Frontend architecture develop with DRY principle, adheres to the minimalist approach of development and has some specified and bulky code only in create/edit controllers and directives of complex forms(like [page-form-controller.js](public/assets/js/admin-app/modules/page-form/page-form-controller.js) and [mailing-controller.js](public/assets/js/admin-app/modules/site-manage/mailing/mailing-controller.js)
+Forntend core(Admin panel) located in [public/assets/js/admin-app](https://github.com/Jonybang/Lanit-Laravel-CMF/tree/master/public/assets/js/admin-app) folder and used [Awesome edit](https://github.com/Jonybang/awesome-edit) angular module for manage database tables and admin forms. Frontend architecture develop with DRY principle, adheres to the minimalist approach of development and has some specified and bulky code only in create/edit controllers and directives of complex forms(like [page-form-controller.js](public/assets/js/admin-app/modules/page-form/page-form-controller.js) and [mailing-controller.js](public/assets/js/admin-app/modules/site-manage/mailing/mailing-controller.js))
 
 Frontend and backend separated by REST API, and if desired developer can build his frontend for use created backend.
 
 ## TODO:
 
-Role and Multilanguage system.
+- Role and Multilanguage system;
+- Moved to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum)).
