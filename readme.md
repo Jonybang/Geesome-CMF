@@ -22,7 +22,7 @@ Demo site fully builded with project [database seeds](database/seeds). In this f
 
 This project largely took the concept from [MODX CMF](https://modx.com/) in admin interface and database scheme.
 
-Due to use [aravel framework in backend - this CMF uses all its advantages and removes all restrictions of custom fraemworks (like MODX).
+Due to use Laravel framework in backend - this CMF uses all its advantages and removes all restrictions of custom fraemworks (like MODX).
 
 General entities:  
 - [Page](app/Page.php) - page entity for store title, alis(uri), description, content, is_published flag and other general page info. Resources - analog of MODX;
