@@ -877,6 +877,7 @@ angular
                     popoverTemplate += '' +
                             '<div class="form-group col-md-12 row">' +
                                 '<button type="submit" class="btn btn-primary" ng-click="$parent.saveToList(new_object);">Save</button>' +
+                                '<button class="btn btn-danger pull-right" ng-click="$parent.popover.is_open = false">Close</button>' +
                             '</div>' +
                         '</div>';
 
@@ -2458,8 +2459,8 @@ angular.module('app')
                     required: true
                 },
                 {
-                    name: 'title',
-                    label: 'Title'
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'description',

@@ -25,8 +25,8 @@ angular.module('app')
                     required: true
                 },
                 {
-                    name: 'title',
-                    label: 'Title'
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'description',
