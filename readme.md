@@ -13,8 +13,10 @@ http://lanit.jonybang.ru/
 
 Admin side:  
 http://lanit.jonybang.ru/admin  
-User: test.lanit.cms@openmail.cc
+User: test.lanit.cms@openmail.cc  
 Password: Lt192837
+
+Demo site fully builded with project [database seeds](database/seeds). In this files developer can trace relations of CMF entites.
 
 ## Overview
 
