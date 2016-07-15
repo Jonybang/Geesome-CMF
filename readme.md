@@ -16,6 +16,8 @@ http://lanit.jonybang.ru/admin
 User: test.lanit.cms@openmail.cc  
 Password: Lt192837
 
+![Admin panel screenshot](public/assets/img/admin-panel-screenshot.png)
+
 Demo site fully builded with project [database seeds](database/seeds). In this files developer can trace relations of CMF entites.
 
 ## Overview
@@ -53,4 +55,5 @@ Frontend and backend separated by REST API, and if desired developer can build h
 ## TODO:
 
 - Role and Multilanguage system;
-- Moved to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum)).
+- Moved to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum));
+- Switching between markup and markdown editors by setting.
