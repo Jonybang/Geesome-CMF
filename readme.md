@@ -29,6 +29,7 @@ General entities:
 - Dictionary and DictionaryWord - certain general phrases, which are not related to any page or other custom entity(as 'Subscribe', 'Copyright' and etc.). Also available in templates.
 
 Sub entites:  
+- UserActionLog - logs about users actions with all entities (create, update, delete);
 - SubscriberGroup and Subscriber - created for оrganization of mailing about news ot other important site events;
 - MailTemplate - templates of sending mails with support of [Blade](https://laravel.com/docs/5.0/templates) syntax(in the main for place variables), stored in database, and editable from admin panel;
 - SendedMail - for possibly of resend previosly sended mails.
