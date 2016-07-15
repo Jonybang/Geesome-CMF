@@ -55,5 +55,5 @@ Frontend and backend separated by REST API, and if desired developer can build h
 ## TODO:
 
 - Role and Multilanguage system;
-- Moved to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum));
+- Move to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum));
 - Switching between markup and markdown editors by setting.
