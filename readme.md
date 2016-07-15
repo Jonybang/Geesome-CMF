@@ -21,12 +21,12 @@ This project largely took the concept from [MODX CMF](https://modx.com/) in admi
 Due to use laravel framework in backend - this CMF uses all its advantages and removes all restrictions of custom fraemworks (like MODX).
 
 General entities:  
-- Page - page entity for store title, alis(uri), description, content, is_published flag and other general page info;
-- Template - laravel template with path in resources/views/templates folder, which the used for render page with his data in {{$page}} variable;
+- Page - page entity for store title, alis(uri), description, content, is_published flag and other general page info. Resources - analog of MODX;
+- Template - laravel template with path in resources/views/templates folder, which the used for render page with his data in {{$page}} variable. Template - analog of MODX;
 - SubField - bind to templates for input and output sub data in pages(as images, sliders data, additional text blocks and etc.). Template Variables(TV) - analog of MODX;
-- ControllerAction - bind to templates for execute some laravel CustomController@myAction when page rendered and get data from it. Sinppets - analog of MODX;
-- Setting - some variables for change backend and fronted logic or mode;
-- Dictionary and DictionaryWord - certain general phrases, which are not related to any page or other custom entity(as 'Subscribe', 'Copyright' and etc.).
+- ControllerAction - bind to templates for execute some laravel CustomController@myAction when page rendered and get data from it. Snippets - analog of MODX;
+- Setting - some variables for change backend and fronted logic or mode. Also available in templates;
+- Dictionary and DictionaryWord - certain general phrases, which are not related to any page or other custom entity(as 'Subscribe', 'Copyright' and etc.). Also available in templates.
 
 Sub entites:  
 - SubscriberGroup and Subscriber - created for оrganization of mailing about news ot other important site events;
