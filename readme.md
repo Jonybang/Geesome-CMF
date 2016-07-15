@@ -1,27 +1,46 @@
-# Laravel PHP Framework
+# Lanit Laravel CMF(CMS)
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+Content managment system based on laravel framework with his templates and actions.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Designed for developers who want base CMS functions as pages, templates, roles, multilanguage and mailing managment.
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+## Demo
+
+Client side:  
+http://lanit.jonybang.ru/
+
+Admin side:  
+http://lanit.jonybang.ru/admin  
+User: test.lanit.cms@openmail.cc
+Password: Lt192837
+
+## Overview
+
+This project largely took the concept from [MODX CMF](https://modx.com/) in admin interface and database scheme.
+
+Due to use laravel framework in backend - this CMF uses all its advantages and removes all restrictions of custom fraemworks (like MODX).
+
+General entities:  
+- Page - page entity for store title, alis(uri), description, content, is_published flag and other general page info;
+- Template - laravel template with path in resources/views/templates folder, which the used for render page with his data in {{$page}} variable;
+- SubField - bind to templates for input and output sub data in pages(as images, sliders data, additional text blocks and etc.). Template Variables(TV) - analog of MODX;
+- ControllerAction - bind to templates for execute some laravel CustomController@myAction when page rendered and get data from it. Sinppets - analog of MODX;
+- Setting - some variables for change backend and fronted logic or mode;
+- Dictionary and DictionaryWord - certain general phrases, which are not related to any page or other custom entity(as 'Subscribe', 'Copyright' and etc.).
+
+Sub entites:  
+- SubscriberGroup and Subscriber - created for оrganization of mailing about news ot other important site events;
+- MailTemplate - templates of sending mails with support of [Blade](https://laravel.com/docs/5.0/templates) syntax(in the main for place variables), stored in database, and editable from admin panel;
+- SendedMail - for possibly of resend previosly sended mails.
 
 ## Official Documentation
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+The project is now on beta version, and soon, when the first version - his will be documented.
 
-## Contributing
+## Backend and frontend
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+Now backend core is located in [app/Http/routes.php](https://github.com/Jonybang/Lanit-Laravel-CMF/blob/master/app/Http/routes.php) file.
 
-## Security Vulnerabilities
+Forntend core(Admin panel) located in [public/assets/js/admin-app](https://github.com/Jonybang/Lanit-Laravel-CMF/tree/master/public/assets/js/admin-app) folder and used [Awesome edit](https://github.com/Jonybang/awesome-edit) angular module for manage database tables and admin forms.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+Frontend and backend separated by REST API, and if desired developer can build his frontend for use created backend.
