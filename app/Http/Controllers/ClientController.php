@@ -68,6 +68,8 @@ class ClientController extends Controller
             $subscriber_group->subscribers()->attach($subscriber->id);
         }
 
+        \Session::put('subscribed', true);
+
         return redirect('thanks-for-subscribe')->withInput();
     }
 }
