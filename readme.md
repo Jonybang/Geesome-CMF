@@ -25,7 +25,7 @@ This project largely took the concept from [MODX CMF](https://modx.com/) in admi
 Due to use Laravel framework in backend - this CMF uses all its advantages and removes all restrictions of custom fraemworks (like MODX).
 
 General entities:  
-- [Page](app/Page.php) - page entity for store title, alis(uri), description, content, is_published flag and other general page info. Resources - analog of MODX;
+- [Page](app/Page.php) - page entity for store title, alias(uri), description, content, is_published flag and other general page info. Resources - analog of MODX;
 - [Template](app/Template.php) - laravel template with path in [resources/views/templates](resources/views/templates) folder, which the used for render page with his data in {{$page}} variable. Template - analog of MODX;
 - [SubField](app/SubField.php) - bind to templates for input and output sub data in pages(as images, sliders data, additional text blocks and etc.). Template Variables(TV) - analog of MODX;
 - [ControllerAction](app/ControllerAction.php) - bind to templates for execute some laravel CustomController@myAction when page rendered and get data from it. Snippets - analog of MODX;
