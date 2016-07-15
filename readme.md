@@ -1,4 +1,4 @@
-# Lanit Laravel CMF(CMS)
+# Laravel CMF(CMS)
 
 Content managment system based on [laravel framework](https://laravel.com/) with his templates and actions.
 
