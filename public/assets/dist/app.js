@@ -2331,6 +2331,12 @@ angular.module('app')
                     table_hide: true
                 },
                 {
+                    name: 'content',
+                    label: 'Content',
+                    type: 'textarea',
+                    table_hide: true
+                },
+                {
                     name: 'author_id',
                     label: 'Author',
                     type: 'select',
@@ -2361,53 +2367,15 @@ angular.module('app')
                 },
                 {
                     name: 'is_abstract',
-                    label: 'Is abstract page',
+                    label: 'Is abstract page(has no body, but have children)',
                     type: 'bool',
                     table_hide: true
                 },
                 {
-                    name: 'content',
-                    label: 'Content',
-                    type: 'textarea',
+                    name: 'is_part',
+                    label: 'Is part of parent page',
+                    type: 'bool',
                     table_hide: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
-
-        $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
-            orderBy: '-id',
-            resource: Settings,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Setting key',
-                    new_placeholder: 'New Setting',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
                 }
             ]
         };
@@ -2465,6 +2433,44 @@ angular.module('app')
                     resource: SubscribersGroups,
                     list: 'subscribers_groups',
                     table_hide: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = Settings.query();
+
+        $scope.aGridOptions = {
+            caption: 'All settings available in templates.',
+            orderBy: '-id',
+            resource: Settings,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    modal: 'self',
+                    label: 'Setting key',
+                    new_placeholder: 'New Setting',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
                 }
             ]
         };

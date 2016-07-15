@@ -27,10 +27,11 @@ class PageController extends Controller
         );
     }
 
-    private function getPageArrayWithContent($page){
+    private function getPageDataWithContent($page){
         $page_data = $page->toArray();
-        $page_data['content'] = $page->content_text;
+        $page_data['page_uri'] = $page->page_uri;
         $page_data['tags_ids'] = $page->tags_ids;
+        $page_data['content'] = $page->content_text;
         return $page_data;
     }
 
@@ -39,7 +40,7 @@ class PageController extends Controller
         $page = Page::with('tags')->find($id);
 
         return Response::json(
-            $this->getPageArrayWithContent($page),
+            $this->getPageDataWithContent($page),
             200
         );
     }
@@ -62,7 +63,7 @@ class PageController extends Controller
         }
         UserActionLog::saveAction($page,"create");
         return Response::json(
-            $this->getPageArrayWithContent($page),
+            $this->getPageDataWithContent($page),
             200
         );
     }
@@ -85,7 +86,7 @@ class PageController extends Controller
         }
         UserActionLog::saveAction($page,"update");
         return Response::json(
-            $this->getPageArrayWithContent($page),
+            $this->getPageDataWithContent($page),
             $is_saved ? 200 : 400
         );
     }

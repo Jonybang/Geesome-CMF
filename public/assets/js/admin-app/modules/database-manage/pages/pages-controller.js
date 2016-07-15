@@ -47,6 +47,12 @@ angular.module('app')
                     table_hide: true
                 },
                 {
+                    name: 'content',
+                    label: 'Content',
+                    type: 'textarea',
+                    table_hide: true
+                },
+                {
                     name: 'author_id',
                     label: 'Author',
                     type: 'select',
@@ -77,14 +83,14 @@ angular.module('app')
                 },
                 {
                     name: 'is_abstract',
-                    label: 'Is abstract page',
+                    label: 'Is abstract page(has no body, but have children)',
                     type: 'bool',
                     table_hide: true
                 },
                 {
-                    name: 'content',
-                    label: 'Content',
-                    type: 'textarea',
+                    name: 'is_part',
+                    label: 'Is part of parent page',
+                    type: 'bool',
                     table_hide: true
                 }
             ]
