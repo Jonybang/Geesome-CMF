@@ -169,7 +169,7 @@ angular.module('app')
                     return;
                 }
 
-                if($scope.mail.sub_data_array.length){
+                if($scope.mail.sub_data_array && $scope.mail.sub_data_array.length){
                     $scope.mail.sub_data = {};
                     $scope.mail.sub_data_array.forEach(function(sub_item){
                         $scope.mail.sub_data[sub_item.key] = sub_item.value;
