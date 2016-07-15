@@ -29,8 +29,8 @@ General entities:
 - [Template](app/Template.php) - entity with [key](database/migrations/2016_06_05_030526_create_templates_table.php#L18) field, indicating the path at laravel template in [resources/views/templates](resources/views/templates) folder, which the used for render page with his data in {{$page}} variable. Template - analog of MODX;
 - [SubField](app/SubField.php) - bind to templates for input and output sub data in pages(as images, sliders data, additional text blocks and etc.). Available in templates as variable named by [key](database/migrations/2016_06_05_092703_create_sub_fields_table.php#L18) field. Template Variables(TV) - analog of MODX;
 - [ControllerAction](app/ControllerAction.php) - bind to templates for execute some laravel CustomController@myAction when page rendered and get data from it. Snippets - analog of MODX;
-- [Setting](app/Setting.php) - some variables for change backend and fronted logic or mode. Also available in templates;
-- [Dictionary](app/Dictionary.php) and [DictionaryWord](app/DictionaryWord.php) - certain general phrases(as 'Subscribe', 'Copyright' and etc.), which are not related to any page or other custom entity. Also available in templates as variable named by [key](database/migrations/2016_06_05_050515_create_settings_table.php#L18) field.
+- [Setting](app/Setting.php) - some variables for change backend and fronted logic or mode. Also available in templates by [key](database/migrations/2016_06_05_050515_create_settings_table.php#L18) field;
+- [Dictionary](app/Dictionary.php) and [DictionaryWord](app/DictionaryWord.php) - certain general phrases(as 'Subscribe', 'Copyright' and etc.), which are not related to any page or other custom entity. Also available in templates as variable named by [key](database/migrations/2016_06_27_012107_create_dictionary_words_table.php#L18) field.
 
 Sub entites:  
 - [UserActionLog](app/UserActionLog.php) - logs about users actions with all entities (create, update, delete);
