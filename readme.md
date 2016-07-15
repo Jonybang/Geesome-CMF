@@ -44,3 +44,7 @@ Now backend core is located in [app/Http/routes.php](https://github.com/Jonybang
 Forntend core(Admin panel) located in [public/assets/js/admin-app](https://github.com/Jonybang/Lanit-Laravel-CMF/tree/master/public/assets/js/admin-app) folder and used [Awesome edit](https://github.com/Jonybang/awesome-edit) angular module for manage database tables and admin forms.
 
 Frontend and backend separated by REST API, and if desired developer can build his frontend for use created backend.
+
+## TODO:
+
+Role and Multilanguage system.
