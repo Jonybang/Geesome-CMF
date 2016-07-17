@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;
-use \App\User;
-use \App\UserActionLog;
+use \App\Models\User;
+use \App\Models\UserActionLog;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;

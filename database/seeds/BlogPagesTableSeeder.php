@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Page;
+use App\Models\Template;
+use App\Models\User;
+use App\Models\Context;
+use App\Models\Tag;
 
 class BlogPagesTableSeeder extends Seeder
 {
@@ -17,13 +22,13 @@ class BlogPagesTableSeeder extends Seeder
             ['Science has not yet mastered prophecy', 'We predict too much for the next year and yet far too little for the next ten.', 'Содержимое cтатьи 3'],
         ];
 
-        $template_id = \App\Template::where('key', 'page')->first()->id;
-        $page_id = \App\Page::where('alias', 'blog')->first()->id;
-        $author_id = \App\User::first()->id;
-        $context_id = \App\Context::first()->id;
+        $template_id = Template::where('key', 'page')->first()->id;
+        $page_id = Page::where('alias', 'blog')->first()->id;
+        $author_id = User::first()->id;
+        $context_id = Context::first()->id;
 
         foreach($seeds as $seed){
-            $page = \App\Page::create([
+            $page = Page::create([
                 'title' => $seed[0],
                 'sub_title' => $seed[1],
                 'is_published' => true,
@@ -36,7 +41,7 @@ class BlogPagesTableSeeder extends Seeder
 
             $tags_ids = [];
             for($i=0; $i<3; $i++){
-                $id = \App\Tag::orderByRaw("random()")->first()->id;
+                $id = Tag::orderByRaw("random()")->first()->id;
                 if(!in_array($id, $tags_ids))
                     $page->tags()->attach($id);
                 $tags_ids[] = $id;

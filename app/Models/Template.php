@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,17 +16,17 @@ class Template extends Model
 
     public function pages()
     {
-        return $this->hasMany('App\Page', 'template_id');
+        return $this->hasMany(Page::class, 'template_id');
     }
 
     public function sub_fields()
     {
-        return $this->belongsToMany('App\SubField', 'templates_sub_fields')->with('sub_field_type');
+        return $this->belongsToMany(SubField::class, 'templates_sub_fields')->with('type');
     }
 
     public function controller_actions()
     {
-        return $this->belongsToMany('App\ControllerAction', 'templates_controller_actions');
+        return $this->belongsToMany(ControllerAction::class, 'templates_controller_actions');
     }
 
     public function setControllerActionsIdsAttribute($value)

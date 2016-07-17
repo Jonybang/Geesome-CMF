@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,11 +16,11 @@ class SubFieldValue extends Model
 
     public function page()
     {
-        return $this->belongsTo('App\Page', 'page_id', 'id');
+        return $this->belongsTo(Page::class, 'page_id', 'id');
     }
     public function sub_field()
     {
-        return $this->belongsTo('App\SubField', 'sub_field_id', 'id');
+        return $this->belongsTo(SubField::class, 'sub_field_id', 'id');
     }
     public function getNameAttribute(){
         return '"' . $this->sub_field->title . '" value on "' . $this->page->title . '" page';

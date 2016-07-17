@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\UserActionLog;
-use App\SentMail;
+use App\Models\UserActionLog;
+use App\Models\SentMail;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;

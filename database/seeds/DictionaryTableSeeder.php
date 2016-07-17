@@ -2,6 +2,9 @@
 
 use Illuminate\Database\Seeder;
 
+use App\Models\Dictionary;
+use App\Models\Context;
+
 class DictionaryTableSeeder extends Seeder
 {
     /**
@@ -11,7 +14,7 @@ class DictionaryTableSeeder extends Seeder
      */
     public function run()
     {
-        $context_id = \App\Context::first()->id;
+        $context_id = Context::first()->id;
 
         $dictionaries = [
             'general' => [
@@ -33,7 +36,7 @@ class DictionaryTableSeeder extends Seeder
         ];
 
         foreach($dictionaries as $dictionary_name => $words){
-            $dictionary = \App\Dictionary::create([
+            $dictionary = Dictionary::create([
                 'key' => $dictionary_name
             ]);
 

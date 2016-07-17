@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -21,7 +21,7 @@ class User extends Authenticatable
 
     public function logs()
     {
-        return $this->morphMany('App\UserActionLog', 'logable');
+        return $this->morphMany(UserActionLog::class, 'logable');
     }
     /**
      * The attributes that should be hidden for arrays.

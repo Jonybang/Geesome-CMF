@@ -2,6 +2,10 @@
 
 use Illuminate\Database\Seeder;
 
+use App\Models\Context;
+use App\Models\Page;
+use App\Models\Template;
+
 class PagesTableSeeder extends Seeder
 {
     /**
@@ -11,7 +15,7 @@ class PagesTableSeeder extends Seeder
      */
     public function run()
     {
-        $context = \App\Context::create([
+        $context = Context::create([
             'name' => 'Default',
             'key' => 'default'
         ]);
@@ -26,11 +30,11 @@ class PagesTableSeeder extends Seeder
             ['Thanks for subscribe', 'thanks-for-subscribe', 'page', '', '', 'Thanks for subscribe content', true],
         ];
         foreach($seeds as $seed){
-            $page = \App\Page::create([
+            $page = Page::create([
                 'title' => $seed[0],
                 'alias' => $seed[1],
                 'is_published' => true,
-                'template_id' => \App\Template::where('key', $seed[2])->first()->id,
+                'template_id' => Template::where('key', $seed[2])->first()->id,
                 'sub_title' => $seed[3],
                 'description' => $seed[4],
                 'is_menu_hide' => $seed[6],

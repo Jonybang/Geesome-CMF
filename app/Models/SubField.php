@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,7 +22,7 @@ class SubField extends Model
 
     public function templates()
     {
-        return $this->belongsToMany('App\Template', 'templates_sub_fields');
+        return $this->belongsToMany(Template::class, 'templates_sub_fields');
     }
 
     public function setTemplatesIdsAttribute($value)
@@ -41,15 +41,11 @@ class SubField extends Model
 
     public function type()
     {
-        return $this->belongsTo('App\SubFieldType', 'id', 'sub_field_type_id');
+        return $this->belongsTo(SubFieldType::class, 'sub_field_type_id', 'id');
     }
-    public function sub_field_type()
+    public function values()
     {
-        return $this->belongsTo('App\SubFieldType');
-    }
-    public function sub_field_values()
-    {
-        return $this->hasMany('App\SubFieldValue', 'sub_field_id');
+        return $this->hasMany(SubFieldValue::class, 'sub_field_id');
     }
 
     public function getTitleAttribute(){

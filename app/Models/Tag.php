@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +14,6 @@ class Tag extends Model
 
     public function pages()
     {
-        return $this->belongsToMany('App\Page', 'pages_tags')->orderBy('created_at', 'DESC');
+        return $this->belongsToMany(Page::class, 'pages_tags')->orderBy('created_at', 'DESC');
     }
 }
