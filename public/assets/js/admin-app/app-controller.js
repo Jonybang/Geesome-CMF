@@ -20,8 +20,8 @@ angular.module('app')
                 route:   'app.db.subscribers'
             },
             {
-                heading: 'Sended Mails',
-                route:   'app.db.sended_mails'
+                heading: 'Sent Mails',
+                route:   'app.db.sent_mails'
             },
             {
                 heading: 'Settings',

@@ -11,7 +11,7 @@ use \Auth;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class SendedMailController extends Controller
+class SentMailController extends Controller
 {
     public function index()
     {

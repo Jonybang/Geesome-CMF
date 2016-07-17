@@ -60,10 +60,10 @@ angular
                         controller: 'SubscribersController',
                         templateUrl: AppPaths.subscribers_tpls + 'index.html'
                     })
-                    .state('app.db.sended_mails', {
-                        url: '/sended_mails',
-                        controller: 'SendedMailsController',
-                        templateUrl: AppPaths.sended_mails_tpls + 'index.html'
+                    .state('app.db.sent_mails', {
+                        url: '/sent_mails',
+                        controller: 'SentMailsController',
+                        templateUrl: AppPaths.sent_mails_tpls + 'index.html'
                     })
                     .state('app.db.settings', {
                         url: '/settings',
@@ -106,7 +106,7 @@ angular
                     abstract: true
                 })
                     .state('app.manage.mailing', {
-                        url: '/mailing/:sendedMailId',
+                        url: '/mailing/:sentMailId',
                         controller: 'MailingController',
                         templateUrl: AppPaths.mailing_tpls + 'index.html'
                     });
