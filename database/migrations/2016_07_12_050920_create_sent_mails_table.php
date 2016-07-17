@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSendedMailsTable extends Migration
+class CreateSentMailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateSendedMailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sended_mails', function (Blueprint $table) {
+        Schema::create('sent_mails', function (Blueprint $table) {
             $table->increments('id');
 
             $table->string('result_title')->nullable();
@@ -38,6 +38,6 @@ class CreateSendedMailsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('sended_mails');
+        Schema::drop('sent_mails');
     }
 }

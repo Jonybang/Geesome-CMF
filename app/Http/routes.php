@@ -61,7 +61,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
 
         Route::resource('subscribers', 'Api\SubscriberController');
         Route::resource('subscribers_groups', 'Api\SubscriberGroupController');
-        Route::resource('sended_mails', 'Api\SendedMailController');
+        Route::resource('sent_mails', 'Api\SentMailController');
     });
 
     Route::get('/', function () {

@@ -34,7 +34,7 @@ class ClientController extends Controller
         $request_data = $request->all();
         $site = \App\Setting::where('key', 'site_url')->first()->value;
 
-        $mail = new \App\SendedMail([
+        $mail = new \App\SentMail([
             'mail_template_id' => $mail_template->id
         ]);
 

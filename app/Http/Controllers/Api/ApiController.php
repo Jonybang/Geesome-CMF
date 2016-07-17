@@ -8,7 +8,7 @@ use \Auth;
 use \App\Page;
 use \App\MailTemplate;
 use \App\SubscriberGroup;
-use \App\SendedMail;
+use \App\SentMail;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -35,7 +35,7 @@ class ApiController extends Controller
     {
         $data = $request->all();
 
-        $mail = new SendedMail([
+        $mail = new SentMail([
             'mail_template_id' => $data['mail_template_id']
         ]);
 

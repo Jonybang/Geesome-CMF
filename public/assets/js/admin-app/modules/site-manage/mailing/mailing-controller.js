@@ -1,15 +1,15 @@
 angular.module('app')
-    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'AppPaths', 'AppData', 'Pages', 'Templates', 'MailTemplates', 'SendedMails', 'SubscribersGroups', 'Subscribers',
-        function($scope, $state, $http, $uibModal, debounce, AppPaths, AppData, Pages, Templates, MailTemplates, SendedMails, SubscribersGroups, Subscribers) {
+    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'AppPaths', 'AppData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
+        function($scope, $state, $http, $uibModal, debounce, AppPaths, AppData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
 
             //======================================
             //INITIAL ACTIONS
             //======================================
 
-            var defaultMail = new SendedMails();
+            var defaultMail = new SentMails();
 
-            if($state.params.sendedMailId){
-                $scope.mail = SendedMails.get({id: $state.params.sendedMailId});
+            if($state.params.sentMailId){
+                $scope.mail = SentMails.get({id: $state.params.sentMailId});
 
                 $scope.mail.$promise.then(function(mail){
                     $scope.mail.sub_data_array = [];
@@ -19,7 +19,7 @@ angular.module('app')
                     });
                 });
 
-                $scope.mail.id = $state.params.sendedMailId;
+                $scope.mail.id = $state.params.sentMailId;
             } else {
                 defaultMail.subscribers_groups_ids = [];
                 defaultMail.sub_data_array = [];
@@ -88,10 +88,10 @@ angular.module('app')
                 ]
             };
 
-            $scope.getSendedMails = function(){
-                $scope.sended_mails = SendedMails.query();
+            $scope.getSentMails = function(){
+                $scope.sent_mails = SentMails.query();
             };
-            $scope.getSendedMails();
+            $scope.getSentMails();
 
             $scope.status = {
                 subscribers_list: {},
@@ -244,9 +244,9 @@ angular.module('app')
                 $scope.mail.$save().then(function(result){
                     $scope.mail = angular.copy(defaultMail);
 
-                    $scope.alert = 'Mail sended!';
+                    $scope.alert = 'Mail sent!';
 
-                    $scope.getSendedMails();
+                    $scope.getSentMails();
 
                     $scope.status.mail = {};
                 }, function(){

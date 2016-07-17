@@ -19,7 +19,7 @@ angular.module('app')
             sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
             dictionary_tpls:        app_modules_path + 'database-manage/dictionary/templates/',
             subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/',
-            sended_mails_tpls:       app_modules_path + 'database-manage/sended-mails/templates/',
+            sent_mails_tpls:       app_modules_path + 'database-manage/sent-mails/templates/',
 
             mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });

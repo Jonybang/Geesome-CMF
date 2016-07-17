@@ -1,11 +1,11 @@
 angular.module('app')
-    .controller('SendedMailsController', ['$scope', 'SendedMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function($scope, SendedMails, MailTemplates, Pages, SubscribersGroups) {
-        $scope.sended_mails = SendedMails.query();
+    .controller('SentMailsController', ['$scope', 'SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function($scope, SentMails, MailTemplates, Pages, SubscribersGroups) {
+        $scope.sent_mails = SentMails.query();
 
         $scope.aGridOptions = {
             caption: '',
             orderBy: '-id',
-            resource: SendedMails,
+            resource: SentMails,
             create: false,
             edit: false,
             fields: [

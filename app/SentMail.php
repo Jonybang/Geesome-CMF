@@ -5,9 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Mail;
 
-class SendedMail extends Model
+class SentMail extends Model
 {
-    protected $table = 'sended_mails';
+    protected $table = 'sent_mails';
 
     protected $fillable = [
         'result_title',

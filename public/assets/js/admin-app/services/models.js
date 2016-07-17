@@ -64,6 +64,6 @@ app.factory('SubscribersGroups', ['$resource', function($resource) {
     return $resource('admin/api/subscribers_groups/:id', { id: '@id' }, defaultOptions);
 }]);
 
-app.factory('SendedMails', ['$resource', function($resource) {
-    return $resource('admin/api/sended_mails/:id', { id: '@id' }, defaultOptions);
+app.factory('SentMails', ['$resource', function($resource) {
+    return $resource('admin/api/sent_mails/:id', { id: '@id' }, defaultOptions);
 }]);

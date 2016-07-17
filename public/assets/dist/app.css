@@ -32,19 +32,6 @@ dt {
 .btn-group.select-adder .btn-success {
   float: right;
 }
-
-pre {
-  white-space: pre-wrap;
-  /* css-3 */
-  white-space: -moz-pre-wrap;
-  /* Mozilla, since 1999 */
-  white-space: -pre-wrap;
-  /* Opera 4-6 */
-  white-space: -o-pre-wrap;
-  /* Opera 7 */
-  word-wrap: break-word;
-  /* Internet Explorer 5.5+ */
-}
 /*!
  * Start Bootstrap - SB Admin Bootstrap Admin Template (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.

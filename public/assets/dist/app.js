@@ -36,23 +36,18 @@ angular
         \
         </div>\
     ');
-
-    $templateCache.put('a-edit-bool-input.html', '\
-        <span ng-if="!isEdit" ng-class="[\'glyphicon\',{\'glyphicon-check\': $parent.fakeModel, \'glyphicon-unchecked\': !$parent.fakeModel}]"></span>\
-        <input ng-if="isEdit" ng-model="$parent.fakeModel" type="checkbox" class="form-control" name="{{$parent.name}}" ng-change="$parent.change()">\
-    ');
-
+    
     $templateCache.put('a-edit-popover-image.html', '\
-        <a target="_blank" href="{{::image}}" uib-popover-template="imagePopoverPath" popover-placement="left" popover-trigger="mouseenter">\
-            {{:: text || image}}\
-        </a>\
+            <a target="_blank" href="{{::image}}" uib-popover-template="imagePopoverPath" popover-placement="left" popover-trigger="mouseenter">\
+                {{:: text || image}}\
+            </a>\
     ');
     
   }]);
 
 angular
     .module('a-edit')
-    .directive('aeGrid', ['$timeout', '$compile', '$filter', 'AEditHelpers', 'AEditConfig', function($timeout, $compile, $filter, AEditHelpers, AEditConfig) {
+    .directive('aGrid', ['$timeout', '$compile', '$filter', 'AEditHelpers', 'AEditConfig', function($timeout, $compile, $filter, AEditHelpers, AEditConfig) {
     return {
         restrict: 'E',
         require: 'ngModel',
@@ -70,166 +65,30 @@ angular
                 search: true,
                 create: true,
                 edit: true,
-                boldHeaders: true,
-                modalAdder: false,
-                resource: null,
                 orderBy: '-id',
                 defaultAttrs: {},
                 modalIndex: 0,
                 searchDebounce: 200,
-                fields: [],
                 lists: {}
             };
+            scope.options = angular.extend(defaultOptions, scope.options);
+            AEditConfig.currentOptions = scope.options;
 
-            var new_item = {
-                is_new: true
-            };
-            scope.new_item = angular.copy(new_item);
+            scope.new_item = {};
+
             scope.status = "";
 
-            var mode = 'local';
-
-            // *************************************************************
-            // TEMPLATE INIT
-            // *************************************************************
-
-            scope.$watch('options', function(){
-                if(!scope.options)
-                    return;
-
-                scope.actualOptions = angular.extend({}, defaultOptions, scope.options);
-                AEditConfig.currentOptions = scope.actualOptions;
-
-                if(scope.actualOptions.resource)
-                    mode = 'remote';
-
-                var tplSearch =
-                    '<div class="input-group">' +
-                        '<input type="text" class="form-control" ng-model="searchQuery" placeholder="Search" ng-change="search()" ng-model-options="{ debounce: ' + scope.actualOptions.searchDebounce + ' }"/>' +
-                        '<span class="input-group-btn">' +
-                            '<button class="btn btn-default" ng-click="clearSearch()"><i class="glyphicon glyphicon-remove"></i></button>' +
-                        '</span>' +
-                    '</div>';
-
-                var tplHead =
-                    '<table class="table table-hover bootstrap-table">' +
-                        '<caption>{{actualOptions.caption}}</caption>' +
-                        '<thead>' +
-                            '<tr>';
-
-                var tplBodyNewItem =
-                        '<tbody>' +
-                            '<tr>';
-
-                var tplBodyItem =
-                        '<tbody>' +
-                            '<tr ng-repeat="item in filtredList track by item.' + (mode == 'remote' ? 'id' : 'json_id') + '">';
-
-
-                scope.actualOptions.fields.forEach(function(field, index){
-                    if(field.resource && field.list){
-                        if(!scope.actualOptions.lists[field.list]){
-                            scope.actualOptions.lists[field.list] = [];
-
-                            AEditHelpers.getResourceQuery(field.resource, 'get').then(function(list){
-                                scope.actualOptions.lists[field.list] = list;
-                            });
-                        }
-                    }
-
-                    if(field.table_hide)
-                        return;
-
-                    var headerEl = scope.actualOptions.boldHeaders ? 'th' : 'td';
-                    tplHead += '<' + headerEl + '>' + field.label + '</' + headerEl + '>';
-
-                    var style = 'style="';
-                    if(field.width)
-                        style += 'width:' + field.width + ';';
-                    style += '"';
-
-                    //for new item row
-                    tplBodyNewItem += '<td><div ' + style + ' >';
-                    //for regular item row
-                    tplBodyItem += '<td ng-dblclick="item.is_edit = !item.is_edit"><div ' + style + ' >';
-
-                    function getFieldDirective(is_new) {
-                        var item_name = (is_new ? 'new_' : '' ) + 'item';
-                        var field_name = field.name != 'self' ? field.name : '';
-
-                        var list_variable;
-
-                        if(field.list && field.list == 'self')
-                            list_variable = 'ngModel';
-                        else if(field.list)
-                            list_variable = 'actualOptions.lists.' + field.list;
-
-                        return AEditHelpers.generateDirectiveByConfig(field, {
-                            item_name: item_name,
-                            field_name: field_name,
-                            readonly: field.readonly || !scope.actualOptions.edit,
-                            always_edit: is_new,
-                            is_new: is_new,
-                            list_variable: list_variable
-                        });
-                    }
-
-                    tplBodyNewItem += getFieldDirective(true) + '</div></td>';
-                    tplBodyItem += getFieldDirective(false) + '</div></td>';
+            function getFieldOptionsByName(name){
+                var resultObject;
+                scope.options.fields.some(function(obj){
+                    var result = obj.name == name;
+                    if(result)
+                        resultObject = obj;
+                    return result;
                 });
 
-                if(scope.actualOptions.edit){
-                    tplHead +=
-                        '<th class="controls"></th>';
-
-                    tplBodyNewItem +=
-                        '<td class="controls">' +
-                            '<icon-button type="primary" glyphicon="floppy-disk" ng-click="save(new_item)" size="sm"></icon-button>' +
-                        '</td>';
-
-                    tplBodyItem +=
-                        '<td class="controls">' +
-                            '<icon-button ng-show="item.is_edit" type="primary" glyphicon="floppy-disk" ng-click="save(item)"></icon-button>' +
-                            '<icon-button ng-hide="item.is_edit" type="warning" glyphicon="pencil" ng-click="item.is_edit = true"></icon-button>' +
-                            '<icon-button type="danger" glyphicon="remove" ng-click="deleteConfirm(item)"></icon-button>' +
-                        '</td>';
-                }
-
-                tplHead +='</tr></thead>';
-
-                tplBodyNewItem +='</tr>';
-
-                tplBodyItem +='</tr></tbody></table>';
-
-                var tplHtml = '';
-
-                if(scope.actualOptions.search)
-                    tplHtml += tplSearch;
-
-                var tableHtml = '';
-
-                tableHtml += tplHead;
-
-                if(scope.actualOptions.create){
-
-                    if(scope.actualOptions.modalAdder)
-                        tplHtml += '<button class="btn btn-success" ng-click=""><span class="glyphicon glyphicon-plus"></span> Add</button>';
-                    else
-                        tableHtml += tplBodyNewItem;
-                }
-
-                tableHtml += tplBodyItem;
-
-                var template = angular.element(tplHtml + tableHtml);
-
-                var linkFn = $compile(template)(scope);
-                element.html(linkFn);
-            });
-
-
-            // *************************************************************
-            // CREATE OR UPDATE
-            // *************************************************************
+                return resultObject;
+            }
 
             scope.save = function(item){
                 if(!item)
@@ -237,7 +96,7 @@ angular
 
                 item.errors || (item.errors = {});
 
-                scope.actualOptions.fields.forEach(function(field){
+                scope.options.fields.forEach(function(field){
                     //if field empty and required - add to errors, else delete from errors
                     if(field.required && !item[field.name])
                         item.errors[field.name] = true;
@@ -255,41 +114,8 @@ angular
 
                 if(!AEditHelpers.isEmptyObject(item.errors))
                     return;
-
-                function saveCallbacks(item){
-                    if(scope.onSave)
-                        $timeout(scope.onSave);
-
-                    if(scope.ngChange)
-                        $timeout(scope.ngChange);
-
-                    scope.search();
-
-                    item.is_edit = false;
-
-                    scope.status = item.name + " saved!";
-                    $timeout(function(){
-                        scope.status = "";
-                    }, 1000);
-
-                    if(mode != 'remote'){
-                        delete item.is_new;
-                        delete item.is_edit;
-                        delete item.errors;
-                    }
-                }
-
-                if(mode != 'remote'){
-                    if(item.is_new){
-                        item.json_id = scope.ngModel.length + 1;
-                        scope.ngModel.unshift(item);
-                        scope.new_item = angular.copy(new_item);
-                    }
-
-                    saveCallbacks(item);
-
-                    return;
-                }
+                    
+                console.log('save item', item);
 
                 var upload_item = angular.copy(item);
 
@@ -317,6 +143,7 @@ angular
                             sendAll();
                         } else {
                             upload_item[key].onSuccessItem = function(){
+                                console.log('onSuccessItem');
                                 if(!upload_item[key].queue.length){
                                     sendAll();
                                 }
@@ -328,62 +155,54 @@ angular
                 }
 
                 function sendItem(){
+
                     if('id' in upload_item && upload_item.id){
                         var query = AEditHelpers.getResourceQuery(upload_item, 'update');
                         
                         query.then(function(updated_item){
+                            console.log(updated_item);
                             angular.extend(item, updated_item);
+                            item.is_edit = false;
 
-                            saveCallbacks(item);
+                            scope.search();
                         });
                     } else {
-                        angular.forEach(scope.actualOptions.defaultAttrs, function(value, attr){
+                        angular.forEach(scope.options.defaultAttrs, function(value, attr){
                             upload_item[attr] = value;
                         });
 
-                        var query = AEditHelpers.getResourceQuery(new scope.actualOptions.resource(upload_item), 'create');
+                        var query = AEditHelpers.getResourceQuery(new scope.options.model(upload_item), 'create');
                         query.then(function(created_item){
                             created_item.is_new = true;
 
                             scope.ngModel.unshift(created_item);
                             delete scope.new_item;
-                            scope.new_item = angular.copy(new_item);
 
-                            saveCallbacks(item);
+                            scope.search();
                         });
                     }
+                    item.is_edit = false;
+                    scope.status = item.name + " saved!";
+
+                    $timeout(function(){
+                        scope.status = "";
+                    }, 1000);
+
+                    if(scope.onSave)
+                        $timeout(scope.onSave);
                 }
             };
 
-            // *************************************************************
-            // DELETE
-            // *************************************************************
-
             scope.deleteConfirm = function(item){
-                var index = scope.ngModel.indexOf(item);
-
-                function deleteCallbacks(){
-                    scope.ngModel.splice(index, 1);
-                    if(scope.ngChange)
-                        $timeout(scope.ngChange);
-                }
-                if(mode != 'remote'){
-                    deleteCallbacks();
-                    return;
-                }
-
                 if(confirm('Do you want delete object "' + item.name + '"?')){
                     var query = AEditHelpers.getResourceQuery(item, 'delete');
                     
                     query.then(function(){
-                        deleteCallbacks();
+                        var index = scope.ngModel.indexOf(item);
+                        scope.ngModel.splice(index, 1);
                     });
                 }
             };
-
-            // *************************************************************
-            // SEARCH
-            // *************************************************************
 
             scope.search = function(){
                 if(!scope.searchQuery)
@@ -391,8 +210,8 @@ angular
                 else
                     scope.filtredList = $filter('filter')(scope.ngModel, scope.searchQuery);
 
-                if(scope.actualOptions.orderBy)
-                    scope.filtredList = $filter('orderBy')(scope.filtredList, scope.actualOptions.orderBy);
+                if(scope.options.orderBy)
+                    scope.filtredList = $filter('orderBy')(scope.filtredList, scope.options.orderBy);
             };
 
             scope.clearSearch = function(){
@@ -400,24 +219,123 @@ angular
                 scope.filtredList = scope.ngModel;
             };
 
-            // *************************************************************
-            // WATCHERS
-            // *************************************************************
-
             scope.$watchCollection('ngModel', function(list){
-                if(!list)
-                    return;
+                scope.search();
+                scope.options.lists['self'] = list;
+            });
 
-                if(mode == 'local'){
-                    list.forEach(function(item, index){
-                        if(!item.json_id)
-                            item.json_id = list.length + index + 1;
-                    })
+            var tplSearch =
+                '<div class="input-group">' +
+                    '<input type="text" class="form-control" ng-model="searchQuery" placeholder="Search" ng-change="search()" ng-model-options="{ debounce: ' + scope.options.searchDebounce + ' }"/>' +
+                    '<span class="input-group-btn">' +
+                        '<button class="btn btn-default" ng-click="clearSearch()"><i class="glyphicon glyphicon-remove"></i></button>' +
+                    '</span>' +
+                '</div>';
+
+            var tplHead =
+                '<table class="table table-hover bootstrap-table">' +
+                '<caption>{{options.caption}}</caption>' +
+                '<thead>' +
+                '<tr>';
+
+            var tplBodyNewItem =
+                '<tbody>' +
+                '<tr>';
+
+            var tplBodyItem =
+                '<tbody>' +
+                '<tr ng-repeat="item in filtredList track by item.id">';
+
+
+            scope.options.fields.forEach(function(field, index){
+                if(field.model && field.list){
+                    if(!scope.options.lists[field.list]){
+                        scope.options.lists[field.list] = [];
+
+                        AEditHelpers.getResourceQuery(field.model, 'get').then(function(list){
+                            scope.options.lists[field.list] = list;
+                        });
+                    }
                 }
 
-                scope.search();
-                scope.actualOptions.lists['self'] = list;
+                if(field.table_hide)
+                    return;
+
+                tplHead += '<th>' + field.label + '</th>';
+
+                if(field.readonly || !scope.options.edit){
+                    tplBodyNewItem += '<th scope="row"></th>';
+                    tplBodyItem += '<th scope="row">{{item.' + field.name +'}}</th>';
+                } else {
+                    //for new item row
+                    tplBodyNewItem += '<td>';
+                    //for regular item row
+                    tplBodyItem += '<td ng-dblclick="item.is_edit = !item.is_edit">';
+
+                    function getFieldDirective(is_new) {
+                        var item_name = (is_new ? 'new_' : '' ) + 'item';
+                        var field_name = field.name != 'self' ? field.name : '';
+
+                        var list_variable;
+
+                        if(field.list && field.list == 'self')
+                            list_variable = 'ngModel';
+                        else if(field.list)
+                            list_variable = 'options.lists.' + field.list;
+
+                        return AEditHelpers.generateDirectiveByConfig(field, {
+                            item_name: item_name,
+                            field_name: field_name,
+                            always_edit: is_new,
+                            is_new: is_new,
+                            list_variable: list_variable
+                        });
+                    }
+
+                    tplBodyNewItem += getFieldDirective(true) + '</td>';
+                    tplBodyItem += getFieldDirective(false) + '</td>';
+                }
             });
+
+            if(scope.options.edit){
+                tplHead +=
+                    '<th class="controls"></th>';
+
+                tplBodyNewItem +=
+                    '<td class="controls">' +
+                        '<icon-button type="primary" glyphicon="floppy-disk" ng-click="save(new_item)" size="sm"></icon-button>' +
+                    '</td>';
+
+                tplBodyItem +=
+                    '<td class="controls">' +
+                        '<icon-button ng-show="item.is_edit" type="primary" glyphicon="floppy-disk" ng-click="save(item)"></icon-button>' +
+                        '<icon-button ng-hide="item.is_edit" type="warning" glyphicon="pencil" ng-click="item.is_edit = true"></icon-button>' +
+                        '<icon-button type="danger" glyphicon="remove" ng-click="deleteConfirm(item)"></icon-button>' +
+                    '</td>';
+            }
+
+            tplHead +='</tr></thead>';
+
+            tplBodyNewItem +='</tr>';
+
+            tplBodyItem +='</tr></tbody></table>';
+
+            var tplHtml = '';
+
+            if(scope.options.search)
+                tplHtml += tplSearch;
+
+            tplHtml += tplHead;
+
+            if(scope.options.create)
+                tplHtml += tplBodyNewItem;
+
+            tplHtml += tplBodyItem;
+
+            var template = angular.element(tplHtml);
+
+            var linkFn = $compile(template)(scope);
+            element.append(linkFn);
         }
     };
 }]);
@@ -477,29 +395,28 @@ angular
 angular
     .module('a-edit')
 
-    .directive('aeTextInput', ['$timeout', '$compile', function($timeout, $compile) {
+    .directive('textInput', ['$timeout', '$compile', function($timeout, $compile) {
         function getTemplateByType(type, options){
             var text = '{{$parent.ngModel}}';
-            var inputTagBegin = '<input type="text" ';
+            var inputTagBegin = '<input type="text"';
             var inputTagEnd = '';
 
             if(options && options.modal_link)
-                text = '<a a-modal-resource="modalResource" a-modal-options="modalOptions" on-save="save()" href>' + text + '</a>';
+                text = '<a a-model-modal="modalModel" on-save="save()" href>' + text + '</a>';
             else if(type == 'textarea'){
                 text = '<pre ng-if="$parent.ngModel">{{$parent.ngModel}}</pre>';
 
-                inputTagBegin = '<textarea ';
+                inputTagBegin = '<textarea';
                 inputTagEnd = '</textarea>';
             } else if(type == 'password'){
                 text = '<small>[password hidden]</small>';
 
                 inputTagBegin = '' +
                     '<a href ng-click="changePassword = true" ng-show="!isNew && !changePassword">Change password</a>' +
-                    '<div ng-show="changePassword || isNew"><input type="password" ';
+                    '<div ng-show="changePassword || isNew"><input type="password"';
                 inputTagEnd = '</div>';
             }
 
-            inputTagBegin += 'ng-change="ngChange()" ';
 
             return '' +
             '<div ng-if="!isEdit">' +
@@ -508,7 +425,7 @@ angular
             '<div ng-if="isEdit" ng-class="input_class">' +
                 inputTagBegin +
                 ' class="form-control input-sm" placeholder="{{$parent.placeholder}}"' +
-                ' ng-model="$parent.ngModel" ' + (type != 'textarea' ? 'ng-enter="$parent.save()"' : '') +
+                ' ng-model="$parent.ngModel" ng-enter="$parent.save()"' +
                 ' ng-model-options="$parent.ngModelOptions || {}"' +
                 ' ng-style="{ \'width\' : $parent.width + \'px\'}">' +
                 inputTagEnd +
@@ -531,8 +448,7 @@ angular
                 ngModelStr: '=?',
                 isNew: '=?',
                 isEdit: '=?',
-                modalResource: '=?',
-                modalOptions: '=?',
+                modalModel: '=?',
                 hasError: '=?',
                 //callbacks
                 ngChange: '&',
@@ -546,7 +462,7 @@ angular
             },
             link: function (scope, element, attrs) {
                 scope.type = scope.type || 'text';
-                if(attrs.modalResource && scope.type == 'text')
+                if(attrs.modalModel && scope.type == 'text')
                     scope.type = "text_modal_link";
 
                 var template = typeTemplates[scope.type],
@@ -582,38 +498,7 @@ angular
         };
     }])
 
-    .directive('aeBoolInput', ['$timeout', '$filter', function($timeout, $filter) {
-        return {
-            restrict: 'E',
-            templateUrl: 'a-edit-bool-input.html',
-            scope: {
-                //require
-                ngModel: '=',
-                isEdit: '=',
-                //callbacks
-                ngChange: '&',
-                onSave: '&',
-                //sub
-                name: '@'
-            },
-            link: function (scope, element) {
-
-                scope.$watch('ngModel', function(ngModel){
-                    scope.fakeModel = ngModel == 1;
-                });
-
-                scope.change = function(){
-                    scope.ngModel =  scope.fakeModel;
-
-                    if(scope.ngChange)
-                        $timeout(scope.ngChange);
-                };
-            }
-        };
-    }])
-
-
-    .directive('aeDateInput', ['$timeout', '$filter', function($timeout, $filter) {
+    .directive('dateInput', ['$timeout', '$filter', function($timeout, $filter) {
         return {
             restrict: 'E',
             templateUrl: 'a-edit-date-input.html',
@@ -646,7 +531,7 @@ angular
                     todayText: '',
                     currentText:'',
                     clearText: '',
-                    closeText: 'Close',
+                    closeText: 'РЎРѕС…СЂР°РЅРёС‚СЊ',
                     appendToBody: false
                 };
 
@@ -673,7 +558,7 @@ angular
         };
     }])
 
-    .directive('aeSelectInput', ['$timeout', '$compile', '$templateCache', 'AEditHelpers', function($timeout, $compile, $templateCache, AEditHelpers) {
+    .directive('selectInput', ['$timeout', '$compile', '$templateCache', 'AEditHelpers', function($timeout, $compile, $templateCache, AEditHelpers) {
         function getTemplateByType(type, options){
             options = options || {};
 
@@ -684,7 +569,7 @@ angular
             };
             if(type == 'multiselect'){
                 uiSelect.tags = 'multiple close-on-select="false" ';
-                uiSelect.match = '$item[$parent.nameField] || $item.name || $item[$parent.orNameField]';
+                uiSelect.match = '$item.name || $item.title';
             }
             if(options.adder){
                 uiSelect.subClasses = 'btn-group select-adder';
@@ -701,7 +586,7 @@ angular
                         '</ui-select-match>' +
 
                         '<ui-select-choices repeat="item.id as item in $parent.list | filter: $select.search track by $index">' +
-                            '<div ng-bind-html="(item[$parent.nameField] || item.name || item[$parent.orNameField]) | highlight: $select.search"></div>' +
+                            '<div ng-bind-html="item.name || item.title | highlight: $select.search"></div>' +
                         '</ui-select-choices>' +
                     '</ui-select>';
 
@@ -744,15 +629,11 @@ angular
                 ngResource: '=?',
                 ngResourceFields: '=?',
 
-                refreshListOn: '=?',
-
                 //callbacks
                 ngChange: '&',
                 onSave: '&',
                 //sub
                 adder: '=?',
-                nameField: '@',
-                orNameField: '@',
                 placeholder: '@',
                 name: '@',
                 type: '@' //select or multiselect
@@ -811,27 +692,24 @@ angular
                     scope.setSelectedName(scope.ngModel);
                 });
 
-                function getListByResource(){
-                    if(!scope.ngResource)
+                scope.$watch('ngResource', function(ngResource){
+                    if(!ngResource)
                         return;
 
-                    AEditHelpers.getResourceQuery(scope.ngResource, 'get').then(function(list){
+                    AEditHelpers.getResourceQuery(ngResource, 'get').then(function(list){
                         scope.list = list;
                     });
-                }
-
-                scope.$watch('ngResource', getListByResource);
-                scope.$watch('refreshListOn', getListByResource);
+                });
 
                 scope.setSelectedName = function (newVal){
                     if(Array.isArray(newVal)){
                         var names = [];
                         newVal.forEach(function(val){
-                            names.push(AEditHelpers.getNameById(scope.list, val, scope.nameField, scope.orNameField));
+                            names.push(AEditHelpers.getNameById(val));
                         });
                         scope.selectedName = names.join(', ');
                     } else {
-                        scope.selectedName = AEditHelpers.getNameById(scope.list, newVal, scope.nameField, scope.orNameField);
+                        scope.selectedName = AEditHelpers.getNameById(scope.list, newVal);
                     }
 
                     scope.ngModelStr = scope.selectedName;
@@ -843,8 +721,6 @@ angular
                 };
 
                 if(scope.adder){
-                    scope.new_object = {};
-
                     var popoverTemplate = '' +
                         '<div ng-click="popoverContentClick($event)">';
 
@@ -856,7 +732,7 @@ angular
                                 '</div>' +
                                 '<div>' +
                                     AEditHelpers.generateDirectiveByConfig(field, {
-                                        item_name: '$parent.new_object',
+                                        item_name: 'new_object',
                                         lists_container: 'lists',
                                         always_edit: true,
                                         is_new: true
@@ -865,12 +741,8 @@ angular
                                 '</div>' +
                             '</div>';
 
-                        if(field.resource){
-                            scope[field.name + '_resource'] = field.resource;
-                        }
-
-                        if(field.type == 'multiselect'){
-                            scope.new_object[field.name] = [];
+                        if(field.model){
+                            scope[field.name + '_model'] = field.model;
                         }
                     });
 
@@ -902,7 +774,7 @@ angular
         };
     }])
 
-    .directive('aeFileUpload', ['$timeout', '$compile', 'FileUploader', function($timeout, $compile, FileUploader) {
+    .directive('fileUpload', ['$timeout', '$compile', 'FileUploader', function($timeout, $compile, FileUploader) {
 
         function getTemplateByType(type){
             var result = '';
@@ -1024,26 +896,26 @@ angular
 angular
     .module('a-edit')
 
-    .directive('aModalResource', ['$timeout', '$log', '$cacheFactory', 'AEditHelpers', 'AEditConfig', '$uibModal', function($timeout, $log, $cacheFactory, AEditHelpers, AEditConfig, $uibModal) {
+    .directive('aModelModal', ['$timeout', '$log', '$cacheFactory', 'AEditHelpers', 'AEditConfig', '$uibModal', function($timeout, $log, $cacheFactory, AEditHelpers, AEditConfig, $uibModal) {
         var cache = $cacheFactory('aModal.Templates');
 
         return {
             restrict: 'A',
             scope: {
                 //require
-                aModalResource: '=',
-                aModalOptions: '=?',
+                aModelModal: '=',
                 isEdit: '=?',
+                options: '=?',
                 //callbacks
                 onSave: '&'
             },
             link: function (scope, element, attrs) {
 
-                var resource_name = attrs.aModalResource + new Date().getTime();
-                scope.options = scope.aModalOptions || AEditConfig.currentOptions;
+                var model_name = attrs.aModelModal;
+                scope.options = scope.options || AEditConfig.currentOptions;
 
                 element.on("click", function () {
-                    var template = cache.get(resource_name) || '';
+                    var template = cache.get(model_name) || '';
                     if(!template){
                         template +=
                             '<div class="modal-header">' +
@@ -1072,7 +944,7 @@ angular
                                 '<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>' +
                             '</div>';
                             
-                        cache.put(resource_name, template);
+                        cache.put(model_name, template);
                     }
 
                     var modalInstance = $uibModal.open({
@@ -1081,7 +953,7 @@ angular
                         resolve: {
                             data: function () {
                                 return {
-                                    object: angular.copy(scope.aModalResource),
+                                    object: angular.copy(scope.aModelModal),
                                     lists: scope.options.lists,
                                     isEdit: scope.isEdit
                                 };
@@ -1089,12 +961,8 @@ angular
                         },
                         controller: ['$scope', '$uibModalInstance', 'data', function($scope, $uibModalInstance, data) {
                             angular.extend($scope, data);
-
-                            AEditHelpers.getResourceQuery($scope.object, 'show').then(function(object){
-                                angular.extend($scope.object, object);
-                                $scope.object.is_edit = data.isEdit;
-                                console.log('modal controller', $scope.object);
-                            });
+                            $scope.object.is_edit = data.isEdit;
+                            console.log('modal controller', $scope.object);
                             
                             $scope.ok = function () {
                                 $scope.object.is_edit = false;
@@ -1108,7 +976,7 @@ angular
                     });
 
                     modalInstance.result.then(function (object) {
-                        angular.extend(scope.aModalResource, object);
+                        angular.extend(scope.aModelModal, object);
                         
                         if(scope.onSave)
                             $timeout(scope.onSave);
@@ -1125,6 +993,21 @@ angular
         };
     }]);
 
+//angular.module('a-edit').directive('selectAdder', [function() {
+//    return {
+//        restrict: 'C',
+//        link: function ($scope, $element, $attrs){
+//            $element.click(function($event){
+//                var $element = angular.element($event.target);
+//                if(!$element.hasClass('btn'))
+//                    $event.stopPropagation();
+//
+//                if($element.hasClass('btn-default'))
+//                    $event.stopPropagation();
+//            });
+//        }
+//    };
+//}]);
 /**
  * Created by jonybang on 04.07.15.
  */
@@ -1160,9 +1043,6 @@ angular.module('a-edit')
                     case 'date':
                         directive = 'date-input';
                         break;
-                    case 'bool':
-                        directive = 'bool-input';
-                        break;
                     case 'file':
                     case 'multifile':
                         directive = 'file-upload';
@@ -1172,7 +1052,7 @@ angular.module('a-edit')
                         break;
                 }
 
-                output += '<ae-' + directive + ' ';
+                output += '<' + directive + ' ';
 
                 output += 'type="' + (field.type || '') + '" ' +
                     'input-name="' + (field.input_name || '') + '" ';
@@ -1186,8 +1066,8 @@ angular.module('a-edit')
                 if(field.url)
                     output += 'url="' + field.url + '" ';
 
-                if(field.resource)
-                    output += 'ng-resource="' + field.name + '_resource" ';
+                if(field.model)
+                    output += 'ng-resource="' + field.name + '_model" ';
 
                 if(config.list_variable)
                     output += 'list="' + config.list_variable + '" ';
@@ -1199,7 +1079,7 @@ angular.module('a-edit')
                 var item_field = item_name + (field.name != 'self' ? '.' : '') + field_name;
 
                 var is_edit;
-                if(field.readonly || config.readonly)
+                if(field.readonly)
                     is_edit = 'false';
                 else if(config.always_edit)
                     is_edit = 'true';
@@ -1215,20 +1095,13 @@ angular.module('a-edit')
                     'is-new="' + (config.is_new ? 'true': 'false') + '" '+
                     'placeholder="' + ((config.always_edit ? field.new_placeholder : field.placeholder) || '') + '" ';
 
-                if(directive == 'file-upload')
+                if(field.type == 'file' || field.type == 'multifile')
                     output += 'uploader="' + item_name + '.' + field_name + '__uploader" ';
 
-                if(directive == 'select-input'){
-                    output += 'name-field="' + (field.name_field || '') + '" ';
-                    output += 'or-name-field="' + field.or_name_field + '" ';
-                }
+                if(field.modal && !config.already_modal && field.modal == 'self')
+                    output += 'modal-model="' + item_name + '" ';
 
-                if(field.modal && !config.already_modal && field.modal == 'self'){
-                    output += 'modal-resource="' + item_name + '" ';
-                    output += 'modal-options="actualOptions" ';
-                }
-
-                output += '></ae-' + directive + '>';
+                output += '></' + directive + '>';
 
                 return output;
             },
@@ -1238,9 +1111,6 @@ angular.module('a-edit')
                 switch(action){
                     case 'get':
                         possibleFunctions = ['query', 'get'];
-                        break;
-                    case 'show':
-                        possibleFunctions = ['$get'];
                         break;
                     case 'create':
                         possibleFunctions = ['$save', 'create'];
@@ -1274,7 +1144,7 @@ angular.module('a-edit')
                 }
                 return true;
             },
-            getNameById: function (list, val, nameField, orNameField){
+            getNameById: function (list, val){
                 var resultName = '';
 
                 if(!list || !list.length)
@@ -1283,7 +1153,7 @@ angular.module('a-edit')
                 list.some(function(obj){
                     var result = obj.id == val;
                     if(result)
-                        resultName = obj[nameField] || obj.name || obj[orNameField];
+                        resultName = obj.name || obj.title;
                     return result;
                 });
                 return resultName;
@@ -1906,8 +1776,8 @@ app.factory('SubscribersGroups', ['$resource', function($resource) {
     return $resource('admin/api/subscribers_groups/:id', { id: '@id' }, defaultOptions);
 }]);
 
-app.factory('SendedMails', ['$resource', function($resource) {
-    return $resource('admin/api/sended_mails/:id', { id: '@id' }, defaultOptions);
+app.factory('SentMails', ['$resource', function($resource) {
+    return $resource('admin/api/sent_mails/:id', { id: '@id' }, defaultOptions);
 }]);
 var app_path = '/assets/js/admin-app/';
 var app_modules_path = app_path + 'modules/';
@@ -1930,7 +1800,7 @@ angular.module('app')
             sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
             dictionary_tpls:        app_modules_path + 'database-manage/dictionary/templates/',
             subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/',
-            sended_mails_tpls:       app_modules_path + 'database-manage/sended-mails/templates/',
+            sent_mails_tpls:       app_modules_path + 'database-manage/sent-mails/templates/',
 
             mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });
@@ -2375,13 +2245,13 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('SendedMailsController', ['$scope', 'SendedMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function($scope, SendedMails, MailTemplates, Pages, SubscribersGroups) {
-        $scope.sended_mails = SendedMails.query();
+    .controller('SentMailsController', ['$scope', 'SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function($scope, SentMails, MailTemplates, Pages, SubscribersGroups) {
+        $scope.sent_mails = SentMails.query();
 
         $scope.aGridOptions = {
             caption: '',
             orderBy: '-id',
-            resource: SendedMails,
+            resource: SentMails,
             create: false,
             edit: false,
             fields: [
@@ -2466,99 +2336,6 @@ angular.module('app')
                     label: 'Description'
                 }
             ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'Templates', function($scope, SubFields, SubFieldsTypes, Templates) {
-        $scope.sub_fields_types = SubFieldsTypes.query();
-
-        $scope.aGridSubFieldsTypesOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: SubFieldsTypes,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Sub field type key',
-                    new_placeholder: 'New Sub Field Type',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'directive',
-                    label: 'Angular directive name'
-                }
-            ]
-        };
-
-        $scope.sub_fields = SubFields.query();
-
-        $scope.aGridSubFieldsOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: SubFields,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Sub field key',
-                    new_placeholder: 'New Sub Field',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'description',
-                    label: 'Description',
-                    type: 'textarea'
-                },
-                {
-                    name: 'config',
-                    label: 'Config',
-                    type: 'textarea'
-                },
-                {
-                    name: 'default_value',
-                    label: 'Default value',
-                    type: 'textarea'
-                },
-                {
-                    name: 'sub_field_type_id',
-                    label: 'Sub field type',
-                    type: 'select',
-                    list: 'sub_fields_types',
-                    or_name_field: 'key'
-                },
-                {
-                    name: 'templates_ids',
-                    label: 'Templates',
-                    type: 'multiselect',
-                    resource: Templates,
-                    list: 'templates',
-                    table_hide: true,
-                    or_name_field: 'key'
-                }
-            ],
-            lists: {
-                sub_fields_types: $scope.sub_fields_types
-            }
         };
     }]);
 
@@ -2677,6 +2454,99 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'Templates', function($scope, SubFields, SubFieldsTypes, Templates) {
+        $scope.sub_fields_types = SubFieldsTypes.query();
+
+        $scope.aGridSubFieldsTypesOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: SubFieldsTypes,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    modal: 'self',
+                    label: 'Sub field type key',
+                    new_placeholder: 'New Sub Field Type',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'directive',
+                    label: 'Angular directive name'
+                }
+            ]
+        };
+
+        $scope.sub_fields = SubFields.query();
+
+        $scope.aGridSubFieldsOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: SubFields,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    modal: 'self',
+                    label: 'Sub field key',
+                    new_placeholder: 'New Sub Field',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'description',
+                    label: 'Description',
+                    type: 'textarea'
+                },
+                {
+                    name: 'config',
+                    label: 'Config',
+                    type: 'textarea'
+                },
+                {
+                    name: 'default_value',
+                    label: 'Default value',
+                    type: 'textarea'
+                },
+                {
+                    name: 'sub_field_type_id',
+                    label: 'Sub field type',
+                    type: 'select',
+                    list: 'sub_fields_types',
+                    or_name_field: 'key'
+                },
+                {
+                    name: 'templates_ids',
+                    label: 'Templates',
+                    type: 'multiselect',
+                    resource: Templates,
+                    list: 'templates',
+                    table_hide: true,
+                    or_name_field: 'key'
+                }
+            ],
+            lists: {
+                sub_fields_types: $scope.sub_fields_types
+            }
+        };
+    }]);
+
+angular.module('app')
     .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
         $scope.templates = Templates.query();
 
@@ -2765,17 +2635,17 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'AppPaths', 'AppData', 'Pages', 'Templates', 'MailTemplates', 'SendedMails', 'SubscribersGroups', 'Subscribers',
-        function($scope, $state, $http, $uibModal, debounce, AppPaths, AppData, Pages, Templates, MailTemplates, SendedMails, SubscribersGroups, Subscribers) {
+    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'AppPaths', 'AppData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
+        function($scope, $state, $http, $uibModal, debounce, AppPaths, AppData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
 
             //======================================
             //INITIAL ACTIONS
             //======================================
 
-            var defaultMail = new SendedMails();
+            var defaultMail = new SentMails();
 
-            if($state.params.sendedMailId){
-                $scope.mail = SendedMails.get({id: $state.params.sendedMailId});
+            if($state.params.sentMailId){
+                $scope.mail = SentMails.get({id: $state.params.sentMailId});
 
                 $scope.mail.$promise.then(function(mail){
                     $scope.mail.sub_data_array = [];
@@ -2785,7 +2655,7 @@ angular.module('app')
                     });
                 });
 
-                $scope.mail.id = $state.params.sendedMailId;
+                $scope.mail.id = $state.params.sentMailId;
             } else {
                 defaultMail.subscribers_groups_ids = [];
                 defaultMail.sub_data_array = [];
@@ -2854,10 +2724,10 @@ angular.module('app')
                 ]
             };
 
-            $scope.getSendedMails = function(){
-                $scope.sended_mails = SendedMails.query();
+            $scope.getSentMails = function(){
+                $scope.sent_mails = SentMails.query();
             };
-            $scope.getSendedMails();
+            $scope.getSentMails();
 
             $scope.status = {
                 subscribers_list: {},
@@ -3010,9 +2880,9 @@ angular.module('app')
                 $scope.mail.$save().then(function(result){
                     $scope.mail = angular.copy(defaultMail);
 
-                    $scope.alert = 'Mail sended!';
+                    $scope.alert = 'Mail sent!';
 
-                    $scope.getSendedMails();
+                    $scope.getSentMails();
 
                     $scope.status.mail = {};
                 }, function(){
