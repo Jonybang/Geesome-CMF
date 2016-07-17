@@ -1,3 +1,7 @@
+<div class="btn-group btn-group-lg pull-right" role="group" aria-label="...">
+    <a target="_self" ng-href="/{{page.page_uri}}" ng-disabled="!page.id" class="btn btn-default">Open page</a>
+</div>
+
 <h2 ng-if="!page.id">Add new page!</h2>
 <h2 ng-if="page.id">Edit page data</h2>
 
@@ -113,7 +117,8 @@
                         <label>Menu index:</label>
                         <ae-text-input ng-model="page.menu_index" has-error="hasErrors.menu_index" is-edit="true"></ae-text-input>
 
-                        <label>Is hide from menu:
+                        <label>
+                            Is hide from menu:
                             <ae-bool-input ng-model="page.is_menu_hide" has-error="hasErrors.is_published" is-edit="true"></ae-bool-input>
                         </label>
                     </div>
@@ -124,6 +129,28 @@
 
                 <label>Author:</label>
                 <ae-select-input ng-model="page.author_id" has-error="hasErrors.author_id" ng-resource="models.users" ng-resource-fields="fields.users" is-edit="true" adder="true"></ae-select-input>
+
+                <div>
+                    <a href ng-click="subInfoShow = !subInfoShow" ng-class="{'dropup': subInfoShow}">
+                        Edit sub info <span class="caret"></span><br>
+                    </a>
+                    <div ng-if="subInfoShow">
+                        <label>
+                            Is deleted:
+                            <ae-bool-input ng-model="page.is_deleted" has-error="hasErrors.is_deleted" is-edit="true"></ae-bool-input>
+                        </label>
+
+                        <label>
+                            Is abstract page(has no body, but have children, as section):
+                            <ae-bool-input ng-model="page.is_abstract" has-error="hasErrors.is_abstract" is-edit="true"></ae-bool-input>
+                        </label>
+
+                        <label>
+                            Is part of parent page(as page block):
+                            <ae-bool-input ng-model="page.is_part" has-error="hasErrors.is_part" is-edit="true"></ae-bool-input>
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

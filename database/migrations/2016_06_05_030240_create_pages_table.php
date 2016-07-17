@@ -22,10 +22,14 @@ class CreatePagesTable extends Migration
             $table->text('description')->nullable();
             $table->integer('menu_index')->nullable();
 
-            $table->boolean('is_abstract')->default(false);
             $table->boolean('is_published')->default(false);
             $table->boolean('is_menu_hide')->default(true);
             $table->boolean('is_deleted')->default(false);
+
+            //has no body, but have children(section for children pages for example)
+            $table->boolean('is_abstract')->default(false);
+            //has body, but is part of parent page(block of page for example)
+            $table->boolean('is_part')->default(false);
 
             $table->integer('parent_page_id')->unsigned()->default(0);
             $table->foreign('parent_page_id')->references('id')->on('pages');

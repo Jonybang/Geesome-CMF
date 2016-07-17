@@ -18,6 +18,9 @@ return [
         'passwords' => 'users',
     ],
 
+    'lifetime' => 0,
+    'expire_on_close' => true,
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards

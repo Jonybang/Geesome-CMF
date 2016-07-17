@@ -16,9 +16,14 @@ class Page extends Model
         'alias',
         'description',
         'menu_index',
+
         'is_published',
         'is_menu_hide',
         'is_published',
+
+        'is_abstract',
+        'is_part',
+
         'parent_page_id',
         'author_id',
         'template_id',
@@ -134,5 +139,14 @@ class Page extends Model
             \DB::table('pages_contents')->insert(
                 ['page_id' => $this->id, 'value' => $value, 'created_at' => new \DateTime()]
             );
+    }
+
+    public function getPageUriAttribute(){
+        if($this->is_abstract && count($this->child_pages))
+            return $this->child_pages[0]->page_uri;
+        else if($this->is_part && $this->parent_page_id)
+            return $this->parent_page->page_uri . '#' . $this->alias;
+        else
+            return $this->alias;
     }
 }

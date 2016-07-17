@@ -749,6 +749,7 @@ angular
                     popoverTemplate += '' +
                             '<div class="form-group col-md-12 row">' +
                                 '<button type="submit" class="btn btn-primary" ng-click="$parent.saveToList(new_object);">Save</button>' +
+                                '<button class="btn btn-danger pull-right" ng-click="$parent.popover.is_open = false">Close</button>' +
                             '</div>' +
                         '</div>';
 
@@ -2200,6 +2201,12 @@ angular.module('app')
                     table_hide: true
                 },
                 {
+                    name: 'content',
+                    label: 'Content',
+                    type: 'textarea',
+                    table_hide: true
+                },
+                {
                     name: 'author_id',
                     label: 'Author',
                     type: 'select',
@@ -2230,14 +2237,14 @@ angular.module('app')
                 },
                 {
                     name: 'is_abstract',
-                    label: 'Is abstract page',
+                    label: 'Is abstract page(has no body, but have children)',
                     type: 'bool',
                     table_hide: true
                 },
                 {
-                    name: 'content',
-                    label: 'Content',
-                    type: 'textarea',
+                    name: 'is_part',
+                    label: 'Is part of parent page',
+                    type: 'bool',
                     table_hide: true
                 }
             ]
@@ -2328,8 +2335,8 @@ angular.module('app')
                     required: true
                 },
                 {
-                    name: 'title',
-                    label: 'Title'
+                    name: 'name',
+                    label: 'Name'
                 },
                 {
                     name: 'description',
@@ -2805,7 +2812,7 @@ angular.module('app')
                     return;
                 }
 
-                if($scope.mail.sub_data_array.length){
+                if($scope.mail.sub_data_array && $scope.mail.sub_data_array.length){
                     $scope.mail.sub_data = {};
                     $scope.mail.sub_data_array.forEach(function(sub_item){
                         $scope.mail.sub_data[sub_item.key] = sub_item.value;
