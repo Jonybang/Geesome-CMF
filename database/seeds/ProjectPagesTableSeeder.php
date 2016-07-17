@@ -2,6 +2,11 @@
 
 use Illuminate\Database\Seeder;
 
+use App\Models\Context;
+use App\Models\Page;
+use App\Models\Template;
+use App\Models\User;
+
 class ProjectPagesTableSeeder extends Seeder
 {
     /**
@@ -17,13 +22,13 @@ class ProjectPagesTableSeeder extends Seeder
             ['Project 3', 'Project 3 sub title', 'Project 3 description', 'Project 3 content'],
         ];
 
-        $template_id = \App\Template::where('key', 'page')->first()->id;
-        $page_id = \App\Page::where('alias', 'projects')->first()->id;
-        $author_id = \App\User::first()->id;
-        $context_id = \App\Context::first()->id;
+        $template_id = Template::where('key', 'page')->first()->id;
+        $page_id = Page::where('alias', 'projects')->first()->id;
+        $author_id = User::first()->id;
+        $context_id = Context::first()->id;
 
         foreach($seeds as $seed){
-            $page = \App\Page::create([
+            $page = Page::create([
                 'title' => $seed[0],
                 'sub_title' => $seed[1],
                 'description' => $seed[2],

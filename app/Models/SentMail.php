@@ -1,13 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Mail;
 
-class SendedMail extends Model
+class SentMail extends Model
 {
-    protected $table = 'sended_mails';
+    protected $table = 'sent_mails';
 
     protected $fillable = [
         'result_title',
@@ -25,17 +25,17 @@ class SendedMail extends Model
 
     public function mail_template()
     {
-        return $this->belongsTo('App\MailTemplate');
+        return $this->belongsTo(MailTemplate::class);
     }
 
     public function page()
     {
-        return $this->belongsTo('App\Page');
+        return $this->belongsTo(Page::class);
     }
 
     public function subscribers_groups()
     {
-        return $this->belongsToMany('App\SubscriberGroup', 'mails_subscriber_groups', 'sended_mail_id', 'subscriber_group_id');
+        return $this->belongsToMany(SubscriberGroup::class, 'mails_subscriber_groups', 'sended_mail_id', 'subscriber_group_id');
     }
 
     public function setSubscribersGroupsIdsAttribute($value)

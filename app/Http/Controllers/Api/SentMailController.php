@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\UserActionLog;
-use App\SendedMail;
+use App\Models\UserActionLog;
+use App\Models\SentMail;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;
@@ -11,18 +11,18 @@ use \Auth;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class SendedMailController extends Controller
+class SentMailController extends Controller
 {
     public function index()
     {
         return Response::json(
-            SendedMail::all()->toArray(),
+            SentMail::all()->toArray(),
             200
         );
     }
     public function show($id)
     {
-        $obj = SendedMail::find($id);
+        $obj = SentMail::find($id);
         $obj_data = $obj->toArray();
         $obj_data['subscribers_groups_ids'] = $obj->subscribers_groups_ids;
 
@@ -34,7 +34,7 @@ class SendedMailController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $obj = new SendedMail($data);
+        $obj = new SentMail($data);
 
         $obj->sendMailsToSubscribersGroups($data['subscribers_groups_ids']);
         $obj->save();
@@ -55,7 +55,7 @@ class SendedMailController extends Controller
     public function update(Request $request)
     {
         $data = $request->all();
-        $obj = SendedMail::find($data['id']);
+        $obj = SentMail::find($data['id']);
         $is_saved = $obj->update($data);
 
         if(isset($data['subscribers_groups_ids'])){
@@ -71,8 +71,8 @@ class SendedMailController extends Controller
     }
     public function destroy($id)
     {
-        $obj = SendedMail::find($id);
-        $is_destroyed = SendedMail::destroy($id);
+        $obj = SentMail::find($id);
+        $is_destroyed = SentMail::destroy($id);
         if ($is_destroyed)
             UserActionLog::saveAction($obj,"destroy");
         return Response::json(

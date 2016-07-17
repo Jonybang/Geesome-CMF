@@ -5,13 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Helpers\Helper;
+use App\Models\Template;
+use App\Models\Tag;
+use App\Models\MailTemplate;
+use App\Models\Setting;
+use App\Models\SentMail;
+use App\Models\SubscriberGroup;
+use App\Models\Subscriber;
 use Mail;
 
 class ClientController extends Controller
 {
     public function get_projects(){
 
-        $projects = \App\Template::where('key', 'projects')->first()->pages->first()->child_pages;
+        $projects = Template::where('key', 'projects')->first()->pages->first()->child_pages;
         return ['projects' => $projects];
     }
 
@@ -20,7 +27,7 @@ class ClientController extends Controller
         if(!$sub_alias)
             return $none_tag_data;
 
-        $tag = \App\Tag::where('name', 'like', $sub_alias)->first();
+        $tag = Tag::where('name', 'like', $sub_alias)->first();
 
         if($tag)
             return ['tag' => $tag];
@@ -29,12 +36,12 @@ class ClientController extends Controller
     }
 
     public function sendFeedbackMessage(Request $request){
-        $mail_template = \App\MailTemplate::where('key', 'feedback_to_admin')->first();
+        $mail_template = MailTemplate::where('key', 'feedback_to_admin')->first();
 
         $request_data = $request->all();
-        $site = \App\Setting::where('key', 'site_url')->first()->value;
+        $site = Setting::where('key', 'site_url')->first()->value;
 
-        $mail = new \App\SendedMail([
+        $mail = new SentMail([
             'mail_template_id' => $mail_template->id
         ]);
 
@@ -46,7 +53,7 @@ class ClientController extends Controller
             $request_data
         );
 
-        $subscribers_groups_ids = [ \App\SubscriberGroup::where('key', 'admin')->first()->id ];
+        $subscribers_groups_ids = [ SubscriberGroup::where('key', 'admin')->first()->id ];
         $mail->sendMailsToSubscribersGroups($subscribers_groups_ids);
 
         $mail->save();
@@ -57,13 +64,13 @@ class ClientController extends Controller
     }
 
     public function subscribe(Request $request){
-        $subscriber = \App\Subscriber::create([
+        $subscriber = Subscriber::create([
             'mail' => $request->input('email'),
             'provider' => 'email',
             'user_agent' => $request->header('User-Agent')
         ]);
 
-        $subscriber_group = \App\SubscriberGroup::where('key', 'general')->first();
+        $subscriber_group = SubscriberGroup::where('key', 'general')->first();
         if($subscriber_group){
             $subscriber_group->subscribers()->attach($subscriber->id);
         }

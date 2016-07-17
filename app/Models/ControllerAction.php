@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +14,6 @@ class ControllerAction extends Model
 
     public function templates()
     {
-        return $this->belongsToMany('App\Template', 'templates_controller_actions');
+        return $this->belongsToMany(Template::class, 'templates_controller_actions');
     }
 }

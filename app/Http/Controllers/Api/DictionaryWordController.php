@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\UserActionLog;
+use App\Models\UserActionLog;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;
-use \App\User;
-use \App\DictionaryWord;
+use \App\Models\User;
+use \App\Models\DictionaryWord;
+use \App\Models\Context;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -31,7 +32,7 @@ class DictionaryWordController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $data['context_id'] = \App\Context::first()->id;
+        $data['context_id'] = Context::first()->id;
         $obj = DictionaryWord::create($data);
         UserActionLog::saveAction($obj,"create");
         return Response::json(

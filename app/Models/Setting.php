@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,6 +17,6 @@ class Setting extends Model
 
     public function logs()
     {
-        return $this->morphMany('App\UserActionLog', 'logable');
+        return $this->morphMany(UserActionLog::class, 'logable');
     }
 }

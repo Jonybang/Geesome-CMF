@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\UserActionLog;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;
-use \App\User;
-use \App\ControllerAction;
+use \App\Models\User;
+use \App\Models\Template;
+use \App\Models\ControllerAction;
+use \App\Models\UserActionLog;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -18,7 +19,7 @@ class ControllerActionController extends Controller
     {
         $template_id = $request->input('template_id');
         if($template_id)
-            $list = \App\Template::find($template_id)->controller_actions;
+            $list = Template::find($template_id)->controller_actions;
         else
             $list = ControllerAction::all();
 

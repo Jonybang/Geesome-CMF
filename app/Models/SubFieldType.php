@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,6 +16,6 @@ class SubFieldType extends Model
 
     public function sub_fields()
     {
-        return $this->hasMany('App\SubField', 'sub_field_type_id');
+        return $this->hasMany(SubField::class, 'sub_field_type_id');
     }
 }

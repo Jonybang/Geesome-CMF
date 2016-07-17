@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Page;
+use App\Models\Setting;
 
 class SiteServiceProvider extends ServiceProvider
 {
@@ -16,8 +18,7 @@ class SiteServiceProvider extends ServiceProvider
         if(\Schema::hasTable('pages'))
             \View::share(
                 'menu_items',
-                \App\Page
-                    ::where('is_menu_hide', false)
+                Page::where('is_menu_hide', false)
                     ->where('is_published', true)
                     ->where('is_deleted', false)
                     ->where('parent_page_id', 0)
@@ -25,7 +26,7 @@ class SiteServiceProvider extends ServiceProvider
             );
 
         if(\Schema::hasTable('pages')){
-            $settings = \App\Setting::get();
+            $settings = Setting::get();
             foreach($settings as $setting)
                 \View::share($setting->key, $setting->value);
         }

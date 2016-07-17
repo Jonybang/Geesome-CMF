@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +15,7 @@ class SubscriberGroup extends Model
 
     public function subscribers()
     {
-        return $this->belongsToMany('App\Subscriber', 'subscribers_subscriber_groups', 'subscriber_group_id', 'subscriber_id');
+        return $this->belongsToMany(Subscriber::class, 'subscribers_subscriber_groups', 'subscriber_group_id', 'subscriber_id');
     }
 
     public function setSubscribersIdsAttribute($value)
@@ -41,6 +41,6 @@ class SubscriberGroup extends Model
 
     public function sended_mails()
     {
-        return $this->belongsToMany('App\SendedMail', 'mails_subscriber_groups', 'subscriber_group_id', 'sended_mail_id');
+        return $this->belongsToMany(SentMail::class, 'mails_subscriber_groups', 'subscriber_group_id', 'sended_mail_id');
     }
 }

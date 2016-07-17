@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Mockery\CountValidator\Exception;
@@ -40,35 +40,35 @@ class Page extends Model
 
     public function author()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
 
     public function template()
     {
-        return $this->belongsTo('App\Template');
+        return $this->belongsTo(Template::class);
     }
 
     public function tags()
     {
-        return $this->belongsToMany('App\Tag', 'pages_tags');
+        return $this->belongsToMany(Tag::class, 'pages_tags');
     }
 
     public function parent_page()
     {
-        return $this->belongsTo('App\Page');
+        return $this->belongsTo(Page::class);
     }
     public function child_pages()
     {
-        return $this->hasMany('App\Page', 'parent_page_id')->orderBy('created_at', 'DESC')->with('child_pages');
+        return $this->hasMany(Page::class, 'parent_page_id')->orderBy('created_at', 'DESC')->with('child_pages');
     }
     public function child_pages_by_index()
     {
-        return $this->hasMany('App\Page', 'parent_page_id')->orderBy('menu_index', 'ASC')->with('child_pages_by_index');
+        return $this->hasMany(Page::class, 'parent_page_id')->orderBy('menu_index', 'ASC')->with('child_pages_by_index');
     }
 
     public function logs()
     {
-        return $this->morphMany('App\UserActionLog', 'logable');
+        return $this->morphMany(UserActionLog::class, 'logable');
     }
 
     public function getSubFieldsValuesAttribute()

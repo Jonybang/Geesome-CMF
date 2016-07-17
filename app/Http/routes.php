@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Page;
+use App\Models\Setting;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -61,7 +64,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], f
 
         Route::resource('subscribers', 'Api\SubscriberController');
         Route::resource('subscribers_groups', 'Api\SubscriberGroupController');
-        Route::resource('sended_mails', 'Api\SendedMailController');
+        Route::resource('sent_mails', 'Api\SentMailController');
     });
 
     Route::get('/', function () {
@@ -82,10 +85,10 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
     $page = null;
     //find by alias or get main page
     if($alias)
-        $page = \App\Page::where('alias', $alias)->orWhere('id', $alias)->first();
+        $page = Page::where('alias', $alias)->orWhere('id', $alias)->first();
     else{
-        $main_page_id = \App\Setting::where('key', 'main_page')->first()->value;
-        $page = \App\Page::find($main_page_id)->first();
+        $main_page_id = Setting::where('key', 'main_page')->first()->value;
+        $page = Page::find($main_page_id)->first();
     }
 
     //if page exist and published get all page data, else return 404 template

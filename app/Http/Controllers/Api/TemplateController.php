@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\UserActionLog;
+use App\Models\UserActionLog;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;
-use \App\User;
-use \App\Template;
+use \App\Models\User;
+use \App\Models\Template;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;

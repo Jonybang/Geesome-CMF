@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Page;
-use App\Template;
-use App\ControllerAction;
-use App\SubField;
-use App\SubFieldType;
-use App\SubFieldValue;
+use App\Models\Page;
+use App\Models\Template;
+use App\Models\ControllerAction;
+use App\Models\SubField;
+use App\Models\SubFieldType;
+use App\Models\SubFieldValue;
 
 class MainPageSeeder extends Seeder
 {

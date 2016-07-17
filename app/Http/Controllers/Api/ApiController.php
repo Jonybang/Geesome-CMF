@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;
-use \App\Page;
-use \App\MailTemplate;
-use \App\SubscriberGroup;
-use \App\SendedMail;
+use \App\Models\Page;
+use \App\Models\MailTemplate;
+use \App\Models\SubscriberGroup;
+use \App\Models\SentMail;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -17,10 +17,7 @@ class ApiController extends Controller
 {
     public function cur_user()
     {
-        return Response::json(
-            Auth::user()->toArray(),
-            200
-        );
+        return \Auth::user();
     }
 
     public function site_settings_dictionary()
@@ -35,7 +32,7 @@ class ApiController extends Controller
     {
         $data = $request->all();
 
-        $mail = new SendedMail([
+        $mail = new SentMail([
             'mail_template_id' => $data['mail_template_id']
         ]);
 
