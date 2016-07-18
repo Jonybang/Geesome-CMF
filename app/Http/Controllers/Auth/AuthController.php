@@ -73,6 +73,7 @@ class AuthController extends Controller
         ]);
     }
 
+
     public function authenticate(Request $request)
     {
         $data = $request->all();
@@ -83,7 +84,7 @@ class AuthController extends Controller
         } else {
             Session::flash('message_type', 'warning');
             Session::flash('message_text', 'Incorrect email or password.');
-            return redirect()->route('login')->withInput();
+            return redirect('login')->withInput();
         }
 
     }

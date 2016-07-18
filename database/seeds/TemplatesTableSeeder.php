@@ -19,6 +19,7 @@ class TemplatesTableSeeder extends Seeder
             ['Tag', 'tag'],
             ['Form', 'form'],
             ['Login', 'login'],
+            ['Cabinet', 'cabinet'],
         ];
         foreach($seeds as $seed){
             DB::table('templates')->insert([

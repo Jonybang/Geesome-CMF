@@ -18,6 +18,6 @@ class Context extends Model
         return $this->hasMany(Setting::class, 'context_id');
     }
     public function getSettingsValuesAttribute() {
-        return $this->settings->lists('value', 'key');
+        return $this->settings->lists('value', 'key')->toArray();
     }
 }

@@ -35,7 +35,7 @@
                         </li>
                     @endforeach
 
-                     @if(Auth::check())
+                     @if(Auth::user() && Auth::user()->hasRole('admin'))
                         <li class="active">
                             <a href="\admin">Admin panel</a>
                         </li>

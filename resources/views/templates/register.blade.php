@@ -25,12 +25,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <div class="checkbox">
-                            <label>
-                                <input name="remember_me" type="checkbox"> Remember me
-                            </label>
-                        </div>
+                    <label class="col-sm-2 control-label">Confirm password</label>
+                    <div class="col-sm-10">
+                        <input type="password" name="password" class="form-control" placeholder="Password">
                     </div>
                 </div>
                 <div class="form-group">

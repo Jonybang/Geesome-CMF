@@ -131,13 +131,13 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
     $general_settings = \DB::table('settings')->whereNull('context_id')->orWhere('context_id', 0)->lists('value', 'key');
     $context_settings = [];
     if($page)
-        $context_settings = $page->context->all_settings_values;
+        $context_settings = $page->context->settings_values;
     $settings = $context_settings ? array_merge($general_settings, $context_settings) : $general_settings;
 
     //auth users logic
     if(isset($settings['need_auth']) && $settings['need_auth']){
         if(!\Auth::user())
-            redirect('login');
+            return redirect('login');
     }
 
     //sf -sub fields and st -settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming
