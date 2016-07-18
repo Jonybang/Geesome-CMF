@@ -12,11 +12,15 @@ class Tag extends Model
         'name'
     ];
 
+<<<<<<< HEAD
     /**
      * @Relation
      */
     public function pages()
+=======
+    public function posts()
+>>>>>>> 7c9e308... posts
     {
-        return $this->belongsToMany(Page::class, 'pages_tags')->orderBy('created_at', 'DESC');
+        return $this->belongsToMany(Post::class, 'posts_tags')->orderBy('created_at', 'DESC');
     }
 }
