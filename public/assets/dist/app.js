@@ -2439,45 +2439,7 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
-
-        $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
-            orderBy: '-id',
-            resource: Settings,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Setting key',
-                    new_placeholder: 'New Setting',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'Templates', function($scope, SubFields, SubFieldsTypes, Templates) {
+    .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', function($scope, SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages) {
         $scope.sub_fields_types = SubFieldsTypes.query();
 
         $scope.aGridSubFieldsTypesOptions = {
@@ -2567,16 +2529,13 @@ angular.module('app')
                 sub_fields_types: $scope.sub_fields_types
             }
         };
-    }]);
 
-angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
+        $scope.sub_fields_values = SubFieldsValues.query();
 
-        $scope.aGridOptions = {
+        $scope.aGridSubFieldsValuesOptions = {
             caption: '',
             orderBy: '-id',
-            resource: Tags,
+            resource: SubFieldsValues,
             fields: [
                 {
                     name: 'id',
@@ -2584,11 +2543,69 @@ angular.module('app')
                     readonly: true
                 },
                 {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Tag',
+                    name: 'value',
+                    label: 'Sub field value',
+                    type: 'textarea',
+                    new_placeholder: 'New Sub Field value',
                     required: true
+                },
+                {
+                    name: 'sub_field_id',
+                    label: 'Sub field',
+                    type: 'select',
+                    list: 'sub_fields',
+                    or_name_field: 'key',
+                    required: true
+                },
+                {
+                    name: 'page_id',
+                    label: 'Page',
+                    type: 'select',
+                    list: 'pages',
+                    resource: Pages,
+                    name_field: 'title',
+                    required: true
+                }
+            ],
+            lists: {
+                sub_fields: $scope.sub_fields
+            }
+        };
+    }]);
+
+angular.module('app')
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = Settings.query();
+
+        $scope.aGridOptions = {
+            caption: 'All settings available in templates.',
+            orderBy: '-id',
+            resource: Settings,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    modal: 'self',
+                    label: 'Setting key',
+                    new_placeholder: 'New Setting',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
                 }
             ]
         };
@@ -2684,6 +2701,31 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
+        $scope.tags = Tags.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Tags,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Tag',
+                    required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
         $scope.templates = Templates.query();
 
@@ -2701,11 +2743,11 @@ angular.module('app')
                     name: 'key',
                     label: 'Template key',
                     new_placeholder: 'New Template',
+                    modal: 'self',
                     required: true
                 },
                 {
                     name: 'name',
-                    modal: 'self',
                     label: 'Name'
                 },
                 {

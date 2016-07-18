@@ -16,11 +16,11 @@ angular.module('app')
                     name: 'key',
                     label: 'Template key',
                     new_placeholder: 'New Template',
+                    modal: 'self',
                     required: true
                 },
                 {
                     name: 'name',
-                    modal: 'self',
                     label: 'Name'
                 },
                 {

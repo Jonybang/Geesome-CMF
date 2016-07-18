@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'Templates', function($scope, SubFields, SubFieldsTypes, Templates) {
+    .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', function($scope, SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages) {
         $scope.sub_fields_types = SubFieldsTypes.query();
 
         $scope.aGridSubFieldsTypesOptions = {
@@ -87,6 +87,48 @@ angular.module('app')
             ],
             lists: {
                 sub_fields_types: $scope.sub_fields_types
+            }
+        };
+
+        $scope.sub_fields_values = SubFieldsValues.query();
+
+        $scope.aGridSubFieldsValuesOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: SubFieldsValues,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'value',
+                    label: 'Sub field value',
+                    type: 'textarea',
+                    new_placeholder: 'New Sub Field value',
+                    required: true
+                },
+                {
+                    name: 'sub_field_id',
+                    label: 'Sub field',
+                    type: 'select',
+                    list: 'sub_fields',
+                    or_name_field: 'key',
+                    required: true
+                },
+                {
+                    name: 'page_id',
+                    label: 'Page',
+                    type: 'select',
+                    list: 'pages',
+                    resource: Pages,
+                    name_field: 'title',
+                    required: true
+                }
+            ],
+            lists: {
+                sub_fields: $scope.sub_fields
             }
         };
     }]);
