@@ -35,7 +35,7 @@ Route::get('/logout', 'Auth\AuthController@logout');
 // ADMIN AND API
 //========================================================================================================
 
-Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', 'role:admin']], function () {
     Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
         //Sub data
         Route::get('/cur_user', 'Api\ApiController@cur_user');
@@ -93,6 +93,7 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
 
     //if page exist and published get all page data, else return 404 template
     $sub_fields = [];
+    $settings = [];
     $page_data = [];
     if($page && $page->is_published){
         $path = $page->template->key;
@@ -117,10 +118,30 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
 
             $page_data = array_merge($page_data, $result_data);
         }
+
+        //get menu items
+        $page_data['menu_items'] = Page::where([
+                                        'is_menu_hide' => false,
+                                        'is_published' => true,
+                                        'is_deleted' => false,
+                                        'parent_page_id' => 0
+                                    ])->with('child_pages')->get();
+
+        //get general settings and add or rewrite by settings in page context
+        $general_settings = \DB::table('settings')->whereNull('context_id')->orWhere('context_id', 0)->lists('value', 'key');
+        $context_settings = $page->context->all_settings_values;
+        $settings = $context_settings ? array_merge($general_settings, $context_settings) : $general_settings;
+        
+        //auth users logic
+        if(isset($settings['need_auth']) && $settings['need_auth']){
+            if(!\Auth::user())
+                redirect('login');
+        }
     } else {
         $path = '404';
     }
 
-    $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields], $sub_fields);
+    //sf -sub fields and st -settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming
+    $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields, 'st' => $settings], $sub_fields, $settings);
     return view('templates.' . $path, $page_data);
 });

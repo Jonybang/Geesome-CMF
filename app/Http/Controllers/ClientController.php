@@ -16,6 +16,11 @@ use Mail;
 
 class ClientController extends Controller
 {
+    public function check_auth(){
+        if(!\Auth::user())
+            redirect('login');
+    }
+
     public function get_projects(){
 
         $projects = Template::where('key', 'projects')->first()->pages->first()->child_pages;

@@ -44,7 +44,7 @@ class TestSubFieldsTableSeeder extends Seeder
             '/assets/img/project-1.jpg',
         ];
         foreach(Page::where('alias', 'projects')->first()->child_pages as $index => $page){
-            $sub_field->sub_field_values()->save(new SubFieldValue([
+            $sub_field->values()->save(new SubFieldValue([
                 'page_id' => $page->id,
                 'value' => $seeds[$index]
             ]));

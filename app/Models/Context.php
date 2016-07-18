@@ -13,4 +13,11 @@ class Context extends Model
         'name',
         'description'
     ];
+
+    public function settings() {
+        return $this->hasMany(Setting::class, 'context_id');
+    }
+    public function getSettingsValuesAttribute() {
+        return $this->settings->lists('value', 'key');
+    }
 }

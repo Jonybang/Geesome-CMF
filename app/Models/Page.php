@@ -48,6 +48,11 @@ class Page extends Model
         return $this->belongsTo(Template::class);
     }
 
+    public function context()
+    {
+        return $this->belongsTo(Context::class);
+    }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'pages_tags');

@@ -7,6 +7,7 @@ use App\Models\ControllerAction;
 use App\Models\SubField;
 use App\Models\SubFieldType;
 use App\Models\SubFieldValue;
+use App\Models\Context;
 
 class MainPageSeeder extends Seeder
 {
@@ -40,7 +41,7 @@ class MainPageSeeder extends Seeder
             $page = Page::create([
                 'title' => $block[0],
                 'template_id' => Template::create(['key' => $block[2], 'name' => $block[3]])->id,
-                'context_id' => \App\Context::first()->id,
+                'context_id' => Context::first()->id,
                 'parent_page_id' => $main_page->id,
                 'is_published' => 1
             ]);
