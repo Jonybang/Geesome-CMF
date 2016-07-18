@@ -1,40 +1,17 @@
-@extends('layouts.admin')
+@extends('layouts.client')
 
-@section('wrapper_id', 'wrapper')
+@section('title', $page->title)
 
-@section('title', 'Admin')
-
-@section('navbar')
-        <!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/admin/">Admin Panel</a>
-        <ul class="nav navbar-nav navbar-left">
-            <li><a href="/" target="_self">Site Content</a></li>
-        </ul>
-    </div>
-
-</nav>
-@endsection
 
 @section('content')
     <div id="page-wrapper">
 
         <div class="container-fluid">
-            <h1>Login</h1>
+            <h1>{{$page->title}}</h1>
 
             @include('share.flash-message')
 
-            <form class="form-horizontal" role="form" method="POST" action="/login">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
+            {!! Form::open(array('url' => 'login', 'method'=>'post', 'class'=> "form-horizontal")) !!}
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Email</label>
                     <div class="col-sm-10">
@@ -61,10 +38,9 @@
                         <button type="submit" class="btn btn-default">Sign in</button>
                     </div>
                 </div>
-            </form>
+            {!! Form::close() !!}
         </div>
         <!-- /.container-fluid -->
 
     </div>
-    <!-- /#page-wrapper -->
 @endsection

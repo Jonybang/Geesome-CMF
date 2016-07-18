@@ -25,9 +25,6 @@ Route::post('/subscribe', ['as' => 'subscribe', 'uses' => 'ClientController@subs
 // AUTHENTICATE
 //========================================================================================================
 
-Route::get('/login', ['as' => 'login', function(){
-    return view('admin.login');
-}]);
 Route::post('/login', 'Auth\AuthController@authenticate');
 Route::get('/logout', 'Auth\AuthController@logout');
 
@@ -118,27 +115,29 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
 
             $page_data = array_merge($page_data, $result_data);
         }
-
-        //get menu items
-        $page_data['menu_items'] = Page::where([
-                                        'is_menu_hide' => false,
-                                        'is_published' => true,
-                                        'is_deleted' => false,
-                                        'parent_page_id' => 0
-                                    ])->with('child_pages')->get();
-
-        //get general settings and add or rewrite by settings in page context
-        $general_settings = \DB::table('settings')->whereNull('context_id')->orWhere('context_id', 0)->lists('value', 'key');
-        $context_settings = $page->context->all_settings_values;
-        $settings = $context_settings ? array_merge($general_settings, $context_settings) : $general_settings;
-        
-        //auth users logic
-        if(isset($settings['need_auth']) && $settings['need_auth']){
-            if(!\Auth::user())
-                redirect('login');
-        }
     } else {
         $path = '404';
+    }
+
+    //get menu items
+    $page_data['menu_items'] = Page::where([
+        'is_menu_hide' => false,
+        'is_published' => true,
+        'is_deleted' => false,
+        'parent_page_id' => 0
+    ])->with('child_pages')->get();
+
+    //get general settings and add or rewrite by settings in page context
+    $general_settings = \DB::table('settings')->whereNull('context_id')->orWhere('context_id', 0)->lists('value', 'key');
+    $context_settings = [];
+    if($page)
+        $context_settings = $page->context->all_settings_values;
+    $settings = $context_settings ? array_merge($general_settings, $context_settings) : $general_settings;
+
+    //auth users logic
+    if(isset($settings['need_auth']) && $settings['need_auth']){
+        if(!\Auth::user())
+            redirect('login');
     }
 
     //sf -sub fields and st -settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming

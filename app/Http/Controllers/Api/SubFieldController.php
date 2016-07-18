@@ -8,6 +8,7 @@ use \Response;
 use \Auth;
 use \App\Models\User;
 use \App\Models\SubField;
+use \App\Models\Template;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -18,7 +19,7 @@ class SubFieldController extends Controller
     {
         $template_id = $request->input('template_id');
         if($template_id)
-            $list = \App\Template::find($template_id)->sub_fields;
+            $list = Template::find($template_id)->sub_fields;
         else
             $list = SubField::all();
 

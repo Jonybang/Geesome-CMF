@@ -28,6 +28,7 @@ class PagesTableSeeder extends Seeder
             ['Feedback', 'feedback', 'form', '', '', 'Feedback page content', false],
             ['Thanks for feedback', 'thanks-for-feedback', 'page', '', '', 'Thanks for feedback content', true],
             ['Thanks for subscribe', 'thanks-for-subscribe', 'page', '', '', 'Thanks for subscribe content', true],
+            ['Login', 'login', 'login', '', '', 'Please log in', true],
         ];
         foreach($seeds as $seed){
             $page = Page::create([
