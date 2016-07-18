@@ -31,7 +31,7 @@ angular
 
                         sub_fields_values_names.push(sub_field_value_name);
 
-                        var directive = sub_field.sub_field_type.directive;
+                        var directive = sub_field.type.directive;
                         tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.key + ' } }">' + (sub_field.name || sub_field.key) + '</span></label>';
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +

@@ -1689,7 +1689,7 @@ angular
 
                         sub_fields_values_names.push(sub_field_value_name);
 
-                        var directive = sub_field.sub_field_type.directive;
+                        var directive = sub_field.type.directive;
                         tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.key + ' } }">' + (sub_field.name || sub_field.key) + '</span></label>';
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
@@ -2684,44 +2684,6 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('UserController', ['$scope', 'Users', function($scope, Users) {
-        $scope.users = Users.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: true,
-            edit: true,
-            orderBy: '-id',
-            resource: Users,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New User',
-                    required: true
-                },
-                {
-                    name: 'email',
-                    label: 'E-mail',
-                    required: true
-                },
-                {
-                    name: 'password',
-                    type: 'password',
-                    label: 'Password',
-                    required: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
     .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
         $scope.templates = Templates.query();
 
@@ -2766,6 +2728,44 @@ angular.module('app')
                     resource: ControllerActions,
                     list: 'controller_actions',
                     table_hide: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('UserController', ['$scope', 'Users', function($scope, Users) {
+        $scope.users = Users.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: true,
+            edit: true,
+            orderBy: '-id',
+            resource: Users,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New User',
+                    required: true
+                },
+                {
+                    name: 'email',
+                    label: 'E-mail',
+                    required: true
+                },
+                {
+                    name: 'password',
+                    type: 'password',
+                    label: 'Password',
+                    required: true
                 }
             ]
         };
