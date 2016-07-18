@@ -12,8 +12,8 @@ class Tag extends Model
         'name'
     ];
 
-    public function pages()
+    public function posts()
     {
-        return $this->belongsToMany(Page::class, 'pages_tags')->orderBy('created_at', 'DESC');
+        return $this->belongsToMany(Post::class, 'posts_tags')->orderBy('created_at', 'DESC');
     }
 }

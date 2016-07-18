@@ -17,6 +17,11 @@ class CreateTagsTable extends Migration
 
             $table->string('name');
 
+            $table->text('description')->nullable();
+            $table->text('copyrights')->nullable();
+
+            $table->integer('posts_count')->default(0);
+
             $table->timestamps();
         });
     }
