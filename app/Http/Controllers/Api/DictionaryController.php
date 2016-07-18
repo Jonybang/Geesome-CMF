@@ -16,48 +16,40 @@ class DictionaryController extends Controller
 {
     public function index()
     {
-        return Response::json(
-            Dictionary::all()->toArray(),
-            200
-        );
+        return Dictionary::all()->toArray();
     }
     public function show($id)
     {
-        return Response::json(
-            Dictionary::find($id)->toArray(),
-            200
-        );
+        return Dictionary::find($id)->toArray();
     }
     public function store(Request $request)
     {
         $data = $request->all();
         $obj = Dictionary::create($data);
-        UserActionLog::saveAction($obj,"create");
-        return Response::json(
-            $obj->toArray(),
-            200
-        );
+
+        UserActionLog::saveAction($obj, "create");
+
+        return $obj->toArray();
     }
     public function update(Request $request)
     {
         $data = $request->all();
-        $is_saved = Dictionary::find($data['id'])->update($data);
-        $obj =  Dictionary::find($data['id']);
+        $obj = Dictionary::find($data['id']);
+        $is_saved = $obj->update($data);
+
         if ($is_saved)
-            UserActionLog::saveAction($obj,"update");
-        return Response::json(
-            $obj,
-            $is_saved ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "update");
+
+        return $obj->toArray();
     }
     public function destroy($id)
     {
         $obj = Dictionary::find($id);        
         $is_destroyed = Dictionary::destroy($id);
+
         if ($is_destroyed)
-            UserActionLog::saveAction($obj,"destroy");
-        return Response::json(
-            $is_destroyed ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "destroy");
+
+        return $is_destroyed;
     }
 }

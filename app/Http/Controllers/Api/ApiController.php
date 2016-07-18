@@ -22,10 +22,7 @@ class ApiController extends Controller
 
     public function site_settings_dictionary()
     {
-        return Response::json(
-            \DB::table('settings')->lists('value', 'key'),
-            200
-        );
+        return \DB::table('settings')->lists('value', 'key');
     }
 
     public function preview_mail(Request $request)

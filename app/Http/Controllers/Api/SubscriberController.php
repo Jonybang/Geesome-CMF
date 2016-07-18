@@ -15,10 +15,7 @@ class SubscriberController extends Controller
 {
     public function index()
     {
-        return Response::json(
-            Subscriber::all()->toArray(),
-            200
-        );
+        return Subscriber::all()->toArray();
     }
     public function show($id)
     {
@@ -26,51 +23,42 @@ class SubscriberController extends Controller
         $obj_data = $obj->toArray();
         $obj_data['groups_ids'] = $obj->groups_ids;
 
-        return Response::json(
-            $obj_data,
-            200
-        );
+        return $obj_data;
     }
     public function store(Request $request)
     {
         $data = $request->all();
         $obj = Subscriber::create($data);
 
-        if(isset($data['groups_ids'])){
+        if(isset($data['groups_ids']))
             $obj->groups_ids = $data['groups_ids'];
-        }
 
-        UserActionLog::saveAction($obj,"create");
-        return Response::json(
-            $obj->toArray(),
-            200
-        );
+        UserActionLog::saveAction($obj, "create");
+
+        return $obj->toArray();
     }
     public function update(Request $request)
     {
         $data = $request->all();
-        $is_saved = Subscriber::find($data['id'])->update($data);
         $obj =  Subscriber::find($data['id']);
+        $is_saved = $obj->update($data);
 
-        if(isset($data['groups_ids'])){
+        if(isset($data['groups_ids']))
             $obj->groups_ids = $data['groups_ids'];
-        }
 
         if ($is_saved)
-            UserActionLog::saveAction($obj,"update");
-        return Response::json(
-            $obj,
-            $is_saved ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "update");
+
+        return $obj->toArray();
     }
     public function destroy($id)
     {
         $obj = Subscriber::find($id);
         $is_destroyed = Subscriber::destroy($id);
+
         if ($is_destroyed)
-            UserActionLog::saveAction($obj,"destroy");
-        return Response::json(
-            $is_destroyed ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "destroy");
+
+        return $is_destroyed;
     }
 }
