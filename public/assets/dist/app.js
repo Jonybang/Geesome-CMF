@@ -2570,6 +2570,31 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
+        $scope.tags = Tags.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Tags,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Tag',
+                    required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
         $scope.subscribers_groups = SubscribersGroups.query();
 
@@ -2659,31 +2684,6 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Tags,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Tag',
-                    required: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
     .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
         $scope.templates = Templates.query();
 
@@ -2719,7 +2719,8 @@ angular.module('app')
                     type: 'multiselect',
                     resource: SubFields,
                     list: 'sub_fields',
-                    table_hide: true
+                    table_hide: true,
+                    or_name_field: 'key'
                 },
                 {
                     name: 'controller_actions_ids',
@@ -2727,7 +2728,8 @@ angular.module('app')
                     type: 'multiselect',
                     resource: ControllerActions,
                     list: 'controller_actions',
-                    table_hide: true
+                    table_hide: true,
+                    or_name_field: 'key'
                 }
             ]
         };

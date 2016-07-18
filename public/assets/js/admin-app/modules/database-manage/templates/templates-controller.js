@@ -34,7 +34,8 @@ angular.module('app')
                     type: 'multiselect',
                     resource: SubFields,
                     list: 'sub_fields',
-                    table_hide: true
+                    table_hide: true,
+                    or_name_field: 'key'
                 },
                 {
                     name: 'controller_actions_ids',
@@ -42,7 +43,8 @@ angular.module('app')
                     type: 'multiselect',
                     resource: ControllerActions,
                     list: 'controller_actions',
-                    table_hide: true
+                    table_hide: true,
+                    or_name_field: 'key'
                 }
             ]
         };
