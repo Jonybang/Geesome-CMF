@@ -11,12 +11,13 @@ use \App\Models\Tag;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class TagController extends ApiController
 {
     public function index()
     {
-        return Tag::all()->toArray();
+        return ApiHandler::parseMultiple(Tag::query(), ['name'])->getResponse();
     }
     public function show($id)
     {

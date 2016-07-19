@@ -11,12 +11,13 @@ use \App\Models\Dictionary;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class DictionaryController extends ApiController
 {
     public function index()
     {
-        return Dictionary::all()->toArray();
+        return ApiHandler::parseMultiple(Dictionary::query(), ['key', 'name', 'description'])->getResponse();
     }
     public function show($id)
     {

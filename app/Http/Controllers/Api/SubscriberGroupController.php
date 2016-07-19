@@ -10,12 +10,13 @@ use \App\Models\SubscriberGroup;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class SubscriberGroupController extends ApiController
 {
     public function index()
     {
-        return SubscriberGroup::all()->toArray();
+        return ApiHandler::parseMultiple(SubscriberGroup::query(), ['key', 'name'])->getResponse();
     }
     public function show($id, Request $request)
     {

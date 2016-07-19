@@ -10,12 +10,13 @@ use App\Models\MailTemplate;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class MailTemplateController extends ApiController
 {
     public function index()
     {
-        return MailTemplate::all()->toArray();
+        return ApiHandler::parseMultiple(MailTemplate::query(), ['key', 'name', 'title', 'content'])->getResponse();
     }
     public function show($id)
     {

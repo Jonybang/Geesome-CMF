@@ -10,19 +10,13 @@ use \App\Models\User;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class UserController extends ApiController
 {
     public function index()
     {
-        $data = [];
-        foreach(User::all() as $log){
-            $log_data = $log->toArray();
-            $log_data['logable_name'] = $log->logable ? $log->logable->name : '';
-            $data[] = $log_data;
-        }
-
-        return $data;
+        return ApiHandler::parseMultiple(User::query(), ['name', 'email'])->getResponse();
     }
     public function show($id)
     {

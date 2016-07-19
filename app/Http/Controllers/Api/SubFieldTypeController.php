@@ -11,12 +11,13 @@ use \App\Models\SubFieldType;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class SubFieldTypeController extends ApiController
 {
     public function index()
     {
-        return SubFieldType::all()->toArray();
+        return ApiHandler::parseMultiple(SubFieldType::query(), ['name', 'key', 'directive'])->getResponse();
     }
     public function show($id)
     {
