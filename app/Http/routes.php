@@ -35,11 +35,11 @@ Route::get('/logout', 'Auth\AuthController@logout');
 Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', 'role:admin']], function () {
     Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
         //Sub data
-        Route::get('/cur_user', 'Api\ApiController@cur_user');
-        Route::get('/site_settings_dictionary', 'Api\ApiController@site_settings_dictionary');
+        Route::get('/cur_user', 'AdminController@cur_user');
+        Route::get('/site_settings_dictionary', 'AdminController@site_settings_dictionary');
 
         //Sub actions
-        Route::post('/preview_mail', 'Api\ApiController@preview_mail');
+        Route::post('/preview_mail', 'AdminController@preview_mail');
 
         //REST API
         Route::resource('settings', 'Api\SettingController');

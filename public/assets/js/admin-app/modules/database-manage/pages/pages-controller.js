@@ -1,11 +1,11 @@
 angular.module('app')
     .controller('PagesController', ['$scope', 'Pages', 'Templates', 'Users', function($scope, Pages, Templates, Users) {
-        $scope.pages = Pages.query();
 
         $scope.aGridOptions = {
             caption: '',
-            orderBy: '-id',
+            order_by: '-id',
             resource: Pages,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -31,7 +31,9 @@ angular.module('app')
                     name: 'parent_page_id',
                     label: 'Parent page',
                     type: 'select',
-                    list: 'self'
+                    list: 'self',
+                    resource: Pages,
+                    name_field: 'title'
                 },
                 {
                     name: 'template_id',

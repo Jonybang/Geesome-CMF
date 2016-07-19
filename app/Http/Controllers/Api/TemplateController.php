@@ -12,7 +12,7 @@ use \App\Models\Template;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class TemplateController extends Controller
+class TemplateController extends ApiController
 {
     public function index()
     {

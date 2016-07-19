@@ -12,7 +12,7 @@ use \App\Models\SubFieldValue;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class SubFieldValueController extends Controller
+class SubFieldValueController extends ApiController
 {
     public function index(Request $request)
     {

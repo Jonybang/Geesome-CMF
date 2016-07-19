@@ -21,9 +21,15 @@ class User extends Authenticatable
         'password',
     ];
 
+    /**
+     * @Relation
+     */
     public function logs() {
         return $this->morphMany(UserActionLog::class, 'logable');
     }
+    /**
+     * @Relation
+     */
     public function roles() {
         return $this->belongsToMany(Role::class, 'role_user');
     }

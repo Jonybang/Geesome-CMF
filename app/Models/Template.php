@@ -14,16 +14,25 @@ class Template extends Model
         'description'
     ];
 
+    /**
+     * @Relation
+     */
     public function pages()
     {
         return $this->hasMany(Page::class, 'template_id');
     }
 
+    /**
+     * @Relation
+     */
     public function sub_fields()
     {
         return $this->belongsToMany(SubField::class, 'templates_sub_fields')->with('type');
     }
 
+    /**
+     * @Relation
+     */
     public function controller_actions()
     {
         return $this->belongsToMany(ControllerAction::class, 'templates_controller_actions');

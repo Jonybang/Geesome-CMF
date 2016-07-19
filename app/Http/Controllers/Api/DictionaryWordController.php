@@ -13,7 +13,7 @@ use \App\Models\Context;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class DictionaryWordController extends Controller
+class DictionaryWordController extends ApiController
 {
     public function index()
     {

@@ -12,7 +12,7 @@ use \App\Models\SubFieldType;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class SubFieldTypeController extends Controller
+class SubFieldTypeController extends ApiController
 {
     public function index()
     {

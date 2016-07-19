@@ -14,6 +14,9 @@ class UserActionLog extends Model
         'user_id'
     ];
 
+    /**
+     * @Relation
+     */
     public function logable()
     {
         return $this->morphTo();

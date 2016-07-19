@@ -15,6 +15,9 @@ class Subscriber extends Model
         'user_agent'
     ];
 
+    /**
+     * @Relation
+     */
     public function groups()
     {
         return $this->belongsToMany(SubscriberGroup::class, 'subscribers_subscriber_groups', 'subscriber_id', 'subscriber_group_id');

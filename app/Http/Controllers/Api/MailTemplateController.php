@@ -11,7 +11,7 @@ use App\Models\MailTemplate;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class MailTemplateController extends Controller
+class MailTemplateController extends ApiController
 {
     public function index()
     {

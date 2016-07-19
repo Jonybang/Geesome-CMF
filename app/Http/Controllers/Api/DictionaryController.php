@@ -12,7 +12,7 @@ use \App\Models\Dictionary;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class DictionaryController extends Controller
+class DictionaryController extends ApiController
 {
     public function index()
     {

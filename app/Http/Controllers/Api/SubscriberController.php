@@ -11,7 +11,7 @@ use \App\Models\Subscriber;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class SubscriberController extends Controller
+class SubscriberController extends ApiController
 {
     public function index()
     {

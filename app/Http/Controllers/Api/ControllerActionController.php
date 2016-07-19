@@ -13,7 +13,7 @@ use \App\Models\UserActionLog;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class ControllerActionController extends Controller
+class ControllerActionController extends ApiController
 {
     public function index(Request $request)
     {

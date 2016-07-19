@@ -13,7 +13,7 @@ use \App\Models\Template;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class SubFieldController extends Controller
+class SubFieldController extends ApiController
 {
     public function index(Request $request)
     {

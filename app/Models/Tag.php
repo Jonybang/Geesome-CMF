@@ -12,6 +12,9 @@ class Tag extends Model
         'name'
     ];
 
+    /**
+     * @Relation
+     */
     public function pages()
     {
         return $this->belongsToMany(Page::class, 'pages_tags')->orderBy('created_at', 'DESC');
