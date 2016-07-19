@@ -27,9 +27,7 @@ class SubField extends Model
 
     public function setTemplatesIdsAttribute($value)
     {
-        $this->templates()->detach();
-        foreach($value as $template_id)
-            $this->templates()->attach($template_id);
+        $this->templates()->sync($value);
     }
     public function getTemplatesIdsAttribute()
     {

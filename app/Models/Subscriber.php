@@ -22,9 +22,7 @@ class Subscriber extends Model
 
     public function setGroupsIdsAttribute($value)
     {
-        $this->groups()->detach();
-        foreach($value as $group_id)
-            $this->groups()->attach($group_id);
+        $this->groups()->sync($value);
     }
     public function getGroupsIdsAttribute()
     {

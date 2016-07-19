@@ -107,9 +107,7 @@ class Page extends Model
 
     public function setTagsIdsAttribute($value)
     {
-        $this->tags()->detach();
-        foreach($value as $tag_id)
-            $this->tags()->attach($tag_id);
+        $this->tags()->sync($value);
     }
     public function getTagsIdsAttribute()
     {

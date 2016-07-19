@@ -31,9 +31,7 @@ class Template extends Model
 
     public function setControllerActionsIdsAttribute($value)
     {
-        $this->controller_actions()->detach();
-        foreach($value as $controller_action_id)
-            $this->controller_actions()->attach($controller_action_id);
+        $this->controller_actions()->sync($value);
     }
     public function getControllerActionsIdsAttribute()
     {
@@ -45,9 +43,7 @@ class Template extends Model
 
     public function setSubFieldsIdsAttribute($value)
     {
-        $this->sub_fields()->detach();
-        foreach($value as $sub_field_id)
-            $this->sub_fields()->attach($sub_field_id);
+        $this->sub_fields()->sync($value);
     }
     public function getSubFieldsIdsAttribute()
     {
@@ -59,9 +55,7 @@ class Template extends Model
 
     public function setPagesIdsAttribute($value)
     {
-        $this->pages()->detach();
-        foreach($value as $page_id)
-            $this->pages()->attach($page_id);
+        $this->pages()->sync($value);
     }
     public function getPagesIdsAttribute()
     {

@@ -40,9 +40,7 @@ class SentMail extends Model
 
     public function setSubscribersGroupsIdsAttribute($value)
     {
-        $this->subscribers_groups()->detach();
-        foreach($value as $group_id)
-            $this->subscribers_groups()->attach($group_id);
+        $this->subscribers_groups()->sync($value);
     }
     public function getSubscribersGroupsIdsAttribute()
     {
