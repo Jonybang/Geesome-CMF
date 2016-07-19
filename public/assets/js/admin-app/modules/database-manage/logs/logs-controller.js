@@ -29,7 +29,7 @@ angular.module('app')
                     resource: Users
                 },
                 {
-                    name: 'logable_name',
+                    name: 'logable.name || item.logable.key || item.logable.title',
                     label: 'Item Name'
                 },
                 {
