@@ -11,14 +11,11 @@ use \Auth;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class SentMailController extends Controller
+class SentMailController extends ApiController
 {
     public function index()
     {
-        return Response::json(
-            SentMail::all()->toArray(),
-            200
-        );
+        return SentMail::all()->toArray();
     }
     public function show($id)
     {
@@ -26,10 +23,7 @@ class SentMailController extends Controller
         $obj_data = $obj->toArray();
         $obj_data['subscribers_groups_ids'] = $obj->subscribers_groups_ids;
 
-        return Response::json(
-            $obj_data,
-            200
-        );
+        return $obj_data;
     }
     public function store(Request $request)
     {
@@ -47,10 +41,8 @@ class SentMailController extends Controller
         $obj->save();
 
         UserActionLog::saveAction($obj, "send_mail");
-        return Response::json(
-            $obj->toArray(),
-            200
-        );
+
+        return $obj->toArray();
     }
     public function update(Request $request)
     {
@@ -58,25 +50,22 @@ class SentMailController extends Controller
         $obj = SentMail::find($data['id']);
         $is_saved = $obj->update($data);
 
-        if(isset($data['subscribers_groups_ids'])){
+        if(isset($data['subscribers_groups_ids']))
             $obj->subscribers_groups_ids = $data['subscribers_groups_ids'];
-        }
 
         if ($is_saved)
-            UserActionLog::saveAction($obj,"update");
-        return Response::json(
-            $obj,
-            $is_saved ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "update");
+
+        return $obj->toArray();
     }
     public function destroy($id)
     {
         $obj = SentMail::find($id);
         $is_destroyed = SentMail::destroy($id);
+
         if ($is_destroyed)
-            UserActionLog::saveAction($obj,"destroy");
-        return Response::json(
-            $is_destroyed ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "destroy");
+
+        return $is_destroyed;
     }
 }

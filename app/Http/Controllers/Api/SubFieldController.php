@@ -13,7 +13,7 @@ use \App\Models\Template;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class SubFieldController extends Controller
+class SubFieldController extends ApiController
 {
     public function index(Request $request)
     {
@@ -23,10 +23,7 @@ class SubFieldController extends Controller
         else
             $list = SubField::all();
 
-        return Response::json(
-            $list->toArray(),
-            200
-        );
+        return $list->toArray();
     }
     public function show($id)
     {
@@ -34,49 +31,42 @@ class SubFieldController extends Controller
         $sub_field_data = $sub_field->toArray();
         $sub_field_data['templates_ids'] = $sub_field->templates_ids;
 
-        return Response::json(
-            $sub_field_data,
-            200
-        );
+        return $sub_field_data;
     }
     public function store(Request $request)
     {
         $data = $request->all();
 
         $sub_field = SubField::create($data);
-        if(isset($data['templates_ids'])){
+        if(isset($data['templates_ids']))
             $sub_field->templates_ids = $data['templates_ids'];
-        }
-        UserActionLog::saveAction($sub_field,"create");
-        return Response::json(
-            $sub_field->toArray(),
-            200
-        );
+
+        UserActionLog::saveAction($sub_field, "create");
+
+        return $sub_field->toArray();
     }
     public function update(Request $request)
     {
         $data = $request->all();
-        $is_saved = SubField::find($data['id'])->update($data);
+        $obj = SubField::find($data['id']);
+        $is_saved = $obj->update($data);
 
-        $sub_field = SubField::find($data['id']);
-        if(isset($data['templates_ids'])){
-            $sub_field->templates_ids = $data['templates_ids'];
-        }
+        if(isset($data['templates_ids']))
+            $obj->templates_ids = $data['templates_ids'];
+
         if ($is_saved)
-            UserActionLog::saveAction($sub_field,"update");
-        return Response::json(
-            $sub_field->toArray(),
-            $is_saved ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "update");
+
+        return $obj->toArray();
     }
     public function destroy($id)
     {
         $obj = SubField::find($id);
         $is_destroyed = SubField::destroy($id);
+
         if ($is_destroyed)
-            UserActionLog::saveAction($obj,"destroy");
-        return Response::json(
-            $is_destroyed ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "destroy");
+
+        return $is_destroyed;
     }
 }

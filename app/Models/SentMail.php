@@ -23,16 +23,25 @@ class SentMail extends Model
         'sub_data' => 'array'
     ];
 
+    /**
+     * @Relation
+     */
     public function mail_template()
     {
         return $this->belongsTo(MailTemplate::class);
     }
 
+    /**
+     * @Relation
+     */
     public function page()
     {
         return $this->belongsTo(Page::class);
     }
 
+    /**
+     * @Relation
+     */
     public function subscribers_groups()
     {
         return $this->belongsToMany(SubscriberGroup::class, 'mails_subscriber_groups', 'sended_mail_id', 'subscriber_group_id');
@@ -40,9 +49,7 @@ class SentMail extends Model
 
     public function setSubscribersGroupsIdsAttribute($value)
     {
-        $this->subscribers_groups()->detach();
-        foreach($value as $group_id)
-            $this->subscribers_groups()->attach($group_id);
+        $this->subscribers_groups()->sync($value);
     }
     public function getSubscribersGroupsIdsAttribute()
     {

@@ -11,15 +11,13 @@ use \App\Models\Template;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
-class TemplateController extends Controller
+class TemplateController extends ApiController
 {
     public function index()
     {
-        return Response::json(
-            Template::all()->toArray(),
-            200
-        );
+        return ApiHandler::parseMultiple(Template::query(), ['key', 'name', 'description'])->getResponse();
     }
     public function show($id)
     {
@@ -28,30 +26,25 @@ class TemplateController extends Controller
         $template_data['controller_actions_ids'] = $template->controller_actions_ids;
         $template_data['sub_fields_ids'] = $template->sub_fields_ids;
 
-        return Response::json(
-            $template_data,
-            200
-        );
+        return $template_data;
     }
     public function store(Request $request)
     {
         $data = $request->all();
         $template = Template::create($data);
 
-        if(isset($data['controller_actions_ids'])){
+        if(isset($data['controller_actions_ids']))
             $template->controller_actions_ids = $data['controller_actions_ids'];
-        }
-        if(isset($data['sub_fields_ids'])){
+
+        if(isset($data['sub_fields_ids']))
             $template->sub_fields_ids = $data['sub_fields_ids'];
-        }
-        if(isset($data['pages_ids'])){
+
+        if(isset($data['pages_ids']))
             $template->pages_ids = $data['pages_ids'];
-        }
-        UserActionLog::saveAction($template,"create");
-        return Response::json(
-            $template->toArray(),
-            200
-        );
+
+        UserActionLog::saveAction($template, "create");
+
+        return $template->toArray();
     }
     public function update(Request $request)
     {
@@ -59,29 +52,28 @@ class TemplateController extends Controller
         $template = Template::find($data['id']);
         $is_saved = $template->update($data);
 
-        if(isset($data['controller_actions_ids'])){
+        if(isset($data['controller_actions_ids']))
             $template->controller_actions_ids = $data['controller_actions_ids'];
-        }
-        if(isset($data['sub_fields_ids'])){
+
+        if(isset($data['sub_fields_ids']))
             $template->sub_fields_ids = $data['sub_fields_ids'];
-        }
-        if(isset($data['pages_ids'])){
+
+        if(isset($data['pages_ids']))
             $template->pages_ids = $data['pages_ids'];
-        }
-        UserActionLog::saveAction($template,"update");
-        return Response::json(
-            $template->toArray(),
-            $is_saved ? 200 : 400
-        );
+
+        if($is_saved)
+            UserActionLog::saveAction($template, "update");
+
+        return $template->toArray();
     }
     public function destroy($id)
     {        
         $obj = Template::find($id);
         $is_destroyed = Template::destroy($id);
+
         if ($is_destroyed)
-            UserActionLog::saveAction($obj,"destroy");
-        return Response::json(
-            $is_destroyed ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "destroy");
+
+        return $is_destroyed;
     }
 }

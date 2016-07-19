@@ -15,6 +15,9 @@ class Setting extends Model
         'description'
     ];
 
+    /**
+     * @Relation
+     */
     public function logs()
     {
         return $this->morphMany(UserActionLog::class, 'logable');

@@ -14,10 +14,16 @@ class SubFieldValue extends Model
         'value'
     ];
 
+    /**
+     * @Relation
+     */
     public function page()
     {
         return $this->belongsTo(Page::class, 'page_id', 'id');
     }
+    /**
+     * @Relation
+     */
     public function sub_field()
     {
         return $this->belongsTo(SubField::class, 'sub_field_id', 'id');

@@ -14,6 +14,9 @@ class Context extends Model
         'description'
     ];
 
+    /**
+     * @Relation
+     */
     public function settings() {
         return $this->hasMany(Setting::class, 'context_id');
     }

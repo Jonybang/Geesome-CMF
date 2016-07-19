@@ -21,43 +21,30 @@ class LogController extends ApiController
             $log_data['logable_name'] = $log->logable ? $log->logable->name : '';
             $data[] = $log_data;
         }
-        return Response::json(
-            $data,
-            200
-        );
+        return $data;
     }
     public function show($id)
     {
-        return Response::json(
-            UserActionLog::find($id)->toArray(),
-            200
-        );
+        return UserActionLog::find($id)->toArray();
     }
     public function store(Request $request)
     {
         $data = $request->all();
 
-        return Response::json(
-            UserActionLog::create($data)->toArray(),
-            200
-        );
+        return UserActionLog::create($data)->toArray();
     }
     public function update(Request $request)
     {
         $data = $request->all();
-        $is_saved = UserActionLog::find($data['id'])->update($data);
+        $obj = UserActionLog::find($data['id']);
+        $obj->update($data);
 
-        return Response::json(
-            UserActionLog::find($data['id']),
-            $is_saved ? 200 : 400
-        );
+        return $obj;
     }
     public function destroy($id)
     {
         $is_destroyed = UserActionLog::destroy($id);
 
-        return Response::json(
-            $is_destroyed ? 200 : 400
-        );
+        return $is_destroyed;
     }
 }

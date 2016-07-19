@@ -114,7 +114,7 @@ angular
             $locationProvider.html5Mode(true).hashPrefix('!');
             $urlRouterProvider.otherwise("/admin");
         }])
-    .run(['$rootScope', 'AppData', function($rootScope, AppData){
+    .run(['$rootScope', 'AppData', 'AEditConfig', function($rootScope, AppData, AEditConfig){
 
         function setDefaultSettings(){
             $rootScope.cur_user = AppData.cur_user;
@@ -127,4 +127,7 @@ angular
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
             AppData.reload();
         });
+
+        //config for marcelgwerder/laravel-api-handler
+        AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);

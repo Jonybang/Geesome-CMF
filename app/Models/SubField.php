@@ -20,6 +20,9 @@ class SubField extends Model
         'sub_field_type_id'
     ];
 
+    /**
+     * @Relation
+     */
     public function templates()
     {
         return $this->belongsToMany(Template::class, 'templates_sub_fields');
@@ -27,9 +30,7 @@ class SubField extends Model
 
     public function setTemplatesIdsAttribute($value)
     {
-        $this->templates()->detach();
-        foreach($value as $template_id)
-            $this->templates()->attach($template_id);
+        $this->templates()->sync($value);
     }
     public function getTemplatesIdsAttribute()
     {
@@ -39,10 +40,16 @@ class SubField extends Model
         return $ids;
     }
 
+    /**
+     * @Relation
+     */
     public function type()
     {
         return $this->belongsTo(SubFieldType::class, 'sub_field_type_id', 'id');
     }
+    /**
+     * @Relation
+     */
     public function values()
     {
         return $this->hasMany(SubFieldValue::class, 'sub_field_id');

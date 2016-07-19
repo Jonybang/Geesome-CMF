@@ -21,50 +21,46 @@ class UserController extends ApiController
             $log_data['logable_name'] = $log->logable ? $log->logable->name : '';
             $data[] = $log_data;
         }
-        return Response::json(
-            $data,
-            200
-        );
+
+        return $data;
     }
     public function show($id)
     {
-        return Response::json(
-            User::find($id)->toArray(),
-            200
-        );
+        return User::find($id)->toArray();
     }
     public function store(Request $request)
     {
         $data = $request->all();
         $data['password'] = bcrypt($data['password']);
         $obj = User::create($data);
-        UserActionLog::saveAction($obj,"create");
-        return Response::json(
-            $obj->toArray(),
-            200
-        );
+
+        UserActionLog::saveAction($obj, "create");
+
+        return $obj->toArray();
     }
     public function update(Request $request)
     {
         $data = $request->all();
+
         if(isset($data['password']) && $data['password'])
             $data['password'] = bcrypt($data['password']);
-        $is_saved = User::find($data['id'])->update($data);
+
         $obj = User::find($data['id']);
-        UserActionLog::saveAction($obj,"update");
-        return Response::json(
-            $obj,
-            $is_saved ? 200 : 400
-        );
+        $is_saved = $obj->update($data);
+
+        if($is_saved)
+            UserActionLog::saveAction($obj, "update");
+
+        return $obj;
     }
     public function destroy($id)
     {
         $obj = User::find($id);
         $is_destroyed = User::destroy($id);
+
         if ($is_destroyed)
-            UserActionLog::saveAction($obj,"destroy");
-        return Response::json(
-            $is_destroyed ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "destroy");
+
+        return $is_destroyed;
     }
 }

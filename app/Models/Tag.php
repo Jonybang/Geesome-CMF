@@ -12,6 +12,9 @@ class Tag extends Model
         'name'
     ];
 
+    /**
+     * @Relation
+     */
     public function posts()
     {
         return $this->belongsToMany(Post::class, 'posts_tags')->orderBy('created_at', 'DESC');

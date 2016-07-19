@@ -16,10 +16,16 @@ class Permission extends EntrustPermission
         'permission_category_id'
     ];
 
+    /**
+     * @Relation
+     */
     public function permission_category()
     {
         return $this->belongsTo(PermissionCategory::class, 'permission_category_id', 'id');
     }
+    /**
+     * @Relation
+     */
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'permission_role');

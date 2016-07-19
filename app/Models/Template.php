@@ -14,16 +14,25 @@ class Template extends Model
         'description'
     ];
 
+    /**
+     * @Relation
+     */
     public function pages()
     {
         return $this->hasMany(Page::class, 'template_id');
     }
 
+    /**
+     * @Relation
+     */
     public function sub_fields()
     {
         return $this->belongsToMany(SubField::class, 'templates_sub_fields')->with('type');
     }
 
+    /**
+     * @Relation
+     */
     public function controller_actions()
     {
         return $this->belongsToMany(ControllerAction::class, 'templates_controller_actions');
@@ -31,9 +40,7 @@ class Template extends Model
 
     public function setControllerActionsIdsAttribute($value)
     {
-        $this->controller_actions()->detach();
-        foreach($value as $controller_action_id)
-            $this->controller_actions()->attach($controller_action_id);
+        $this->controller_actions()->sync($value);
     }
     public function getControllerActionsIdsAttribute()
     {
@@ -45,9 +52,7 @@ class Template extends Model
 
     public function setSubFieldsIdsAttribute($value)
     {
-        $this->sub_fields()->detach();
-        foreach($value as $sub_field_id)
-            $this->sub_fields()->attach($sub_field_id);
+        $this->sub_fields()->sync($value);
     }
     public function getSubFieldsIdsAttribute()
     {
@@ -59,9 +64,7 @@ class Template extends Model
 
     public function setPagesIdsAttribute($value)
     {
-        $this->pages()->detach();
-        foreach($value as $page_id)
-            $this->pages()->attach($page_id);
+        $this->pages()->sync($value);
     }
     public function getPagesIdsAttribute()
     {

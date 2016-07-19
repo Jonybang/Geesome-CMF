@@ -14,10 +14,17 @@ class Role extends EntrustRole
         'display_name',
         'description'
     ];
+
+    /**
+     * @Relation
+     */
     public function users()
     {
         return $this->belongsToMany(User::class, 'role_user');
     }
+    /**
+     * @Relation
+     */
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'permission_role');

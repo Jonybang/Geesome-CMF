@@ -12,20 +12,18 @@ use \App\Models\Context;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
-class PageController extends Controller
+class PageController extends ApiController
 {
     public function index(Request $request)
     {
         if($request->input('tree_mode'))
-            $pages = Page::where('parent_page_id', 0)->with('child_pages_by_index')->get();
+            return Page::where('parent_page_id', 0)->with('child_pages_by_index')->get();
         else
-            $pages = Page::all();
+            $pages = Page::query();
 
-        return Response::json(
-            $pages->toArray(),
-            200
-        );
+        return ApiHandler::parseMultiple($pages, ['title', 'alias', 'menu_title', 'sub_title', 'description'])->getResponse();
     }
 
     private function getPageDataWithContent($page){
@@ -38,67 +36,58 @@ class PageController extends Controller
 
     public function show($id)
     {
-        $page = Page::with('tags')->find($id);
+        $obj = Page::with('tags')->find($id);
 
-        return Response::json(
-            $this->getPageDataWithContent($page),
-            200
-        );
+        return $this->getPageDataWithContent($obj);
     }
     public function store(Request $request)
     {
         $data = $request->all();
         $data['context_id'] = Context::first()->id;
-        $page = Page::create($data);
-        $page->save();
+        $obj = Page::create($data);
+        $obj->save();
 
         if(isset($data['content']))
-            $page->content_text = $data['content'];
+            $obj->content_text = $data['content'];
 
-        if(isset($data['tags_ids'])){
-            $page->tags_ids = $data['tags_ids'];
-        }
+        if(isset($data['tags_ids']))
+            $obj->tags_ids = $data['tags_ids'];
 
-        if(isset($data['controller_actions_ids'])){
-            $page->template->controller_actions_ids = $data['controller_actions_ids'];
-        }
-        UserActionLog::saveAction($page,"create");
-        return Response::json(
-            $this->getPageDataWithContent($page),
-            200
-        );
+        if(isset($data['controller_actions_ids']))
+            $obj->template->controller_actions_ids = $data['controller_actions_ids'];
+
+        UserActionLog::saveAction($obj, "create");
+
+        return $this->getPageDataWithContent($obj);
     }
     public function update(Request $request)
     {
         $data = $request->all();
-        $page = Page::find($data['id']);
-        $is_saved = $page->update($data);
+        $obj = Page::find($data['id']);
+        $is_saved = $obj->update($data);
 
         if(isset($data['content']))
-            $page->content_text = $data['content'];
+            $obj->content_text = $data['content'];
 
-        if(isset($data['tags_ids'])){
-            $page->tags_ids = $data['tags_ids'];
-            $page->save();
-        }
+        if(isset($data['tags_ids']))
+            $obj->tags_ids = $data['tags_ids'];
 
-        if(isset($data['controller_actions_ids'])){
-            $page->template->controller_actions_ids = $data['controller_actions_ids'];
-        }
-        UserActionLog::saveAction($page,"update");
-        return Response::json(
-            $this->getPageDataWithContent($page),
-            $is_saved ? 200 : 400
-        );
+        if(isset($data['controller_actions_ids']))
+            $obj->template->controller_actions_ids = $data['controller_actions_ids'];
+
+        if($is_saved)
+            UserActionLog::saveAction($obj, "update");
+
+        return $this->getPageDataWithContent($obj);
     }
     public function destroy($id)
     {
-        $page = Page::find($id);
+        $obj = Page::find($id);
         $is_destroyed = Page::destroy($id);
+
         if ($is_destroyed)
-            UserActionLog::saveAction($page,"destroy");
-        return Response::json(
-            $is_destroyed ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "destroy");
+
+        return $is_destroyed;
     }
 }

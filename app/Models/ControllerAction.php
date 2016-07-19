@@ -12,6 +12,9 @@ class ControllerAction extends Model
         'name'
     ];
 
+    /**
+     * @Relation
+     */
     public function templates()
     {
         return $this->belongsToMany(Template::class, 'templates_controller_actions');

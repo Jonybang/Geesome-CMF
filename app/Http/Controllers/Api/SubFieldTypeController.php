@@ -12,52 +12,44 @@ use \App\Models\SubFieldType;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class SubFieldTypeController extends Controller
+class SubFieldTypeController extends ApiController
 {
     public function index()
     {
-        return Response::json(
-            SubFieldType::all()->toArray(),
-            200
-        );
+        return SubFieldType::all()->toArray();
     }
     public function show($id)
     {
-        return Response::json(
-            SubFieldType::find($id)->toArray(),
-            200
-        );
+        return SubFieldType::find($id)->toArray();
     }
     public function store(Request $request)
     {
         $data = $request->all();
         $obj =  SubFieldType::create($data);
-        UserActionLog::saveAction($obj,"create");
-        return Response::json(
-           $obj->toArray(),
-            200
-        );
+
+        UserActionLog::saveAction($obj, "create");
+
+        return $obj->toArray();
     }
     public function update(Request $request)
     {
         $data = $request->all();
-        $is_saved = SubFieldType::find($data['id'])->update($data);
         $obj = SubFieldType::find($data['id']);
+        $is_saved = $obj->update($data);
+
         if ($is_saved)
-            UserActionLog::saveAction($obj,"update");
-        return Response::json(
-            $obj,
-            $is_saved ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "update");
+
+        return $obj->toArray();
     }
     public function destroy($id)
     {
         $obj = SubFieldType::find($id);
         $is_destroyed = SubFieldType::destroy($id);
+
         if ($is_destroyed)
-            UserActionLog::saveAction($obj,"destroy");
-        return Response::json(
-            $is_destroyed ? 200 : 400
-        );
+            UserActionLog::saveAction($obj, "destroy");
+
+        return $is_destroyed;
     }
 }

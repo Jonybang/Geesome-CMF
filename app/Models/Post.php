@@ -20,14 +20,23 @@ class Post extends Model
 		'author_id'
 	];
 
+	/**
+	 * @Relation
+	 */
 	public function tags()
 	{
 		return $this->belongsToMany(Tag::class, 'posts_tags');
 	}
+	/**
+	 * @Relation
+	 */
 	public function parent_post()
 	{
 		return $this->belongsTo(Tag::class, 'parent_post_id');
 	}
+	/**
+	 * @Relation
+	 */
 	public function author()
 	{
 		return $this->belongsTo(Auth::class, 'parent_post_id');

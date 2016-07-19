@@ -15,6 +15,9 @@ class Subscriber extends Model
         'user_agent'
     ];
 
+    /**
+     * @Relation
+     */
     public function groups()
     {
         return $this->belongsToMany(SubscriberGroup::class, 'subscribers_subscriber_groups', 'subscriber_id', 'subscriber_group_id');
@@ -22,9 +25,7 @@ class Subscriber extends Model
 
     public function setGroupsIdsAttribute($value)
     {
-        $this->groups()->detach();
-        foreach($value as $group_id)
-            $this->groups()->attach($group_id);
+        $this->groups()->sync($value);
     }
     public function getGroupsIdsAttribute()
     {

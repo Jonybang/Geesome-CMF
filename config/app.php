@@ -164,6 +164,8 @@ return [
 
         Zizaco\Entrust\EntrustServiceProvider::class,
 
+        Marcelgwerder\ApiHandler\ApiHandlerServiceProvider::class
+
     ],
 
     /*
@@ -217,6 +219,8 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
 
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
+
+        'ApiHandler' => Marcelgwerder\ApiHandler\Facades\ApiHandler::class,
     ],
 
 ];

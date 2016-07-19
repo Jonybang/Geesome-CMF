@@ -38,34 +38,55 @@ class Page extends Model
         'template_id' => 'integer'
     ];
 
+    /**
+     * @Relation
+     */
     public function author()
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @Relation
+     */
     public function template()
     {
         return $this->belongsTo(Template::class);
     }
 
+    /**
+     * @Relation
+     */
     public function context()
     {
         return $this->belongsTo(Context::class);
     }
 
+    /**
+     * @Relation
+     */
     public function parent_page()
     {
         return $this->belongsTo(Page::class);
     }
+    /**
+     * @Relation
+     */
     public function child_pages()
     {
         return $this->hasMany(Page::class, 'parent_page_id')->orderBy('created_at', 'DESC')->with('child_pages');
     }
+    /**
+     * @Relation
+     */
     public function child_pages_by_index()
     {
         return $this->hasMany(Page::class, 'parent_page_id')->orderBy('menu_index', 'ASC')->with('child_pages_by_index');
     }
 
+    /**
+     * @Relation
+     */
     public function logs()
     {
         return $this->morphMany(UserActionLog::class, 'logable');

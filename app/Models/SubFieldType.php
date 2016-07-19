@@ -14,6 +14,9 @@ class SubFieldType extends Model
         'directive'
     ];
 
+    /**
+     * @Relation
+     */
     public function sub_fields()
     {
         return $this->hasMany(SubField::class, 'sub_field_type_id');
