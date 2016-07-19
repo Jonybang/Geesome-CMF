@@ -11,12 +11,13 @@ use \App\Models\Template;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class TemplateController extends ApiController
 {
     public function index()
     {
-        return Template::all()->toArray();
+        return ApiHandler::parseMultiple(Template::query(), ['key', 'name', 'description'])->getResponse();
     }
     public function show($id)
     {

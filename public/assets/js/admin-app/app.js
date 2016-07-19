@@ -129,5 +129,5 @@ angular
         });
 
         //config for marcelgwerder/laravel-api-handler
-        AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count";
+        AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
