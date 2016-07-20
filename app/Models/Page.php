@@ -100,6 +100,14 @@ class Page extends Model
         return $this->morphMany(UserActionLog::class, 'logable');
     }
 
+    /**
+     * @Relation
+     */
+    public function seo()
+    {
+        return $this->hasOne(PageSEO::class);
+    }
+
     public function getSubFieldsValuesAttribute()
     {
         $dictionary = \DB::table('sub_fields_values')->where('page_id', $this->id)

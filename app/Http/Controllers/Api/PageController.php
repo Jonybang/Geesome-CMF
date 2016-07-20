@@ -26,7 +26,7 @@ class PageController extends ApiController
         return ApiHandler::parseMultiple($pages, ['title', 'alias', 'menu_title', 'sub_title', 'description'])->getResponse();
     }
 
-    private function getPageDataWithContent($page){
+    private function getPageSubData($page){
         $page_data = $page->toArray();
         $page_data['page_uri'] = $page->page_uri;
         $page_data['tags_ids'] = $page->tags_ids;
@@ -34,11 +34,22 @@ class PageController extends ApiController
         return $page_data;
     }
 
+    private function setPageSubData($page, $data){
+        if(isset($data['content']))
+            $page->content_text = $data['content'];
+
+        if(isset($data['tags_ids']))
+            $page->tags_ids = $data['tags_ids'];
+
+        if(isset($data['controller_actions_ids']))
+            $page->template->controller_actions_ids = $data['controller_actions_ids'];
+    }
+
     public function show($id)
     {
         $obj = Page::with('tags')->find($id);
 
-        return $this->getPageDataWithContent($obj);
+        return $this->getPageSubData($obj);
     }
     public function store(Request $request)
     {
@@ -47,18 +58,11 @@ class PageController extends ApiController
         $obj = Page::create($data);
         $obj->save();
 
-        if(isset($data['content']))
-            $obj->content_text = $data['content'];
-
-        if(isset($data['tags_ids']))
-            $obj->tags_ids = $data['tags_ids'];
-
-        if(isset($data['controller_actions_ids']))
-            $obj->template->controller_actions_ids = $data['controller_actions_ids'];
+        $this->setPageSubData($obj, $data);
 
         UserActionLog::saveAction($obj, "create");
 
-        return $this->getPageDataWithContent($obj);
+        return $this->getPageSubData($obj);
     }
     public function update(Request $request)
     {
@@ -66,19 +70,12 @@ class PageController extends ApiController
         $obj = Page::find($data['id']);
         $is_saved = $obj->update($data);
 
-        if(isset($data['content']))
-            $obj->content_text = $data['content'];
-
-        if(isset($data['tags_ids']))
-            $obj->tags_ids = $data['tags_ids'];
-
-        if(isset($data['controller_actions_ids']))
-            $obj->template->controller_actions_ids = $data['controller_actions_ids'];
+        $this->setPageSubData($obj, $data);
 
         if($is_saved)
             UserActionLog::saveAction($obj, "update");
 
-        return $this->getPageDataWithContent($obj);
+        return $this->getPageSubData($obj);
     }
     public function destroy($id)
     {
