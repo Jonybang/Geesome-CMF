@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Mockery\CountValidator\Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
 
+use App\Models\Setting;
+
 class Page extends Model
 {
     protected $table = 'pages';
@@ -92,6 +94,14 @@ class Page extends Model
         return $this->morphMany(UserActionLog::class, 'logable');
     }
 
+    /**
+     * @Relation
+     */
+    public function seo()
+    {
+        return $this->hasOne(PageSEO::class, 'page_id');
+    }
+
     public function getSubFieldsValuesAttribute()
     {
         $dictionary = \DB::table('sub_fields_values')->where('page_id', $this->id)
@@ -148,7 +158,12 @@ class Page extends Model
     }
     public function getContentHtmlAttribute()
     {
-        return Markdown::convertToHtml($this->content_text);
+        $is_markdown_mode = Setting::where('key', 'markdown_mode')->first()->value;
+
+        if($is_markdown_mode == 1)
+            return Markdown::convertToHtml($this->content_text);
+        else
+            return $this->content_text;
     }
 
     public function setContentTextAttribute($value)

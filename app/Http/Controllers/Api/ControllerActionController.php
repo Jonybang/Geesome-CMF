@@ -12,6 +12,7 @@ use \App\Models\UserActionLog;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class ControllerActionController extends ApiController
 {
@@ -19,11 +20,11 @@ class ControllerActionController extends ApiController
     {
         $template_id = $request->input('template_id');
         if($template_id)
-            $list = Template::find($template_id)->controller_actions;
+            $list = Template::find($template_id)->controller_actions->toArray();
         else
-            $list = ControllerAction::all();
+            $list = ApiHandler::parseMultiple(ControllerAction::query(), ['name'])->getResponse();
 
-        return $list->toArray();
+        return $list;
     }
     public function show($id)
     {

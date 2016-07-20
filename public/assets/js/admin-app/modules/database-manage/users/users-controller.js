@@ -1,6 +1,6 @@
 angular.module('app')
     .controller('UserController', ['$scope', 'Users', function($scope, Users) {
-        $scope.users = Users.query();
+        $scope.users = [];
 
         $scope.aGridOptions = {
             caption: '',
@@ -8,6 +8,8 @@ angular.module('app')
             edit: true,
             orderBy: '-id',
             resource: Users,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',

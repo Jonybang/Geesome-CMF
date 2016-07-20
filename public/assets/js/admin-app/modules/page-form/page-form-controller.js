@@ -1,6 +1,6 @@
 angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
 
         if($state.params.pageId){
@@ -10,6 +10,7 @@ angular.module('app')
             defaultPage.is_menu_hide = true;
             defaultPage.tags_ids = [];
             defaultPage.controller_actions_ids = [];
+            defaultPage.seo = {};
 
             $scope.page = angular.copy(defaultPage);
         }
@@ -24,11 +25,11 @@ angular.module('app')
         else
             setCurUserAuthorId();
 
-        var site_settings = {};
+        $scope.site_settings = {};
         //Get site settings and set default values to page object
         function setDefaultSettings(){
-            site_settings = AppData.site_settings;
-            defaultPage.template_id =  site_settings.default_template_id;
+            $scope.site_settings = AppData.site_settings;
+            defaultPage.template_id = $scope.site_settings.default_template_id;
             angular.extend($scope.page, defaultPage);
         }
         if(AppData.site_settings.$promise)
@@ -52,10 +53,10 @@ angular.module('app')
 
             //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
             //if not: just insert replace spaces to dashes and get lowercase title for set alias
-            if(title && site_settings.yandex_translate_api_key){
+            if(title && $scope.site_settings.yandex_translate_api_key){
                 $http.get(
                     'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + site_settings.yandex_translate_api_key +
+                    '?key=' + $scope.site_settings.yandex_translate_api_key +
                     '&text=' + title +
                     '&lang=en')
                     .then(function(result){
@@ -168,6 +169,8 @@ angular.module('app')
             //If page is new - Create, if it not - Update
             var is_new = $scope.page.id ? false : true;
 
+            var page_seo = angular.copy($scope.page.seo);
+
             var page_query;
             if(is_new)
                 page_query = $scope.page.$save();
@@ -182,6 +185,11 @@ angular.module('app')
                     $scope.page = angular.copy(defaultPage);
                 else
                     $scope.page = result_page;
+
+                var seo_resource = new PagesSEO(page_seo);
+                seo_resource.$save({page_id: $scope.page.id}).then(function(seo){
+                    $scope.page.seo = seo;
+                });
 
                 $scope.alert = 'Page saved!';
 

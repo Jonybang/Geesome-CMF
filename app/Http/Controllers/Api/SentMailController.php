@@ -10,12 +10,13 @@ use \Auth;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class SentMailController extends ApiController
 {
     public function index()
     {
-        return SentMail::all()->toArray();
+        return ApiHandler::parseMultiple(SentMail::query(), ['result_title', 'result_content', 'sub_data', 'result_addresses'])->getResponse();
     }
     public function show($id)
     {

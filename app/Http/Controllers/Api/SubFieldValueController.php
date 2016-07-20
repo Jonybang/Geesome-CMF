@@ -11,6 +11,7 @@ use \App\Models\SubFieldValue;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class SubFieldValueController extends ApiController
 {
@@ -18,11 +19,11 @@ class SubFieldValueController extends ApiController
     {
         $data = $request->all();
         if(isset($data['sub_field_id']) && isset($data['page_id']))
-            $sub_fields = SubFieldValue::where('sub_field_id', $data['sub_field_id'])->where('page_id', $data['page_id'])->get();
+            $sub_fields = SubFieldValue::where('sub_field_id', $data['sub_field_id'])->where('page_id', $data['page_id'])->get()->toArray();
         else
-            $sub_fields = SubFieldValue::all();
+            $sub_fields = ApiHandler::parseMultiple(SubFieldValue::query(), ['value'])->getResponse();
 
-        return $sub_fields->toArray();
+        return $sub_fields;
     }
     public function show($id)
     {

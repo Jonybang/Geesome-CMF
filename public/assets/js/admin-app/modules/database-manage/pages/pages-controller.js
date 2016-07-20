@@ -6,6 +6,7 @@ angular.module('app')
             order_by: '-id',
             resource: Pages,
             get_list: true,
+            ajax_handler: true,
             fields: [
                 {
                     name: 'id',

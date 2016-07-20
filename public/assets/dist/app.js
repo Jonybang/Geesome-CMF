@@ -70,9 +70,11 @@ angular
                 search: true,
                 create: true,
                 edit: true,
+                delete: true,
                 paginate: true,
                 bold_headers: true,
                 modal_adder: false,
+                ajax_handler: false,
                 resource: null,
                 order_by: '-id',
                 default_attrs: {},
@@ -111,6 +113,7 @@ angular
                 AEditConfig.current_options = scope.actualOptions;
                 
                 angular.extend(scope.gridOptions, AEditConfig.grid_options, scope.actualOptions);
+                scope.gridOptions.select_options = angular.extend({}, AEditConfig.grid_options, scope.actualOptions);
 
                 if(scope.actualOptions.resource){
                     mode = 'remote';
@@ -120,7 +123,7 @@ angular
 
                 var tplSearch =
                     '<div class="input-group">' +
-                        '<input type="text" class="form-control" ng-model="searchQuery" placeholder="Search" ng-change="search()" ng-model-options="{ debounce: ' + scope.actualOptions.search_debounce + ' }"/>' +
+                        '<input type="text" class="form-control" ng-model="searchQuery" placeholder="Search" ng-model-options="{ debounce: ' + scope.actualOptions.search_debounce + ' }"/>' +
                         '<span class="input-group-btn">' +
                             '<button class="btn btn-default" ng-click="clearSearch()"><i class="glyphicon glyphicon-remove"></i></button>' +
                         '</span>' +
@@ -142,7 +145,7 @@ angular
 
 
                 var select_list_request_options = {};
-                select_list_request_options[variables['limit']] = scope.gridOptions.select_items_per_page;
+                select_list_request_options[variables['limit']] = scope.gridOptions.select_options.items_per_page;
                 scope.actualOptions.fields.forEach(function(field, index){
                     if(field.resource && field.list && field.list != 'self'){
                         if(!scope.actualOptions.lists[field.list]){
@@ -192,7 +195,8 @@ angular
                             always_edit: is_new,
                             is_new: is_new,
                             list_variable: list_variable,
-                            get_list: false
+                            get_list: false,
+                            ajax_search: AEditConfig.se
                         });
                     }
 
@@ -213,7 +217,7 @@ angular
                         '<td class="controls">' +
                             '<icon-button ng-show="item.is_edit" type="primary" glyphicon="floppy-disk" ng-click="save(item)"></icon-button>' +
                             '<icon-button ng-hide="item.is_edit" type="warning" glyphicon="pencil" ng-click="item.is_edit = true"></icon-button>' +
-                            '<icon-button type="danger" glyphicon="remove" ng-click="deleteConfirm(item)"></icon-button>' +
+                            ( scope.actualOptions.delete ? '<icon-button type="danger" glyphicon="remove" ng-click="deleteConfirm(item)"></icon-button>' : '' ) +
                         '</td>';
                 }
 
@@ -243,7 +247,7 @@ angular
                 tableHtml += tplBodyItem;
 
                 if(scope.actualOptions.paginate) {
-                    tableHtml += '<uib-pagination total-items="gridOptions.total_items" items-per-page="gridOptions.items_per_page" ng-model="gridOptions.current_page" ng-change="getList()"></uib-pagination>';
+                    tableHtml += '<uib-pagination total-items="gridOptions.filter_items" items-per-page="gridOptions.items_per_page" ng-model="gridOptions.current_page" ng-change="getList()"></uib-pagination>';
                 }
 
                 var template = angular.element(tplHtml + tableHtml);
@@ -256,9 +260,14 @@ angular
             // GET LIST, SEARCH, PAGINATION AND SORTING
             // *************************************************************
 
-            scope.getList = function(query){
+            scope.getList = function(){
+                if(!scope.actualOptions.ajax_handler)
+                    return;
+
                 if(scope.searchQuery)
                     scope.gridRequestOptions[variables['query']] = scope.searchQuery;
+                else
+                    delete scope.gridRequestOptions[variables['query']];
 
                 scope.gridRequestOptions[variables['offset']] = (scope.gridOptions.current_page - 1) * scope.gridOptions.items_per_page;
                 scope.gridRequestOptions[variables['limit']] = scope.gridOptions.items_per_page;
@@ -282,20 +291,25 @@ angular
             // CLIENT SEARCH
             // *************************************************************
 
-            scope.search = function(){
-                if(mode != 'local'){
-                    scope.filtredList = scope.ngModel;
+            scope.search = function(newQuery, oldQuery){
+                scope.filtredList = scope.ngModel;
+
+                if(newQuery == oldQuery)
+                    return;
+
+                if(mode != 'local' && scope.actualOptions.ajax_handler){
+                    scope.getList();
                     return;
                 }
 
-                if(!scope.searchQuery)
-                    scope.filtredList = scope.ngModel;
-                else
+                if(scope.searchQuery)
                     scope.filtredList = $filter('filter')(scope.ngModel, scope.searchQuery);
 
                 if(scope.actualOptions.order_by)
                     scope.filtredList = $filter('orderBy')(scope.filtredList, scope.actualOptions.order_by);
             };
+
+            scope.$watch('searchQuery', scope.search);
 
             scope.clearSearch = function(){
                 scope.searchQuery = '';
@@ -357,10 +371,16 @@ angular
                     }
                 }
 
-                //
+                // local json mode
                 if(mode != 'remote'){
                     if(item.is_new){
-                        item.json_id = scope.ngModel.length + 1;
+
+                        item.json_id = 1;
+                        scope.ngModel.forEach(function(local_item){
+                            if(local_item.json_id >= item.json_id)
+                                item.json_id = local_item.json_id + 1;
+                        });
+
                         scope.ngModel.unshift(item);
                         scope.new_item = angular.copy(new_item);
                     }
@@ -410,9 +430,11 @@ angular
                 }
 
                 function sendItem(){
+                    var resource = new scope.actualOptions.resource(request_object);
+
                     if('id' in request_object && request_object.id){
                         // update if id field exist
-                        AEditHelpers.getResourceQuery(request_object, 'update').then(function(updated_item){
+                        AEditHelpers.getResourceQuery(resource, 'update').then(function(updated_item){
                             angular.extend(item, updated_item);
 
                             saveCallbacks(item);
@@ -423,9 +445,7 @@ angular
                             request_object[attr] = value;
                         });
 
-                        var newResource = new scope.actualOptions.resource(request_object);
-
-                        AEditHelpers.getResourceQuery(newResource, 'create').then(function(created_item){
+                        AEditHelpers.getResourceQuery(resource, 'create').then(function(created_item){
                             created_item.is_new = true;
 
                             scope.ngModel.unshift(created_item);
@@ -546,7 +566,7 @@ angular
             var inputTagEnd = '';
 
             if(options && options.modal_link)
-                text = '<a a-modal-resource="modalResource" a-modal-options="modalOptions" on-save="save()" href>' + text + '</a>';
+                text = '<a ae-object-modal="modalObject" modal-resource-options="modalOptions" on-save="save()" href>' + text + '</a>';
             else if(type == 'textarea'){
                 text = '<pre ng-if="$parent.ngModel">{{$parent.ngModel}}</pre>';
 
@@ -593,7 +613,7 @@ angular
                 ngModelStr: '=?',
                 isNew: '=?',
                 isEdit: '=?',
-                modalResource: '=?',
+                modalObject: '=?',
                 modalOptions: '=?',
                 hasError: '=?',
                 //callbacks
@@ -608,7 +628,7 @@ angular
             },
             link: function (scope, element, attrs) {
                 scope.type = scope.type || 'text';
-                if(attrs.modalResource && scope.type == 'text')
+                if(attrs.modalObject && scope.type == 'text')
                     scope.type = "text_modal_link";
 
                 var template = typeTemplates[scope.type],
@@ -735,7 +755,7 @@ angular
         };
     }])
 
-    .directive('aeSelectInput', ['$timeout', '$compile', '$templateCache', 'AEditHelpers', function($timeout, $compile, $templateCache, AEditHelpers) {
+    .directive('aeSelectInput', ['$timeout', '$compile', '$templateCache', 'AEditHelpers' ,'AEditConfig', function($timeout, $compile, $templateCache, AEditHelpers, AEditConfig) {
         function getTemplateByType(type, options){
             options = options || {};
 
@@ -762,7 +782,7 @@ angular
                             '{{' + uiSelect.match + '}}' +
                         '</ui-select-match>' +
 
-                        '<ui-select-choices repeat="item.id as item in $parent.list | filter: $select.search track by $index">' +
+                        '<ui-select-choices refresh="getListByResource($select.search)" repeat="item.id as item in $parent.local_list | filter: $select.search track by $index">' +
                             '<div ng-bind-html="(item[$parent.nameField] || item.name || item[$parent.orNameField]) | highlight: $select.search"></div>' +
                         '</ui-select-choices>' +
                     '</ui-select>';
@@ -821,6 +841,8 @@ angular
                 type: '@' //select or multiselect
             },
             link: function (scope, element, attrs, ngModel) {
+                var variables = angular.extend({}, AEditConfig.grid_options.request_variables, AEditConfig.grid_options.response_variables);
+
                 scope.options = {
                     value: scope.ngModel
                 };
@@ -870,25 +892,35 @@ angular
                     scope.setSelectedName(newVal);
                 });
 
-                scope.$watch('list', function(){
-
+                scope.$watch('list', function(list){
+                    scope.local_list = list;
                     scope.setSelectedName(scope.ngModel);
                 });
 
-                function getListByResource(){
-                    if(!scope.ngResource || !scope.getList || (scope.list && scope.list.length))
+                function initListGetByResource(){
+                    if(!scope.ngResource || !scope.getList || (scope.local_list && scope.local_list.length))
                         return;
 
-                    AEditHelpers.getResourceQuery(scope.ngResource, 'get').then(function(list){
-                        scope.list = list;
-                    });
+                    scope.getListByResource();
                 }
+                scope.getListByResource = function (query){
+                    var request_options = {};
+                    if(query)
+                        request_options[variables['query']] = query;
 
-                scope.$watch('ngResource', getListByResource);
-                scope.$watch('refreshListOn', getListByResource);
+                    request_options[variables['limit']] = AEditConfig.select_options.items_per_page;
+
+                    AEditHelpers.getResourceQuery(scope.ngResource, 'get', request_options).then(function(list){
+                        scope.local_list = list;
+                        scope.setSelectedName(scope.ngModel);
+                    });
+                };
+
+                scope.$watch('ngResource', initListGetByResource);
+                scope.$watch('refreshListOn', initListGetByResource);
 
                 scope.setSelectedName = function (newVal){
-                    if(!scope.list || !scope.list.length)
+                    if(!scope.local_list || !scope.local_list.length)
                         return;
 
                     if(Array.isArray(newVal)){
@@ -896,7 +928,7 @@ angular
                         var names = [];
                         newVal.forEach(function(id){
                             // get from current list by id
-                            var result_name = AEditHelpers.getNameById(scope.list, id, scope.nameField, scope.orNameField);
+                            var result_name = AEditHelpers.getNameById(scope.local_list, id, scope.nameField, scope.orNameField);
                             if(result_name){
                                 names.push(result_name);
                             } else if(scope.ngResource){
@@ -911,7 +943,7 @@ angular
                         scope.selectedName = names.join(', ');
                     } else {
                         // get from current list by id
-                        scope.selectedName = AEditHelpers.getNameById(scope.list, newVal, scope.nameField, scope.orNameField);
+                        scope.selectedName = AEditHelpers.getNameById(scope.local_list, newVal, scope.nameField, scope.orNameField);
 
                         // if object with id not exist in current list - get from server
                         if(!scope.selectedName && newVal && scope.ngResource){
@@ -984,7 +1016,7 @@ angular
                 scope.saveToList = function(new_object){
                     scope.popover.is_open = false;
                     AEditHelpers.getResourceQuery(new scope.ngResource(new_object), 'create').then(function(object){
-                        scope.list.unshift(object);
+                        scope.local_list.unshift(object);
 
                         if(angular.isArray(scope.ngModel))
                             scope.ngModel.push(object.id);
@@ -1118,23 +1150,23 @@ angular
 angular
     .module('a-edit')
 
-    .directive('aModalResource', ['$timeout', '$log', '$cacheFactory', 'AEditHelpers', 'AEditConfig', '$uibModal', function($timeout, $log, $cacheFactory, AEditHelpers, AEditConfig, $uibModal) {
+    .directive('aeObjectModal', ['$timeout', '$log', '$cacheFactory', 'AEditHelpers', 'AEditConfig', '$uibModal', function($timeout, $log, $cacheFactory, AEditHelpers, AEditConfig, $uibModal) {
         var cache = $cacheFactory('aModal.Templates');
 
         return {
             restrict: 'A',
             scope: {
                 //require
-                aModalResource: '=',
-                aModalOptions: '=?',
+                aeObjectModal: '=',
+                modalResourceOptions: '=?',
                 isEdit: '=?',
                 //callbacks
                 onSave: '&'
             },
             link: function (scope, element, attrs) {
 
-                var resource_name = attrs.aModalResource + new Date().getTime();
-                scope.options = scope.aModalOptions || AEditConfig.current_options;
+                var resource_name = attrs.aeObjectModal + new Date().getTime();
+                scope.options = scope.modalResourceOptions || AEditConfig.current_options;
 
                 element.on("click", function () {
                     var template = cache.get(resource_name) || '';
@@ -1175,7 +1207,8 @@ angular
                         resolve: {
                             data: function () {
                                 return {
-                                    object: angular.copy(scope.aModalResource),
+                                    object: angular.copy(scope.aeObjectModal),
+                                    resource: scope.options.resource,
                                     lists: scope.options.lists,
                                     isEdit: scope.isEdit
                                 };
@@ -1184,8 +1217,9 @@ angular
                         controller: ['$scope', '$uibModalInstance', 'data', function($scope, $uibModalInstance, data) {
                             angular.extend($scope, data);
 
-                            AEditHelpers.getResourceQuery($scope.object, 'show').then(function(object){
-                                angular.extend($scope.object, object);
+
+                            AEditHelpers.getResourceQuery(new scope.options.resource($scope.object), 'show').then(function(object){
+                                $scope.object = object;
                                 $scope.object.is_edit = data.isEdit;
                                 console.log('modal controller', $scope.object);
                             });
@@ -1202,7 +1236,7 @@ angular
                     });
 
                     modalInstance.result.then(function (object) {
-                        angular.extend(scope.aModalResource, object);
+                        angular.extend(scope.aeObjectModal, object);
                         
                         if(scope.onSave)
                             $timeout(scope.onSave);
@@ -1243,8 +1277,12 @@ angular.module('a-edit')
                 total_count: 'total_count',
                 filter_count: 'filter_count'
             },
-            items_per_page: 5,
-            select_items_per_page: 2
+            items_per_page: 15
+        };
+
+        this.select_options = {
+            ajax_handler: true,
+            items_per_page: 15
         };
 
         return this;
@@ -1338,11 +1376,11 @@ angular.module('a-edit')
 
                 if(directive == 'select-input'){
                     output += 'name-field="' + (field.name_field || '') + '" ';
-                    output += 'or-name-field="' + (field.name_field || '') + '" ';
+                    output += 'or-name-field="' + (field.or_name_field || '') + '" ';
                 }
 
                 if(field.modal && !config.already_modal && field.modal == 'self'){
-                    output += 'modal-resource="' + item_name + '" ';
+                    output += 'modal-object="' + item_name + '" ';
                     output += 'modal-options="actualOptions" ';
                 }
 
@@ -1416,7 +1454,7 @@ angular.module('a-edit')
     }]);
 
 angular
-    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'a-edit'])
+    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'ckeditor', 'a-edit'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 
@@ -1544,6 +1582,26 @@ angular
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
             AppData.reload();
         });
+
+        $rootScope.CKEditorOptions = {
+            language: 'en',
+            allowedContent: true,
+            entities: false,
+            toolbarGroups: [
+                { name: 'editing',     groups: [ 'find', 'selection' ] },
+                '/',
+                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+                { name: 'links' },
+                { name: 'insert' },
+                '/',
+                { name: 'styles' },
+                { name: 'colors' },
+                { name: 'tools' },
+                { name: 'others' },
+                { name: 'document',    groups: [ 'mode', 'document', 'doctools' ] },
+            ]
+        };
 
         //config for marcelgwerder/laravel-api-handler
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
@@ -1979,6 +2037,10 @@ app.factory('Pages', ['$resource', function($resource) {
     return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('PagesSEO', ['$resource', function($resource) {
+    return $resource('admin/api/pages/:page_id/seo', { id: '@page_id' }, defaultOptions);
+}]);
+
 app.factory('Templates', ['$resource', function($resource) {
     return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
 }]);
@@ -2060,8 +2122,8 @@ angular.module('app')
             mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });
 angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
 
         if($state.params.pageId){
@@ -2071,6 +2133,7 @@ angular.module('app')
             defaultPage.is_menu_hide = true;
             defaultPage.tags_ids = [];
             defaultPage.controller_actions_ids = [];
+            defaultPage.seo = {};
 
             $scope.page = angular.copy(defaultPage);
         }
@@ -2085,11 +2148,11 @@ angular.module('app')
         else
             setCurUserAuthorId();
 
-        var site_settings = {};
+        $scope.site_settings = {};
         //Get site settings and set default values to page object
         function setDefaultSettings(){
-            site_settings = AppData.site_settings;
-            defaultPage.template_id =  site_settings.default_template_id;
+            $scope.site_settings = AppData.site_settings;
+            defaultPage.template_id = $scope.site_settings.default_template_id;
             angular.extend($scope.page, defaultPage);
         }
         if(AppData.site_settings.$promise)
@@ -2113,10 +2176,10 @@ angular.module('app')
 
             //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
             //if not: just insert replace spaces to dashes and get lowercase title for set alias
-            if(title && site_settings.yandex_translate_api_key){
+            if(title && $scope.site_settings.yandex_translate_api_key){
                 $http.get(
                     'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + site_settings.yandex_translate_api_key +
+                    '?key=' + $scope.site_settings.yandex_translate_api_key +
                     '&text=' + title +
                     '&lang=en')
                     .then(function(result){
@@ -2229,6 +2292,8 @@ angular.module('app')
             //If page is new - Create, if it not - Update
             var is_new = $scope.page.id ? false : true;
 
+            var page_seo = angular.copy($scope.page.seo);
+
             var page_query;
             if(is_new)
                 page_query = $scope.page.$save();
@@ -2244,6 +2309,11 @@ angular.module('app')
                 else
                     $scope.page = result_page;
 
+                var seo_resource = new PagesSEO(page_seo);
+                seo_resource.$save({page_id: $scope.page.id}).then(function(seo){
+                    $scope.page.seo = seo;
+                });
+
                 $scope.alert = 'Page saved!';
 
                 $scope.app.refreshPagesTree();
@@ -2257,12 +2327,14 @@ angular.module('app')
 
 angular.module('app')
     .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
-        $scope.dictionaries = Dictionaries.query();
+        $scope.dictionaries = [];
 
         $scope.aGridDictionariesOptions = {
             caption: '',
             orderBy: '-id',
             resource: Dictionaries,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2283,12 +2355,14 @@ angular.module('app')
             ]
         };
 
-        $scope.dictionaries_words = DictionariesWords.query();
+        $scope.dictionaries_words = [];
 
         $scope.aGridDictionariesWordsOptions = {
             caption: '',
             orderBy: '-id',
             resource: DictionariesWords,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2309,26 +2383,74 @@ angular.module('app')
                 {
                     name: 'dictionary_id',
                     label: 'Dictionary',
+                    resource: Dictionaries,
                     type: 'select',
                     list: 'dictionaries',
                     or_name_field: 'key',
                     required: true
                 }
-            ],
-            lists: {
-                dictionaries: $scope.dictionaries
-            }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
+        $scope.logs = [];
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            resource: Logs,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User',
+                    type: 'select',
+                    list: 'users',
+                    resource: Users
+                },
+                {
+                    name: 'logable.name || item.logable.key || item.logable.title',
+                    label: 'Item Name'
+                },
+                {
+                    name: 'logable_type',
+                    label: 'Item Type'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
         };
     }]);
 
 angular.module('app')
     .controller('MailTemplatesController', ['$scope', 'MailTemplates', function($scope, MailTemplates) {
-        $scope.mail_templates = MailTemplates.query();
+        $scope.mail_templates = [];
 
         $scope.aGridOptions = {
             caption: '',
             orderBy: '-id',
             resource: MailTemplates,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2361,52 +2483,6 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
-        $scope.logs = Logs.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            resource: Logs,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User',
-                    type: 'select',
-                    list: 'users',
-                    resource: Users
-                },
-                {
-                    name: 'logable_name',
-                    label: 'Item Name'
-                },
-                {
-                    name: 'logable_type',
-                    label: 'Item Type'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
     .controller('PagesController', ['$scope', 'Pages', 'Templates', 'Users', function($scope, Pages, Templates, Users) {
 
         $scope.aGridOptions = {
@@ -2414,6 +2490,7 @@ angular.module('app')
             order_by: '-id',
             resource: Pages,
             get_list: true,
+            ajax_handler: true,
             fields: [
                 {
                     name: 'id',
@@ -2565,13 +2642,55 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = [];
+
+        $scope.aGridOptions = {
+            caption: 'All settings available in templates.',
+            orderBy: '-id',
+            resource: Settings,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    modal: 'self',
+                    label: 'Setting key',
+                    new_placeholder: 'New Setting',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', function($scope, SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages) {
-        $scope.sub_fields_types = SubFieldsTypes.query();
+        $scope.sub_fields_types = [];
 
         $scope.aGridSubFieldsTypesOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubFieldsTypes,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2596,12 +2715,14 @@ angular.module('app')
             ]
         };
 
-        $scope.sub_fields = SubFields.query();
+        $scope.sub_fields = [];
 
         $scope.aGridSubFieldsOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubFields,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2638,6 +2759,7 @@ angular.module('app')
                     name: 'sub_field_type_id',
                     label: 'Sub field type',
                     type: 'select',
+                    resource: SubFieldsTypes,
                     list: 'sub_fields_types',
                     or_name_field: 'key'
                 },
@@ -2650,18 +2772,17 @@ angular.module('app')
                     table_hide: true,
                     or_name_field: 'key'
                 }
-            ],
-            lists: {
-                sub_fields_types: $scope.sub_fields_types
-            }
+            ]
         };
 
-        $scope.sub_fields_values = SubFieldsValues.query();
+        $scope.sub_fields_values = [];
 
         $scope.aGridSubFieldsValuesOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubFieldsValues,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2678,6 +2799,7 @@ angular.module('app')
                 {
                     name: 'sub_field_id',
                     label: 'Sub field',
+                    resource: SubFields,
                     type: 'select',
                     list: 'sub_fields',
                     or_name_field: 'key',
@@ -2692,59 +2814,20 @@ angular.module('app')
                     name_field: 'title',
                     required: true
                 }
-            ],
-            lists: {
-                sub_fields: $scope.sub_fields
-            }
-        };
-    }]);
-
-angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
-
-        $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
-            orderBy: '-id',
-            resource: Settings,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Setting key',
-                    new_placeholder: 'New Setting',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
             ]
         };
     }]);
 
 angular.module('app')
     .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
-        $scope.subscribers_groups = SubscribersGroups.query();
+        $scope.subscribers_groups = [];
 
         $scope.aGridSubscribersGroupsOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubscribersGroups,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2771,18 +2854,17 @@ angular.module('app')
                     table_hide: true,
                     or_name_field: 'mail'
                 }
-            ],
-            lists: {
-                subscribers: $scope.subscribers
-            }
+            ]
         };
 
-        $scope.subscribers = Subscribers.query();
+        $scope.subscribers = [];
 
         $scope.aGridSubscribersOptions = {
             caption: '',
             orderBy: '-id',
             resource: Subscribers,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2819,10 +2901,7 @@ angular.module('app')
                     table_hide: true,
                     or_name_field: 'key'
                 }
-            ],
-            lists: {
-                subscribers_groups: $scope.subscribers_groups
-            }
+            ]
         };
     }]);
 
@@ -2853,12 +2932,14 @@ angular.module('app')
 
 angular.module('app')
     .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
-        $scope.templates = Templates.query();
+        $scope.templates = [];
 
         $scope.aGridOptions = {
             caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
             orderBy: '-id',
             resource: Templates,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2905,7 +2986,7 @@ angular.module('app')
 
 angular.module('app')
     .controller('UserController', ['$scope', 'Users', function($scope, Users) {
-        $scope.users = Users.query();
+        $scope.users = [];
 
         $scope.aGridOptions = {
             caption: '',
@@ -2913,6 +2994,8 @@ angular.module('app')
             edit: true,
             orderBy: '-id',
             resource: Users,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',

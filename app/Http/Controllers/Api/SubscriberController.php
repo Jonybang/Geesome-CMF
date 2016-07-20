@@ -10,12 +10,13 @@ use \App\Models\Subscriber;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class SubscriberController extends ApiController
 {
     public function index()
     {
-        return Subscriber::all()->toArray();
+        return ApiHandler::parseMultiple(Subscriber::query(), ['mail', 'name', 'provider', 'user_agent'])->getResponse();
     }
     public function show($id)
     {

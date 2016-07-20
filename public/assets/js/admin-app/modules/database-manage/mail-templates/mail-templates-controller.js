@@ -1,11 +1,13 @@
 angular.module('app')
     .controller('MailTemplatesController', ['$scope', 'MailTemplates', function($scope, MailTemplates) {
-        $scope.mail_templates = MailTemplates.query();
+        $scope.mail_templates = [];
 
         $scope.aGridOptions = {
             caption: '',
             orderBy: '-id',
             resource: MailTemplates,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',

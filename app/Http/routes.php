@@ -44,6 +44,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
         //REST API
         Route::resource('settings', 'Api\SettingController');
         Route::resource('pages', 'Api\PageController');
+
+        Route::resource('pages/{page_id}/seo', 'Api\PageSEOController');
+
         Route::resource('templates', 'Api\TemplateController');
         Route::resource('mail_templates', 'Api\MailTemplateController');
         Route::resource('logs', 'Api\LogController');

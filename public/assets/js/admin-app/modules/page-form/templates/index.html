@@ -36,8 +36,9 @@
                 </div>
 
                 <label>Content:</label>
+                <div ckeditor="CKEditorOptions" ng-model="$parent.page.content" ng-if="site_settings.markdown_mode != 1"></div>
 
-                <wiz-markdown-editor content="page.content" textareaclass="form-control">
+                <wiz-markdown-editor content="$parent.page.content" textareaclass="form-control" ng-if="site_settings.markdown_mode == 1">
                     <wiz-toolbar-button command="bold">Bold</wiz-toolbar-button>
                     <wiz-toolbar-button command="italic">Italic</wiz-toolbar-button>
                     <wiz-toolbar-button command="undo">UNDO</wiz-toolbar-button>
@@ -60,14 +61,14 @@
                     <wiz-toolbar-button command="h6">H6</wiz-toolbar-button>
                 </wiz-markdown-editor>
             </div>
-            <div class="panel-footer">
+            <div class="panel-footer" ng-if="site_settings.markdown_mode == 1">
                 <label>Content preview:</label>
-                <wiz-markdown content="page.content"></wiz-markdown>
+                <wiz-markdown content="$parent.page.content"></wiz-markdown>
             </div>
 
             <div class="panel-body">
                 <label>Tags:</label>
-                <ae-select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" type="multiselect"></ae-select-input>
+                <ae-select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" get-list="true" type="multiselect"></ae-select-input>
             </div>
 
             <div class="panel-body">
@@ -83,7 +84,7 @@
             </div>
             <div class="panel-body">
                 <label>Template:</label>
-                <ae-select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" is-edit="true" adder="true"></ae-select-input>
+                <ae-select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" is-edit="true" adder="true" get-list="true"></ae-select-input>
 
                 <div>
                     <a href ng-click="templateInfoShow = !templateInfoShow" ng-class="{'dropup': templateInfoShow}">
@@ -92,7 +93,7 @@
                     <div ng-if="templateInfoShow">
                         <div class="alert alert-warning">
                             <label>Controller Actions:</label>
-                            <ae-select-input ng-model="page.controller_actions_ids" or-name-field="key" has-error="hasErrors.controller_actions_ids" ng-resource="models.controller_actions" ng-resource-fields="fields.controller_actions" is-edit="true" adder="true" type="multiselect"></ae-select-input>
+                            <ae-select-input ng-model="page.controller_actions_ids" or-name-field="key" has-error="hasErrors.controller_actions_ids" ng-resource="models.controller_actions" ng-resource-fields="fields.controller_actions" is-edit="true" adder="true" get-list="true" type="multiselect"></ae-select-input>
 
                             <div><small>Add actions to some laravel controllers, than bind they to template by names(example: 'SomeController@someAction') for execute when page render and get data from action result returned.</small></div>
                         </div>
@@ -125,10 +126,10 @@
                 </div>
 
                 <label>Parent:</label>
-                <ae-select-input ng-model="page.parent_page_id" name-field="title" has-error="hasErrors.parent_page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" is-edit="true" adder="true" refresh-list-on="page"></ae-select-input>
+                <ae-select-input ng-model="page.parent_page_id" name-field="title" has-error="hasErrors.parent_page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" is-edit="true" adder="true" get-list="true" refresh-list-on="page"></ae-select-input>
 
                 <label>Author:</label>
-                <ae-select-input ng-model="page.author_id" has-error="hasErrors.author_id" ng-resource="models.users" ng-resource-fields="fields.users" is-edit="true" adder="true"></ae-select-input>
+                <ae-select-input ng-model="page.author_id" has-error="hasErrors.author_id" ng-resource="models.users" ng-resource-fields="fields.users" is-edit="true" adder="true" get-list="true"></ae-select-input>
 
                 <div>
                     <a href ng-click="subInfoShow = !subInfoShow" ng-class="{'dropup': subInfoShow}">
@@ -151,6 +152,23 @@
                         </label>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">SEO</h3>
+            </div>
+            <div class="panel-body">
+                <label>Title:</label>
+                <ae-text-input ng-model="page.seo.title" is-edit="true"></ae-text-input>
+
+                <label>Description:</label>
+                <ae-text-input ng-model="page.seo.description" type="textarea" is-edit="true"></ae-text-input>
+
+                <label>Keywords:</label>
+                <ae-text-input ng-model="page.seo.keywords" type="textarea" is-edit="true"></ae-text-input>
+
             </div>
         </div>
     </div>

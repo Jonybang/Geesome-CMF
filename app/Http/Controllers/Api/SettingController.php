@@ -11,12 +11,13 @@ use \App\Models\Setting;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class SettingController extends ApiController
 {
     public function index()
     {
-        return Setting::all()->toArray();
+        return ApiHandler::parseMultiple(Setting::query(), ['name', 'key', 'value', 'description'])->getResponse();
     }
     public function show($id)
     {

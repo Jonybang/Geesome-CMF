@@ -12,12 +12,13 @@ use \App\Models\Context;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class DictionaryWordController extends ApiController
 {
     public function index()
     {
-        return DictionaryWord::all()->toArray();
+        return ApiHandler::parseMultiple(DictionaryWord::query(), ['key', 'value'])->getResponse();
     }
     public function show($id)
     {

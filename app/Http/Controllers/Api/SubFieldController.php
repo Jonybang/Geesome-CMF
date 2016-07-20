@@ -12,6 +12,7 @@ use \App\Models\Template;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
 class SubFieldController extends ApiController
 {
@@ -19,11 +20,11 @@ class SubFieldController extends ApiController
     {
         $template_id = $request->input('template_id');
         if($template_id)
-            $list = Template::find($template_id)->sub_fields;
+            $list = Template::find($template_id)->sub_fields->toArray();
         else
-            $list = SubField::all();
+            $list = ApiHandler::parseMultiple(SubField::query(), ['name', 'key', 'config', 'description', 'default_value'])->getResponse();
 
-        return $list->toArray();
+        return $list;
     }
     public function show($id)
     {
