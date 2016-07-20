@@ -1454,7 +1454,7 @@ angular.module('a-edit')
     }]);
 
 angular
-    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'a-edit'])
+    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'ckeditor', 'a-edit'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 
@@ -1582,6 +1582,12 @@ angular
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
             AppData.reload();
         });
+
+        $rootScope.CKEditorOptions = {
+            language: 'en',
+            allowedContent: true,
+            entities: false
+        };
 
         //config for marcelgwerder/laravel-api-handler
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
@@ -2128,10 +2134,10 @@ angular.module('app')
         else
             setCurUserAuthorId();
 
-        var site_settings = {};
+        $scope.site_settings = {};
         //Get site settings and set default values to page object
         function setDefaultSettings(){
-            site_settings = AppData.site_settings;
+            $scope.site_settings = AppData.site_settings;
             defaultPage.template_id =  site_settings.default_template_id;
             angular.extend($scope.page, defaultPage);
         }
@@ -2156,10 +2162,10 @@ angular.module('app')
 
             //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
             //if not: just insert replace spaces to dashes and get lowercase title for set alias
-            if(title && site_settings.yandex_translate_api_key){
+            if(title && $scope.site_settings.yandex_translate_api_key){
                 $http.get(
                     'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + site_settings.yandex_translate_api_key +
+                    '?key=' + $scope.site_settings.yandex_translate_api_key +
                     '&text=' + title +
                     '&lang=en')
                     .then(function(result){
@@ -2306,6 +2312,54 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
+        $scope.logs = [];
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            resource: Logs,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User',
+                    type: 'select',
+                    list: 'users',
+                    resource: Users
+                },
+                {
+                    name: 'logable.name || item.logable.key || item.logable.title',
+                    label: 'Item Name'
+                },
+                {
+                    name: 'logable_type',
+                    label: 'Item Type'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
         $scope.dictionaries = [];
 
@@ -2368,54 +2422,6 @@ angular.module('app')
                     list: 'dictionaries',
                     or_name_field: 'key',
                     required: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
-        $scope.logs = [];
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            resource: Logs,
-            ajax_handler: true,
-            get_list: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User',
-                    type: 'select',
-                    list: 'users',
-                    resource: Users
-                },
-                {
-                    name: 'logable.name || item.logable.key || item.logable.title',
-                    label: 'Item Name'
-                },
-                {
-                    name: 'logable_type',
-                    label: 'Item Type'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
                 }
             ]
         };

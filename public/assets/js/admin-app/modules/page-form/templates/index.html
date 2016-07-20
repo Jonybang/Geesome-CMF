@@ -37,7 +37,9 @@
 
                 <label>Content:</label>
 
-                <wiz-markdown-editor content="page.content" textareaclass="form-control">
+                <div ckeditor="CKEditorOptions" ng-model="$parent.page.content" ng-if="!site_settings.markdown_mode"></div>
+
+                <wiz-markdown-editor content="$parent.page.content" textareaclass="form-control" ng-if="site_settings.markdown_mode">
                     <wiz-toolbar-button command="bold">Bold</wiz-toolbar-button>
                     <wiz-toolbar-button command="italic">Italic</wiz-toolbar-button>
                     <wiz-toolbar-button command="undo">UNDO</wiz-toolbar-button>
@@ -60,9 +62,9 @@
                     <wiz-toolbar-button command="h6">H6</wiz-toolbar-button>
                 </wiz-markdown-editor>
             </div>
-            <div class="panel-footer">
+            <div class="panel-footer" ng-if="site_settings.markdown_mode">
                 <label>Content preview:</label>
-                <wiz-markdown content="page.content"></wiz-markdown>
+                <wiz-markdown content="$parent.page.content"></wiz-markdown>
             </div>
 
             <div class="panel-body">

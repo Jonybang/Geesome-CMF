@@ -25,10 +25,10 @@ angular.module('app')
         else
             setCurUserAuthorId();
 
-        var site_settings = {};
+        $scope.site_settings = {};
         //Get site settings and set default values to page object
         function setDefaultSettings(){
-            site_settings = AppData.site_settings;
+            $scope.site_settings = AppData.site_settings;
             defaultPage.template_id =  site_settings.default_template_id;
             angular.extend($scope.page, defaultPage);
         }
@@ -53,10 +53,10 @@ angular.module('app')
 
             //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
             //if not: just insert replace spaces to dashes and get lowercase title for set alias
-            if(title && site_settings.yandex_translate_api_key){
+            if(title && $scope.site_settings.yandex_translate_api_key){
                 $http.get(
                     'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + site_settings.yandex_translate_api_key +
+                    '?key=' + $scope.site_settings.yandex_translate_api_key +
                     '&text=' + title +
                     '&lang=en')
                     .then(function(result){

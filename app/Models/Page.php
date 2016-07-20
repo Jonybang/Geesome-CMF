@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Mockery\CountValidator\Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
 
+use App\Models\Setting;
+
 class Page extends Model
 {
     protected $table = 'pages';
@@ -162,6 +164,7 @@ class Page extends Model
     }
     public function getContentHtmlAttribute()
     {
+
         return Markdown::convertToHtml($this->content_text);
     }
 
