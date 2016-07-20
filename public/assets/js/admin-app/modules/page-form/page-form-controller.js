@@ -29,7 +29,7 @@ angular.module('app')
         //Get site settings and set default values to page object
         function setDefaultSettings(){
             $scope.site_settings = AppData.site_settings;
-            defaultPage.template_id =  site_settings.default_template_id;
+            defaultPage.template_id = $scope.site_settings.default_template_id;
             angular.extend($scope.page, defaultPage);
         }
         if(AppData.site_settings.$promise)

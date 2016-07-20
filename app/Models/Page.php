@@ -164,8 +164,12 @@ class Page extends Model
     }
     public function getContentHtmlAttribute()
     {
+        $is_markdown_mode = Setting::where('key', 'markdown_mode')->first()->value;
 
-        return Markdown::convertToHtml($this->content_text);
+        if($is_markdown_mode == 1)
+            return Markdown::convertToHtml($this->content_text);
+        else
+            return $this->content_text;
     }
 
     public function setContentTextAttribute($value)

@@ -131,7 +131,21 @@ angular
         $rootScope.CKEditorOptions = {
             language: 'en',
             allowedContent: true,
-            entities: false
+            entities: false,
+            toolbarGroups: [
+                { name: 'editing',     groups: [ 'find', 'selection' ] },
+                '/',
+                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+                { name: 'links' },
+                { name: 'insert' },
+                '/',
+                { name: 'styles' },
+                { name: 'colors' },
+                { name: 'tools' },
+                { name: 'others' },
+                { name: 'document',    groups: [ 'mode', 'document', 'doctools' ] },
+            ]
         };
 
         //config for marcelgwerder/laravel-api-handler

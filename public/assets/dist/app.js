@@ -1586,7 +1586,21 @@ angular
         $rootScope.CKEditorOptions = {
             language: 'en',
             allowedContent: true,
-            entities: false
+            entities: false,
+            toolbarGroups: [
+                { name: 'editing',     groups: [ 'find', 'selection' ] },
+                '/',
+                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+                { name: 'links' },
+                { name: 'insert' },
+                '/',
+                { name: 'styles' },
+                { name: 'colors' },
+                { name: 'tools' },
+                { name: 'others' },
+                { name: 'document',    groups: [ 'mode', 'document', 'doctools' ] },
+            ]
         };
 
         //config for marcelgwerder/laravel-api-handler
@@ -2138,7 +2152,7 @@ angular.module('app')
         //Get site settings and set default values to page object
         function setDefaultSettings(){
             $scope.site_settings = AppData.site_settings;
-            defaultPage.template_id =  site_settings.default_template_id;
+            defaultPage.template_id = $scope.site_settings.default_template_id;
             angular.extend($scope.page, defaultPage);
         }
         if(AppData.site_settings.$promise)
@@ -2312,54 +2326,6 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
-        $scope.logs = [];
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            resource: Logs,
-            ajax_handler: true,
-            get_list: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User',
-                    type: 'select',
-                    list: 'users',
-                    resource: Users
-                },
-                {
-                    name: 'logable.name || item.logable.key || item.logable.title',
-                    label: 'Item Name'
-                },
-                {
-                    name: 'logable_type',
-                    label: 'Item Type'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
     .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
         $scope.dictionaries = [];
 
@@ -2422,6 +2388,54 @@ angular.module('app')
                     list: 'dictionaries',
                     or_name_field: 'key',
                     required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
+        $scope.logs = [];
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            resource: Logs,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User',
+                    type: 'select',
+                    list: 'users',
+                    resource: Users
+                },
+                {
+                    name: 'logable.name || item.logable.key || item.logable.title',
+                    label: 'Item Name'
+                },
+                {
+                    name: 'logable_type',
+                    label: 'Item Type'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
                 }
             ]
         };
