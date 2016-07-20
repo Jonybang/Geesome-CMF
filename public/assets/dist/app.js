@@ -1454,7 +1454,7 @@ angular.module('a-edit')
     }]);
 
 angular
-    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'a-edit'])
+    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'ckeditor', 'a-edit'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 
@@ -1583,6 +1583,12 @@ angular
             AppData.reload();
         });
 
+        $rootScope.CKEditorOptions = {
+            language: 'en',
+            allowedContent: true,
+            entities: false
+        };
+
         //config for marcelgwerder/laravel-api-handler
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
@@ -1666,124 +1672,6 @@ angular.module('app')
 
         self.tabs = [{title:'Pages Tree', name: 'pages-tree'}, {title: 'Database Manage', name:'db-manage'}];
     }]);
-angular.module('app')
-    .service('AppData', ['$http', function($http){
-        var self = this;
-
-        var data_variables = {
-            'cur_user': '/admin/api/cur_user',
-            'site_settings': '/admin/api/site_settings_dictionary'
-        };
-
-        self.reload = function(){
-            angular.forEach(data_variables, function(url, var_name){
-                self[var_name] = {};
-                self[var_name].$promise = $http.get(url).then(function(response){
-                    angular.extend(self[var_name], response.data);
-                    self[var_name].$promise = null;
-                    return self[var_name];
-                });
-            });
-        };
-
-        self.reload();
-
-        return self;
-    }]);
-var app = angular.module('app');
-
-var defaultOptions = {
-    'update': { method: 'PUT' }
-};
-
-app.factory('Settings', ['$resource', function($resource) {
-    return $resource('admin/api/settings/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Pages', ['$resource', function($resource) {
-    return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Templates', ['$resource', function($resource) {
-    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('MailTemplates', ['$resource', function($resource) {
-    return $resource('admin/api/mail_templates/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Logs', ['$resource', function($resource) {
-    return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Users', ['$resource', function($resource) {
-    return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Tags', ['$resource', function($resource) {
-    return $resource('admin/api/tags/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Templates', ['$resource', function($resource) {
-    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('SubFieldsTypes', ['$resource', function($resource) {
-    return $resource('admin/api/sub_fields_types/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('SubFieldsValues', ['$resource', function($resource) {
-    return $resource('admin/api/sub_fields_values/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('SubFields', ['$resource', function($resource) {
-    return $resource('admin/api/sub_fields/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('ControllerActions', ['$resource', function($resource) {
-    return $resource('admin/api/controller_actions/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Dictionaries', ['$resource', function($resource) {
-    return $resource('admin/api/dictionaries/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('DictionariesWords', ['$resource', function($resource) {
-    return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Subscribers', ['$resource', function($resource) {
-    return $resource('admin/api/subscribers/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('SubscribersGroups', ['$resource', function($resource) {
-    return $resource('admin/api/subscribers_groups/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('SentMails', ['$resource', function($resource) {
-    return $resource('admin/api/sent_mails/:id', { id: '@id' }, defaultOptions);
-}]);
-var app_path = '/assets/js/admin-app/';
-var app_modules_path = app_path + 'modules/';
-
-angular.module('app')
-    .constant('AppPaths', {
-            app:                    app_path,
-            app_tpls:               app_path + 'templates/',
-            modules:                app_modules_path,
-            db_manage_module:       app_modules_path + 'database-manage',
-            page_form_tpls:         app_modules_path + 'page-form/templates/',
-
-            settings_tpls:          app_modules_path + 'database-manage/settings/templates/',
-            pages_tpls:             app_modules_path + 'database-manage/pages/templates/',
-            mail_templates_tpls:    app_modules_path + 'database-manage/mail-templates/templates/',
-            logs_tpls:              app_modules_path + 'database-manage/logs/templates/',
-            users_tpls:             app_modules_path + 'database-manage/users/templates/',
-            tags_tpls:              app_modules_path + 'database-manage/tags/templates/',
-            templates_tpls:         app_modules_path + 'database-manage/templates/templates/',
-            sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
-            dictionary_tpls:        app_modules_path + 'database-manage/dictionary/templates/',
-            subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/',
-            sent_mails_tpls:       app_modules_path + 'database-manage/sent-mails/templates/',
-
-            mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
-    });
 //<loading-gif ng-if="!dataLoaded"> </loading-gif>
 // TODO: добавить throttle - не показывать гифку если идет тут-же переключение туда - обратно
 angular.module('app')
@@ -2098,8 +1986,130 @@ angular
         };
     }]);
 angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
+    .service('AppData', ['$http', function($http){
+        var self = this;
+
+        var data_variables = {
+            'cur_user': '/admin/api/cur_user',
+            'site_settings': '/admin/api/site_settings_dictionary'
+        };
+
+        self.reload = function(){
+            angular.forEach(data_variables, function(url, var_name){
+                self[var_name] = {};
+                self[var_name].$promise = $http.get(url).then(function(response){
+                    angular.extend(self[var_name], response.data);
+                    self[var_name].$promise = null;
+                    return self[var_name];
+                });
+            });
+        };
+
+        self.reload();
+
+        return self;
+    }]);
+var app = angular.module('app');
+
+var defaultOptions = {
+    'update': { method: 'PUT' }
+};
+
+app.factory('Settings', ['$resource', function($resource) {
+    return $resource('admin/api/settings/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Pages', ['$resource', function($resource) {
+    return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('PagesSEO', ['$resource', function($resource) {
+    return $resource('admin/api/pages/:page_id/seo', { id: '@page_id' }, defaultOptions);
+}]);
+
+app.factory('Templates', ['$resource', function($resource) {
+    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('MailTemplates', ['$resource', function($resource) {
+    return $resource('admin/api/mail_templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Logs', ['$resource', function($resource) {
+    return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Users', ['$resource', function($resource) {
+    return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Tags', ['$resource', function($resource) {
+    return $resource('admin/api/tags/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Templates', ['$resource', function($resource) {
+    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('SubFieldsTypes', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields_types/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubFieldsValues', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields_values/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubFields', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('ControllerActions', ['$resource', function($resource) {
+    return $resource('admin/api/controller_actions/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Dictionaries', ['$resource', function($resource) {
+    return $resource('admin/api/dictionaries/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('DictionariesWords', ['$resource', function($resource) {
+    return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Subscribers', ['$resource', function($resource) {
+    return $resource('admin/api/subscribers/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubscribersGroups', ['$resource', function($resource) {
+    return $resource('admin/api/subscribers_groups/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('SentMails', ['$resource', function($resource) {
+    return $resource('admin/api/sent_mails/:id', { id: '@id' }, defaultOptions);
+}]);
+var app_path = '/assets/js/admin-app/';
+var app_modules_path = app_path + 'modules/';
+
+angular.module('app')
+    .constant('AppPaths', {
+            app:                    app_path,
+            app_tpls:               app_path + 'templates/',
+            modules:                app_modules_path,
+            db_manage_module:       app_modules_path + 'database-manage',
+            page_form_tpls:         app_modules_path + 'page-form/templates/',
+
+            settings_tpls:          app_modules_path + 'database-manage/settings/templates/',
+            pages_tpls:             app_modules_path + 'database-manage/pages/templates/',
+            mail_templates_tpls:    app_modules_path + 'database-manage/mail-templates/templates/',
+            logs_tpls:              app_modules_path + 'database-manage/logs/templates/',
+            users_tpls:             app_modules_path + 'database-manage/users/templates/',
+            tags_tpls:              app_modules_path + 'database-manage/tags/templates/',
+            templates_tpls:         app_modules_path + 'database-manage/templates/templates/',
+            sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
+            dictionary_tpls:        app_modules_path + 'database-manage/dictionary/templates/',
+            subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/',
+            sent_mails_tpls:       app_modules_path + 'database-manage/sent-mails/templates/',
+
+            mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
+    });
+angular.module('app')
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
 
         if($state.params.pageId){
@@ -2109,6 +2119,7 @@ angular.module('app')
             defaultPage.is_menu_hide = true;
             defaultPage.tags_ids = [];
             defaultPage.controller_actions_ids = [];
+            defaultPage.seo = {};
 
             $scope.page = angular.copy(defaultPage);
         }
@@ -2123,10 +2134,10 @@ angular.module('app')
         else
             setCurUserAuthorId();
 
-        var site_settings = {};
+        $scope.site_settings = {};
         //Get site settings and set default values to page object
         function setDefaultSettings(){
-            site_settings = AppData.site_settings;
+            $scope.site_settings = AppData.site_settings;
             defaultPage.template_id =  site_settings.default_template_id;
             angular.extend($scope.page, defaultPage);
         }
@@ -2151,10 +2162,10 @@ angular.module('app')
 
             //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
             //if not: just insert replace spaces to dashes and get lowercase title for set alias
-            if(title && site_settings.yandex_translate_api_key){
+            if(title && $scope.site_settings.yandex_translate_api_key){
                 $http.get(
                     'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + site_settings.yandex_translate_api_key +
+                    '?key=' + $scope.site_settings.yandex_translate_api_key +
                     '&text=' + title +
                     '&lang=en')
                     .then(function(result){
@@ -2267,6 +2278,8 @@ angular.module('app')
             //If page is new - Create, if it not - Update
             var is_new = $scope.page.id ? false : true;
 
+            var page_seo = angular.copy($scope.page.seo);
+
             var page_query;
             if(is_new)
                 page_query = $scope.page.$save();
@@ -2282,6 +2295,11 @@ angular.module('app')
                 else
                     $scope.page = result_page;
 
+                var seo_resource = new PagesSEO(page_seo);
+                seo_resource.$save({page_id: $scope.page.id}).then(function(seo){
+                    $scope.page.seo = seo;
+                });
+
                 $scope.alert = 'Page saved!';
 
                 $scope.app.refreshPagesTree();
@@ -2294,13 +2312,63 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
+        $scope.logs = [];
+
+        $scope.aGridOptions = {
+            caption: '',
+            create: false,
+            edit: false,
+            orderBy: '-id',
+            resource: Logs,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'action',
+                    modal: 'self',
+                    label: 'Action',
+                    new_placeholder: 'New Action',
+                    required: true
+                },
+                {
+                    name: 'user_id',
+                    label: 'User',
+                    type: 'select',
+                    list: 'users',
+                    resource: Users
+                },
+                {
+                    name: 'logable.name || item.logable.key || item.logable.title',
+                    label: 'Item Name'
+                },
+                {
+                    name: 'logable_type',
+                    label: 'Item Type'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
-        $scope.dictionaries = Dictionaries.query();
+        $scope.dictionaries = [];
 
         $scope.aGridDictionariesOptions = {
             caption: '',
             orderBy: '-id',
             resource: Dictionaries,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2321,12 +2389,14 @@ angular.module('app')
             ]
         };
 
-        $scope.dictionaries_words = DictionariesWords.query();
+        $scope.dictionaries_words = [];
 
         $scope.aGridDictionariesWordsOptions = {
             caption: '',
             orderBy: '-id',
             resource: DictionariesWords,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2347,26 +2417,26 @@ angular.module('app')
                 {
                     name: 'dictionary_id',
                     label: 'Dictionary',
+                    resource: Dictionaries,
                     type: 'select',
                     list: 'dictionaries',
                     or_name_field: 'key',
                     required: true
                 }
-            ],
-            lists: {
-                dictionaries: $scope.dictionaries
-            }
+            ]
         };
     }]);
 
 angular.module('app')
     .controller('MailTemplatesController', ['$scope', 'MailTemplates', function($scope, MailTemplates) {
-        $scope.mail_templates = MailTemplates.query();
+        $scope.mail_templates = [];
 
         $scope.aGridOptions = {
             caption: '',
             orderBy: '-id',
             resource: MailTemplates,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2393,52 +2463,6 @@ angular.module('app')
                     label: 'Main Content',
                     type: 'textarea',
                     width: '500px'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
-        $scope.logs = Logs.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            create: false,
-            edit: false,
-            orderBy: '-id',
-            resource: Logs,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'action',
-                    modal: 'self',
-                    label: 'Action',
-                    new_placeholder: 'New Action',
-                    required: true
-                },
-                {
-                    name: 'user_id',
-                    label: 'User',
-                    type: 'select',
-                    list: 'users',
-                    resource: Users
-                },
-                {
-                    name: 'logable_name',
-                    label: 'Item Name'
-                },
-                {
-                    name: 'logable_type',
-                    label: 'Item Type'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
                 }
             ]
         };
@@ -2547,95 +2571,6 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
-        $scope.subscribers_groups = SubscribersGroups.query();
-
-        $scope.aGridSubscribersGroupsOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: SubscribersGroups,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Subscriber group key',
-                    new_placeholder: 'New Subscriber group',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'subscribers_ids',
-                    label: 'Subscribers',
-                    type: 'multiselect',
-                    resource: Subscribers,
-                    list: 'subscribers',
-                    table_hide: true,
-                    or_name_field: 'mail'
-                }
-            ],
-            lists: {
-                subscribers: $scope.subscribers
-            }
-        };
-
-        $scope.subscribers = Subscribers.query();
-
-        $scope.aGridSubscribersOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Subscribers,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'mail',
-                    modal: 'self',
-                    label: 'Mail',
-                    new_placeholder: 'New Subscriber',
-                    required: true
-                },
-                {
-                    name: 'provider',
-                    label: 'Provider',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'user_agent',
-                    label: 'User agent info',
-                    type: 'textarea'
-                },
-                {
-                    name: 'groups_ids',
-                    label: 'Subscribers groups',
-                    type: 'multiselect',
-                    resource: SubscribersGroups,
-                    list: 'subscribers_groups',
-                    table_hide: true,
-                    or_name_field: 'key'
-                }
-            ],
-            lists: {
-                subscribers_groups: $scope.subscribers_groups
-            }
-        };
-    }]);
-
-angular.module('app')
     .controller('SentMailsController', ['$scope', 'SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function($scope, SentMails, MailTemplates, Pages, SubscribersGroups) {
         $scope.sent_mails = SentMails.query();
 
@@ -2694,12 +2629,14 @@ angular.module('app')
 
 angular.module('app')
     .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
+        $scope.settings = [];
 
         $scope.aGridOptions = {
             caption: 'All settings available in templates.',
             orderBy: '-id',
             resource: Settings,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2732,12 +2669,14 @@ angular.module('app')
 
 angular.module('app')
     .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', function($scope, SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages) {
-        $scope.sub_fields_types = SubFieldsTypes.query();
+        $scope.sub_fields_types = [];
 
         $scope.aGridSubFieldsTypesOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubFieldsTypes,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2762,12 +2701,14 @@ angular.module('app')
             ]
         };
 
-        $scope.sub_fields = SubFields.query();
+        $scope.sub_fields = [];
 
         $scope.aGridSubFieldsOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubFields,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2804,6 +2745,7 @@ angular.module('app')
                     name: 'sub_field_type_id',
                     label: 'Sub field type',
                     type: 'select',
+                    resource: SubFieldsTypes,
                     list: 'sub_fields_types',
                     or_name_field: 'key'
                 },
@@ -2816,18 +2758,17 @@ angular.module('app')
                     table_hide: true,
                     or_name_field: 'key'
                 }
-            ],
-            lists: {
-                sub_fields_types: $scope.sub_fields_types
-            }
+            ]
         };
 
-        $scope.sub_fields_values = SubFieldsValues.query();
+        $scope.sub_fields_values = [];
 
         $scope.aGridSubFieldsValuesOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubFieldsValues,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2844,6 +2785,7 @@ angular.module('app')
                 {
                     name: 'sub_field_id',
                     label: 'Sub field',
+                    resource: SubFields,
                     type: 'select',
                     list: 'sub_fields',
                     or_name_field: 'key',
@@ -2858,21 +2800,132 @@ angular.module('app')
                     name_field: 'title',
                     required: true
                 }
-            ],
-            lists: {
-                sub_fields: $scope.sub_fields
-            }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
+        $scope.subscribers_groups = [];
+
+        $scope.aGridSubscribersGroupsOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: SubscribersGroups,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    modal: 'self',
+                    label: 'Subscriber group key',
+                    new_placeholder: 'New Subscriber group',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'subscribers_ids',
+                    label: 'Subscribers',
+                    type: 'multiselect',
+                    resource: Subscribers,
+                    list: 'subscribers',
+                    table_hide: true,
+                    or_name_field: 'mail'
+                }
+            ]
+        };
+
+        $scope.subscribers = [];
+
+        $scope.aGridSubscribersOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Subscribers,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'mail',
+                    modal: 'self',
+                    label: 'Mail',
+                    new_placeholder: 'New Subscriber',
+                    required: true
+                },
+                {
+                    name: 'provider',
+                    label: 'Provider',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'user_agent',
+                    label: 'User agent info',
+                    type: 'textarea'
+                },
+                {
+                    name: 'groups_ids',
+                    label: 'Subscribers groups',
+                    type: 'multiselect',
+                    resource: SubscribersGroups,
+                    list: 'subscribers_groups',
+                    table_hide: true,
+                    or_name_field: 'key'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
+        $scope.tags = Tags.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Tags,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Tag',
+                    required: true
+                }
+            ]
         };
     }]);
 
 angular.module('app')
     .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
-        $scope.templates = Templates.query();
+        $scope.templates = [];
 
         $scope.aGridOptions = {
             caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
             orderBy: '-id',
             resource: Templates,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2919,7 +2972,7 @@ angular.module('app')
 
 angular.module('app')
     .controller('UserController', ['$scope', 'Users', function($scope, Users) {
-        $scope.users = Users.query();
+        $scope.users = [];
 
         $scope.aGridOptions = {
             caption: '',
@@ -2927,6 +2980,8 @@ angular.module('app')
             edit: true,
             orderBy: '-id',
             resource: Users,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2949,31 +3004,6 @@ angular.module('app')
                     name: 'password',
                     type: 'password',
                     label: 'Password',
-                    required: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Tags,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Tag',
                     required: true
                 }
             ]

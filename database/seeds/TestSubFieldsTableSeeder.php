@@ -23,6 +23,7 @@ class TestSubFieldsTableSeeder extends Seeder
             'config' => json_encode([
                 'caption' => 'Add, edit and delete images links',
                 'search' => false,
+                'paginate' => false,
                 'fields' => [
                     [
                         'name' => 'image',

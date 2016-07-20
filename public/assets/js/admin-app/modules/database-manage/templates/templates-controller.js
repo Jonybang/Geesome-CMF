@@ -1,11 +1,13 @@
 angular.module('app')
     .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
-        $scope.templates = Templates.query();
+        $scope.templates = [];
 
         $scope.aGridOptions = {
             caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
             orderBy: '-id',
             resource: Templates,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',

@@ -1,11 +1,13 @@
 angular.module('app')
     .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = Settings.query();
+        $scope.settings = [];
 
         $scope.aGridOptions = {
             caption: 'All settings available in templates.',
             orderBy: '-id',
             resource: Settings,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',

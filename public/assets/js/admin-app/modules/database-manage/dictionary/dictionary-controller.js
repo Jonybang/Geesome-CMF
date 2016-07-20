@@ -1,11 +1,13 @@
 angular.module('app')
     .controller('DictionaryController', ['$scope', 'Dictionaries', 'DictionariesWords', function($scope, Dictionaries, DictionariesWords) {
-        $scope.dictionaries = Dictionaries.query();
+        $scope.dictionaries = [];
 
         $scope.aGridDictionariesOptions = {
             caption: '',
             orderBy: '-id',
             resource: Dictionaries,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -26,12 +28,14 @@ angular.module('app')
             ]
         };
 
-        $scope.dictionaries_words = DictionariesWords.query();
+        $scope.dictionaries_words = [];
 
         $scope.aGridDictionariesWordsOptions = {
             caption: '',
             orderBy: '-id',
             resource: DictionariesWords,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -52,14 +56,12 @@ angular.module('app')
                 {
                     name: 'dictionary_id',
                     label: 'Dictionary',
+                    resource: Dictionaries,
                     type: 'select',
                     list: 'dictionaries',
                     or_name_field: 'key',
                     required: true
                 }
-            ],
-            lists: {
-                dictionaries: $scope.dictionaries
-            }
+            ]
         };
     }]);

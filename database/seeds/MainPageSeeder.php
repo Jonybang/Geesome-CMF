@@ -43,7 +43,8 @@ class MainPageSeeder extends Seeder
                 'template_id' => Template::create(['key' => $block[2], 'name' => $block[3]])->id,
                 'context_id' => Context::first()->id,
                 'parent_page_id' => $main_page->id,
-                'is_published' => 1
+                'is_part' => true,
+                'is_published' => true
             ]);
             $page->content_text = $block[1];
             $page->save();
@@ -73,7 +74,9 @@ class MainPageSeeder extends Seeder
         $offers_config = json_encode([
             'caption' => 'Icons taked from http://fontawesome.io/icons/ by names',
             'search' => false,
+            'paginate' => false,
             'create' => false,
+            'delete' => false,
             'fields' => [
                 [
                     'name' => 'icon',
