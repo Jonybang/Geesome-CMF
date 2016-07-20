@@ -466,6 +466,8 @@ angular
 
                 if(scope.searchQuery)
                     scope.gridRequestOptions[variables['query']] = scope.searchQuery;
+                else
+                    delete scope.gridRequestOptions[variables['query']];
 
                 scope.gridRequestOptions[variables['offset']] = (scope.gridOptions.current_page - 1) * scope.gridOptions.items_per_page;
                 scope.gridRequestOptions[variables['limit']] = scope.gridOptions.items_per_page;
@@ -2654,6 +2656,7 @@ angular.module('app')
             orderBy: '-id',
             resource: SubFieldsTypes,
             ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2722,6 +2725,7 @@ angular.module('app')
                     name: 'sub_field_type_id',
                     label: 'Sub field type',
                     type: 'select',
+                    resource: SubFieldsTypes,
                     list: 'sub_fields_types',
                     or_name_field: 'key'
                 },
@@ -2761,6 +2765,7 @@ angular.module('app')
                 {
                     name: 'sub_field_id',
                     label: 'Sub field',
+                    resource: SubFields,
                     type: 'select',
                     list: 'sub_fields',
                     or_name_field: 'key',
@@ -2773,31 +2778,6 @@ angular.module('app')
                     list: 'pages',
                     resource: Pages,
                     name_field: 'title',
-                    required: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Tags,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Tag',
                     required: true
                 }
             ]
@@ -2886,6 +2866,31 @@ angular.module('app')
                     list: 'subscribers_groups',
                     table_hide: true,
                     or_name_field: 'key'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
+        $scope.tags = Tags.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Tags,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Tag',
+                    required: true
                 }
             ]
         };

@@ -7,6 +7,7 @@ angular.module('app')
             orderBy: '-id',
             resource: SubFieldsTypes,
             ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -75,6 +76,7 @@ angular.module('app')
                     name: 'sub_field_type_id',
                     label: 'Sub field type',
                     type: 'select',
+                    resource: SubFieldsTypes,
                     list: 'sub_fields_types',
                     or_name_field: 'key'
                 },
@@ -114,6 +116,7 @@ angular.module('app')
                 {
                     name: 'sub_field_id',
                     label: 'Sub field',
+                    resource: SubFields,
                     type: 'select',
                     list: 'sub_fields',
                     or_name_field: 'key',
