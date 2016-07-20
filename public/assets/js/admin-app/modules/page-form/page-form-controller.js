@@ -1,6 +1,6 @@
 angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
 
         if($state.params.pageId){
@@ -10,6 +10,7 @@ angular.module('app')
             defaultPage.is_menu_hide = true;
             defaultPage.tags_ids = [];
             defaultPage.controller_actions_ids = [];
+            defaultPage.seo = {};
 
             $scope.page = angular.copy(defaultPage);
         }
@@ -168,6 +169,8 @@ angular.module('app')
             //If page is new - Create, if it not - Update
             var is_new = $scope.page.id ? false : true;
 
+            var page_seo = angular.copy($scope.page.seo);
+
             var page_query;
             if(is_new)
                 page_query = $scope.page.$save();
@@ -182,6 +185,11 @@ angular.module('app')
                     $scope.page = angular.copy(defaultPage);
                 else
                     $scope.page = result_page;
+
+                var seo_resource = new PagesSEO(page_seo);
+                seo_resource.$save({page_id: $scope.page.id}).then(function(seo){
+                    $scope.page.seo = seo;
+                });
 
                 $scope.alert = 'Page saved!';
 

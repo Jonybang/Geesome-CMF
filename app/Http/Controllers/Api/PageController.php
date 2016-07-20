@@ -31,6 +31,7 @@ class PageController extends ApiController
         $page_data['page_uri'] = $page->page_uri;
         $page_data['tags_ids'] = $page->tags_ids;
         $page_data['content'] = $page->content_text;
+        $page_data['seo'] = $page->seo;
         return $page_data;
     }
 

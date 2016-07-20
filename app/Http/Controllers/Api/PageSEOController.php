@@ -24,14 +24,14 @@ class PageSEOController extends Controller
         $data = $request->all();
         $page = Page::find($page_id);
 
-        if(!$page->content)
+        if(!$page->seo)
             $page->seo()->create($data);
         else
             $page->seo->update($data);
 
         return $page->seo;
     }
-    public function update($page_id,Request $request)
+    public function update($page_id, Request $request)
     {
         $data = $request->all();
         $page = Page::find($page_id);

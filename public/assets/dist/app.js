@@ -2017,6 +2017,10 @@ app.factory('Pages', ['$resource', function($resource) {
     return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('PagesSEO', ['$resource', function($resource) {
+    return $resource('admin/api/pages/:page_id/seo', { id: '@page_id' }, defaultOptions);
+}]);
+
 app.factory('Templates', ['$resource', function($resource) {
     return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
 }]);
@@ -2098,8 +2102,8 @@ angular.module('app')
             mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });
 angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
 
         if($state.params.pageId){
@@ -2109,6 +2113,7 @@ angular.module('app')
             defaultPage.is_menu_hide = true;
             defaultPage.tags_ids = [];
             defaultPage.controller_actions_ids = [];
+            defaultPage.seo = {};
 
             $scope.page = angular.copy(defaultPage);
         }
@@ -2267,6 +2272,8 @@ angular.module('app')
             //If page is new - Create, if it not - Update
             var is_new = $scope.page.id ? false : true;
 
+            var page_seo = angular.copy($scope.page.seo);
+
             var page_query;
             if(is_new)
                 page_query = $scope.page.$save();
@@ -2281,6 +2288,11 @@ angular.module('app')
                     $scope.page = angular.copy(defaultPage);
                 else
                     $scope.page = result_page;
+
+                var seo_resource = new PagesSEO(page_seo);
+                seo_resource.$save({page_id: $scope.page.id}).then(function(seo){
+                    $scope.page.seo = seo;
+                });
 
                 $scope.alert = 'Page saved!';
 
@@ -2650,93 +2662,6 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
-        $scope.subscribers_groups = [];
-
-        $scope.aGridSubscribersGroupsOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: SubscribersGroups,
-            ajax_handler: true,
-            get_list: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Subscriber group key',
-                    new_placeholder: 'New Subscriber group',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'subscribers_ids',
-                    label: 'Subscribers',
-                    type: 'multiselect',
-                    resource: Subscribers,
-                    list: 'subscribers',
-                    table_hide: true,
-                    or_name_field: 'mail'
-                }
-            ]
-        };
-
-        $scope.subscribers = [];
-
-        $scope.aGridSubscribersOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Subscribers,
-            ajax_handler: true,
-            get_list: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'mail',
-                    modal: 'self',
-                    label: 'Mail',
-                    new_placeholder: 'New Subscriber',
-                    required: true
-                },
-                {
-                    name: 'provider',
-                    label: 'Provider',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'user_agent',
-                    label: 'User agent info',
-                    type: 'textarea'
-                },
-                {
-                    name: 'groups_ids',
-                    label: 'Subscribers groups',
-                    type: 'multiselect',
-                    resource: SubscribersGroups,
-                    list: 'subscribers_groups',
-                    table_hide: true,
-                    or_name_field: 'key'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
     .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', function($scope, SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages) {
         $scope.sub_fields_types = [];
 
@@ -2868,6 +2793,93 @@ angular.module('app')
                     resource: Pages,
                     name_field: 'title',
                     required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
+        $scope.subscribers_groups = [];
+
+        $scope.aGridSubscribersGroupsOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: SubscribersGroups,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    modal: 'self',
+                    label: 'Subscriber group key',
+                    new_placeholder: 'New Subscriber group',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'subscribers_ids',
+                    label: 'Subscribers',
+                    type: 'multiselect',
+                    resource: Subscribers,
+                    list: 'subscribers',
+                    table_hide: true,
+                    or_name_field: 'mail'
+                }
+            ]
+        };
+
+        $scope.subscribers = [];
+
+        $scope.aGridSubscribersOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Subscribers,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'mail',
+                    modal: 'self',
+                    label: 'Mail',
+                    new_placeholder: 'New Subscriber',
+                    required: true
+                },
+                {
+                    name: 'provider',
+                    label: 'Provider',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'user_agent',
+                    label: 'User agent info',
+                    type: 'textarea'
+                },
+                {
+                    name: 'groups_ids',
+                    label: 'Subscribers groups',
+                    type: 'multiselect',
+                    resource: SubscribersGroups,
+                    list: 'subscribers_groups',
+                    table_hide: true,
+                    or_name_field: 'key'
                 }
             ]
         };

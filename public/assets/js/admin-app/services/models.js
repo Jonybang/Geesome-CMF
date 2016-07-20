@@ -12,6 +12,10 @@ app.factory('Pages', ['$resource', function($resource) {
     return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('PagesSEO', ['$resource', function($resource) {
+    return $resource('admin/api/pages/:page_id/seo', { id: '@page_id' }, defaultOptions);
+}]);
+
 app.factory('Templates', ['$resource', function($resource) {
     return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
 }]);
