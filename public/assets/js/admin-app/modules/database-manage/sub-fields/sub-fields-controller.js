@@ -1,11 +1,12 @@
 angular.module('app')
     .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', function($scope, SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages) {
-        $scope.sub_fields_types = SubFieldsTypes.query();
+        $scope.sub_fields_types = [];
 
         $scope.aGridSubFieldsTypesOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubFieldsTypes,
+            ajax_handler: true,
             fields: [
                 {
                     name: 'id',
@@ -30,12 +31,14 @@ angular.module('app')
             ]
         };
 
-        $scope.sub_fields = SubFields.query();
+        $scope.sub_fields = [];
 
         $scope.aGridSubFieldsOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubFields,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -84,18 +87,17 @@ angular.module('app')
                     table_hide: true,
                     or_name_field: 'key'
                 }
-            ],
-            lists: {
-                sub_fields_types: $scope.sub_fields_types
-            }
+            ]
         };
 
-        $scope.sub_fields_values = SubFieldsValues.query();
+        $scope.sub_fields_values = [];
 
         $scope.aGridSubFieldsValuesOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubFieldsValues,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -126,9 +128,6 @@ angular.module('app')
                     name_field: 'title',
                     required: true
                 }
-            ],
-            lists: {
-                sub_fields: $scope.sub_fields
-            }
+            ]
         };
     }]);

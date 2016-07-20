@@ -1,11 +1,13 @@
 angular.module('app')
     .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
-        $scope.subscribers_groups = SubscribersGroups.query();
+        $scope.subscribers_groups = [];
 
         $scope.aGridSubscribersGroupsOptions = {
             caption: '',
             orderBy: '-id',
             resource: SubscribersGroups,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -32,18 +34,17 @@ angular.module('app')
                     table_hide: true,
                     or_name_field: 'mail'
                 }
-            ],
-            lists: {
-                subscribers: $scope.subscribers
-            }
+            ]
         };
 
-        $scope.subscribers = Subscribers.query();
+        $scope.subscribers = [];
 
         $scope.aGridSubscribersOptions = {
             caption: '',
             orderBy: '-id',
             resource: Subscribers,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -80,9 +81,6 @@ angular.module('app')
                     table_hide: true,
                     or_name_field: 'key'
                 }
-            ],
-            lists: {
-                subscribers_groups: $scope.subscribers_groups
-            }
+            ]
         };
     }]);

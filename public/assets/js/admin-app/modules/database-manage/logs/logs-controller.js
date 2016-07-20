@@ -1,6 +1,6 @@
 angular.module('app')
     .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
-        $scope.logs = Logs.query();
+        $scope.logs = [];
 
         $scope.aGridOptions = {
             caption: '',
@@ -8,6 +8,8 @@ angular.module('app')
             edit: false,
             orderBy: '-id',
             resource: Logs,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
