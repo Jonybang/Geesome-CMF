@@ -70,6 +70,7 @@ angular
                 search: true,
                 create: true,
                 edit: true,
+                delete: true,
                 paginate: true,
                 bold_headers: true,
                 modal_adder: false,
@@ -122,7 +123,7 @@ angular
 
                 var tplSearch =
                     '<div class="input-group">' +
-                        '<input type="text" class="form-control" ng-model="searchQuery" placeholder="Search" ng-change="search()" ng-model-options="{ debounce: ' + scope.actualOptions.search_debounce + ' }"/>' +
+                        '<input type="text" class="form-control" ng-model="searchQuery" placeholder="Search" ng-model-options="{ debounce: ' + scope.actualOptions.search_debounce + ' }"/>' +
                         '<span class="input-group-btn">' +
                             '<button class="btn btn-default" ng-click="clearSearch()"><i class="glyphicon glyphicon-remove"></i></button>' +
                         '</span>' +
@@ -216,7 +217,7 @@ angular
                         '<td class="controls">' +
                             '<icon-button ng-show="item.is_edit" type="primary" glyphicon="floppy-disk" ng-click="save(item)"></icon-button>' +
                             '<icon-button ng-hide="item.is_edit" type="warning" glyphicon="pencil" ng-click="item.is_edit = true"></icon-button>' +
-                            '<icon-button type="danger" glyphicon="remove" ng-click="deleteConfirm(item)"></icon-button>' +
+                            ( scope.actualOptions.delete ? '<icon-button type="danger" glyphicon="remove" ng-click="deleteConfirm(item)"></icon-button>' : '' ) +
                         '</td>';
                 }
 
@@ -246,7 +247,7 @@ angular
                 tableHtml += tplBodyItem;
 
                 if(scope.actualOptions.paginate) {
-                    tableHtml += '<uib-pagination total-items="gridOptions.total_items" items-per-page="gridOptions.items_per_page" ng-model="gridOptions.current_page" ng-change="getList()"></uib-pagination>';
+                    tableHtml += '<uib-pagination total-items="gridOptions.filter_items" items-per-page="gridOptions.items_per_page" ng-model="gridOptions.current_page" ng-change="getList()"></uib-pagination>';
                 }
 
                 var template = angular.element(tplHtml + tableHtml);
@@ -259,12 +260,14 @@ angular
             // GET LIST, SEARCH, PAGINATION AND SORTING
             // *************************************************************
 
-            scope.getList = function(query){
+            scope.getList = function(){
                 if(!scope.actualOptions.ajax_handler)
                     return;
 
                 if(scope.searchQuery)
                     scope.gridRequestOptions[variables['query']] = scope.searchQuery;
+                else
+                    delete scope.gridRequestOptions[variables['query']];
 
                 scope.gridRequestOptions[variables['offset']] = (scope.gridOptions.current_page - 1) * scope.gridOptions.items_per_page;
                 scope.gridRequestOptions[variables['limit']] = scope.gridOptions.items_per_page;
@@ -288,20 +291,25 @@ angular
             // CLIENT SEARCH
             // *************************************************************
 
-            scope.search = function(){
+            scope.search = function(newQuery, oldQuery){
+                scope.filtredList = scope.ngModel;
+
+                if(newQuery == oldQuery)
+                    return;
+
                 if(mode != 'local' && scope.actualOptions.ajax_handler){
-                    scope.filtredList = scope.ngModel;
+                    scope.getList();
                     return;
                 }
 
-                if(!scope.searchQuery)
-                    scope.filtredList = scope.ngModel;
-                else
+                if(scope.searchQuery)
                     scope.filtredList = $filter('filter')(scope.ngModel, scope.searchQuery);
 
                 if(scope.actualOptions.order_by)
                     scope.filtredList = $filter('orderBy')(scope.filtredList, scope.actualOptions.order_by);
             };
+
+            scope.$watch('searchQuery', scope.search);
 
             scope.clearSearch = function(){
                 scope.searchQuery = '';
@@ -363,10 +371,16 @@ angular
                     }
                 }
 
-                //
+                // local json mode
                 if(mode != 'remote'){
                     if(item.is_new){
-                        item.json_id = scope.ngModel.length + 1;
+
+                        item.json_id = 1;
+                        scope.ngModel.forEach(function(local_item){
+                            if(local_item.json_id >= item.json_id)
+                                item.json_id = local_item.json_id + 1;
+                        });
+
                         scope.ngModel.unshift(item);
                         scope.new_item = angular.copy(new_item);
                     }
@@ -416,9 +430,11 @@ angular
                 }
 
                 function sendItem(){
+                    var resource = new scope.actualOptions.resource(request_object);
+
                     if('id' in request_object && request_object.id){
                         // update if id field exist
-                        AEditHelpers.getResourceQuery(request_object, 'update').then(function(updated_item){
+                        AEditHelpers.getResourceQuery(resource, 'update').then(function(updated_item){
                             angular.extend(item, updated_item);
 
                             saveCallbacks(item);
@@ -429,9 +445,7 @@ angular
                             request_object[attr] = value;
                         });
 
-                        var newResource = new scope.actualOptions.resource(request_object);
-
-                        AEditHelpers.getResourceQuery(newResource, 'create').then(function(created_item){
+                        AEditHelpers.getResourceQuery(resource, 'create').then(function(created_item){
                             created_item.is_new = true;
 
                             scope.ngModel.unshift(created_item);
@@ -552,7 +566,7 @@ angular
             var inputTagEnd = '';
 
             if(options && options.modal_link)
-                text = '<a a-modal-resource="modalResource" a-modal-options="modalOptions" on-save="save()" href>' + text + '</a>';
+                text = '<a ae-object-modal="modalObject" modal-resource-options="modalOptions" on-save="save()" href>' + text + '</a>';
             else if(type == 'textarea'){
                 text = '<pre ng-if="$parent.ngModel">{{$parent.ngModel}}</pre>';
 
@@ -599,7 +613,7 @@ angular
                 ngModelStr: '=?',
                 isNew: '=?',
                 isEdit: '=?',
-                modalResource: '=?',
+                modalObject: '=?',
                 modalOptions: '=?',
                 hasError: '=?',
                 //callbacks
@@ -614,7 +628,7 @@ angular
             },
             link: function (scope, element, attrs) {
                 scope.type = scope.type || 'text';
-                if(attrs.modalResource && scope.type == 'text')
+                if(attrs.modalObject && scope.type == 'text')
                     scope.type = "text_modal_link";
 
                 var template = typeTemplates[scope.type],
@@ -898,6 +912,7 @@ angular
 
                     AEditHelpers.getResourceQuery(scope.ngResource, 'get', request_options).then(function(list){
                         scope.local_list = list;
+                        scope.setSelectedName(scope.ngModel);
                     });
                 };
 
@@ -1135,23 +1150,23 @@ angular
 angular
     .module('a-edit')
 
-    .directive('aModalResource', ['$timeout', '$log', '$cacheFactory', 'AEditHelpers', 'AEditConfig', '$uibModal', function($timeout, $log, $cacheFactory, AEditHelpers, AEditConfig, $uibModal) {
+    .directive('aeObjectModal', ['$timeout', '$log', '$cacheFactory', 'AEditHelpers', 'AEditConfig', '$uibModal', function($timeout, $log, $cacheFactory, AEditHelpers, AEditConfig, $uibModal) {
         var cache = $cacheFactory('aModal.Templates');
 
         return {
             restrict: 'A',
             scope: {
                 //require
-                aModalResource: '=',
-                aModalOptions: '=?',
+                aeObjectModal: '=',
+                modalResourceOptions: '=?',
                 isEdit: '=?',
                 //callbacks
                 onSave: '&'
             },
             link: function (scope, element, attrs) {
 
-                var resource_name = attrs.aModalResource + new Date().getTime();
-                scope.options = scope.aModalOptions || AEditConfig.current_options;
+                var resource_name = attrs.aeObjectModal + new Date().getTime();
+                scope.options = scope.modalResourceOptions || AEditConfig.current_options;
 
                 element.on("click", function () {
                     var template = cache.get(resource_name) || '';
@@ -1192,7 +1207,8 @@ angular
                         resolve: {
                             data: function () {
                                 return {
-                                    object: angular.copy(scope.aModalResource),
+                                    object: angular.copy(scope.aeObjectModal),
+                                    resource: scope.options.resource,
                                     lists: scope.options.lists,
                                     isEdit: scope.isEdit
                                 };
@@ -1201,8 +1217,9 @@ angular
                         controller: ['$scope', '$uibModalInstance', 'data', function($scope, $uibModalInstance, data) {
                             angular.extend($scope, data);
 
-                            AEditHelpers.getResourceQuery($scope.object, 'show').then(function(object){
-                                angular.extend($scope.object, object);
+
+                            AEditHelpers.getResourceQuery(new scope.options.resource($scope.object), 'show').then(function(object){
+                                $scope.object = object;
                                 $scope.object.is_edit = data.isEdit;
                                 console.log('modal controller', $scope.object);
                             });
@@ -1219,7 +1236,7 @@ angular
                     });
 
                     modalInstance.result.then(function (object) {
-                        angular.extend(scope.aModalResource, object);
+                        angular.extend(scope.aeObjectModal, object);
                         
                         if(scope.onSave)
                             $timeout(scope.onSave);
@@ -1359,11 +1376,11 @@ angular.module('a-edit')
 
                 if(directive == 'select-input'){
                     output += 'name-field="' + (field.name_field || '') + '" ';
-                    output += 'or-name-field="' + (field.name_field || '') + '" ';
+                    output += 'or-name-field="' + (field.or_name_field || '') + '" ';
                 }
 
                 if(field.modal && !config.already_modal && field.modal == 'self'){
-                    output += 'modal-resource="' + item_name + '" ';
+                    output += 'modal-object="' + item_name + '" ';
                     output += 'modal-options="actualOptions" ';
                 }
 
@@ -1649,6 +1666,124 @@ angular.module('app')
 
         self.tabs = [{title:'Pages Tree', name: 'pages-tree'}, {title: 'Database Manage', name:'db-manage'}];
     }]);
+angular.module('app')
+    .service('AppData', ['$http', function($http){
+        var self = this;
+
+        var data_variables = {
+            'cur_user': '/admin/api/cur_user',
+            'site_settings': '/admin/api/site_settings_dictionary'
+        };
+
+        self.reload = function(){
+            angular.forEach(data_variables, function(url, var_name){
+                self[var_name] = {};
+                self[var_name].$promise = $http.get(url).then(function(response){
+                    angular.extend(self[var_name], response.data);
+                    self[var_name].$promise = null;
+                    return self[var_name];
+                });
+            });
+        };
+
+        self.reload();
+
+        return self;
+    }]);
+var app = angular.module('app');
+
+var defaultOptions = {
+    'update': { method: 'PUT' }
+};
+
+app.factory('Settings', ['$resource', function($resource) {
+    return $resource('admin/api/settings/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Pages', ['$resource', function($resource) {
+    return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Templates', ['$resource', function($resource) {
+    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('MailTemplates', ['$resource', function($resource) {
+    return $resource('admin/api/mail_templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Logs', ['$resource', function($resource) {
+    return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Users', ['$resource', function($resource) {
+    return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Tags', ['$resource', function($resource) {
+    return $resource('admin/api/tags/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Templates', ['$resource', function($resource) {
+    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('SubFieldsTypes', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields_types/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubFieldsValues', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields_values/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubFields', ['$resource', function($resource) {
+    return $resource('admin/api/sub_fields/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('ControllerActions', ['$resource', function($resource) {
+    return $resource('admin/api/controller_actions/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Dictionaries', ['$resource', function($resource) {
+    return $resource('admin/api/dictionaries/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('DictionariesWords', ['$resource', function($resource) {
+    return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('Subscribers', ['$resource', function($resource) {
+    return $resource('admin/api/subscribers/:id', { id: '@id' }, defaultOptions);
+}]);
+app.factory('SubscribersGroups', ['$resource', function($resource) {
+    return $resource('admin/api/subscribers_groups/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('SentMails', ['$resource', function($resource) {
+    return $resource('admin/api/sent_mails/:id', { id: '@id' }, defaultOptions);
+}]);
+var app_path = '/assets/js/admin-app/';
+var app_modules_path = app_path + 'modules/';
+
+angular.module('app')
+    .constant('AppPaths', {
+            app:                    app_path,
+            app_tpls:               app_path + 'templates/',
+            modules:                app_modules_path,
+            db_manage_module:       app_modules_path + 'database-manage',
+            page_form_tpls:         app_modules_path + 'page-form/templates/',
+
+            settings_tpls:          app_modules_path + 'database-manage/settings/templates/',
+            pages_tpls:             app_modules_path + 'database-manage/pages/templates/',
+            mail_templates_tpls:    app_modules_path + 'database-manage/mail-templates/templates/',
+            logs_tpls:              app_modules_path + 'database-manage/logs/templates/',
+            users_tpls:             app_modules_path + 'database-manage/users/templates/',
+            tags_tpls:              app_modules_path + 'database-manage/tags/templates/',
+            templates_tpls:         app_modules_path + 'database-manage/templates/templates/',
+            sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
+            dictionary_tpls:        app_modules_path + 'database-manage/dictionary/templates/',
+            subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/',
+            sent_mails_tpls:       app_modules_path + 'database-manage/sent-mails/templates/',
+
+            mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
+    });
 //<loading-gif ng-if="!dataLoaded"> </loading-gif>
 // TODO: добавить throttle - не показывать гифку если идет тут-же переключение туда - обратно
 angular.module('app')
@@ -1963,124 +2098,6 @@ angular
         };
     }]);
 angular.module('app')
-    .service('AppData', ['$http', function($http){
-        var self = this;
-
-        var data_variables = {
-            'cur_user': '/admin/api/cur_user',
-            'site_settings': '/admin/api/site_settings_dictionary'
-        };
-
-        self.reload = function(){
-            angular.forEach(data_variables, function(url, var_name){
-                self[var_name] = {};
-                self[var_name].$promise = $http.get(url).then(function(response){
-                    angular.extend(self[var_name], response.data);
-                    self[var_name].$promise = null;
-                    return self[var_name];
-                });
-            });
-        };
-
-        self.reload();
-
-        return self;
-    }]);
-var app = angular.module('app');
-
-var defaultOptions = {
-    'update': { method: 'PUT' }
-};
-
-app.factory('Settings', ['$resource', function($resource) {
-    return $resource('admin/api/settings/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Pages', ['$resource', function($resource) {
-    return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Templates', ['$resource', function($resource) {
-    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('MailTemplates', ['$resource', function($resource) {
-    return $resource('admin/api/mail_templates/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Logs', ['$resource', function($resource) {
-    return $resource('admin/api/logs/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Users', ['$resource', function($resource) {
-    return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Tags', ['$resource', function($resource) {
-    return $resource('admin/api/tags/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Templates', ['$resource', function($resource) {
-    return $resource('admin/api/templates/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('SubFieldsTypes', ['$resource', function($resource) {
-    return $resource('admin/api/sub_fields_types/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('SubFieldsValues', ['$resource', function($resource) {
-    return $resource('admin/api/sub_fields_values/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('SubFields', ['$resource', function($resource) {
-    return $resource('admin/api/sub_fields/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('ControllerActions', ['$resource', function($resource) {
-    return $resource('admin/api/controller_actions/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Dictionaries', ['$resource', function($resource) {
-    return $resource('admin/api/dictionaries/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('DictionariesWords', ['$resource', function($resource) {
-    return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('Subscribers', ['$resource', function($resource) {
-    return $resource('admin/api/subscribers/:id', { id: '@id' }, defaultOptions);
-}]);
-app.factory('SubscribersGroups', ['$resource', function($resource) {
-    return $resource('admin/api/subscribers_groups/:id', { id: '@id' }, defaultOptions);
-}]);
-
-app.factory('SentMails', ['$resource', function($resource) {
-    return $resource('admin/api/sent_mails/:id', { id: '@id' }, defaultOptions);
-}]);
-var app_path = '/assets/js/admin-app/';
-var app_modules_path = app_path + 'modules/';
-
-angular.module('app')
-    .constant('AppPaths', {
-            app:                    app_path,
-            app_tpls:               app_path + 'templates/',
-            modules:                app_modules_path,
-            db_manage_module:       app_modules_path + 'database-manage',
-            page_form_tpls:         app_modules_path + 'page-form/templates/',
-
-            settings_tpls:          app_modules_path + 'database-manage/settings/templates/',
-            pages_tpls:             app_modules_path + 'database-manage/pages/templates/',
-            mail_templates_tpls:    app_modules_path + 'database-manage/mail-templates/templates/',
-            logs_tpls:              app_modules_path + 'database-manage/logs/templates/',
-            users_tpls:             app_modules_path + 'database-manage/users/templates/',
-            tags_tpls:              app_modules_path + 'database-manage/tags/templates/',
-            templates_tpls:         app_modules_path + 'database-manage/templates/templates/',
-            sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
-            dictionary_tpls:        app_modules_path + 'database-manage/dictionary/templates/',
-            subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/',
-            sent_mails_tpls:       app_modules_path + 'database-manage/sent-mails/templates/',
-
-            mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
-    });
-angular.module('app')
     .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
         function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
@@ -2343,6 +2360,45 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('MailTemplatesController', ['$scope', 'MailTemplates', function($scope, MailTemplates) {
+        $scope.mail_templates = MailTemplates.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: MailTemplates,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    label: 'Template key',
+                    modal: 'self',
+                    required: true,
+                    new_placeholder: 'New Mail Template'
+                },
+                {
+                    name: 'name',
+                    label: 'Template name'
+                },
+                {
+                    name: 'title',
+                    label: 'Mail Title'
+                },
+                {
+                    name: 'content',
+                    label: 'Main Content',
+                    type: 'textarea',
+                    width: '500px'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
         $scope.logs = Logs.query();
 
@@ -2383,45 +2439,6 @@ angular.module('app')
                 {
                     name: 'description',
                     label: 'Description'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('MailTemplatesController', ['$scope', 'MailTemplates', function($scope, MailTemplates) {
-        $scope.mail_templates = MailTemplates.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: MailTemplates,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    label: 'Template key',
-                    modal: 'self',
-                    required: true,
-                    new_placeholder: 'New Mail Template'
-                },
-                {
-                    name: 'name',
-                    label: 'Template name'
-                },
-                {
-                    name: 'title',
-                    label: 'Mail Title'
-                },
-                {
-                    name: 'content',
-                    label: 'Main Content',
-                    type: 'textarea',
-                    width: '500px'
                 }
             ]
         };
@@ -2526,6 +2543,95 @@ angular.module('app')
                     table_hide: true
                 }
             ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
+        $scope.subscribers_groups = SubscribersGroups.query();
+
+        $scope.aGridSubscribersGroupsOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: SubscribersGroups,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    modal: 'self',
+                    label: 'Subscriber group key',
+                    new_placeholder: 'New Subscriber group',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'subscribers_ids',
+                    label: 'Subscribers',
+                    type: 'multiselect',
+                    resource: Subscribers,
+                    list: 'subscribers',
+                    table_hide: true,
+                    or_name_field: 'mail'
+                }
+            ],
+            lists: {
+                subscribers: $scope.subscribers
+            }
+        };
+
+        $scope.subscribers = Subscribers.query();
+
+        $scope.aGridSubscribersOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Subscribers,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'mail',
+                    modal: 'self',
+                    label: 'Mail',
+                    new_placeholder: 'New Subscriber',
+                    required: true
+                },
+                {
+                    name: 'provider',
+                    label: 'Provider',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'user_agent',
+                    label: 'User agent info',
+                    type: 'textarea'
+                },
+                {
+                    name: 'groups_ids',
+                    label: 'Subscribers groups',
+                    type: 'multiselect',
+                    resource: SubscribersGroups,
+                    list: 'subscribers_groups',
+                    table_hide: true,
+                    or_name_field: 'key'
+                }
+            ],
+            lists: {
+                subscribers_groups: $scope.subscribers_groups
+            }
         };
     }]);
 
@@ -2760,120 +2866,6 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Tags,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Tag',
-                    required: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
-        $scope.subscribers_groups = SubscribersGroups.query();
-
-        $scope.aGridSubscribersGroupsOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: SubscribersGroups,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Subscriber group key',
-                    new_placeholder: 'New Subscriber group',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'subscribers_ids',
-                    label: 'Subscribers',
-                    type: 'multiselect',
-                    resource: Subscribers,
-                    list: 'subscribers',
-                    table_hide: true,
-                    or_name_field: 'mail'
-                }
-            ],
-            lists: {
-                subscribers: $scope.subscribers
-            }
-        };
-
-        $scope.subscribers = Subscribers.query();
-
-        $scope.aGridSubscribersOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Subscribers,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'mail',
-                    modal: 'self',
-                    label: 'Mail',
-                    new_placeholder: 'New Subscriber',
-                    required: true
-                },
-                {
-                    name: 'provider',
-                    label: 'Provider',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'user_agent',
-                    label: 'User agent info',
-                    type: 'textarea'
-                },
-                {
-                    name: 'groups_ids',
-                    label: 'Subscribers groups',
-                    type: 'multiselect',
-                    resource: SubscribersGroups,
-                    list: 'subscribers_groups',
-                    table_hide: true,
-                    or_name_field: 'key'
-                }
-            ],
-            lists: {
-                subscribers_groups: $scope.subscribers_groups
-            }
-        };
-    }]);
-
-angular.module('app')
     .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
         $scope.templates = Templates.query();
 
@@ -2957,6 +2949,31 @@ angular.module('app')
                     name: 'password',
                     type: 'password',
                     label: 'Password',
+                    required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
+        $scope.tags = Tags.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Tags,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Tag',
                     required: true
                 }
             ]
