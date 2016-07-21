@@ -22,7 +22,7 @@ class CreateTagsTable extends Migration
 
             $table->integer('posts_count')->default(0);
 
-            $table->integer('tag_type_id')->unsigned()->default(0);
+            $table->integer('tag_type_id')->unsigned()->nullable();
             $table->foreign('tag_type_id')->references('id')->on('tag_types');
 
             $table->timestamps();
