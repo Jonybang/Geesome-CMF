@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\UserActionLog;
+use \Response;
 
 class PostController extends Controller
 {

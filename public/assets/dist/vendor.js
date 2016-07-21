@@ -382,6 +382,16 @@ start:function(){function b(c){F=!0;w();ha(a,v);g.complete(c)}if(g)return g;g=ne
 c.event,c.classes,c.options)}return function(a){if(a.from&&a.to){var b=d(a.from),m=d(a.to);if(b||m)return{start:function(){function a(){return function(){s(d,function(a){a.end()})}}var d=[];b&&d.push(b.start());m&&d.push(m.start());c.all(d,function(a){e.complete(a)});var e=new c({end:a(),cancel:a()});return e}}}else return d(a)}}]}])})(window,window.angular);
 //# sourceMappingURL=angular-animate.min.js.map
 
+/* @preserve
+ *
+ * angular-bootstrap-file
+ * https://github.com/itslenny/angular-bootstrap-file-field
+ *
+ * Version: 0.1.3 - 02/21/2015
+ * License: MIT
+ */
+angular.module("bootstrap.fileField",[]).directive("fileField",function(){return{require:"ngModel",restrict:"E",link:function(scope,element,attrs,ngModel){if(!attrs.class&&!attrs.ngClass){element.addClass("btn")}var fileField=element.find("input");fileField.bind("change",function(event){scope.$evalAsync(function(){ngModel.$setViewValue(event.target.files[0]);if(attrs.preview){var reader=new FileReader;reader.onload=function(e){scope.$evalAsync(function(){scope[attrs.preview]=e.target.result})};reader.readAsDataURL(event.target.files[0])}})});fileField.bind("click",function(e){e.stopPropagation()});element.bind("click",function(e){e.preventDefault();fileField[0].click()})},template:'<button type="button"><ng-transclude></ng-transclude><input type="file" style="display:none"></button>',replace:true,transclude:true}});
+//# sourceMappingURL=angular-bootstrap-file-field.min.js.map
 (function (root, factory) {
   // AMD
   if (typeof define === 'function' && define.amd) define(['angular'], factory);

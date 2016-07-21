@@ -1,5 +1,16 @@
 angular
-    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'ckeditor', 'a-edit'])
+    .module('app', [
+        'ngResource',
+        'ui.bootstrap',
+        'ui.router',
+        'ui.router.tabs',
+        'wiz.markdown',
+        'dndLists',
+        'rt.debounce',
+        'ckeditor',
+        'bootstrap.fileField',
+        'a-edit'
+    ])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 

@@ -1,7 +1,35 @@
-<div ng-if="!selected">
-    Add image: <br>
-    <button class="btn btn-default"><span class="glyphicon glyphicon-upload"></span> Upload file</button> or <button class="btn btn-default"><span class="glyphicon glyphicon-globe"></span> paste link</button>
+<div>
+    <span ng-hide="chosen_mode">Add image: <br></span>
+
+    <span ng-hide="chosen_mode && chosen_mode != 'upload'">
+        <file-field ng-model="uploadFile" preview="previewImage" ng-click="chosen_mode = 'upload'">
+            <span class="glyphicon glyphicon-upload"></span> Choose file
+        </file-field>
+    </span>
+
+    <button class="btn btn-default" ng-show="chosen_mode == 'upload'" ng-click="clearInputs()">
+        <span class="glyphicon glyphicon-remove"></span>
+    </button>
+
+    <span ng-hide="chosen_mode"> or </span>
+
+    <span ng-hide="chosen_mode">
+        <button class="btn btn-default" ng-click="chosen_mode = 'paste-link'">
+            <span class="glyphicon glyphicon-globe"></span> paste link
+        </button>
+    </span>
+
+    <div class="col-xs-11" ng-show="chosen_mode == 'paste-link'">
+        <input type="text" placeholder="Paste link" class="form-control" ng-model="imageUri" autofocus>
+    </div>
+    <div class="col-xs-1" ng-show="chosen_mode == 'paste-link'">
+        <button class="btn btn-default" ng-click="clearInputs()">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+    </div>
+
 </div>
-<div ng-if="selected">
-    
-</div>
+
+<img ng-show="chosen_mode == 'upload'" ng-src="{{previewImage}}">
+
+<img ng-show="chosen_mode == 'paste-link'" ng-src="{{imageUri}}">
