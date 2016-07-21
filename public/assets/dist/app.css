@@ -343,6 +343,10 @@ ul.child_pages.empty {
   margin-top: 15px;
 }
 
+.padding-top {
+  margin-top: 15px;
+}
+
 .panel-body {
   border-top: 1px solid #ddd;
 }

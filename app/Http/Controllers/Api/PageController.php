@@ -29,7 +29,6 @@ class PageController extends ApiController
     private function getPageSubData($page){
         $page_data = $page->toArray();
         $page_data['page_uri'] = $page->page_uri;
-        $page_data['tags_ids'] = $page->tags_ids;
         $page_data['content'] = $page->content_text;
         $page_data['seo'] = $page->seo;
         return $page_data;
@@ -39,16 +38,13 @@ class PageController extends ApiController
         if(isset($data['content']))
             $page->content_text = $data['content'];
 
-        if(isset($data['tags_ids']))
-            $page->tags_ids = $data['tags_ids'];
-
         if(isset($data['controller_actions_ids']))
             $page->template->controller_actions_ids = $data['controller_actions_ids'];
     }
 
     public function show($id)
     {
-        $obj = Page::with('tags')->find($id);
+        $obj = Page::find($id);
 
         return $this->getPageSubData($obj);
     }

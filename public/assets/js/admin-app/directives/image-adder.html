@@ -19,13 +19,15 @@
         </button>
     </span>
 
-    <div class="col-xs-11" ng-show="chosen_mode == 'paste-link'">
-        <input type="text" placeholder="Paste link" class="form-control" ng-model="imageUri" autofocus>
-    </div>
-    <div class="col-xs-1" ng-show="chosen_mode == 'paste-link'">
-        <button class="btn btn-default" ng-click="clearInputs()">
-            <span class="glyphicon glyphicon-remove"></span>
-        </button>
+    <div class="row" ng-show="chosen_mode == 'paste-link'">
+        <div class="col-xs-10">
+            <input type="text" placeholder="Paste link" class="form-control" ng-model="imageUri" autofocus>
+        </div>
+        <div class="col-xs-2">
+            <button class="btn btn-default" ng-click="clearInputs()">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
     </div>
 
 </div>
