@@ -16,7 +16,7 @@ class TagPageTableSeeder extends Seeder
     {
         $tag_template = Template::where('key', 'tag')->first();
         $tag_template->pages()->create([
-            'title' => 'Pages by tag',
+            'title' => 'Posts by tag',
             'alias' => 'tag',
             'is_published' => true,
             'context_id' => Context::first()->id

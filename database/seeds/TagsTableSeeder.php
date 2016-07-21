@@ -12,7 +12,7 @@ class TagsTableSeeder extends Seeder
     public function run()
     {
         $seeds = [
-            'Laravel', 'PHP', 'How to', 'Angular', 'News'
+            'geek', 'cosplay', 'photo', 'sexy', 'cute', 'anime', 'asian'
         ];
         foreach($seeds as $seed){
             DB::table('tags')->insert([

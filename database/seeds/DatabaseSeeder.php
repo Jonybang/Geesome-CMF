@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(TagsTableSeeder::class);
 
-        $this->call(BlogPagesTableSeeder::class);
+        $this->call(PostsTableSeeder::class);
         $this->call(ProjectPagesTableSeeder::class);
 
         $this->call(TagPageTableSeeder::class);

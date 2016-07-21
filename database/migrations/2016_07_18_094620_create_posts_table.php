@@ -15,7 +15,8 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('content')->nullable();
+            $table->string('title')->nullable();
+            $table->text('content')->nullable();
 
             $table->dateTime('published_on')->nullable();
             $table->dateTime('published_at')->nullable();
@@ -29,14 +30,17 @@ class CreatePostsTable extends Migration
 
             $table->string('alias')->nullable();
 
-            $table->string('main_attachment')->nullable();
+            $table->json('main_attachment')->nullable();
             $table->json('other_attachments')->nullable();
 
-            $table->integer('parent_post_id')->unsigned();
+            $table->integer('parent_post_id')->unsigned()->nullable();
             $table->foreign('parent_post_id')->references('id')->on('posts');
 
             $table->integer('author_id')->unsigned();
             $table->foreign('author_id')->references('id')->on('users');
+
+            $table->integer('context_id')->unsigned();
+            $table->foreign('context_id')->references('id')->on('contexts');
 
             $table->timestamps();
         });

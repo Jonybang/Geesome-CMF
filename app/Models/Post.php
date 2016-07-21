@@ -9,6 +9,7 @@ class Post extends Model
 	protected $table = 'posts';
 
 	protected $fillable = [
+		'title',
 		'content',
 		'alias',
 		'main_attachments',
@@ -24,7 +25,14 @@ class Post extends Model
 		'is_resolved_tags',
 
 		'parent_post_id',
-		'author_id'
+		'author_id',
+		'context_id'
+	];
+
+	protected $casts = [
+		'id' => 'integer',
+		'main_attachment' => 'array',
+		'other_attachments' => 'array'
 	];
 
 	/**
@@ -47,5 +55,10 @@ class Post extends Model
 	public function author()
 	{
 		return $this->belongsTo(Auth::class, 'parent_post_id');
+	}
+
+	public function getAliasAttribute()
+	{
+		return isset($this->attributes['alias']) ? $this->attributes['alias'] : $this->id;
 	}
 }

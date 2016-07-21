@@ -1,0 +1,138 @@
+/* bootstrap 3 helpers */
+.navbar-form input, .form-inline input {
+  width: auto; }
+
+/* end */
+/* custom theme */
+header {
+  min-height: 230px;
+  margin-bottom: 5px; }
+
+@media (min-width: 979px) {
+  #sidebar.affix-top {
+    position: static; }
+  #sidebar.affix {
+    position: fixed;
+    top: 50px;
+    width: 21.2%; } }
+
+.affix, .affix-top {
+  position: static; }
+
+/* theme */
+body {
+  color: #173e43;
+  background-color: #dddfd4; }
+
+a {
+  color: #173e43;
+  text-decoration: none; }
+
+a:hover {
+  color: #3fb0ac;
+  text-decoration: underline; }
+
+.highlight-bk {
+  background-color: #3fb0ac;
+  padding: 1px;
+  width: 100%; }
+
+.highlight {
+  color: #3fb0ac; }
+
+h3.highlight {
+  padding-top: 13px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #3fb0ac; }
+
+.navbar {
+  background-color: #3fb0ac;
+  color: #173e43;
+  border: 0;
+  border-radius: 0; }
+
+.navbar-nav > li > a, .navbar-default .navbar-nav > li > a {
+  color: #173e43;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-left: 1px solid #3fb0ac; }
+
+.navbar-default .navbar-brand {
+  color: #173e43; }
+
+.navbar-nav > li > a:hover, .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:hover {
+  color: #fae596; }
+
+.navbar-nav > li:last-child > a {
+  border-right: 1px solid #173e43; }
+
+.navbar-nav > .active > a, .navbar-nav > .active > a:hover, .navbar-nav > .active > a:focus {
+  color: #fae596;
+  background-color: transparent; }
+
+.navbar-nav > .open > a, .navbar-nav > .open > a:hover, .navbar-nav > .open > a:focus {
+  color: #fae596;
+  background-color: transparent;
+  opacity: .9;
+  border-color: #3fb0ac; }
+
+.nav .open > a {
+  border-color: #3fb0ac;
+  border-width: 0; }
+
+.accordion-group {
+  border-width: 0; }
+
+.dropdown-menu {
+  min-width: 250px; }
+
+.accordion-heading .accordion-toggle, .accordion-inner, .nav-stacked li > a {
+  padding-left: 1px; }
+
+.caret {
+  color: #3fb0ac; }
+
+.navbar-toggle {
+  color: #3fb0ac;
+  border-width: 0; }
+
+.navbar-toggle:hover {
+  background-color: #dddfd4; }
+
+.panel {
+  padding-left: 27px;
+  padding-right: 27px; }
+
+.row-centered {
+  text-align: center; }
+
+[class*="col-centered-"] {
+  display: block;
+  float: none;
+  /* reset the text-align */
+  text-align: left;
+  /* inline-block space fix */
+  margin-right: -4px; }
+
+/* Default BS breakpoints */
+@media (min-width: 768px) {
+  .col-centered-sm {
+    display: inline-block; } }
+
+@media (min-width: 992px) {
+  .col-centered-md {
+    display: inline-block; } }
+
+@media (min-width: 1200px) {
+  .col-centered-lg {
+    display: inline-block; } }
+
+.row-centered .text-center {
+  text-align: center !important; }
+
+[class*="col-"].center-block {
+  float: none !important; }
+
+/* end theme */
+.margin-top {
+  margin-top: 15px; }
