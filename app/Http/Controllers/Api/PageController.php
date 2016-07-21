@@ -19,7 +19,7 @@ class PageController extends ApiController
     public function index(Request $request)
     {
         if($request->input('tree_mode'))
-            return Page::where('parent_page_id', 0)->with('child_pages_by_index')->get();
+            return Page::whereNull('parent_page_id')->with('child_pages_by_index')->get();
         else
             $pages = Page::query();
 

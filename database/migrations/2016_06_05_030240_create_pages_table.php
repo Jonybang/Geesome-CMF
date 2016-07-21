@@ -31,7 +31,7 @@ class CreatePagesTable extends Migration
             //has body, but is part of parent page(block of page for example)
             $table->boolean('is_part')->default(false);
 
-            $table->integer('parent_page_id')->unsigned()->default(0);
+            $table->integer('parent_page_id')->unsigned()->nullable();
             $table->foreign('parent_page_id')->references('id')->on('pages');
 
             $table->integer('author_id')->unsigned()->nullable();
