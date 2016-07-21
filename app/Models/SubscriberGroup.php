@@ -18,7 +18,7 @@ class SubscriberGroup extends Model
      */
     public function subscribers()
     {
-        return $this->belongsToMany(Subscriber::class, 'subscribers_subscriber_groups', 'subscriber_group_id', 'subscriber_id');
+        return $this->belongsToMany(Subscriber::class, 'sbcrbrs_sbcrbr_groups', 'subscriber_group_id', 'subscriber_id');
     }
 
     public function setSubscribersIdsAttribute($value)
