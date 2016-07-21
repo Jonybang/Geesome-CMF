@@ -43,8 +43,8 @@ class SubscriberGroup extends Model
     /**
      * @Relation
      */
-    public function sended_mails()
+    public function sent_mails()
     {
-        return $this->belongsToMany(SentMail::class, 'mails_subscriber_groups', 'subscriber_group_id', 'sended_mail_id');
+        return $this->belongsToMany(SentMail::class, 'mails_subscriber_groups', 'subscriber_group_id', 'sent_mail_id');
     }
 }
