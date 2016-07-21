@@ -21,6 +21,7 @@ class Post extends Model
 		'is_from_cabinet',
 		'is_secret',
 		'is_resolved_nsfw',
+		'is_resolved_tags',
 
 		'parent_post_id',
 		'author_id'

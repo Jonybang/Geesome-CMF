@@ -30,6 +30,8 @@
 
 </div>
 
-<img ng-show="chosen_mode == 'upload'" ng-src="{{previewImage}}">
+<div class="margin-top">
+    <img ng-show="chosen_mode == 'upload'" ng-src="{{previewImage}}" class="img-responsive">
 
-<img ng-show="chosen_mode == 'paste-link'" ng-src="{{imageUri}}">
+    <img ng-show="chosen_mode == 'paste-link'" ng-src="{{imageUri}}" class="img-responsive">
+</div>

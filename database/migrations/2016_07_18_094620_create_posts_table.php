@@ -25,6 +25,7 @@ class CreatePostsTable extends Migration
             $table->boolean('is_from_cabinet')->default(false);
             $table->boolean('is_secret')->default(false);
             $table->boolean('is_resolved_nsfw')->default(true);
+            $table->boolean('is_resolved_tags')->default(true);
 
             $table->string('alias')->nullable();
 

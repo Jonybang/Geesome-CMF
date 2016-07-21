@@ -2396,6 +2396,8 @@ angular.module('app')
             $scope.post.id = $state.params.postId;
         } else {
             defaultPost.is_resolved_nsfw = true;
+            defaultPost.is_queue = true;
+            defaultPost.is_resolved_tags = true;
             defaultPost.tags_ids = [];
 
             $scope.post = angular.copy(defaultPost);
@@ -2466,11 +2468,13 @@ angular.module('app')
                 },
                 {
                     name: 'description',
-                    label: 'Description'
+                    label: 'Description',
+                    type: 'textarea'
                 },
                 {
                     name: 'copyrights',
-                    label: 'Copyrights'
+                    label: 'Copyrights',
+                    type: 'textarea'
                 }
             ]
         };

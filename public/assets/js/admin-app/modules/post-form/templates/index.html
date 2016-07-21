@@ -19,13 +19,25 @@
                 <h3 class="panel-title">Main data</h3>
             </div>
             <div class="panel-body">
-                <image-adder></image-adder>
+                <div class="col-md-6">
+                    <image-adder></image-adder>
+                </div>
+                <div class="col-md-6">
+                    <label>Title:</label>
+                    <ae-text-input ng-model="post.title" has-error="hasErrors.title" is-edit="true"></ae-text-input>
+
+                    <label>Content:</label>
+                    <ae-text-input ng-model="post.description" has-error="hasErrors.description" type="textarea" is-edit="true"></ae-text-input>
+
+                    <label>Tags:</label>
+                    <ae-select-input ng-model="post.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" get-list="true" type="multiselect"></ae-select-input>
+
+                    <label>Parent post:</label>
+                    <ae-select-input ng-model="post.parent_post_id" name-field="title" has-error="hasErrors.parent_post_id" ng-resource="models.posts" ng-resource-fields="fields.posts" is-edit="true" get-list="true"></ae-select-input>
+                </div>
             </div>
 
-            <div class="panel-body">
-                <label>Tags:</label>
-                <ae-select-input ng-model="post.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" get-list="true" type="multiselect"></ae-select-input>
-            </div>
+            <!--<div class="panel-body"></div>-->
         </div>
     </div>
     <div class="col-md-4">
@@ -34,23 +46,24 @@
                 <h3 class="panel-title">Technical data</h3>
             </div>
             <div class="panel-body">
-                <label>Alias:</label>
+                <label>Alias (Uri):</label>
                 <ae-text-input ng-model="post.alias" has-error="hasErrors.alias" is-edit="true"></ae-text-input>
 
                 <label>In queue:
-                    <ae-bool-input ng-model="post.is_queue" has-error="hasErrors.is_queue" is-edit="true"></ae-bool-input>
+                    <ae-bool-input ng-model="post.is_queue" ng-click="post.is_published = false" has-error="hasErrors.is_queue" is-edit="true"></ae-bool-input>
                 </label>
 
                 <label>Published:
-                    <ae-bool-input ng-model="post.is_published" has-error="hasErrors.is_published" is-edit="true"></ae-bool-input>
+                    <ae-bool-input ng-model="post.is_published" ng-click="post.is_queue = false" has-error="hasErrors.is_published" is-edit="true"></ae-bool-input>
                 </label>
 
                 <label>Resolved NSFW:
                     <ae-bool-input ng-model="post.is_resolved_nsfw" has-error="hasErrors.is_resolved_nsfw" is-edit="true"></ae-bool-input>
                 </label>
 
-                <label>Parent post:</label>
-                <ae-select-input ng-model="post.parent_post_id" name-field="title" has-error="hasErrors.parent_post_id" ng-resource="models.posts" ng-resource-fields="fields.posts" is-edit="true" get-list="true"></ae-select-input>
+                <label>Resolved tags:
+                    <ae-bool-input ng-model="post.is_resolved_tags" has-error="hasErrors.is_resolved_tags" is-edit="true"></ae-bool-input>
+                </label>
 
                 <label>Author:</label>
                 <ae-select-input ng-model="post.author_id" has-error="hasErrors.author_id" ng-resource="models.users" ng-resource-fields="fields.users" is-edit="true" get-list="true"></ae-select-input>
