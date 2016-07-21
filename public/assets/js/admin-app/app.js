@@ -12,11 +12,31 @@ angular
                 })
 
                 //=====================================================
+                // POST FORM
+                //=====================================================
+
+                .state('app.post', {
+                    url: '',
+                    template: '<ui-view></ui-view>',
+                    abstract: true
+                })
+                .state('app.post.create', {
+                    url: '',
+                    controller: 'PostFormController',
+                    templateUrl: AppPaths.post_form_tpls + 'index.html'
+                })
+                .state('app.post.edit', {
+                    url: '/post/:postId',
+                    controller: 'PostFormController',
+                    templateUrl: AppPaths.post_form_tpls + 'index.html'
+                })
+
+                //=====================================================
                 // PAGE FORM
                 //=====================================================
 
                 .state('app.page', {
-                    url: '',
+                    url: '/page',
                     template: '<ui-view></ui-view>',
                     abstract: true
                 })

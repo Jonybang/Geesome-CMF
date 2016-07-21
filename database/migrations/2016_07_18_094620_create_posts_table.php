@@ -18,9 +18,15 @@ class CreatePostsTable extends Migration
             $table->string('content')->nullable();
 
             $table->dateTime('published_on')->nullable();
-            $table->boolean('published')->default(false);
-            $table->boolean('from_cabinet')->default(false);
-            $table->boolean('secret')->default(false);
+            $table->dateTime('published_at')->nullable();
+
+            $table->boolean('is_published')->default(false);
+            $table->boolean('is_queue')->default(true);
+            $table->boolean('is_from_cabinet')->default(false);
+            $table->boolean('is_secret')->default(false);
+            $table->boolean('is_resolved_nsfw')->default(true);
+
+            $table->string('alias')->nullable();
 
             $table->string('main_attachment')->nullable();
             $table->json('other_attachments')->nullable();

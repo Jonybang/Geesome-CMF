@@ -48,7 +48,7 @@ The project is now on beta version, and soon, when the first version - his will 
 
 Now backend core is located in [app/Http/routes.php](https://github.com/Jonybang/Lanit-Laravel-CMF/blob/master/app/Http/routes.php) file.
 
-Frontend core(Admin panel) located in [public/assets/js/admin-app](https://github.com/Jonybang/Lanit-Laravel-CMF/tree/master/public/assets/js/admin-app) folder and used [Awesome edit](https://github.com/Jonybang/awesome-edit) angular module for manage database tables and admin forms. Frontend architecture develop with DRY principle, adheres to the minimalist approach of development and has some specified and bulky code only in create/edit controllers and directives of complex forms(like [page-form-controller.js](public/assets/js/admin-app/modules/page-form/page-form-controller.js) and [mailing-controller.js](public/assets/js/admin-app/modules/site-manage/mailing/mailing-controller.js))
+Frontend core(Admin panel) located in [public/assets/js/admin-app](https://github.com/Jonybang/Lanit-Laravel-CMF/tree/master/public/assets/js/admin-app) folder and used [Awesome edit](https://github.com/Jonybang/awesome-edit) angular module for manage database tables and admin forms. Frontend architecture develop with DRY principle, adheres to the minimalist approach of development and has some specified and bulky code only in create/edit controllers and directives of complex forms(like [post-form-controller.js](public/assets/js/admin-app/modules/page-form/post-form-controller.js) and [mailing-controller.js](public/assets/js/admin-app/modules/site-manage/mailing/mailing-controller.js))
 
 Frontend and backend separated by REST API, and if desired developer can build his frontend for use created backend.
 

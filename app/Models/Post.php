@@ -10,12 +10,18 @@ class Post extends Model
 
 	protected $fillable = [
 		'content',
+		'alias',
 		'main_attachments',
 		'other_attachments',
+
 		'published_on',
-		'published',
-		'from_cabinet',
-		'secret',
+		'published_at',
+
+		'is_published',
+		'is_from_cabinet',
+		'is_secret',
+		'is_resolved_nsfw',
+
 		'parent_post_id',
 		'author_id'
 	];
