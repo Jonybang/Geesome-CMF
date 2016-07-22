@@ -64,7 +64,6 @@ class Page extends Model
         return $this->belongsTo(Context::class);
     }
 
-<<<<<<< HEAD
     /**
      * @Relation
      */
@@ -76,8 +75,7 @@ class Page extends Model
     /**
      * @Relation
      */
-=======
->>>>>>> 7c9e308... posts
+
     public function parent_page()
     {
         return $this->belongsTo(Page::class);
