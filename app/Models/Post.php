@@ -12,8 +12,7 @@ class Post extends Model
 		'title',
 		'content',
 		'alias',
-		'main_attachments',
-		'other_attachments',
+		'attachments',
 
 		'published_on',
 		'published_at',
@@ -31,8 +30,7 @@ class Post extends Model
 
 	protected $casts = [
 		'id' => 'integer',
-		'main_attachment' => 'array',
-		'other_attachments' => 'array'
+		'attachments' => 'array'
 	];
 
 	/**

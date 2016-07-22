@@ -30,8 +30,7 @@ class CreatePostsTable extends Migration
 
             $table->string('alias')->nullable();
 
-            $table->json('main_attachment')->nullable();
-            $table->json('other_attachments')->nullable();
+            $table->json('attachments')->nullable();
 
             $table->integer('parent_post_id')->unsigned()->nullable();
             $table->foreign('parent_post_id')->references('id')->on('posts');
