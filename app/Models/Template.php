@@ -35,7 +35,7 @@ class Template extends Model
      */
     public function controller_actions()
     {
-        return $this->belongsToMany(ControllerAction::class, 'templates_controller_actions');
+        return $this->belongsToMany(ControllerAction::class, 'tpls_ctrls_actions');
     }
 
     public function setControllerActionsIdsAttribute($value)

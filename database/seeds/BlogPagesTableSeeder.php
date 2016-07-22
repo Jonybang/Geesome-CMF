@@ -41,7 +41,7 @@ class BlogPagesTableSeeder extends Seeder
 
             $tags_ids = [];
             for($i=0; $i<3; $i++){
-                $id = Tag::orderByRaw("random()")->first()->id;
+                $id = Tag::orderByRaw(env('DB_CONNECTION') == 'sqlite' ? "random()" : 'RAND()')->first()->id;
                 if(!in_array($id, $tags_ids))
                     $page->tags()->attach($id);
                 $tags_ids[] = $id;

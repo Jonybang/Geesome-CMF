@@ -12,7 +12,7 @@ class CreateSubscribersSubscriberGroupsTable extends Migration
      */
     public function up()
     {
-        Schema::create('subscribers_subscriber_groups', function (Blueprint $table) {
+        Schema::create('sbcrbrs_sbcrbr_groups', function (Blueprint $table) {
             $table->integer('subscriber_id')->unsigned()->index();
             $table->foreign('subscriber_id')->references('id')->on('subscribers');
 
@@ -30,6 +30,6 @@ class CreateSubscribersSubscriberGroupsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('subscribers_subscriber_groups');
+        Schema::drop('sbcrbrs_sbcrbr_groups');
     }
 }
