@@ -9,6 +9,7 @@ angular
         'rt.debounce',
         'ckeditor',
         'bootstrap.fileField',
+        'ngFileUpload',
         'a-edit'
     ])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',

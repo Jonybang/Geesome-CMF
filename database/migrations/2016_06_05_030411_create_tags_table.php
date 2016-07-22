@@ -16,14 +16,16 @@ class CreateTagsTable extends Migration
             $table->increments('id');
 
             $table->string('name');
+            $table->boolean('is_hide')->default(false);
+            $table->boolean('is_main')->default(false);
 
             $table->text('description')->nullable();
             $table->text('copyrights')->nullable();
 
             $table->integer('posts_count')->default(0);
 
-            $table->integer('tag_type_id')->unsigned()->nullable();
-            $table->foreign('tag_type_id')->references('id')->on('tag_types');
+            $table->integer('parent_tag_id')->unsigned()->nullable();
+            $table->foreign('parent_tag_id')->references('id')->on('tags');
 
             $table->timestamps();
         });

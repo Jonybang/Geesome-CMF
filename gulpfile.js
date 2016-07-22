@@ -35,6 +35,11 @@ var paths = {
         js_dir +'admin-app/app.js',
         js_dir +'admin-app/**/*.js'
     ],
+    vendor_scripts: [
+        js_dir +'angular/angular.min.js',
+        js_dir +'angular/ui-bootstrap*',
+        js_dir +'angular/*.js'
+    ],
     styles: [
         js_dir + 'angular/awesome-edit/dist/a-edit.css',
         css_dir + 'sb-admin.css'
@@ -45,11 +50,7 @@ var paths = {
 };
 
 gulp.task('concatAngularVendorJS', function() {
-    return gulp.src([
-            js_dir +'angular/angular.min.js',
-            js_dir +'angular/ui-bootstrap*',
-            js_dir +'angular/*.js'
-        ])
+    return gulp.src(paths.vendor_scripts)
         .pipe(concat('vendor.js'))
         .pipe(gulp.dest(dist_dir));
 });
@@ -73,7 +74,7 @@ gulp.task('clientSCSS', function () {
 });
 
 gulp.task('watch', function() {
-    gulp.watch(paths.scripts, ['concatAdminAppJS']);
+    gulp.watch(paths.scripts.concat(paths.vendor_scripts), ['concatAdminAppJS', 'concatAngularVendorJS']);
     gulp.watch(paths.styles, ['concatAdminAppCSS']);
     gulp.watch(paths.client_styles, ['clientSCSS']);
 });

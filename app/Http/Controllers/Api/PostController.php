@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\UserActionLog;
+use App\Models\Context;
 use \Response;
 
 class PostController extends Controller
@@ -29,21 +30,22 @@ class PostController extends Controller
 	public function store(Request $request)
 	{
 		$data = $request->all();
+		$data['context_id'] = Context::first()->id;
 
-		if($request->hasFile('main_photo')) {
-			$data['main_photo'] = ControllerHelper::saveImage($request->file('main_photo'));
-		}
-		if($request->file('other_photos')) {
-			$uploaded = [];
-			foreach($request->file('other_photos') as $key => $other_photo) {
-				$uploaded[$key] = ControllerHelper::saveImage($other_photo);
-				if (count($uploaded) >= 4)
-					break;
-			}
-			$dataф['other_photos'] = $uploaded;
-		}
+//		if($request->hasFile('main_photo')) {
+//			$data['main_photo'] = ControllerHelper::saveImage($request->file('main_photo'));
+//		}
+//		if($request->file('other_photos')) {
+//			$uploaded = [];
+//			foreach($request->file('other_photos') as $key => $other_photo) {
+//				$uploaded[$key] = ControllerHelper::saveImage($other_photo);
+//				if (count($uploaded) >= 4)
+//					break;
+//			}
+//			$dataф['other_photos'] = $uploaded;
+//		}
 
-		$advert = Advert::create($fields);
+		//$advert = Advert::create($fields);
 
 		$obj = Post::create($data);
 
@@ -64,6 +66,10 @@ class PostController extends Controller
 			$obj,
 			$is_saved ? 200 : 400
 		);
+	}
+	public function uploadImages(Request $request){
+		if($request->hasFile('file'))
+			dd('done!');
 	}
 	public function destroy($id)
 	{

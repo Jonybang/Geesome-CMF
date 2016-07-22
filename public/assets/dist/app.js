@@ -1464,6 +1464,7 @@ angular
         'rt.debounce',
         'ckeditor',
         'bootstrap.fileField',
+        'ngFileUpload',
         'a-edit'
     ])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
@@ -1719,25 +1720,55 @@ angular.module('app')
     }]);
 angular
     .module('app')
-    .directive('imageAdder', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
+    .directive('imageAdder', ['$timeout', '$http', 'AppPaths', function($timeout, $http, AppPaths) {
         return {
             restrict: 'E',
             templateUrl: AppPaths.app + 'directives/image-adder.html',
             scope: {
-                ngModel: '='
+                ngModel: '=',
+                ngChange: '&'
             },
             link: function (scope, element) {
-                scope.chosen_mode = '';
+                var defaultItem = {
+                    chosen_mode: '',
+                    uploadFile: null,
+                    previewImage: '',
+                    imageUri: '',
 
-                scope.$on("fileProgress", function(e, progress) {
-                    scope.progress = progress.loaded / progress.total;
-                });
+                    chosen_files: [],
+                    images_files: []
+                };
+                scope.ngModel = [angular.copy(defaultItem)];
 
-                scope.clearInputs = function(){
-                    scope.chosen_mode = '';
-                    scope.uploadFile = null;
-                    scope.previewImage = '';
-                    scope.imageUri = '';
+                scope.addItem = function(){
+                    scope.ngModel.push(angular.copy(defaultItem));
+                    console.log(scope.ngModel);
+                };
+                scope.deleteItem = function(index){
+                    scope.ngModel.splice(index, 1);
+                };
+
+                scope.filesAdded = function(item){
+                    if(item.chosen_files.length > 1){
+                        angular.forEach(item.chosen_files, function(file, index){
+                            if(index > 0)
+                                scope.ngModel.push({
+                                    uploadFile: file,
+                                    previewImage: item.images_files[index],
+                                    chosen_mode: 'upload'
+                                });
+                        });
+                    }
+
+                    item.uploadFile = item.chosen_files[0];
+                    item.previewImage = item.images_files[0];
+
+                    scope.addItem();
+                };
+                scope.linkPasted = function(item){
+                    $http.get(item.imageUri).then(function(response){
+                        scope.addItem();
+                    })
                 }
             }
         };
@@ -2387,8 +2418,8 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Posts', 'Users', 'Tags',
-        function($scope, $state, $http, $uibModal, AppPaths, AppData, Posts, Users, Tags) {
+    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'Upload', 'AppPaths', 'AppData', 'Posts', 'Users', 'Tags',
+        function($scope, $state, $http, $uibModal, Upload, AppPaths, AppData, Posts, Users, Tags) {
         var defaultPost = new Posts();
 
         if($state.params.postId){
@@ -2479,7 +2510,18 @@ angular.module('app')
             ]
         };
 
-        $scope.savePosts = function(){
+        $scope.images = [];
+
+        $scope.savePost = function(){
+            $scope.post.images_uris = [];
+            var imagesFiles = [];
+
+            $scope.images.forEach(function(image){
+                if(image.chosen_mode == 'upload')
+                    imagesFiles.push(image.uploadFile);
+                else if(image.chosen_mode == 'paste-link')
+                    $scope.post.images_uris.push(image.imageUri);
+            });
             //If post is new - Create, if it not - Update
             var is_new = $scope.post.id ? false : true;
 
@@ -2490,6 +2532,13 @@ angular.module('app')
                 post_query = $scope.post.$update();
 
             post_query.then(function(result_post){
+                imagesFiles.forEach(function(file){
+                    Upload.upload({
+                        url: 'admin/api/posts/' + result_post.id + '/upload_images',
+                        data: {file: file}
+                    });
+                });
+
                 if(is_new)
                     $scope.post = angular.copy(defaultPost);
                 else

@@ -13,14 +13,14 @@
 <br>
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-7">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Main data</h3>
             </div>
             <div class="panel-body">
                 <div class="col-md-6">
-                    <image-adder></image-adder>
+                    <image-adder ng-model="images"></image-adder>
                 </div>
                 <div class="col-md-6">
                     <label>Title:</label>
@@ -36,11 +36,9 @@
                     <ae-select-input ng-model="post.parent_post_id" name-field="title" has-error="hasErrors.parent_post_id" ng-resource="models.posts" ng-resource-fields="fields.posts" is-edit="true" get-list="true"></ae-select-input>
                 </div>
             </div>
-
-            <!--<div class="panel-body"></div>-->
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-5">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Technical data</h3>
@@ -72,5 +70,5 @@
     </div>
 </div>
 
-<button ng-if="!post.id" class="btn btn-success" ng-click="savePage()">Create post</button>
-<button ng-if="post.id" class="btn btn-primary" ng-click="savePage()">Save post</button>
+<button ng-if="!post.id" class="btn btn-success" ng-click="savePost()">Create post</button>
+<button ng-if="post.id" class="btn btn-primary" ng-click="savePost()">Save post</button>

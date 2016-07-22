@@ -67,6 +67,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
         Route::resource('sent_mails', 'Api\SentMailController');
 
         Route::resource('posts', 'Api\PostController');
+
+        Route::post('posts/{post_id}/upload_images', 'Api\PostController@uploadImages');
     });
 
     Route::get('/', function () {

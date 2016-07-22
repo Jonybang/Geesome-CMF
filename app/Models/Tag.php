@@ -29,8 +29,15 @@ class Tag extends Model
     /**
      * @Relation
      */
-    public function type()
+    public function parent_tag()
     {
-        return $this->belongsTo(TagType::class, 'tag_type_id');
+        return $this->belongsTo(Tag::class, 'parent_tag_id');
+    }
+    /**
+     * @Relation
+     */
+    public function children_tags()
+    {
+        return $this->hasMany(Tag::class, 'parent_tag_id');
     }
 }

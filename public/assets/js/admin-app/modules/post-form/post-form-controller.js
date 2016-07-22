@@ -1,6 +1,6 @@
 angular.module('app')
-    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Posts', 'Users', 'Tags',
-        function($scope, $state, $http, $uibModal, AppPaths, AppData, Posts, Users, Tags) {
+    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'Upload', 'AppPaths', 'AppData', 'Posts', 'Users', 'Tags',
+        function($scope, $state, $http, $uibModal, Upload, AppPaths, AppData, Posts, Users, Tags) {
         var defaultPost = new Posts();
 
         if($state.params.postId){
@@ -91,7 +91,18 @@ angular.module('app')
             ]
         };
 
-        $scope.savePosts = function(){
+        $scope.images = [];
+
+        $scope.savePost = function(){
+            $scope.post.images_uris = [];
+            var imagesFiles = [];
+
+            $scope.images.forEach(function(image){
+                if(image.chosen_mode == 'upload')
+                    imagesFiles.push(image.uploadFile);
+                else if(image.chosen_mode == 'paste-link')
+                    $scope.post.images_uris.push(image.imageUri);
+            });
             //If post is new - Create, if it not - Update
             var is_new = $scope.post.id ? false : true;
 
@@ -102,6 +113,13 @@ angular.module('app')
                 post_query = $scope.post.$update();
 
             post_query.then(function(result_post){
+                imagesFiles.forEach(function(file){
+                    Upload.upload({
+                        url: 'admin/api/posts/' + result_post.id + '/upload_images',
+                        data: {file: file}
+                    });
+                });
+
                 if(is_new)
                     $scope.post = angular.copy(defaultPost);
                 else
