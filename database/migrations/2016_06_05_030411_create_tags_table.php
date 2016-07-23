@@ -19,7 +19,6 @@ class CreateTagsTable extends Migration
             $table->boolean('is_hide')->default(false);
             $table->boolean('is_main')->default(false);
 
-            $table->text('description')->nullable();
             $table->text('copyrights')->nullable();
 
             $table->integer('posts_count')->default(0);

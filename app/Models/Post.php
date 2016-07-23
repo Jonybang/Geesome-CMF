@@ -9,8 +9,6 @@ class Post extends Model
 	protected $table = 'posts';
 
 	protected $fillable = [
-		'title',
-		'content',
 		'alias',
 		'attachments',
 
@@ -52,7 +50,14 @@ class Post extends Model
 	 */
 	public function author()
 	{
-		return $this->belongsTo(Auth::class, 'parent_post_id');
+		return $this->belongsTo(User::class, 'parent_post_id');
+	}
+	/**
+	 * @Relation
+	 */
+	public function content()
+	{
+		return $this->hasMany(PostContent::class, 'post_id');
 	}
 
 	public function getAliasAttribute()
