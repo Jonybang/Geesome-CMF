@@ -10,6 +10,7 @@ use App\Models\Post;
 use App\Models\UserActionLog;
 use App\Models\Context;
 use \Response;
+use App\Helpers\FileHelper;
 
 class PostController extends Controller
 {
@@ -29,21 +30,20 @@ class PostController extends Controller
 	}
 	public function store(Request $request)
 	{
+
+
 		$data = $request->all();
 		$data['context_id'] = Context::first()->id;
 
-//		if($request->hasFile('main_photo')) {
-//			$data['main_photo'] = ControllerHelper::saveImage($request->file('main_photo'));
-//		}
-//		if($request->file('other_photos')) {
-//			$uploaded = [];
-//			foreach($request->file('other_photos') as $key => $other_photo) {
-//				$uploaded[$key] = ControllerHelper::saveImage($other_photo);
-//				if (count($uploaded) >= 4)
-//					break;
-//			}
-//			$dataф['other_photos'] = $uploaded;
-//		}
+		if($request->file('')) {
+			$uploaded = [];
+			foreach($request->file('other_photos') as $key => $other_photo) {
+				$uploaded[$key] = FileHelper::saveImage($other_photo);
+				if (count($uploaded) >= 4)
+					break;
+			}
+			$dataф['other_photos'] = $uploaded;
+		}
 
 		//$advert = Advert::create($fields);
 
@@ -67,9 +67,24 @@ class PostController extends Controller
 			$is_saved ? 200 : 400
 		);
 	}
-	public function uploadImages(Request $request){
-		if($request->hasFile('file'))
-			dd('done!');
+	public function uploadImages($post_id, Request $request)
+	{
+		$this->validate($request, [
+			'file' => 'required|image|max:10000',
+			'index' => 'required|integer'
+		]);
+
+		if(!$request->hasFile('file'))
+			return;
+
+		$file_index = $request->input('index');
+
+		$post = Post::find($post_id);
+		$path_to_file = FileHelper::saveImage($post, $request->file('file'), $file_index);
+
+		$post->attachments[$file_index] = json_encode([
+			['type' => 'image', 'src' => $path_to_file]
+		]);
 	}
 	public function destroy($id)
 	{

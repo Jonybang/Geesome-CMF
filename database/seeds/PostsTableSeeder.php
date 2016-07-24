@@ -44,12 +44,15 @@ class PostsTableSeeder extends Seeder
         $context_id = Context::first()->id;
 
         foreach($seeds as $seed){
-            $page = Post::create([
-                'title' => $seed[0],
-                'content' => $seed[1],
+            $post = Post::create([
                 'attachments' => $seed[2],
                 'is_published' => true,
-                'author_id' => $author_id,
+                'author_id' => $author_id
+            ]);
+
+            $post->contents()->create([
+                'title' => $seed[0],
+                'content' => $seed[1],
                 'context_id' => $context_id
             ]);
 
@@ -57,10 +60,10 @@ class PostsTableSeeder extends Seeder
             for($i=0; $i<3; $i++){
                 $id = Tag::orderByRaw(env('DB_CONNECTION') == 'sqlite' ? "random()" : 'RAND()')->first()->id;
                 if(!in_array($id, $tags_ids))
-                    $page->tags()->attach($id);
+                    $post->tags()->attach($id);
                 $tags_ids[] = $id;
             }
-            $page->save();
+            $post->save();
         }
     }
 }

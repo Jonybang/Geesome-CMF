@@ -2,32 +2,34 @@
 namespace App\Helpers;
 
 use App\Models\DictionaryWord;
+use Intervention\Image\Facades\Image;
 
 class FileHelper
 {
-	static function saveImage($image, $sub_folder=null) {
-		$base_folder = 'images';
-		$sub_folder = $sub_folder ? $sub_folder : Auth::user()->id;
-
-		if(!self::checkFolders($base_folder, $sub_folder) || !$image)
+	static function savePostFile($post, $image, $folder) {
+		if(!$image)
 			return null;
 
-		$filename  = date('U') . '_' . str_random(6) . '.' . $image->getClientOriginalExtension();
+		$file_container = '/home/deploy/girls-archive/';
 
-		if($sub_folder)
-			$path = public_path($base_folder . '/' . $sub_folder . '/'. $filename);
-		else
-			$path = public_path($base_folder . '/' . $filename);
+		self::checkFolders($file_container, $folder);
 
-		Image::make($image->getRealPath())->widen(870)->save($path);
-		return $base_folder .'/' . $sub_folder . '/' . $filename;
+		$filename = $post->tags_names_str . '_' .$post->id;
+
+		$path = $file_container . $folder . '/' . $filename;
+
+		Image::make($image->getRealPath())->widen(2048)->save($path);
+
+		return $path;
 	}
-	static function checkFolders($base_folder, $sub_folder){
-		$path = public_path($base_folder);
-		if(!$sub_folder){
-			return is_dir($path) || mkdir($path, 0755, true);
-		} else {
-			return is_dir($path  . '/' . $sub_folder) || mkdir($path  . '/' . $sub_folder, 0755, true);
+	static function checkFolders($container, $path){
+		$folders = explode('/', $path);
+		$relative_path = '';
+		foreach($folders as $folder){
+			$relative_path .= $folder . '/';
+			$absolute_path  = $container . $relative_path;
+			if(!is_dir($absolute_path))
+				mkdir($absolute_path, 0755, true);
 		}
 	}
 }

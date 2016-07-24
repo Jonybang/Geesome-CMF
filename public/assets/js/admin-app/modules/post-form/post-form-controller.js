@@ -97,11 +97,11 @@ angular.module('app')
             $scope.post.images_uris = [];
             var imagesFiles = [];
 
-            $scope.images.forEach(function(image){
+            $scope.images.forEach(function(image, index){
                 if(image.chosen_mode == 'upload')
-                    imagesFiles.push(image.uploadFile);
+                    imagesFiles.push({index: index, file: image.uploadFile});
                 else if(image.chosen_mode == 'paste-link')
-                    $scope.post.images_uris.push(image.imageUri);
+                    $scope.post.images_uris.push({index: index, uri: image.imageUri});
             });
             //If post is new - Create, if it not - Update
             var is_new = $scope.post.id ? false : true;
@@ -113,10 +113,10 @@ angular.module('app')
                 post_query = $scope.post.$update();
 
             post_query.then(function(result_post){
-                imagesFiles.forEach(function(file){
+                imagesFiles.forEach(function(image){
                     Upload.upload({
                         url: 'admin/api/posts/' + result_post.id + '/upload_images',
-                        data: {file: file}
+                        data: {file: image.file, index: image.index}
                     });
                 });
 

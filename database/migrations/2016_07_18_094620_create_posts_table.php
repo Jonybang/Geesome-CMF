@@ -15,9 +15,6 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('title')->nullable();
-            $table->text('content')->nullable();
-
             $table->dateTime('published_on')->nullable();
             $table->dateTime('published_at')->nullable();
 
@@ -26,6 +23,7 @@ class CreatePostsTable extends Migration
             $table->boolean('is_from_cabinet')->default(false);
             $table->boolean('is_secret')->default(false);
             $table->boolean('is_resolved_nsfw')->default(true);
+            $table->boolean('is_resolved_secret')->default(true);
             $table->boolean('is_resolved_tags')->default(true);
 
             $table->string('alias')->nullable();
@@ -37,9 +35,6 @@ class CreatePostsTable extends Migration
 
             $table->integer('author_id')->unsigned();
             $table->foreign('author_id')->references('id')->on('users');
-
-            $table->integer('context_id')->unsigned();
-            $table->foreign('context_id')->references('id')->on('contexts');
 
             $table->timestamps();
         });

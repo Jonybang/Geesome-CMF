@@ -131,20 +131,6 @@ class Page extends Model
         return isset($this->attributes['menu_title']) ? $this->attributes['menu_title'] : $this->title;
     }
 
-    public function setTagsIdsAttribute($value)
-    {
-        $this->tags()->detach();
-        foreach($value as $tag_id)
-            $this->tags()->attach($tag_id);
-    }
-    public function getTagsIdsAttribute()
-    {
-        $ids = [];
-        foreach($this->tags as $tag)
-            $ids[] = $tag->id;
-        return $ids;
-    }
-
     private function contentRow(){
         return \DB::table('pages_contents')->where('page_id', $this->id)->first();
     }
