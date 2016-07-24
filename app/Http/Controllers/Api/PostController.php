@@ -30,28 +30,37 @@ class PostController extends Controller
 	}
 	public function store(Request $request)
 	{
-
-
 		$data = $request->all();
-		$data['context_id'] = Context::first()->id;
 
-		if($request->file('')) {
-			$uploaded = [];
-			foreach($request->file('other_photos') as $key => $other_photo) {
-				$uploaded[$key] = FileHelper::saveImage($other_photo);
-				if (count($uploaded) >= 4)
-					break;
-			}
-			$dataф['other_photos'] = $uploaded;
+		$post = Post::create($data);
+
+		$post->contents()->create([
+			'context_id' => Context::first()->id,
+			'title' => isset($data['title']) ? $data['title'] : '',
+			'content' => isset($data['content']) ? $data['content'] : ''
+		]);
+
+		if(isset($data['tags_ids'])){
+			$post->tags_ids = $data['tags_ids'];
+			$post->addAutoTags();
+			$post->save();
+			$post = Post::find($post->id);
 		}
 
-		//$advert = Advert::create($fields);
+		$attachments = [];
+		foreach($data['images_urls'] as $image){
+			$path_to_file = FileHelper::savePostFile($post, $image['url'], $post->generatePathArray());
+			$attachments[$image['index']] = json_encode([
+				['type' => 'image', 'src' => $path_to_file]
+			]);
+		}
+		$post->attachments = $attachments;
+		$post->save();
 
-		$obj = Post::create($data);
+		UserActionLog::saveAction($post, "create");
 
-		UserActionLog::saveAction($obj,"create");
 		return Response::json(
-			$obj->toArray(),
+			$post->toArray(),
 			200
 		);
 	}
@@ -80,11 +89,14 @@ class PostController extends Controller
 		$file_index = $request->input('index');
 
 		$post = Post::find($post_id);
-		$path_to_file = FileHelper::saveImage($post, $request->file('file'), $file_index);
+		$path_to_file = FileHelper::savePostFile($post, $request->file('file'), $file_index);
 
-		$post->attachments[$file_index] = json_encode([
+		$attachments = $post->attachments;
+		$attachments[$file_index] = json_encode([
 			['type' => 'image', 'src' => $path_to_file]
 		]);
+		$post->attachments = $attachments;
+		$post->save();
 	}
 	public function destroy($id)
 	{

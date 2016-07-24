@@ -2,7 +2,7 @@
 namespace App\Helpers;
 
 use App\Models\DictionaryWord;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class FileHelper
 {
@@ -10,15 +10,22 @@ class FileHelper
 		if(!$image)
 			return null;
 
-		$file_container = '/home/deploy/girls-archive/';
+		$file_container = env('IMAGE_ARCHIVE_PATH');
 
-		self::checkFolders($file_container, $folder);
+		$dir_path = $file_container . $folder;
+
+		if(!is_dir($dir_path)){
+			\File::makeDirectory($dir_path, $mode = 0755, true, true);
+		}
 
 		$filename = $post->tags_names_str . '_' .$post->id;
 
-		$path = $file_container . $folder . '/' . $filename;
+		$path = $file_container . $folder . $filename;
 
-		Image::make($image->getRealPath())->widen(2048)->save($path);
+		if(method_exists($image, 'getRealPath'))
+			Image::make($image->getRealPath())->widen(2048)->save($path);
+		else
+			Image::make($image)->widen(2048)->save($path . '.' . pathinfo($image)['extension']);
 
 		return $path;
 	}

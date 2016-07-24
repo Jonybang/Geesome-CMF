@@ -22,8 +22,7 @@ class Post extends Model
 		'is_resolved_tags',
 
 		'parent_post_id',
-		'author_id',
-		'context_id'
+		'author_id'
 	];
 
 	protected $casts = [
@@ -75,10 +74,11 @@ class Post extends Model
 	public function getTagsNamesStrAttribute()
 	{
 		$tags = $this->tags->lists('name')->toArray();
+		$result = [];
 		foreach($tags as $index => $tag){
-			$tags[$index] = str_replace(' ', '-', $tag['name']);
+			$result[] = str_replace(' ', '-', $tag);
 		}
-		return implode('_', $tags);
+		return implode('_', $result);
 	}
 
 	public function getAliasAttribute()

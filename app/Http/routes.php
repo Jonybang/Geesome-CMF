@@ -27,6 +27,9 @@ Route::post('/subscribe', ['as' => 'subscribe', 'uses' => 'ClientController@subs
 
 Route::post('/login', 'Auth\AuthController@authenticate');
 Route::get('/logout', 'Auth\AuthController@logout');
+Route::get('/phpinfo', function(){
+    return phpinfo();
+});
 
 //========================================================================================================
 // ADMIN AND API

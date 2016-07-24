@@ -36,8 +36,8 @@ angular.module('app')
             setDefaultSettings();
 
         var old_alias = '';
-        $scope.$watch('post.content', function(content){
-            if(!content)
+        $scope.$watch('post.title', function(title){
+            if(!title)
                 return;
 
             function changeAlias(new_alias){
@@ -55,13 +55,13 @@ angular.module('app')
                 $http.get(
                     'https://translate.yandex.net/api/v1.5/tr.json/translate' +
                     '?key=' + $scope.site_settings.yandex_translate_api_key +
-                    '&text=' + content +
+                    '&text=' + title +
                     '&lang=en')
                     .then(function(result){
                         changeAlias(result.data.text[0].replace(/\s+/g, '-').toLowerCase());
                     });
             } else {
-                changeAlias(content.replace(/\s+/g, '-').toLowerCase());
+                changeAlias(title.replace(/\s+/g, '-').toLowerCase());
             }
         });
 
@@ -94,14 +94,14 @@ angular.module('app')
         $scope.images = [];
 
         $scope.savePost = function(){
-            $scope.post.images_uris = [];
+            $scope.post.images_urls = [];
             var imagesFiles = [];
 
             $scope.images.forEach(function(image, index){
                 if(image.chosen_mode == 'upload')
                     imagesFiles.push({index: index, file: image.uploadFile});
                 else if(image.chosen_mode == 'paste-link')
-                    $scope.post.images_uris.push({index: index, uri: image.imageUri});
+                    $scope.post.images_urls.push({index: index, url: image.imageUri});
             });
             //If post is new - Create, if it not - Update
             var is_new = $scope.post.id ? false : true;

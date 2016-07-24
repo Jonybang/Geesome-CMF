@@ -27,7 +27,7 @@
                     <ae-text-input ng-model="post.title" has-error="hasErrors.title" is-edit="true"></ae-text-input>
 
                     <label>Content:</label>
-                    <ae-text-input ng-model="post.description" has-error="hasErrors.description" type="textarea" is-edit="true"></ae-text-input>
+                    <ae-text-input ng-model="post.content" has-error="hasErrors.content" type="textarea" is-edit="true"></ae-text-input>
 
                     <label>Tags:</label>
                     <ae-select-input ng-model="post.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" get-list="true" type="multiselect"></ae-select-input>

@@ -10,9 +10,8 @@
             <p>{{$post->content}}</p>
             <div class="row">
                 <div class="col col-sm-8">
-                    @foreach(json_decode($post->attachments, true) as $attach)
-                        <img src="{{$attach['src']}}" class="img-responsive margin-top">
-                    @endforeach
+                    {{$post->attachments}}
+
                 </div>
                 <div class="col col-sm-4">
                     @foreach($post->tags as $tag)
