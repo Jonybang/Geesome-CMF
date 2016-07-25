@@ -20,23 +20,23 @@ class PostsTableSeeder extends Seeder
             [
                 'Пост 1',
                 'Контент, содержимое, описание и прочее поста 1',
-                json_encode([
-                    ['type' => 'image','src' => 'assets/img/girls/1-1.jpg'],
-                    ['type' => 'image','src' => 'assets/img/girls/1-2.jpg'],
-                    ['type' => 'image','src' => 'assets/img/girls/1-3.jpg']
-               ], JSON_PRETTY_PRINT)
+                [
+                    0 => ['type' => 'image','src' => 'assets/img/girls/1-1.jpg'],
+                    1 => ['type' => 'image','src' => 'assets/img/girls/1-2.jpg'],
+                    2 => ['type' => 'image','src' => 'assets/img/girls/1-3.jpg']
+               ]
             ],
             [
                 'Пост 2',
                 'Контент, содержимое, описание и прочее поста 2',
-                json_encode([
-                    ['type' => 'image','src' => 'assets/img/girls/2-1.jpg'],
-                    ['type' => 'image','src' => 'assets/img/girls/2-2.jpg'],
-                    ['type' => 'image','src' => 'assets/img/girls/2-3.jpg'],
-                    ['type' => 'image','src' => 'assets/img/girls/2-4.jpg'],
-                    ['type' => 'image','src' => 'assets/img/girls/2-5.jpg'],
-                    ['type' => 'image','src' => 'assets/img/girls/2-6.jpg']
-                ], JSON_PRETTY_PRINT)
+                [
+                    0 => ['type' => 'image','src' => 'assets/img/girls/2-1.jpg'],
+                    1 => ['type' => 'image','src' => 'assets/img/girls/2-2.jpg'],
+                    2 => ['type' => 'image','src' => 'assets/img/girls/2-3.jpg'],
+                    3 => ['type' => 'image','src' => 'assets/img/girls/2-4.jpg'],
+                    4 => ['type' => 'image','src' => 'assets/img/girls/2-5.jpg'],
+                    5 => ['type' => 'image','src' => 'assets/img/girls/2-6.jpg']
+                ]
             ],
         ];
 
@@ -47,6 +47,7 @@ class PostsTableSeeder extends Seeder
             $post = Post::create([
                 'attachments' => $seed[2],
                 'is_published' => true,
+                'published_on' => new \DateTime(),
                 'author_id' => $author_id
             ]);
 

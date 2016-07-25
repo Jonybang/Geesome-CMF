@@ -20,6 +20,10 @@ use App\Models\Setting;
 
 Route::post('/send-message', ['as' => 'send-message', 'uses' => 'ClientController@sendFeedbackMessage']);
 Route::post('/subscribe', ['as' => 'subscribe', 'uses' => 'ClientController@subscribe']);
+Route::get('/' . env('SITE_IMAGES_PATH') . '{filepath}', 'ClientController@getFile')->where('filepath', '.*');;
+Route::get('/phpinfo', function(){
+    return phpinfo();
+});
 
 //========================================================================================================
 // AUTHENTICATE
@@ -27,9 +31,6 @@ Route::post('/subscribe', ['as' => 'subscribe', 'uses' => 'ClientController@subs
 
 Route::post('/login', 'Auth\AuthController@authenticate');
 Route::get('/logout', 'Auth\AuthController@logout');
-Route::get('/phpinfo', function(){
-    return phpinfo();
-});
 
 //========================================================================================================
 // ADMIN AND API

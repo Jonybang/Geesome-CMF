@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Faker\Provider\zh_CN\DateTime;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -49,20 +50,20 @@ class PostController extends Controller
 
 		$attachments = [];
 		foreach($data['images_urls'] as $image){
-			$path_to_file = FileHelper::savePostFile($post, $image['url'], $post->generatePathArray());
-			$attachments[$image['index']] = json_encode([
-				['type' => 'image', 'src' => $path_to_file]
-			]);
+			$path_to_file = FileHelper::savePostFile($post, $image['url'], $image['index']);
+			$attachments[$image['index']] = ['type' => 'image', 'src' => $path_to_file];
 		}
+		ksort($attachments);
 		$post->attachments = $attachments;
+
+		if($post->is_published)
+			$post->published_at = new \DateTime();
+
 		$post->save();
 
 		UserActionLog::saveAction($post, "create");
 
-		return Response::json(
-			$post->toArray(),
-			200
-		);
+		return $post;
 	}
 	public function update(Request $request)
 	{
@@ -92,9 +93,8 @@ class PostController extends Controller
 		$path_to_file = FileHelper::savePostFile($post, $request->file('file'), $file_index);
 
 		$attachments = $post->attachments;
-		$attachments[$file_index] = json_encode([
-			['type' => 'image', 'src' => $path_to_file]
-		]);
+		$attachments[$file_index] = ['type' => 'image', 'src' => $path_to_file];
+		ksort($attachments);
 		$post->attachments = $attachments;
 		$post->save();
 	}

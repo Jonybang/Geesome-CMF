@@ -6,28 +6,28 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class FileHelper
 {
-	static function savePostFile($post, $image, $folder) {
+	static function savePostFile($post, $image, $index) {
 		if(!$image)
 			return null;
+		$relative_path = env('SITE_IMAGES_PATH') . $post->generatePathArray();
+		$absolute_path = base_path($relative_path);
 
-		$file_container = env('IMAGE_ARCHIVE_PATH');
-
-		$dir_path = $file_container . $folder;
-
-		if(!is_dir($dir_path)){
-			\File::makeDirectory($dir_path, $mode = 0755, true, true);
+		if(!is_dir($absolute_path)){
+			\File::makeDirectory($absolute_path, $mode = 0755, true, true);
 		}
 
-		$filename = $post->tags_names_str . '_' .$post->id;
+		$filename = $post->tags_names_str . '_' . $post->id . '_' . $index;
 
-		$path = $file_container . $folder . $filename;
+		if(method_exists($image, 'getRealPath')){
+			$filename .= '.' . $image->getExtension();
+			Image::make($image->getRealPath())->widen(2048)->save($absolute_path . $filename);
+		}
+		else{
+			$filename .= '.' . pathinfo($image)['extension'];
+			Image::make($image)->widen(2048)->save($absolute_path . $filename);
+		}
 
-		if(method_exists($image, 'getRealPath'))
-			Image::make($image->getRealPath())->widen(2048)->save($path);
-		else
-			Image::make($image)->widen(2048)->save($path . '.' . pathinfo($image)['extension']);
-
-		return $path;
+		return $relative_path . $filename;
 	}
 	static function checkFolders($container, $path){
 		$folders = explode('/', $path);

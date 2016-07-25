@@ -22,12 +22,16 @@ class ClientController extends Controller
             redirect('login');
     }
 
-    public function get_posts(){
+    public function get_posts($page){
 
         $posts = Post::where([
             'is_published' => true
-        ])->get();
+        ])->orderBy('published_at', 'DESC')->get();
         return ['posts' => $posts];
+    }
+
+    public function getFile($filepath){
+        return response()->download(base_path('archive/' . $filepath), null, [], null);
     }
 
     public function tag_by_alias($sub_alias = null){
