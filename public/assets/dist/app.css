@@ -1,3 +1,50 @@
+.day-off button span {
+  background-color: #32CD32;
+  border-radius: 32px;
+  color: #000;
+  padding: 5px;
+}
+
+.date-input .input-group {
+  width: 130px;
+}
+
+select-input .input-small .btn-default {
+  height: 30px;
+}
+
+dd,
+dt {
+  line-height: 3;
+}
+
+.btn-group.select-adder {
+  width: 300px;
+  padding: 0 15px;
+  margin-left: -15px;
+}
+
+.btn-group.select-adder .ui-select-container {
+  width: 230px !important;
+  display: inline-block;
+}
+
+.btn-group.select-adder .btn-success {
+  float: right;
+}
+
+pre {
+  white-space: pre-wrap;
+  /* css-3 */
+  white-space: -moz-pre-wrap;
+  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;
+  /* Opera 4-6 */
+  white-space: -o-pre-wrap;
+  /* Opera 7 */
+  word-wrap: break-word;
+  /* Internet Explorer 5.5+ */
+}
 /*!
  * Start Bootstrap - SB Admin Bootstrap Admin Template (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
