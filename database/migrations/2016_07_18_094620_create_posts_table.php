@@ -22,9 +22,9 @@ class CreatePostsTable extends Migration
             $table->boolean('is_queue')->default(true);
             $table->boolean('is_from_cabinet')->default(false);
             $table->boolean('is_secret')->default(false);
-            $table->boolean('is_resolved_nsfw')->default(true);
-            $table->boolean('is_resolved_secret')->default(true);
-            $table->boolean('is_resolved_tags')->default(true);
+
+            $table->integer('post_status_id')->unsigned()->nullable();
+            $table->foreign('post_status_id')->references('id')->on('post_statuses');
 
             $table->string('alias')->nullable();
 

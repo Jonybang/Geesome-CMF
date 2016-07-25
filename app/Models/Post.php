@@ -54,6 +54,13 @@ class Post extends Model
 	/**
 	 * @Relation
 	 */
+	public function status()
+	{
+		return $this->belongsTo(PostStatus::class, 'post_status_id');
+	}
+	/**
+	 * @Relation
+	 */
 	public function contents()
 	{
 		return $this->hasMany(PostContent::class, 'post_id');

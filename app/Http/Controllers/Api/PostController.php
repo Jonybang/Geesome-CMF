@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use Faker\Provider\zh_CN\DateTime;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;

@@ -23,18 +23,17 @@ class TagsTableSeeder extends Seeder
                 "Lineage 2",
                 "World Of Warcraft" => ["Sylvanas"],
                 "Overwatch" => ["Widowmaker", "D.Va", "Tracer", "Mercy", "Symmetra"],
-                "Lolipop Chainsaw",
-                "Resident Evil",
+                "Lolipop Chainsaw" => ["Juliet Starling"],
+                "Resident Evil" => ["Jill Valentine", "Ada Wong"],
                 "Street Fighter" => ["Cammy"],
-                "Mortal Combat",
-                "Witcher",
+                "Mortal Combat" => ["Jade", "Mileena"],
+                "Witcher" => ["Ciri", "Yennefer"],
                 "Legend of the Cryptids",
-                "Bioshock",
+                "Bioshock" => ["Elizabeth"],
                 "Mass Effect" => ["Liara T'soni"],
                 "Metal Gear Solid" => ["Quiet"],
                 "Tomb Raider" => ["Lara Croft"],
                 "Parasite Eve" => ["Aya Brea"],
-                "Resident Evil" => ["Jill Valentine"],
                 "Final Fantasy" => ["Sabrith Ebonclaw", "Tifa Lockheart"],
                 "Metroid" => ["Samus Aran"],
                 "Blazblue" => ["Makoto nanaya"],
@@ -45,17 +44,17 @@ class TagsTableSeeder extends Seeder
                 "Seven Deadly Sins" => ["Elizabeth Liones"],
                 "Sword Art Online" => ["Sino", "Asuna"],
                 "Fate series" => ["Saber"],
-                "Gurren Lagann" => ["Yoko Littner", ],
-                "Mirai Nikki",
-                "Panty and Stocking",
+                "Gurren Lagann" => ["Yoko Littner"],
+                "Mirai Nikki" => ["Yuno Gasai"],
+                "Panty and Stocking" => ["Panty", "Stocking"],
                 "Gate",
-                "RWBY" => ["Ruby Rose", ],
-                "Steins;Gate",
-                "Touhou Project",
+                "RWBY" => ["Ruby Rose"],
+                "Steins;Gate" => ["Kurisu Makise", "Mayushi"],
+                "Touhou Project" => ["Cirno", "Flandre Scarlet", "Remilia Scarlet", "Sakuya Izayoi", "Reimu Hakurei", "Marisa Kirisame", "Yukari Yakumo", "Alice Margatroid"],
                 "Pokemon" => ["Misty", "Jessie"],
                 "Kantai Collection",
                 "Monogatari",
-                "Durarara",
+                "Durarara" => ["Celty Sturluson"],
                 "Re:Zero" => ["Ram", "Rem"],
                 "One piece" => ["Lin"],
                 "Vocaloid" => ["Hatsune Miku"],
@@ -75,7 +74,7 @@ class TagsTableSeeder extends Seeder
                 "Marvel" => ["Black Cat", "Spider-Gwen", "Spider-Girl", "Mary Jane", "Black Widow", "X-23", "Rogue", "Jubilee", "X-Men"]
             ],
             "Films" => [
-                "Star Wars",
+                "Star Wars" => ["Jedi"],
                 "A Nightmare on Elm Street" => ["Freddy Krueger"]
             ],
             "Mults" => [
@@ -96,13 +95,15 @@ class TagsTableSeeder extends Seeder
 
             "Secret" => ["Porn", "Hentai", "Comics", "Manga", "Group"],
 
-            "Сharacter" => ["Sexy", "Cute", "Kaeaii", "Dangerous", "Geek", "Sport", "Loli", "Shame", "Shameless", "Angry", "Demon", "Angel", "Elf", "Famous Artist"],
+            "Сharacter" => ["Sexy", "Cute", "Kawaii", "Dangerous", "Geek", "Sport", "Loli", "Shame", "Shameless", "Angry", "Demon", "Angel", "Elf", "Famous Artist"],
+
+            "Modifier" => ["Rule 63", "Humanization", "Crossover"],
 
             "Nationality" => ["Russian", "Asian", "Japan"],
-            //"Rule 63", "Humanization", "Crossover"
+
             "Weapon" => ["Sword", "Bow", "Mecha", "Katana", "Gun"],
 
-            "Environment" => ["Pool", "Hot springs", "Beach", "Backstage"],
+            "Environment" => ["Pool", "Hot springs", "Beach", "Backstage", "Convention"],
 
             "Photo" => ["PUGOFFKA", "Selfie", "Unknow Photograph"],
 

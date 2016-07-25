@@ -1,15 +1,13 @@
 angular.module('app')
-    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'Upload', 'AppPaths', 'AppData', 'Posts', 'Users', 'Tags',
-        function($scope, $state, $http, $uibModal, Upload, AppPaths, AppData, Posts, Users, Tags) {
+    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'Upload', 'AppPaths', 'AppData', 'Posts', 'PostsStatuses', 'Users', 'Tags',
+        function($scope, $state, $http, $uibModal, Upload, AppPaths, AppData, Posts, PostsStatuses, Users, Tags) {
         var defaultPost = new Posts();
 
         if($state.params.postId){
             $scope.post = Posts.get({id: $state.params.postId});
             $scope.post.id = $state.params.postId;
         } else {
-            defaultPost.is_resolved_nsfw = true;
             defaultPost.is_queue = true;
-            defaultPost.is_resolved_tags = true;
             defaultPost.tags_ids = [];
 
             $scope.post = angular.copy(defaultPost);
@@ -69,7 +67,8 @@ angular.module('app')
         $scope.models = {
             posts: Posts,
             users: Users,
-            tags: Tags
+            tags: Tags,
+            posts_statuses: PostsStatuses
         };
         //Fields for adder functional at select inputs
         $scope.fields = {
@@ -79,14 +78,26 @@ angular.module('app')
                     label: 'Name'
                 },
                 {
-                    name: 'description',
-                    label: 'Description',
-                    type: 'textarea'
-                },
-                {
                     name: 'copyrights',
                     label: 'Copyrights',
                     type: 'textarea'
+                },
+                {
+                    name: 'parent_tag_id',
+                    label: 'Parent tag',
+                    type: 'select',
+                    resource: Tags,
+                    list: 'tags'
+                }
+            ],
+            posts_statuses: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'key',
+                    label: 'Key'
                 }
             ]
         };

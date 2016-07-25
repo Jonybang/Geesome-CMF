@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TagsTableSeeder::class);
 
         $this->call(PostsTableSeeder::class);
+        $this->call(PostStatusesSeeder::class);
         $this->call(ProjectPagesTableSeeder::class);
 
         $this->call(TagPageTableSeeder::class);
