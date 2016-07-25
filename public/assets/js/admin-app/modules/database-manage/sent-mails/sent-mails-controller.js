@@ -8,6 +8,8 @@ angular.module('app')
             resource: SentMails,
             create: false,
             edit: false,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',

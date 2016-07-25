@@ -6,6 +6,8 @@ angular.module('app')
             caption: '',
             orderBy: '-id',
             resource: Tags,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
