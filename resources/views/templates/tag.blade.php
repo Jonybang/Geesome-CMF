@@ -1,6 +1,8 @@
 @extends('layouts.client')
 
-@section('title', $tag->title)
+@section('seo_title')
+    {{$site_title}} - Tag {{$tag->name}}
+@endsection
 
 @section('header')
     <header class="intro-header" style="background-image: url('{{isset($sf['imageLink']) && $sf['imageLink'] ? $sf['imageLink'] : 'assets/img/home-bg.jpg'}}')">
