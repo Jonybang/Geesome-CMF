@@ -16,7 +16,7 @@
 @section('navbar')
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-        <div class="container-fluid">
+        <div class="">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -47,7 +47,7 @@
         </div>
         <!-- /.container -->
     </nav>
-<nav class="navbar navbar-static">
+<nav class="navbar navbar-static" style="margin-bottom: 0px;">
     <div class="container">
         <a class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
             <span class="glyphicon glyphicon-chevron-down"></span>
@@ -76,32 +76,15 @@
 @endsection
 
 @section('header')
-    <header class="masthead">
-        <div class="container">
-            <div class="row">
-                <div class="col col-sm-6">
-                    <h1>
-                        <a href="#" title="scroll down for your viewing pleasure">Создай свою коллекцию няшек!</a>
-                        <p class="lead">2-column Layout + Theme for Bootstrap 3</p></h1>
-                </div>
-                <div class="col col-sm-6">
-                    <div class="well pull-right">
-                        <img src="//placehold.it/280x100/E7E7E7">
+    <header class="masthead" style="height: 300px; border-bottom: 2px solid #1695A3; margin-bottom:0px; background-size:cover; background-image: url('http://image02.worldcosplay.net/uploads//cv/22523/ueboxojnyvqwkmfvehzcitvlwuilsomgerimowtk-store.jpg');">
+        <div style="padding-top: 10px;padding-left: 50px;">
+            <div class="">
+                <div class="row">
+                    <div class="col col-sm-6 col-sm-offset-6">
+                        <h1>
+                            <a href="#" title="scroll down for your viewing pleasure">Создай свою коллекцию няшек!</a>
+                            <p class="lead">2-column Layout + Theme for Bootstrap 3</p></h1>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                <div class="col col-sm-12">
-
-                    <div class="panel">
-                        <div class="panel-body">
-                            You may want to put some news here  <span class="glyphicon glyphicon-heart-empty"></span>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -109,7 +92,7 @@
 @endsection
 
 @section('content')
-    <div class="container">
+    <div style="padding-left: 50px;">
         <div class="row">
             <div class="col col-sm-3">
                 <div id="sidebar">
