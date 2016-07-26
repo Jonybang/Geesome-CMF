@@ -1,5 +1,9 @@
 @extends('layouts.master')
 
+@section('seo_title')
+    {{$site_title}} - {{$page->title}}
+@endsection
+
 @section('styles')
     <!-- Custom CSS -->
     <link href="assets/css/app.css" rel="stylesheet">
