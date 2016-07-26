@@ -127,7 +127,7 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
         'is_menu_hide' => false,
         'is_published' => true,
         'is_deleted' => false,
-        'parent_page_id' => 0
+        'parent_page_id' => null
     ])->with('child_pages')->get();
 
     //get general settings and add or rewrite by settings in page context
