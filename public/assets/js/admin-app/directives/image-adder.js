@@ -18,14 +18,24 @@ angular
                     chosen_files: [],
                     images_files: []
                 };
-                scope.ngModel = [angular.copy(defaultItem)];
+                function initNgModel(){
+                    scope.ngModel = [angular.copy(defaultItem)];
+                }
+                initNgModel();
 
                 scope.addItem = function(){
                     scope.ngModel.push(angular.copy(defaultItem));
-                    console.log(scope.ngModel);
                 };
                 scope.deleteItem = function(index){
                     scope.ngModel.splice(index, 1);
+                    if(!scope.ngModel.length){
+                        initNgModel();
+                        return;
+                    }
+                    var lastItem = scope.ngModel[scope.ngModel.length - 1];
+                    if(lastItem.previewImage || lastItem.imageUri){
+                        scope.addItem();
+                    }
                 };
 
                 scope.filesAdded = function(item){
