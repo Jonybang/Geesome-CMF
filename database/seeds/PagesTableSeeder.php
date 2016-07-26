@@ -28,8 +28,6 @@ class PagesTableSeeder extends Seeder
         
         $seeds = [
             ['Main', '', 'index', 'Main page subtitle', 'Main page description', 'Main page content', false, 'default'],
-            ['Blog', 'blog', 'blog', '', '', '', false, 'default'],
-            ['Projects', 'projects', 'projects', '', '', '', false, 'default'],
             ['About', 'about', 'page', '', '', 'About page content', false, 'default'],
             ['Feedback', 'feedback', 'form', '', '', 'Feedback page content', false, 'default'],
             ['Thanks for feedback', 'thanks-for-feedback', 'page', '', '', 'Thanks for feedback content', true, 'default'],

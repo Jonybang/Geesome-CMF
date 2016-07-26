@@ -79,4 +79,4 @@ gulp.task('watch', function() {
     gulp.watch(paths.client_styles, ['clientSCSS']);
 });
 
-gulp.task('default', ['concatAngularVendorJS', 'concatAdminAppJS', 'concatAdminAppCSS', 'watch']);
+gulp.task('default', ['concatAngularVendorJS', 'concatAdminAppJS', 'concatAdminAppCSS', 'clientSCSS', 'watch']);

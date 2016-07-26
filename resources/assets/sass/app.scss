@@ -1,10 +1,11 @@
 // @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
 /* bootstrap 3 helpers */
-$background_color: #dddfd4;
-$text_color: #173e43;
-$main_color: #3fb0ac;
-$sub_color: #fae596;
+$background_color: #F2F2F2; //светлосерый
+$text_color: #173e43; //серый
+$nav_brand_text_color: #FFFFFF; //белый
+$main_color: #1695A3; //бирюзовый
+$sub_color: #fae596; //желтый
 
 .navbar-form input, .form-inline input {
   width:auto;
@@ -80,7 +81,10 @@ h3.highlight  {
   border-left:1px solid $main_color;
 }
 .navbar-default .navbar-brand {
-  color:$text_color;
+  color:$nav_brand_text_color;
+}
+.navbar-default .navbar-brand:hover {
+  color:$sub_color;
 }
 .navbar-nav > li > a:hover, .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:hover {
   color:$sub_color;
