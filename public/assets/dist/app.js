@@ -2430,7 +2430,6 @@ angular.module('app')
             $scope.post = Posts.get({id: $state.params.postId});
             $scope.post.id = $state.params.postId;
         } else {
-            defaultPost.is_queue = true;
             defaultPost.tags_ids = [];
 
             $scope.post = angular.copy(defaultPost);
@@ -2450,6 +2449,10 @@ angular.module('app')
         //Get site settings and set default values to post object
         function setDefaultSettings(){
             $scope.site_settings = AppData.site_settings;
+            defaultPost.is_queue = $scope.site_settings.default_post_queue == 1;
+            defaultPost.is_published = !defaultPost.is_queue;
+            if(!$state.params.postId)
+                angular.extend($scope.post, defaultPost);
         }
         if(AppData.site_settings.$promise)
             AppData.site_settings.$promise.then(setDefaultSettings);
@@ -2887,46 +2890,6 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
-        $scope.settings = [];
-
-        $scope.aGridOptions = {
-            caption: 'All settings available in templates.',
-            orderBy: '-id',
-            resource: Settings,
-            ajax_handler: true,
-            get_list: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Setting key',
-                    new_placeholder: 'New Setting',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'description',
-                    label: 'Description'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
     .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', function($scope, SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages) {
         $scope.sub_fields_types = [];
 
@@ -3058,6 +3021,46 @@ angular.module('app')
                     resource: Pages,
                     name_field: 'title',
                     required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+        $scope.settings = [];
+
+        $scope.aGridOptions = {
+            caption: 'All settings available in templates.',
+            orderBy: '-id',
+            resource: Settings,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    modal: 'self',
+                    label: 'Setting key',
+                    new_placeholder: 'New Setting',
+                    required: true
+                },
+                {
+                    name: 'value',
+                    label: 'Value',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'description',
+                    label: 'Description'
                 }
             ]
         };

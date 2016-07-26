@@ -7,7 +7,6 @@ angular.module('app')
             $scope.post = Posts.get({id: $state.params.postId});
             $scope.post.id = $state.params.postId;
         } else {
-            defaultPost.is_queue = true;
             defaultPost.tags_ids = [];
 
             $scope.post = angular.copy(defaultPost);
@@ -27,6 +26,10 @@ angular.module('app')
         //Get site settings and set default values to post object
         function setDefaultSettings(){
             $scope.site_settings = AppData.site_settings;
+            defaultPost.is_queue = $scope.site_settings.default_post_queue == 1;
+            defaultPost.is_published = !defaultPost.is_queue;
+            if(!$state.params.postId)
+                angular.extend($scope.post, defaultPost);
         }
         if(AppData.site_settings.$promise)
             AppData.site_settings.$promise.then(setDefaultSettings);

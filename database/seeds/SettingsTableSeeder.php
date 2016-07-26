@@ -21,7 +21,8 @@ class SettingsTableSeeder extends Seeder
             ['Yandex translate api key', 'yandex_translate_api_key', env('SITE_YANDEX_TRANSLATE_API_KEY')],
             ['Default template id at create page form', 'default_template_id', Template::where('key', 'page')->first()->id],
             ['Admin email', 'admin_email', env('SITE_ADMIN_EMAIL')],
-            ['Markdown instead markup editor', 'markdown_mode', env('SITE_MARKDOWN_MODE')]
+            ['Markdown instead markup editor', 'markdown_mode', env('SITE_MARKDOWN_MODE')],
+            ['Default queue post mode', 'default_post_queue', 0]
         ];
         foreach($seeds as $seed){
             DB::table('settings')->insert([
