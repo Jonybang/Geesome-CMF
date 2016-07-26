@@ -77,7 +77,7 @@
 
 @section('header')
     <header class="masthead" style="height: 300px; border-bottom: 2px solid #1695A3; margin-bottom:0px; background-size:cover; background-image: url('http://image02.worldcosplay.net/uploads//cv/22523/ueboxojnyvqwkmfvehzcitvlwuilsomgerimowtk-store.jpg');">
-        <div style="padding-top: 10px;padding-left: 50px;">
+        <div style="padding-top: 10px; padding-left: 50px;">
             <div class="">
                 <div class="row">
                     <div class="col col-sm-6 col-sm-offset-6">
@@ -92,9 +92,9 @@
 @endsection
 
 @section('content')
-    <div style="padding-left: 50px;">
+    <div style="padding-left: 50px;" class="container">
         <div class="row">
-            <div class="col col-sm-3">
+            <div class="col col-md-3">
                 <div id="sidebar">
                     <ul class="nav nav-stacked">
                         <li><h3 class="highlight">Channels <i class="glyphicon glyphicon-dashboard pull-right"></i></h3></li>
@@ -129,8 +129,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col col-sm-9">
-                <div class="panel">
+            <div class="col col-md-9">
+                <div class="panel ">
                     @yield('client-content')
                 </div>
             </div>
