@@ -1475,9 +1475,19 @@ angular.module('a-edit')
     }]);
 
 angular
-    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'ckeditor', 'a-edit'])
-    .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
-        function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
+    .module('app', [
+        'ngResource',
+        'ui.bootstrap',
+        'ui.router',
+        'ui.router.tabs',
+        'ui-notification',
+        'wiz.markdown',
+        'dndLists',
+        'rt.debounce',
+        'ckeditor',
+        'a-edit'])
+    .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
+        function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
 
             $stateProvider
                 .state('app', {
@@ -1589,6 +1599,16 @@ angular
 
             $locationProvider.html5Mode(true).hashPrefix('!');
             $urlRouterProvider.otherwise("/admin");
+
+            NotificationProvider.setOptions({
+                delay: 5000,
+                startTop: 20,
+                startRight: 10,
+                verticalSpacing: 20,
+                horizontalSpacing: 20,
+                positionX: 'right',
+                positionY: 'top'
+            });
         }])
     .run(['$rootScope', 'AppData', 'AEditConfig', function($rootScope, AppData, AEditConfig){
 
@@ -2143,8 +2163,9 @@ angular.module('app')
             mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });
 angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, Notification, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+
         var defaultPage = new Pages();
 
         if($state.params.pageId){
@@ -2335,14 +2356,9 @@ angular.module('app')
                     $scope.page.seo = seo;
                 });
 
-                $scope.alert = 'Page saved!';
-
+                Notification.success('Page saved!');
                 $scope.app.refreshPagesTree();
             })
-        };
-
-        $scope.closeAlert = function(){
-            $scope.alert = ''
         };
     }]);
 
@@ -3050,8 +3066,8 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'AppPaths', 'AppData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
-        function($scope, $state, $http, $uibModal, debounce, AppPaths, AppData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
+    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'AppData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
+        function($scope, $state, $http, $uibModal, debounce, Notification, AppPaths, AppData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
 
             //======================================
             //INITIAL ACTIONS
@@ -3233,7 +3249,7 @@ angular.module('app')
                 }, function(){
                     $scope.status.preview_mail = {
                         error: 'Compiling error. Perhaps the problem is to use currently not existing variables ot just not set page object'
-                    }
+                    };
                 })
             }
             var debounceRenderPreview = debounce(1000, renderMailPreview);
@@ -3282,8 +3298,7 @@ angular.module('app')
                     if(!confirm('Are you sure want to send mail without last not saved changes in mail template? For save changes click "Save mail template" button.'))
                         return;
                 }
-
-                $scope.status.mail.loading = true;
+                Notification.info({message: 'Sending mail...', replaceMessage: true, delay: 999999});
 
                 $scope.mail.sub_data = {};
                 $scope.mail.sub_data_array.forEach(function(sub_item){
@@ -3295,18 +3310,15 @@ angular.module('app')
                 $scope.mail.$save().then(function(result){
                     $scope.mail = angular.copy(defaultMail);
 
-                    $scope.alert = 'Mail sent!';
+                    Notification.success({message: 'Mail sent!', replaceMessage: true});
 
                     $scope.getSentMails();
 
                     $scope.status.mail = {};
                 }, function(){
                     $scope.status.mail.error = true;
+                    Notification.error({message: 'Error. Something wrong...', replaceMessage: true});
                 })
-            };
-
-            $scope.closeAlert = function(){
-                $scope.alert = ''
             };
 
             $scope.addNewSubItem = function(){

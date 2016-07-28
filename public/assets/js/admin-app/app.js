@@ -1,7 +1,17 @@
 angular
-    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'ckeditor', 'a-edit'])
-    .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
-        function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
+    .module('app', [
+        'ngResource',
+        'ui.bootstrap',
+        'ui.router',
+        'ui.router.tabs',
+        'ui-notification',
+        'wiz.markdown',
+        'dndLists',
+        'rt.debounce',
+        'ckeditor',
+        'a-edit'])
+    .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
+        function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
 
             $stateProvider
                 .state('app', {
@@ -113,6 +123,16 @@ angular
 
             $locationProvider.html5Mode(true).hashPrefix('!');
             $urlRouterProvider.otherwise("/admin");
+
+            NotificationProvider.setOptions({
+                delay: 5000,
+                startTop: 20,
+                startRight: 10,
+                verticalSpacing: 20,
+                horizontalSpacing: 20,
+                positionX: 'right',
+                positionY: 'top'
+            });
         }])
     .run(['$rootScope', 'AppData', 'AEditConfig', function($rootScope, AppData, AEditConfig){
 

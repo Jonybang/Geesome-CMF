@@ -12,6 +12,7 @@
     <!-- Morris Charts CSS -->
     <link href="/assets/css/plugins/morris.css" rel="stylesheet">
     <link href="/assets/css/angular/select.min.css" rel="stylesheet">
+    <link href="/assets/css/angular/angular-ui-notification.min.css" rel="stylesheet">
 @endsection
 
 
