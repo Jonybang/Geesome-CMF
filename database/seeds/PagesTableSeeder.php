@@ -32,6 +32,7 @@ class PagesTableSeeder extends Seeder
             ['Feedback', 'feedback', 'form', '', '', 'Feedback page content', false, 'default'],
             ['Thanks for feedback', 'thanks-for-feedback', 'page', '', '', 'Thanks for feedback content', true, 'default'],
             ['Thanks for subscribe', 'thanks-for-subscribe', 'page', '', '', 'Thanks for subscribe content', true, 'default'],
+            ['Create you collection', 'register', 'register', '', '', 'Register and create girls collection!', true, 'default'],
             ['Login', 'login', 'login', '', '', 'Please log in', true, 'default'],
             ['Cabinet', 'cabinet', 'cabinet', '', '', 'User cabinet', true, 'cabinet'],
         ];

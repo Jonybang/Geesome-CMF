@@ -13,6 +13,12 @@
 
             {!! Form::open(array('url' => 'login', 'method'=>'post', 'class'=> "form-horizontal")) !!}
                 <div class="form-group">
+                    <label class="col-sm-2 control-label">Nickname</label>
+                    <div class="col-sm-10">
+                        <input type="email" name="name" class="form-control" placeholder="Nickname" value="{{ old('name') }}">
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-sm-2 control-label">Email</label>
                     <div class="col-sm-10">
                         <input type="email" name="email" class="form-control" placeholder="Email" value="{{ old('email') }}">

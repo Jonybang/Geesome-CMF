@@ -19,6 +19,7 @@ class TemplatesTableSeeder extends Seeder
             ['Tag', 'tag'],
             ['Form', 'form'],
             ['Login', 'login'],
+            ['Register', 'register'],
             ['Cabinet', 'cabinet'],
         ];
         foreach($seeds as $seed){
