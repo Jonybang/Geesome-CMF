@@ -1,6 +1,6 @@
 // Code goes here
 angular
-  .module('a-edit', ['ui.bootstrap', 'angularMoment', 'ui.select', 'ngSanitize', 'wiz.markdown'])
+  .module('a-edit', ['ui.bootstrap', 'angularMoment', 'ui.select', 'ngSanitize'])
   
   .run(['amMoment', 'uiSelectConfig', '$templateCache', function(amMoment, uiSelectConfig, $templateCache) {
     amMoment.changeLocale('ru');
@@ -71,7 +71,7 @@ angular
                 create: true,
                 edit: true,
                 delete: true,
-                paginate: true,
+                paginate: false,
                 bold_headers: true,
                 modal_adder: false,
                 ajax_handler: false,
@@ -250,10 +250,9 @@ angular
                     tableHtml += '<uib-pagination total-items="gridOptions.filter_items" items-per-page="gridOptions.items_per_page" ng-model="gridOptions.current_page" ng-change="getList()"></uib-pagination>';
                 }
 
-                var template = angular.element(tplHtml + tableHtml);
+                var template = angular.element('<div>' + tplHtml + tableHtml + '</div>');
 
-                var linkFn = $compile(template)(scope);
-                element.html(linkFn);
+                angular.element(element).append($compile(template)(scope));
             });
 
             // *************************************************************
@@ -261,20 +260,27 @@ angular
             // *************************************************************
 
             scope.getList = function(){
-                if(!scope.actualOptions.ajax_handler)
-                    return;
+                var query_name = 'get';
 
-                if(scope.searchQuery)
-                    scope.gridRequestOptions[variables['query']] = scope.searchQuery;
-                else
-                    delete scope.gridRequestOptions[variables['query']];
+                if(scope.actualOptions.ajax_handler){
 
-                scope.gridRequestOptions[variables['offset']] = (scope.gridOptions.current_page - 1) * scope.gridOptions.items_per_page;
-                scope.gridRequestOptions[variables['limit']] = scope.gridOptions.items_per_page;
+                    if(scope.searchQuery)
+                        scope.gridRequestOptions[variables['query']] = scope.searchQuery;
+                    else
+                        delete scope.gridRequestOptions[variables['query']];
 
-                angular.extend(scope.gridRequestOptions, scope.gridOptions.additional_request_params);
+                    if(scope.actualOptions.paginate){
+                        scope.gridRequestOptions[variables['offset']] = (scope.gridOptions.current_page - 1) * scope.gridOptions.items_per_page;
+                        scope.gridRequestOptions[variables['limit']] = scope.gridOptions.items_per_page;
+                    }
 
-                AEditHelpers.getResourceQuery(scope.actualOptions.resource, 'search', scope.gridRequestOptions).then(function(response){
+                    angular.extend(scope.gridRequestOptions, scope.gridOptions.additional_request_params);
+
+                    query_name = 'search';
+                }
+
+
+                AEditHelpers.getResourceQuery(scope.actualOptions.resource, query_name, scope.gridRequestOptions).then(function(response){
                     scope.ngModel = response[variables['list']] || response;
 
                     var meta_info = response[variables['meta_info']];
@@ -294,10 +300,10 @@ angular
             scope.search = function(newQuery, oldQuery){
                 scope.filtredList = scope.ngModel;
 
-                if(newQuery == oldQuery)
+                if(newQuery == oldQuery && scope.actualOptions.ajax_handler)
                     return;
 
-                if(mode != 'local' && scope.actualOptions.ajax_handler){
+                if(scope.actualOptions.ajax_handler){
                     scope.getList();
                     return;
                 }
@@ -475,8 +481,8 @@ angular
                     return;
                 }
 
-                if(confirm('Do you want delete object "' + item.name + '"?')){
-                    AEditHelpers.getResourceQuery(item, 'delete').then(function(){
+                if(confirm('Do you want delete object "' + (item.name || item.key || item.title) + '"?')){
+                    AEditHelpers.getResourceQuery(new scope.actualOptions.resource(item), 'delete').then(function(){
                         deleteCallbacks();
                     });
                 }
@@ -777,7 +783,7 @@ angular
                     '<span ng-if="!isEdit">{{selectedName}}</span>' +
                     '<input type="hidden" name="{{name}}" ng-bind="ngModel" class="form-control" required />' +
 
-                    '<ui-select ' + uiSelect.tags + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small" reset-search-input="{{resetSearchInput}}" on-select="onSelect($select)">' +
+                    '<ui-select ' + uiSelect.tags + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small" reset-search-input="{{resetSearchInput}}" on-select="onSelectItem($select)">' +
                         '<ui-select-match placeholder="">' +
                             '{{' + uiSelect.match + '}}' +
                         '</ui-select-match>' +
@@ -846,9 +852,9 @@ angular
 
                 scope.refreshDelay = AEditConfig.select_options.refresh_delay;
                 scope.resetSearchInput = AEditConfig.select_options.reset_search_input;
-                scope.onSelect = function($select){
+                scope.onSelectItem = function($select){
                     //fix ui-select bug
-                    if(scope.resetSearchInput)
+                    if(scope.resetSearchInput && $select)
                         $select.search = '';
 
                     $timeout(scope.onSelect);
@@ -914,6 +920,9 @@ angular
                     scope.getListByResource();
                 }
                 scope.getListByResource = function (query){
+                    if(!scope.ngResource)
+                        return;
+
                     var request_options = {};
                     if(query)
                         request_options[variables['query']] = query;
@@ -943,10 +952,11 @@ angular
                                 names.push(result_name);
                             } else if(scope.ngResource){
                                 // if object with id not exist in current list - get from server
-                                getNameFromServer(id).then(function(name){
-                                    names.push(name);
+                                getObjectFromServer(id).then(function(object){
+                                    names.push(getNameFromObj(object));
                                     scope.selectedName = names.join(', ');
                                     scope.ngModelStr = scope.selectedName;
+                                    scope.local_list.push(object)
                                 })
                             }
                         });
@@ -957,19 +967,21 @@ angular
 
                         // if object with id not exist in current list - get from server
                         if(!scope.selectedName && newVal && scope.ngResource){
-                            getNameFromServer(newVal).then(function(name){
-                                scope.selectedName = name;
+                            getObjectFromServer(newVal).then(function(object){
+                                scope.selectedName = getNameFromObj(object);
                                 scope.ngModelStr = scope.selectedName;
+                                scope.local_list.push(object);
                             })
                         }
                     }
                     scope.ngModelStr = scope.selectedName;
                 };
 
-                function getNameFromServer(id){
-                    return AEditHelpers.getResourceQuery(scope.ngResource, 'show', {id: id}).then(function(object){
-                        return object[scope.nameField] || object.name || object[scope.orNameField];
-                    });
+                function getObjectFromServer(id){
+                    return AEditHelpers.getResourceQuery(scope.ngResource, 'show', {id: id});
+                }
+                function getNameFromObj(obj){
+                    return obj[scope.nameField] || obj.name || obj[scope.orNameField];
                 }
 
                 scope.save = function(){
@@ -1418,7 +1430,7 @@ angular.module('a-edit')
                         possibleFunctions = ['$save', 'create'];
                         break;
                     case 'update':
-                        possibleFunctions = ['$update', 'update'];
+                        possibleFunctions = ['$update', 'update', '$save'];
                         break;
                     case 'delete':
                         possibleFunctions = ['$delete', 'delete'];
@@ -2591,6 +2603,12 @@ angular.module('app')
         $scope.closeAlert = function(){
             $scope.alert = ''
         };
+        $scope.onTagSelect = function(){
+            $http.post('admin/api/get_auto_tags', {tags_ids: $scope.post.tags_ids})
+                .then(function(result){
+                    $scope.post.tags_ids = result.data;
+                });
+        }
     }]);
 
 angular.module('app')

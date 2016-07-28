@@ -30,7 +30,7 @@
                     <ae-text-input ng-model="post.content" has-error="hasErrors.content" type="textarea" is-edit="true"></ae-text-input>
 
                     <label>Tags:</label>
-                    <ae-select-input ng-model="post.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" get-list="true" type="multiselect"></ae-select-input>
+                    <ae-select-input ng-model="post.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" get-list="true" type="multiselect" on-select="onTagSelect()"></ae-select-input>
 
                     <label>Parent post:</label>
                     <ae-select-input ng-model="post.parent_post_id" name-field="title" has-error="hasErrors.parent_post_id" ng-resource="models.posts" ng-resource-fields="fields.posts" is-edit="true" get-list="true"></ae-select-input>

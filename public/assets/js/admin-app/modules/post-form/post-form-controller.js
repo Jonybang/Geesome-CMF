@@ -146,4 +146,10 @@ angular.module('app')
         $scope.closeAlert = function(){
             $scope.alert = ''
         };
+        $scope.onTagSelect = function(){
+            $http.post('admin/api/get_auto_tags', {tags_ids: $scope.post.tags_ids})
+                .then(function(result){
+                    $scope.post.tags_ids = result.data;
+                });
+        }
     }]);

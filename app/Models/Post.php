@@ -94,18 +94,9 @@ class Post extends Model
 	}
 
 	public function addAutoTags(){
-		$result_tags_ids = $this->tags_ids;
+		$this->tags_ids = Tag::getAutoTags($this->tags_ids);
 
-		foreach($result_tags_ids as &$tag_id){
-			$tag = Tag::find($tag_id);
-
-			$parent_id = intval($tag->parent_tag_id);
-			if($parent_id && !in_array($parent_id, $result_tags_ids))
-				$result_tags_ids[] = $parent_id;
-		}
-
-		$this->tags_ids = $result_tags_ids;
-		return $result_tags_ids;
+		return $this->tags_ids;
 	}
 
 	public function generatePathArray(){

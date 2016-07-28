@@ -42,4 +42,16 @@ class Tag extends Model
     {
         return $this->hasMany(Tag::class, 'parent_tag_id');
     }
+
+    public static function getAutoTags($tags_ids){
+        $result_tags_ids = $tags_ids;
+        foreach($result_tags_ids as &$tag_id){
+            $tag = Tag::find($tag_id);
+
+            $parent_id = intval($tag->parent_tag_id);
+            if($parent_id && !in_array($parent_id, $result_tags_ids))
+                $result_tags_ids[] = $parent_id;
+        }
+        return $result_tags_ids;
+    }
 }

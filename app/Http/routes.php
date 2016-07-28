@@ -74,6 +74,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
         Route::resource('posts_statuses', 'Api\PostStatusesController');
 
         Route::post('posts/{post_id}/upload_images', 'Api\PostController@uploadImages');
+        Route::post('get_auto_tags', 'Api\TagController@getAutoTags');
     });
 
     Route::get('/', function () {

@@ -53,4 +53,10 @@ class TagController extends ApiController
 
         return $is_destroyed;
     }
+
+    public function getAutoTags(Request $request)
+    {
+        $data = $request->all();
+        return Tag::getAutoTags($data['tags_ids']);
+    }
 }
