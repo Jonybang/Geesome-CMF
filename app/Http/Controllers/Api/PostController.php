@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\UserActionLog;
 use App\Models\Context;
+use Mockery\CountValidator\Exception;
 use \Response;
 use App\Helpers\FileHelper;
 
@@ -21,13 +22,48 @@ class PostController extends Controller
 			200
 		);
 	}
+
+	private function getPostSubData($post){
+		$post_data = $post->toArray();
+		$post_data['tags_ids'] = $post->tags_ids;
+		return $post_data;
+	}
+
+	private function setPostSubData(&$post, $data){
+		if(isset($data['tags_ids'])){
+			$post->tags_ids = $data['tags_ids'];
+			$post->addAutoTags();
+			$post->save();
+			$post = Post::find($post->id);
+		}
+
+		try {
+			$attachments = [];
+			foreach($data['images_urls'] as $image){
+				$path_to_file = FileHelper::savePostFile($post, $image['url'], $image['index']);
+				$attachments[$image['index']] = ['type' => 'image', 'src' => $path_to_file];
+			}
+			ksort($attachments);
+			$post->attachments = $attachments;
+		} catch(\ErrorException $e){
+			$post->is_published = false;
+			$post->save();
+			return Response::json(
+				$this->getPostSubData($post),
+				400
+			);
+		}
+
+		if($post->is_published)
+			$post->published_at = new \DateTime();
+
+		return true;
+	}
 	public function show($id)
 	{
-		return Response::json(
-			Post::find($id)->toArray(),
-			200
-		);
+		return $this->getPostSubData(Post::find($id));
 	}
+
 	public function store(Request $request)
 	{
 		$data = $request->all();
@@ -40,41 +76,37 @@ class PostController extends Controller
 			'content' => isset($data['content']) ? $data['content'] : ''
 		]);
 
-		if(isset($data['tags_ids'])){
-			$post->tags_ids = $data['tags_ids'];
-			$post->addAutoTags();
-			$post->save();
-			$post = Post::find($post->id);
-		}
-
-		$attachments = [];
-		foreach($data['images_urls'] as $image){
-			$path_to_file = FileHelper::savePostFile($post, $image['url'], $image['index']);
-			$attachments[$image['index']] = ['type' => 'image', 'src' => $path_to_file];
-		}
-		ksort($attachments);
-		$post->attachments = $attachments;
-
-		if($post->is_published)
-			$post->published_at = new \DateTime();
+		$result = $this->setPostSubData($post, $data);
+		if($result instanceof \Illuminate\Http\JsonResponse)
+			return $result;
 
 		$post->save();
 
 		UserActionLog::saveAction($post, "create");
 
-		return $post;
+		return $this->getPostSubData($post);
 	}
 	public function update(Request $request)
 	{
 		$data = $request->all();
-		$is_saved = Post::find($data['id'])->update($data);
-		$obj = Post::find($data['id']);
+		$post = Post::find($data['id']);
+		$is_saved = $post->update($data);
+
+		$post_content = $post->contents()->where('context_id', Context::first()->id)->first();
+		$post_content->title = isset($data['title']) ? $data['title'] : '';
+		$post_content->content = isset($data['content']) ? $data['content'] : '';
+		$post_content->save();
+
+		$result = $this->setPostSubData($post, $data);
+		if($result instanceof \Illuminate\Http\JsonResponse)
+			return $result;
+
+		$post->save();
+
 		if ($is_saved)
-			UserActionLog::saveAction($obj,"update");
-		return Response::json(
-			$obj,
-			$is_saved ? 200 : 400
-		);
+			UserActionLog::saveAction($post,"update");
+
+		return $this->getPostSubData($post);
 	}
 	public function uploadImages($post_id, Request $request)
 	{
@@ -89,12 +121,22 @@ class PostController extends Controller
 		$file_index = $request->input('index');
 
 		$post = Post::find($post_id);
-		$path_to_file = FileHelper::savePostFile($post, $request->file('file'), $file_index);
 
-		$attachments = $post->attachments;
-		$attachments[$file_index] = ['type' => 'image', 'src' => $path_to_file];
-		ksort($attachments);
-		$post->attachments = $attachments;
+		try {
+			$path_to_file = FileHelper::savePostFile($post, $request->file('file'), $file_index);
+			$attachments = $post->attachments;
+			$attachments[$file_index] = ['type' => 'image', 'src' => $path_to_file];
+			ksort($attachments);
+			$post->attachments = $attachments;
+		} catch(\ErrorException $e){
+			$post->is_published = false;
+			$post->save();
+			return Response::json(
+				$this->getPostSubData($post),
+				400
+			);
+		}
+
 		$post->save();
 	}
 	public function destroy($id)

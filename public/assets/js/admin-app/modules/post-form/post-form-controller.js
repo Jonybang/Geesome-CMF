@@ -1,6 +1,6 @@
 angular.module('app')
-    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'Upload', 'AppPaths', 'AppData', 'Posts', 'PostsStatuses', 'Users', 'Tags',
-        function($scope, $state, $http, $uibModal, Upload, AppPaths, AppData, Posts, PostsStatuses, Users, Tags) {
+    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'Upload', 'AppPaths', 'AppData', 'Posts', 'PostsStatuses', 'Users', 'Tags',
+        function($scope, $state, $http, $uibModal, Notification, Upload, AppPaths, AppData, Posts, PostsStatuses, Users, Tags) {
         var defaultPost = new Posts();
 
         if($state.params.postId){
@@ -108,6 +108,8 @@ angular.module('app')
         $scope.images = [];
 
         $scope.savePost = function(){
+
+            Notification.info({message: 'Saving post...', replaceMessage: true, delay: 999999});
             $scope.post.images_urls = [];
             var imagesFiles = [];
 
@@ -123,15 +125,33 @@ angular.module('app')
             var post_query;
             if(is_new)
                 post_query = $scope.post.$save();
-            else
+            else if($scope.post.$update)
                 post_query = $scope.post.$update();
+            else
+                post_query = new Posts($scope.post).$update();
+
+            function errorPostSaving(response){
+                if(response.status == 400)
+                    Notification.error({message: 'Error saving post. Maybe you need to add more tags?', replaceMessage: true});
+                else
+                    Notification.error({message: 'Error saving post :(. Ask for developer - "Whats wrong?"', replaceMessage: true});
+
+                angular.extend($scope.post, response.data);
+            }
 
             post_query.then(function(result_post){
+                var uploadedNumber = 0;
                 imagesFiles.forEach(function(image){
                     Upload.upload({
                         url: 'admin/api/posts/' + result_post.id + '/upload_images',
                         data: {file: image.file, index: image.index}
-                    });
+                    }).then(function(){
+                        uploadedNumber++;
+                        if(uploadedNumber < imagesFiles.length)
+                            Notification.info({message: 'Uploading images... ' + uploadedNumber + ' of ' + imagesFiles.length, replaceMessage: true, delay: 999999});
+                        else
+                            Notification.success({message: 'Post saved!', replaceMessage: true});
+                    }, errorPostSaving);
                 });
 
                 if(is_new)
@@ -139,8 +159,9 @@ angular.module('app')
                 else
                     $scope.post = result_post;
 
-                $scope.alert = 'Post saved!';
-            })
+                if(!imagesFiles.length)
+                    Notification.success({message: 'Post saved!', replaceMessage: true});
+            }, errorPostSaving);
         };
 
         $scope.closeAlert = function(){

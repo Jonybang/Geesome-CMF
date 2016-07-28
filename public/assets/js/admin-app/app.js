@@ -53,7 +53,7 @@ angular
                     abstract: true
                 })
                     .state('app.page.create', {
-                        url: '',
+                        url: '/page',
                         controller: 'PageFormController',
                         templateUrl: AppPaths.page_form_tpls + 'index.html'
                     })
