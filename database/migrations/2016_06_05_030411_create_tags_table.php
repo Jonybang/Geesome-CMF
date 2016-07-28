@@ -23,6 +23,9 @@ class CreateTagsTable extends Migration
 
             $table->integer('posts_count')->default(0);
 
+            $table->string('icon')->nullable();
+            $table->string('image')->nullable();
+
             $table->integer('parent_tag_id')->unsigned()->nullable();
             $table->foreign('parent_tag_id')->references('id')->on('tags');
 

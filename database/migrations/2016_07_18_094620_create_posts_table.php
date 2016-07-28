@@ -22,6 +22,7 @@ class CreatePostsTable extends Migration
             $table->boolean('is_queue')->default(true);
             $table->boolean('is_from_cabinet')->default(false);
             $table->boolean('is_secret')->default(false);
+            $table->boolean('is_viewed_by_admin_id')->default(false);
 
             $table->integer('post_status_id')->unsigned()->nullable();
             $table->foreign('post_status_id')->references('id')->on('post_statuses');
