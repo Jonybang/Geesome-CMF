@@ -783,7 +783,7 @@ angular
                     '<span ng-if="!isEdit">{{selectedName}}</span>' +
                     '<input type="hidden" name="{{name}}" ng-bind="ngModel" class="form-control" required />' +
 
-                    '<ui-select ' + uiSelect.tags + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small" reset-search-input="{{resetSearchInput}}" on-select="onSelect($select)">' +
+                    '<ui-select ' + uiSelect.tags + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small" reset-search-input="{{resetSearchInput}}" on-select="onSelectItem($select)">' +
                         '<ui-select-match placeholder="">' +
                             '{{' + uiSelect.match + '}}' +
                         '</ui-select-match>' +
@@ -852,7 +852,7 @@ angular
 
                 scope.refreshDelay = AEditConfig.select_options.refresh_delay;
                 scope.resetSearchInput = AEditConfig.select_options.reset_search_input;
-                scope.onSelect = function($select){
+                scope.onSelectItem = function($select){
                     //fix ui-select bug
                     if(scope.resetSearchInput && $select)
                         $select.search = '';
@@ -952,10 +952,11 @@ angular
                                 names.push(result_name);
                             } else if(scope.ngResource){
                                 // if object with id not exist in current list - get from server
-                                getNameFromServer(id).then(function(name){
-                                    names.push(name);
+                                getObjectFromServer(id).then(function(object){
+                                    names.push(getNameFromObj(object));
                                     scope.selectedName = names.join(', ');
                                     scope.ngModelStr = scope.selectedName;
+                                    scope.local_list.push(object)
                                 })
                             }
                         });
@@ -966,19 +967,21 @@ angular
 
                         // if object with id not exist in current list - get from server
                         if(!scope.selectedName && newVal && scope.ngResource){
-                            getNameFromServer(newVal).then(function(name){
-                                scope.selectedName = name;
+                            getObjectFromServer(newVal).then(function(object){
+                                scope.selectedName = getNameFromObj(object);
                                 scope.ngModelStr = scope.selectedName;
+                                scope.local_list.push(object);
                             })
                         }
                     }
                     scope.ngModelStr = scope.selectedName;
                 };
 
-                function getNameFromServer(id){
-                    return AEditHelpers.getResourceQuery(scope.ngResource, 'show', {id: id}).then(function(object){
-                        return object[scope.nameField] || object.name || object[scope.orNameField];
-                    });
+                function getObjectFromServer(id){
+                    return AEditHelpers.getResourceQuery(scope.ngResource, 'show', {id: id});
+                }
+                function getNameFromObj(obj){
+                    return obj[scope.nameField] || obj.name || obj[scope.orNameField];
                 }
 
                 scope.save = function(){
@@ -1485,6 +1488,8 @@ angular
         'dndLists',
         'rt.debounce',
         'ckeditor',
+        'bootstrap.fileField',
+        'ngFileUpload',
         'a-edit'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
@@ -1495,6 +1500,26 @@ angular
                     controller: 'AppController as app',
                     templateUrl: AppPaths.app_tpls + 'index.html',
                     abstract: true
+                })
+
+                //=====================================================
+                // POST FORM
+                //=====================================================
+
+                .state('app.post', {
+                    url: '',
+                    template: '<ui-view></ui-view>',
+                    abstract: true
+                })
+                .state('app.post.create', {
+                    url: '',
+                    controller: 'PostFormController',
+                    templateUrl: AppPaths.post_form_tpls + 'index.html'
+                })
+                .state('app.post.edit', {
+                    url: '/post/:postId',
+                    controller: 'PostFormController',
+                    templateUrl: AppPaths.post_form_tpls + 'index.html'
                 })
 
                 //=====================================================
@@ -1726,6 +1751,71 @@ angular.module('app')
         self.activeTab = 'pages-tree';
 
         self.tabs = [{title:'Pages Tree', name: 'pages-tree'}, {title: 'Database Manage', name:'db-manage'}];
+    }]);
+angular
+    .module('app')
+    .directive('imageAdder', ['$timeout', '$http', 'AppPaths', function($timeout, $http, AppPaths) {
+        return {
+            restrict: 'E',
+            templateUrl: AppPaths.app + 'directives/image-adder.html',
+            scope: {
+                ngModel: '=',
+                ngChange: '&'
+            },
+            link: function (scope, element) {
+                var defaultItem = {
+                    chosen_mode: '',
+                    uploadFile: null,
+                    previewImage: '',
+                    imageUri: '',
+
+                    chosen_files: [],
+                    images_files: []
+                };
+                function initNgModel(){
+                    scope.ngModel = [angular.copy(defaultItem)];
+                }
+                initNgModel();
+
+                scope.addItem = function(){
+                    scope.ngModel.push(angular.copy(defaultItem));
+                };
+                scope.deleteItem = function(index){
+                    scope.ngModel.splice(index, 1);
+                    if(!scope.ngModel.length){
+                        initNgModel();
+                        return;
+                    }
+                    var lastItem = scope.ngModel[scope.ngModel.length - 1];
+                    if(lastItem.previewImage || lastItem.imageUri){
+                        scope.addItem();
+                    }
+                };
+
+                scope.filesAdded = function(item){
+                    if(item.chosen_files.length > 1){
+                        angular.forEach(item.chosen_files, function(file, index){
+                            if(index > 0)
+                                scope.ngModel.push({
+                                    uploadFile: file,
+                                    previewImage: item.images_files[index],
+                                    chosen_mode: 'upload'
+                                });
+                        });
+                    }
+
+                    item.uploadFile = item.chosen_files[0];
+                    item.previewImage = item.images_files[0];
+
+                    scope.addItem();
+                };
+                scope.linkPasted = function(item){
+                    $http.get(item.imageUri).then(function(response){
+                        scope.addItem();
+                    })
+                }
+            }
+        };
     }]);
 //<loading-gif ng-if="!dataLoaded"> </loading-gif>
 // TODO: добавить throttle - не показывать гифку если идет тут-же переключение туда - обратно
@@ -2078,6 +2168,14 @@ app.factory('Pages', ['$resource', function($resource) {
     return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('Posts', ['$resource', function($resource) {
+    return $resource('admin/api/posts/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('PostsStatuses', ['$resource', function($resource) {
+    return $resource('admin/api/posts_statuses/:id', { id: '@id' }, defaultOptions);
+}]);
+
 app.factory('PagesSEO', ['$resource', function($resource) {
     return $resource('admin/api/pages/:page_id/seo', { id: '@page_id' }, defaultOptions);
 }]);
@@ -2147,6 +2245,7 @@ angular.module('app')
             modules:                app_modules_path,
             db_manage_module:       app_modules_path + 'database-manage',
             page_form_tpls:         app_modules_path + 'page-form/templates/',
+            post_form_tpls:         app_modules_path + 'post-form/templates/',
 
             settings_tpls:          app_modules_path + 'database-manage/settings/templates/',
             pages_tpls:             app_modules_path + 'database-manage/pages/templates/',
@@ -2360,6 +2459,162 @@ angular.module('app')
                 $scope.app.refreshPagesTree();
             })
         };
+    }]);
+
+angular.module('app')
+    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'Upload', 'AppPaths', 'AppData', 'Posts', 'PostsStatuses', 'Users', 'Tags',
+        function($scope, $state, $http, $uibModal, Upload, AppPaths, AppData, Posts, PostsStatuses, Users, Tags) {
+        var defaultPost = new Posts();
+
+        if($state.params.postId){
+            $scope.post = Posts.get({id: $state.params.postId});
+            $scope.post.id = $state.params.postId;
+        } else {
+            defaultPost.tags_ids = [];
+
+            $scope.post = angular.copy(defaultPost);
+        }
+
+        //Get current user and set his id as author id
+        function setCurUserAuthorId(){
+            defaultPost.author_id = AppData.cur_user.id;
+            angular.extend($scope.post, defaultPost);
+        }
+        if(AppData.cur_user.$promise)
+            AppData.cur_user.$promise.then(setCurUserAuthorId);
+        else
+            setCurUserAuthorId();
+
+        $scope.site_settings = {};
+        //Get site settings and set default values to post object
+        function setDefaultSettings(){
+            $scope.site_settings = AppData.site_settings;
+            defaultPost.is_queue = $scope.site_settings.default_post_queue == 1;
+            defaultPost.is_published = !defaultPost.is_queue;
+            if(!$state.params.postId)
+                angular.extend($scope.post, defaultPost);
+        }
+        if(AppData.site_settings.$promise)
+            AppData.site_settings.$promise.then(setDefaultSettings);
+        else
+            setDefaultSettings();
+
+        var old_alias = '';
+        $scope.$watch('post.title', function(title){
+            if(!title)
+                return;
+
+            function changeAlias(new_alias){
+                //Change alias if its empty or if it not touched by manual
+                if((!old_alias && $scope.post.alias) || (old_alias && $scope.post.alias != old_alias))
+                    return;
+
+                $scope.post.alias = new_alias;
+                old_alias = $scope.post.alias;
+            }
+
+            //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
+            //if not: just insert replace spaces to dashes and get lowercase title for set alias
+            if(title && $scope.site_settings.yandex_translate_api_key){
+                $http.get(
+                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
+                    '?key=' + $scope.site_settings.yandex_translate_api_key +
+                    '&text=' + title +
+                    '&lang=en')
+                    .then(function(result){
+                        changeAlias(result.data.text[0].replace(/\s+/g, '-').toLowerCase());
+                    });
+            } else {
+                changeAlias(title.replace(/\s+/g, '-').toLowerCase());
+            }
+        });
+
+        //Models for select inputs
+        $scope.models = {
+            posts: Posts,
+            users: Users,
+            tags: Tags,
+            posts_statuses: PostsStatuses
+        };
+        //Fields for adder functional at select inputs
+        $scope.fields = {
+            tags: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'copyrights',
+                    label: 'Copyrights',
+                    type: 'textarea'
+                },
+                {
+                    name: 'parent_tag_id',
+                    label: 'Parent tag',
+                    type: 'select',
+                    resource: Tags,
+                    list: 'tags'
+                }
+            ],
+            posts_statuses: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'key',
+                    label: 'Key'
+                }
+            ]
+        };
+
+        $scope.images = [];
+
+        $scope.savePost = function(){
+            $scope.post.images_urls = [];
+            var imagesFiles = [];
+
+            $scope.images.forEach(function(image, index){
+                if(image.chosen_mode == 'upload')
+                    imagesFiles.push({index: index, file: image.uploadFile});
+                else if(image.chosen_mode == 'paste-link')
+                    $scope.post.images_urls.push({index: index, url: image.imageUri});
+            });
+            //If post is new - Create, if it not - Update
+            var is_new = $scope.post.id ? false : true;
+
+            var post_query;
+            if(is_new)
+                post_query = $scope.post.$save();
+            else
+                post_query = $scope.post.$update();
+
+            post_query.then(function(result_post){
+                imagesFiles.forEach(function(image){
+                    Upload.upload({
+                        url: 'admin/api/posts/' + result_post.id + '/upload_images',
+                        data: {file: image.file, index: image.index}
+                    });
+                });
+
+                if(is_new)
+                    $scope.post = angular.copy(defaultPost);
+                else
+                    $scope.post = result_post;
+
+                $scope.alert = 'Post saved!';
+            })
+        };
+
+        $scope.closeAlert = function(){
+            $scope.alert = ''
+        };
+        $scope.onTagSelect = function(){
+            $http.post('admin/api/get_auto_tags', {tags_ids: $scope.post.tags_ids})
+                .then(function(result){
+                    $scope.post.tags_ids = result.data;
+                });
+        }
     }]);
 
 angular.module('app')
@@ -2966,6 +3221,13 @@ angular.module('app')
                     label: 'Name',
                     new_placeholder: 'New Tag',
                     required: true
+                },
+                {
+                    name: 'parent_tag_id',
+                    label: 'Parent tag',
+                    type: 'select',
+                    resource: Tags,
+                    list: 'tags'
                 }
             ]
         };

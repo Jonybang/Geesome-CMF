@@ -9,6 +9,8 @@ angular
         'dndLists',
         'rt.debounce',
         'ckeditor',
+        'bootstrap.fileField',
+        'ngFileUpload',
         'a-edit'])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
