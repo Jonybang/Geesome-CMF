@@ -4,6 +4,17 @@ $(function () {
     });
 });
 
+$(document).on('click','.tag-toggle',function(e) {
+    var container_id = $(e.target).attr('href');
+    console.log(container_id);
+    var container = $(container_id);
+    if(container.hasClass('in'))
+        container.collapse('hide').removeClass('in');
+    else
+        container.collapse('show').addClass('in');
+    return false;
+});
+
 $(document).ready(function(){
     $('#sidebar').affix({
       offset: {

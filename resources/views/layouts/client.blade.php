@@ -88,10 +88,10 @@
             <div class="col col-md-3">
                 <div id="sidebar">
                     <ul class="nav nav-stacked">
-                        <li><h3 class="highlight">Main tags <i class="glyphicon glyphicon-dashboard pull-right"></i></h3></li>
-                        <li><a href="/tag/anime">Anime</a></li>
-                        <li><a href="/tag/art">Art</a></li>
-                        <li><a href="/tag/cosplay">Cosplay</a></li>
+                        <li><h3 class="highlight">Tags <i class="glyphicon glyphicon-dashboard pull-right"></i></h3></li>
+                        @foreach($tags_menu as $tag)
+                            @include('share.menu-tag-item', ['tag' => $tag])
+                        @endforeach
                     </ul>
                 </div>
             </div>
