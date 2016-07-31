@@ -12,6 +12,7 @@
         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
         ga('create', 'UA-81638271-1', 'auto');
+        ga('require', '{{$page->id}}-{{$page->alias}}');
         ga('send', 'pageview');
 
     </script>
