@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PostStatusesSeeder::class);
 
         $this->call(TagPageTableSeeder::class);
+        $this->call(UserPageTableSeeder::class);
 
         $this->call(DictionaryTableSeeder::class);
 

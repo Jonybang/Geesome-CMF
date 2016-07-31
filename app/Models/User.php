@@ -33,6 +33,24 @@ class User extends Authenticatable
     public function roles() {
         return $this->belongsToMany(Role::class, 'role_user');
     }
+    /**
+     * @Relation
+     */
+    public function posts() {
+        return $this->hasMany(Post::class, 'author_id');
+    }
+    /**
+     * @Relation
+     */
+    public function favorites_posts()
+    {
+        return $this->belongsToMany(Post::class, 'user_favorites_posts');
+    }
+
+    public function isInFavorite($id)
+    {
+        return $this->favorites_posts()->where('id', $id)->first();
+    }
 
     /**
      * The attributes that should be hidden for arrays.

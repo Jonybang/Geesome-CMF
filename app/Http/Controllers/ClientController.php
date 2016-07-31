@@ -14,6 +14,7 @@ use App\Models\SubscriberGroup;
 use App\Models\Subscriber;
 use App\Models\Post;
 use Mail;
+use App\Models\User;
 
 class ClientController extends Controller
 {
@@ -30,7 +31,7 @@ class ClientController extends Controller
         return ['posts' => $posts];
     }
 
-    public function getFile($filepath){
+    public function get_file($filepath){
         return response()->download(base_path('archive/' . $filepath), null, [], null);
     }
 
@@ -45,6 +46,19 @@ class ClientController extends Controller
             return ['tag' => $tag];
         else
             return $none_tag_data;
+    }
+
+    public function user_by_alias($sub_alias = null){
+        $none_user_data = ['render_template' => '404'];
+        if(!$sub_alias)
+            return ['user' => \Auth::user()];
+
+        $user = User::where('name', 'like', $sub_alias)->first();
+
+        if($user)
+            return ['user' => $user];
+        else
+            return $none_user_data;
     }
 
     public function sendFeedbackMessage(Request $request){
@@ -92,22 +106,10 @@ class ClientController extends Controller
         return redirect('thanks-for-subscribe')->withInput();
     }
 
-    public function registration(Request $request){
-        $data = $request->all();
-        if (User::where('email', $data['email'])->first()) {
-            Session::flash('message_type', 'error');
-            Session::flash('message_text', 'User with same email already registered.');
-            return redirect()->intended('/');
-        } else {
-            User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => bcrypt($data['password']),
-            ]);
-
-            Session::flash('message_type', 'success');
-            Session::flash('message_text', 'Registration successful.');
-            return redirect('thanks-for-registration')->withInput();
-        }
+    public function addInFavorite(Request $request){
+        return \Auth::user()->favorites_posts()->attach($request->input('post_id'));
+    }
+    public function removeFromFavorite(Request $request){
+        return \Auth::user()->favorites_posts()->detach($request->input('post_id'));
     }
 }

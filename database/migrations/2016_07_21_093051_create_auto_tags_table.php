@@ -16,6 +16,9 @@ class CreateAutoTagsTable extends Migration
             $table->integer('tag_id')->unsigned()->index();
             $table->foreign('tag_id')->references('id')->on('tags');
 
+            $table->integer('sub_tag_id')->unsigned()->index();
+            $table->foreign('sub_tag_id')->references('id')->on('tags');
+
             $table->integer('auto_tag_id')->unsigned()->index();
             $table->foreign('auto_tag_id')->references('id')->on('tags');
 

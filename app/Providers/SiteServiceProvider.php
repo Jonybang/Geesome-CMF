@@ -15,6 +15,17 @@ class SiteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        view()->composer('*', function($view) {
+            if(\Auth::user())
+                $filter_items = ['user'];
+            else
+                $filter_items = ['register', 'login'];
+
+            \View::share(
+                'auth_items',
+                Page::whereIn('alias', $filter_items)->get()
+            );
+        });
     }
 
     /**

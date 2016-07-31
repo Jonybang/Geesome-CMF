@@ -13,4 +13,8 @@ class Helper
         else
             return '';
     }
+
+    static function isInFavorite($post_id){
+        return \Auth::user() && \Auth::user()->isInFavorite($post_id) ? 1 : 0;
+    }
 }

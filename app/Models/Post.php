@@ -65,6 +65,13 @@ class Post extends Model
 	{
 		return $this->hasMany(PostContent::class, 'post_id');
 	}
+	/**
+	 * @Relation
+	 */
+	public function users_favorites()
+	{
+		return $this->belongsToMany(User::class, 'user_favorites_posts');
+	}
 
 	public function getTagsIdsAttribute()
 	{

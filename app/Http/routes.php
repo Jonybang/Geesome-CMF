@@ -20,15 +20,21 @@ use App\Models\Setting;
 
 Route::post('/send-message', ['as' => 'send-message', 'uses' => 'ClientController@sendFeedbackMessage']);
 Route::post('/subscribe', ['as' => 'subscribe', 'uses' => 'ClientController@subscribe']);
-Route::get('/' . env('SITE_IMAGES_PATH') . '{filepath}', 'ClientController@getFile')->where('filepath', '.*');;
+Route::get('/' . env('SITE_IMAGES_PATH') . '{filepath}', 'ClientController@get_file')->where('filepath', '.*');;
 Route::get('/phpinfo', function(){
     return phpinfo();
+});
+
+Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
+    Route::post('/add_in_favorite', 'ClientController@addInFavorite');
+    Route::post('/remove_from_favorite', 'ClientController@removeFromFavorite');
 });
 
 //========================================================================================================
 // AUTHENTICATE
 //========================================================================================================
 
+Route::post('/register', 'Auth\AuthController@register');
 Route::post('/login', 'Auth\AuthController@authenticate');
 Route::get('/logout', 'Auth\AuthController@logout');
 

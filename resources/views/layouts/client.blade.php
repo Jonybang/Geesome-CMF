@@ -36,6 +36,12 @@
                         </li>
                     @endforeach
 
+                    @foreach($auth_items as $menu_item)
+                        <li>
+                            <a href="\{{$menu_item->alias}}">{{$menu_item->menu_title}}</a>
+                        </li>
+                    @endforeach
+
                      @if(Auth::user() && Auth::user()->hasRole('admin'))
                         <li class="active">
                             <a href="\admin">Admin panel</a>
@@ -47,36 +53,10 @@
         </div>
         <!-- /.container -->
     </nav>
-<nav class="navbar navbar-static" style="margin-bottom: 0px;">
-    <div class="container">
-        <a class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="glyphicon glyphicon-chevron-down"></span>
-        </a>
-
-        <a class="navbar-brand" href="/">{{$site_title}}</a>
-
-        <div class="nav-collapse collase">
-            <ul class="nav navbar-nav">
-                @foreach($menu_items as $menu_item)
-                    <li>
-                        <a href="\{{$menu_item->alias}}">{{$menu_item->menu_title}}</a>
-                    </li>
-                @endforeach
-            </ul>
-            <ul class="nav navbar-right navbar-nav">
-                @if(Auth::user() && Auth::user()->hasRole('admin'))
-                    <li class="active">
-                        <a href="\admin">Admin panel</a>
-                    </li>
-                @endif
-            </ul>
-        </div>
-    </div>
-</nav>
 @endsection
 
 @section('header')
-    <header class="masthead" style="height: 300px; border-bottom: 2px solid #1695A3; margin-bottom:0px; background-size:cover; background-image: url('http://image02.worldcosplay.net/uploads//cv/22523/ueboxojnyvqwkmfvehzcitvlwuilsomgerimowtk-store.jpg');">
+    <header class="masthead" style="margin-top: 50px; height: 300px; border-bottom: 2px solid #1695A3; margin-bottom:0px; background-size:cover; background-image: url('http://image02.worldcosplay.net/uploads//cv/22523/ueboxojnyvqwkmfvehzcitvlwuilsomgerimowtk-store.jpg');">
         <div style="padding-top: 10px; padding-left: 50px;">
             <div class="">
                 <div class="row">
@@ -169,6 +149,9 @@
 
     <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
 
+    <script>
+        $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
+    </script>
     <!-- Custom Theme JavaScript -->
     <script src="assets/js/client-scripts.js"></script>
 @endsection
