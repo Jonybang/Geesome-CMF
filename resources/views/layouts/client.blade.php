@@ -96,7 +96,7 @@
                 </div>
             </div>
             <div class="col col-md-9">
-                <div class="panel ">
+                <div class="panel">
                     @yield('tags-content')
                 </div>
             </div>

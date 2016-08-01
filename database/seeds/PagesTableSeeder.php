@@ -34,6 +34,7 @@ class PagesTableSeeder extends Seeder
             ['Thanks for subscribe', 'thanks-for-subscribe', true, 'page', '', '', 'Thanks for subscribe content', true, 'default'],
             ['Create you collection', 'register', true, 'register', '', '', 'Register and create girls collection!', true, 'default'],
             ['Login', 'login', true, 'login', '', '', 'Please log in', true, 'default'],
+            ['Logout', 'logout', true, '', '', '', 'Please log in', true, 'default'],
             ['Cabinet', 'cabinet', true, 'cabinet', '', '', 'User cabinet', true, 'cabinet'],
         ];
         foreach($seeds as $seed){
@@ -42,7 +43,7 @@ class PagesTableSeeder extends Seeder
                 'alias' => $seed[1],
                 'is_alias_blocked' => $seed[2],
                 'is_published' => true,
-                'template_id' => Template::where('key', $seed[3])->first()->id,
+                'template_id' => $seed[3] ? Template::where('key', $seed[3])->first()->id : Template::where('key', 'empty')->first()->id,
                 'sub_title' => $seed[4],
                 'description' => $seed[5],
                 'is_menu_hide' => $seed[7],
