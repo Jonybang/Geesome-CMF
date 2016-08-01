@@ -87,13 +87,13 @@ class AuthController extends Controller
         if (User::where('email', $data['email'])->first()) {
             Session::flash('message_type', 'error');
             Session::flash('message_text', 'User with same email already registered.');
-            return redirect()->intended('/');
+            return redirect('register')->withInput();
         }
 
         if (User::where('name', $data['name'])->first()) {
             Session::flash('message_type', 'error');
             Session::flash('message_text', 'User with same name already registered.');
-            return redirect()->intended('/');
+            return redirect('register')->withInput();
         }
 
         if($data['password'] != $data['confirm_password']){
