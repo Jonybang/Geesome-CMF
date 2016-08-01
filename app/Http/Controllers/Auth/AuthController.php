@@ -73,6 +73,39 @@ class AuthController extends Controller
         ]);
     }
 
+    public function register(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required',
+        ]);
+
+        $data = $request->all();
+
+        if (User::where('email', $data['email'])->first()) {
+            Session::flash('message_type', 'error');
+            Session::flash('message_text', 'User with same email already registered.');
+            return redirect()->intended('/');
+        }
+
+        if (User::where('name', $data['name'])->first()) {
+            Session::flash('message_type', 'error');
+            Session::flash('message_text', 'User with same name already registered.');
+            return redirect()->intended('/');
+        }
+
+        if($data['password'] != $data['confirm_password']){
+            Session::flash('message_type', 'error');
+            Session::flash('message_text', 'Password and password confirmation not identical.');
+            return redirect('register')->withInput();
+        }
+
+        $user = $this->create($data);
+        Auth::loginUsingId($user->id);
+        return redirect('user/' . $user->name);
+    }
 
     public function authenticate(Request $request)
     {
