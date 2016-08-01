@@ -103,6 +103,7 @@ class AuthController extends Controller
         }
 
         $user = $this->create($data);
+        Auth::loginUsingId($user->id);
         return redirect('user/' . $user->name);
     }
 

@@ -15,14 +15,6 @@ $(document).on('click','.tag-toggle',function(e) {
     return false;
 });
 
-$(document).ready(function(){
-    $('#sidebar').affix({
-      offset: {
-        top: 240
-      }
-    });
-});
-
 $(function(){
     $('.in-favorite').click(function(){
         var el = $(this);
