@@ -598,7 +598,8 @@ angular
                 ' class="form-control input-sm" placeholder="{{$parent.placeholder}}"' +
                 ' ng-model="$parent.ngModel" ' + (type != 'textarea' ? 'ng-enter="$parent.save()"' : '') +
                 ' ng-model-options="$parent.ngModelOptions || {}"' +
-                ' ng-style="{ \'width\' : $parent.width + \'px\'}">' +
+                ' ng-style="{ \'width\' : $parent.width + \'px\'}"' +
+                ' ng-disabled="$parent.ngDisabled == 1" >' +
                 inputTagEnd +
             '</div>';
         }
@@ -622,6 +623,7 @@ angular
                 modalObject: '=?',
                 modalOptions: '=?',
                 hasError: '=?',
+                ngDisabled: '=?',
                 //callbacks
                 ngChange: '&',
                 onSave: '&',
@@ -783,7 +785,7 @@ angular
                     '<span ng-if="!isEdit">{{selectedName}}</span>' +
                     '<input type="hidden" name="{{name}}" ng-bind="ngModel" class="form-control" required />' +
 
-                    '<ui-select ' + uiSelect.tags + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small" reset-search-input="{{resetSearchInput}}" on-select="onSelect($select)">' +
+                    '<ui-select ' + uiSelect.tags + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small" reset-search-input="{{resetSearchInput}}" on-select="onSelectItem($select)">' +
                         '<ui-select-match placeholder="">' +
                             '{{' + uiSelect.match + '}}' +
                         '</ui-select-match>' +
@@ -852,7 +854,7 @@ angular
 
                 scope.refreshDelay = AEditConfig.select_options.refresh_delay;
                 scope.resetSearchInput = AEditConfig.select_options.reset_search_input;
-                scope.onSelect = function($select){
+                scope.onSelectItem = function($select){
                     //fix ui-select bug
                     if(scope.resetSearchInput && $select)
                         $select.search = '';
@@ -952,10 +954,11 @@ angular
                                 names.push(result_name);
                             } else if(scope.ngResource){
                                 // if object with id not exist in current list - get from server
-                                getNameFromServer(id).then(function(name){
-                                    names.push(name);
+                                getObjectFromServer(id).then(function(object){
+                                    names.push(getNameFromObj(object));
                                     scope.selectedName = names.join(', ');
                                     scope.ngModelStr = scope.selectedName;
+                                    scope.local_list.push(object)
                                 })
                             }
                         });
@@ -966,19 +969,21 @@ angular
 
                         // if object with id not exist in current list - get from server
                         if(!scope.selectedName && newVal && scope.ngResource){
-                            getNameFromServer(newVal).then(function(name){
-                                scope.selectedName = name;
+                            getObjectFromServer(newVal).then(function(object){
+                                scope.selectedName = getNameFromObj(object);
                                 scope.ngModelStr = scope.selectedName;
+                                scope.local_list.push(object);
                             })
                         }
                     }
                     scope.ngModelStr = scope.selectedName;
                 };
 
-                function getNameFromServer(id){
-                    return AEditHelpers.getResourceQuery(scope.ngResource, 'show', {id: id}).then(function(object){
-                        return object[scope.nameField] || object.name || object[scope.orNameField];
-                    });
+                function getObjectFromServer(id){
+                    return AEditHelpers.getResourceQuery(scope.ngResource, 'show', {id: id});
+                }
+                function getNameFromObj(obj){
+                    return obj[scope.nameField] || obj.name || obj[scope.orNameField];
                 }
 
                 scope.save = function(){
@@ -2721,6 +2726,120 @@ angular.module('app')
     }]);
 
 angular.module('app')
+    .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
+        $scope.subscribers_groups = [];
+
+        $scope.aGridSubscribersGroupsOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: SubscribersGroups,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    modal: 'self',
+                    label: 'Subscriber group key',
+                    new_placeholder: 'New Subscriber group',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'subscribers_ids',
+                    label: 'Subscribers',
+                    type: 'multiselect',
+                    resource: Subscribers,
+                    list: 'subscribers',
+                    table_hide: true,
+                    or_name_field: 'mail'
+                }
+            ]
+        };
+
+        $scope.subscribers = [];
+
+        $scope.aGridSubscribersOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Subscribers,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'mail',
+                    modal: 'self',
+                    label: 'Mail',
+                    new_placeholder: 'New Subscriber',
+                    required: true
+                },
+                {
+                    name: 'provider',
+                    label: 'Provider',
+                    required: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'user_agent',
+                    label: 'User agent info',
+                    type: 'textarea'
+                },
+                {
+                    name: 'groups_ids',
+                    label: 'Subscribers groups',
+                    type: 'multiselect',
+                    resource: SubscribersGroups,
+                    list: 'subscribers_groups',
+                    table_hide: true,
+                    or_name_field: 'key'
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
+    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
+        $scope.tags = Tags.query();
+
+        $scope.aGridOptions = {
+            caption: '',
+            orderBy: '-id',
+            resource: Tags,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Tag',
+                    required: true
+                }
+            ]
+        };
+    }]);
+
+angular.module('app')
     .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', function($scope, SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages) {
         $scope.sub_fields_types = [];
 
@@ -2851,120 +2970,6 @@ angular.module('app')
                     list: 'pages',
                     resource: Pages,
                     name_field: 'title',
-                    required: true
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
-        $scope.subscribers_groups = [];
-
-        $scope.aGridSubscribersGroupsOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: SubscribersGroups,
-            ajax_handler: true,
-            get_list: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Subscriber group key',
-                    new_placeholder: 'New Subscriber group',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'subscribers_ids',
-                    label: 'Subscribers',
-                    type: 'multiselect',
-                    resource: Subscribers,
-                    list: 'subscribers',
-                    table_hide: true,
-                    or_name_field: 'mail'
-                }
-            ]
-        };
-
-        $scope.subscribers = [];
-
-        $scope.aGridSubscribersOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Subscribers,
-            ajax_handler: true,
-            get_list: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'mail',
-                    modal: 'self',
-                    label: 'Mail',
-                    new_placeholder: 'New Subscriber',
-                    required: true
-                },
-                {
-                    name: 'provider',
-                    label: 'Provider',
-                    required: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'user_agent',
-                    label: 'User agent info',
-                    type: 'textarea'
-                },
-                {
-                    name: 'groups_ids',
-                    label: 'Subscribers groups',
-                    type: 'multiselect',
-                    resource: SubscribersGroups,
-                    list: 'subscribers_groups',
-                    table_hide: true,
-                    or_name_field: 'key'
-                }
-            ]
-        };
-    }]);
-
-angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
-
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Tags,
-            ajax_handler: true,
-            get_list: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Tag',
                     required: true
                 }
             ]
