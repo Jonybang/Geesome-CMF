@@ -18,13 +18,13 @@ class SiteServiceProvider extends ServiceProvider
     {
         view()->composer('*', function($view) {
             if(\Auth::user())
-                $filter_items = ['user'];
+                $filter_items = ['user', 'logout'];
             else
                 $filter_items = ['register', 'login'];
 
             \View::share(
                 'auth_items',
-                Page::whereIn('alias', $filter_items)->get()
+                Page::whereIn('alias', $filter_items)->orderBy('menu_index', 'ASC')->get()
             );
         });
 

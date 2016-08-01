@@ -27,15 +27,14 @@ class PagesTableSeeder extends Seeder
         }
         
         $seeds = [
-            ['Main', '', 'index', false, 'Main page subtitle', 'Main page description', 'Main page content', false, 'default'],
+            ['Main', '', false, 'index', 'Main page subtitle', 'Main page description', 'Main page content', false, 'default'],
             ['About', 'about', false, 'page', '', '', 'About page content', false, 'default'],
             ['Feedback', 'feedback', false, 'form', '', '', 'Feedback page content', false, 'default'],
             ['Thanks for feedback', 'thanks-for-feedback', true, 'page', '', '', 'Thanks for feedback content', true, 'default'],
             ['Thanks for subscribe', 'thanks-for-subscribe', true, 'page', '', '', 'Thanks for subscribe content', true, 'default'],
             ['Create you collection', 'register', true, 'register', '', '', 'Register and create girls collection!', true, 'default'],
             ['Login', 'login', true, 'login', '', '', 'Please log in', true, 'default'],
-            ['Logout', 'logout', true, '', '', '', 'Please log in', true, 'default'],
-            ['Cabinet', 'cabinet', true, 'cabinet', '', '', 'User cabinet', true, 'cabinet'],
+            ['Logout', 'logout', true, '', '', '', 'Please log in', true, 'default']
         ];
         foreach($seeds as $seed){
             $page = Page::create([
