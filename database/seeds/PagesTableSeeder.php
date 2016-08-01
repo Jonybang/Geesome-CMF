@@ -36,7 +36,7 @@ class PagesTableSeeder extends Seeder
             ['Login', 'login', true, 'login', '', '', 'Please log in', true, 'default'],
             ['Logout', 'logout', true, '', '', '', 'Please log in', true, 'default']
         ];
-        foreach($seeds as $seed){
+        foreach($seeds as $index => $seed){
             $page = Page::create([
                 'title' => $seed[0],
                 'alias' => $seed[1],
@@ -46,7 +46,8 @@ class PagesTableSeeder extends Seeder
                 'sub_title' => $seed[4],
                 'description' => $seed[5],
                 'is_menu_hide' => $seed[7],
-                'context_id' => Context::where('key', $seed[8])->first()->id
+                'context_id' => Context::where('key', $seed[8])->first()->id,
+                'menu_index' => $index
             ]);
             $page->content_text = $seed[6];
         }
