@@ -27,13 +27,13 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Password</label>
                     <div class="col-sm-10">
-                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        <input type="password" name="password" class="form-control" placeholder="Password" value="{{ old('password') }}" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Confirm password</label>
                     <div class="col-sm-10">
-                        <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password" required>
+                        <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password" value="{{ old('confirm_password') }}" required>
                     </div>
                 </div>
                 <div class="form-group">
