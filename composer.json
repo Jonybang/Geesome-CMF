@@ -14,7 +14,8 @@
         "laravelcollective/html": "5.2.*",
         "zizaco/entrust": "5.2.x-dev",
         "marcelgwerder/laravel-api-handler": "dev-master",
-        "tsawler/laravel-filemanager": "^0.6.2"
+        "tsawler/laravel-filemanager": "^0.6.2",
+        "intervention/image": "^2.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

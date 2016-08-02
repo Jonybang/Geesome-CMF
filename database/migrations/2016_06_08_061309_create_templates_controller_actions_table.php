@@ -12,7 +12,7 @@ class CreateTemplatesControllerActionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('templates_controller_actions', function (Blueprint $table) {
+        Schema::create('tpls_ctrls_actions', function (Blueprint $table) {
             $table->integer('template_id')->unsigned()->index();
             $table->foreign('template_id')->references('id')->on('templates');
 
@@ -30,6 +30,6 @@ class CreateTemplatesControllerActionsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('templates_controller_actions');
+        Schema::drop('tpls_ctrls_actions');
     }
 }

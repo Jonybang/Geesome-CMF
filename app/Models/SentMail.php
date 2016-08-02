@@ -44,7 +44,7 @@ class SentMail extends Model
      */
     public function subscribers_groups()
     {
-        return $this->belongsToMany(SubscriberGroup::class, 'mails_subscriber_groups', 'sended_mail_id', 'subscriber_group_id');
+        return $this->belongsToMany(SubscriberGroup::class, 'mails_subscriber_groups', 'sent_mail_id', 'subscriber_group_id');
     }
 
     public function setSubscribersGroupsIdsAttribute($value)

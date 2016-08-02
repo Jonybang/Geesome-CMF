@@ -67,14 +67,6 @@ class Page extends Model
     /**
      * @Relation
      */
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class, 'pages_tags');
-    }
-
-    /**
-     * @Relation
-     */
     public function parent_page()
     {
         return $this->belongsTo(Page::class);
@@ -137,18 +129,6 @@ class Page extends Model
     public function getMenuTitleAttribute()
     {
         return isset($this->attributes['menu_title']) ? $this->attributes['menu_title'] : $this->title;
-    }
-
-    public function setTagsIdsAttribute($value)
-    {
-        $this->tags()->sync($value);
-    }
-    public function getTagsIdsAttribute()
-    {
-        $ids = [];
-        foreach($this->tags as $tag)
-            $ids[] = $tag->id;
-        return $ids;
     }
 
     private function contentRow(){

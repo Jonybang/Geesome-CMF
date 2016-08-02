@@ -1,0 +1,38 @@
+<div dnd-list="ngModel">
+
+    <div class="margin-top"
+         ng-repeat="item in ngModel"
+         dnd-draggable="item"
+         dnd-effect-allowed="move"
+         dnd-moved="ngModel.splice($index, 1)">
+        <div>
+            <a ng-show="item.chosen_mode" href ng-click="deleteItem($index)" class="pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+
+            <div class="panel panel-success" ng-hide="item.previewImage || item.imageUri">
+                <div class="panel-heading" ng-hide="item.chosen_mode">Add image: </div>
+
+                <div class="panel-body text-center">
+                    <span ng-hide="item.chosen_mode && item.chosen_mode != 'upload'">
+                        <file-field ng-model="item.chosen_files" preview="item.images_files" ng-click="item.chosen_mode = 'upload'" ng-change="filesAdded(item)">
+                            <span class="glyphicon glyphicon-upload"></span> Choose file
+                        </file-field>
+                    </span>
+
+                    <div style="padding:5px" class="text-center" ng-hide="item.chosen_mode"> or </div>
+
+                    <span ng-hide="item.chosen_mode">
+                        <button class="btn btn-default" ng-click="item.chosen_mode = 'paste-link'">
+                            <span class="glyphicon glyphicon-globe"></span> paste link
+                        </button>
+                    </span>
+
+                    <input ng-if="item.chosen_mode == 'paste-link'" type="text" placeholder="Paste link" class="form-control" ng-model="item.imageUri" autofocus ng-change="linkPasted(item)">
+                </div>
+            </div>
+        </div>
+
+        <div class="margin-top" ng-show="item.previewImage || item.imageUri">
+            <img ng-src="{{item.previewImage || item.imageUri}}" class="img-responsive">
+        </div>
+    </div>
+</div>

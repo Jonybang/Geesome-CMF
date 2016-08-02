@@ -39,16 +39,5 @@ class TestSubFieldsTableSeeder extends Seeder
                 'name' => 'Image Path',
                 'sub_field_type_id' => SubFieldType::where('key', 'image')->first()->id
             ]);
-        $seeds = [
-            '/assets/img/project-3.jpg',
-            '/assets/img/project-2.png',
-            '/assets/img/project-1.jpg',
-        ];
-        foreach(Page::where('alias', 'projects')->first()->child_pages as $index => $page){
-            $sub_field->values()->save(new SubFieldValue([
-                'page_id' => $page->id,
-                'value' => $seeds[$index]
-            ]));
-        }
     }
 }

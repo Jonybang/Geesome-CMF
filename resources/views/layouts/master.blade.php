@@ -9,7 +9,7 @@
 
         <base href="/">
 
-        <title>Lanit Dev - @yield('title')</title>
+        <title>@yield('seo_title')</title>
 
         <!-- Bootstrap Core CSS -->
         <link href="/assets/css/bootstrap.min.css" rel="stylesheet">

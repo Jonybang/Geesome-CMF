@@ -6,6 +6,8 @@ angular.module('app')
             caption: '',
             orderBy: '-id',
             resource: Tags,
+            ajax_handler: true,
+            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -18,6 +20,13 @@ angular.module('app')
                     label: 'Name',
                     new_placeholder: 'New Tag',
                     required: true
+                },
+                {
+                    name: 'parent_tag_id',
+                    label: 'Parent tag',
+                    type: 'select',
+                    resource: Tags,
+                    list: 'tags'
                 }
             ]
         };

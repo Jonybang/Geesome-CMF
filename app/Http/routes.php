@@ -20,6 +20,10 @@ use App\Models\Setting;
 
 Route::post('/send-message', ['as' => 'send-message', 'uses' => 'ClientController@sendFeedbackMessage']);
 Route::post('/subscribe', ['as' => 'subscribe', 'uses' => 'ClientController@subscribe']);
+Route::get('/' . env('SITE_IMAGES_PATH') . '{filepath}', 'ClientController@getFile')->where('filepath', '.*');;
+Route::get('/phpinfo', function(){
+    return phpinfo();
+});
 
 //========================================================================================================
 // AUTHENTICATE
@@ -65,6 +69,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
         Route::resource('subscribers', 'Api\SubscriberController');
         Route::resource('subscribers_groups', 'Api\SubscriberGroupController');
         Route::resource('sent_mails', 'Api\SentMailController');
+
+        Route::resource('posts', 'Api\PostController');
+        Route::resource('posts_statuses', 'Api\PostStatusesController');
+
+        Route::post('posts/{post_id}/upload_images', 'Api\PostController@uploadImages');
+        Route::post('get_auto_tags', 'Api\TagController@getAutoTags');
     });
 
     Route::get('/', function () {
@@ -127,7 +137,7 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
         'is_menu_hide' => false,
         'is_published' => true,
         'is_deleted' => false,
-        'parent_page_id' => 0
+        'parent_page_id' => null
     ])->with('child_pages')->get();
 
     //get general settings and add or rewrite by settings in page context

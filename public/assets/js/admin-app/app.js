@@ -1,5 +1,17 @@
 angular
-    .module('app', ['ngResource', 'ui.bootstrap', 'ui.router', 'ui.router.tabs', 'wiz.markdown', 'dndLists', 'rt.debounce', 'ckeditor', 'a-edit'])
+    .module('app', [
+        'ngResource',
+        'ui.bootstrap',
+        'ui.router',
+        'ui.router.tabs',
+        'wiz.markdown',
+        'dndLists',
+        'rt.debounce',
+        'ckeditor',
+        'bootstrap.fileField',
+        'ngFileUpload',
+        'a-edit'
+    ])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 
@@ -12,11 +24,31 @@ angular
                 })
 
                 //=====================================================
+                // POST FORM
+                //=====================================================
+
+                .state('app.post', {
+                    url: '',
+                    template: '<ui-view></ui-view>',
+                    abstract: true
+                })
+                .state('app.post.create', {
+                    url: '',
+                    controller: 'PostFormController',
+                    templateUrl: AppPaths.post_form_tpls + 'index.html'
+                })
+                .state('app.post.edit', {
+                    url: '/post/:postId',
+                    controller: 'PostFormController',
+                    templateUrl: AppPaths.post_form_tpls + 'index.html'
+                })
+
+                //=====================================================
                 // PAGE FORM
                 //=====================================================
 
                 .state('app.page', {
-                    url: '',
+                    url: '/page',
                     template: '<ui-view></ui-view>',
                     abstract: true
                 })

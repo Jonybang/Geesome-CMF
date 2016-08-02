@@ -17,6 +17,6 @@ class ControllerAction extends Model
      */
     public function templates()
     {
-        return $this->belongsToMany(Template::class, 'templates_controller_actions');
+        return $this->belongsToMany(Template::class, 'tpls_ctrls_actions');
     }
 }

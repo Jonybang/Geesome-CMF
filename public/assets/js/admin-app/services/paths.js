@@ -8,6 +8,7 @@ angular.module('app')
             modules:                app_modules_path,
             db_manage_module:       app_modules_path + 'database-manage',
             page_form_tpls:         app_modules_path + 'page-form/templates/',
+            post_form_tpls:         app_modules_path + 'post-form/templates/',
 
             settings_tpls:          app_modules_path + 'database-manage/settings/templates/',
             pages_tpls:             app_modules_path + 'database-manage/pages/templates/',

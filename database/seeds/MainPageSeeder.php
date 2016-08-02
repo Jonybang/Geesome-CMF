@@ -22,7 +22,7 @@ class MainPageSeeder extends Seeder
         $main_page = $main_template->pages()->first();
 
         $controller_actions = [
-            'ClientController@get_projects'
+            'ClientController@get_posts'
         ];
         foreach($controller_actions as $name){
             $controller_action = new ControllerAction([

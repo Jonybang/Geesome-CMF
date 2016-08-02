@@ -12,6 +12,7 @@ use App\Models\Setting;
 use App\Models\SentMail;
 use App\Models\SubscriberGroup;
 use App\Models\Subscriber;
+use App\Models\Post;
 use Mail;
 
 class ClientController extends Controller
@@ -21,10 +22,16 @@ class ClientController extends Controller
             redirect('login');
     }
 
-    public function get_projects(){
+    public function get_posts($page){
 
-        $projects = Template::where('key', 'projects')->first()->pages->first()->child_pages;
-        return ['projects' => $projects];
+        $posts = Post::where([
+            'is_published' => true
+        ])->orderBy('published_at', 'DESC')->get();
+        return ['posts' => $posts];
+    }
+
+    public function getFile($filepath){
+        return response()->download(base_path('archive/' . $filepath), null, [], null);
     }
 
     public function tag_by_alias($sub_alias = null){

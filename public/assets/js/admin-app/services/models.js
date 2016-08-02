@@ -12,6 +12,14 @@ app.factory('Pages', ['$resource', function($resource) {
     return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('Posts', ['$resource', function($resource) {
+    return $resource('admin/api/posts/:id', { id: '@id' }, defaultOptions);
+}]);
+
+app.factory('PostsStatuses', ['$resource', function($resource) {
+    return $resource('admin/api/posts_statuses/:id', { id: '@id' }, defaultOptions);
+}]);
+
 app.factory('PagesSEO', ['$resource', function($resource) {
     return $resource('admin/api/pages/:page_id/seo', { id: '@page_id' }, defaultOptions);
 }]);
