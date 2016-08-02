@@ -12,6 +12,7 @@ class TemplatesTableSeeder extends Seeder
     public function run()
     {
         $seeds = [
+            ['Empty', 'empty'],
             ['Main', 'index'],
             ['Blog', 'blog'],
             ['Page', 'page'],

@@ -138,7 +138,7 @@ Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null)
         'is_published' => true,
         'is_deleted' => false,
         'parent_page_id' => null
-    ])->with('child_pages')->get();
+    ])->orderBy('menu_index', 'ASC')->with('child_pages')->get();
 
     //get general settings and add or rewrite by settings in page context
     $general_settings = \DB::table('settings')->whereNull('context_id')->orWhere('context_id', 0)->lists('value', 'key');

@@ -1,6 +1,6 @@
 angular.module('app')
-    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'AppPaths', 'AppData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
-        function($scope, $state, $http, $uibModal, debounce, AppPaths, AppData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
+    .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'AppData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
+        function($scope, $state, $http, $uibModal, debounce, Notification, AppPaths, AppData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
 
             //======================================
             //INITIAL ACTIONS
@@ -182,7 +182,7 @@ angular.module('app')
                 }, function(){
                     $scope.status.preview_mail = {
                         error: 'Compiling error. Perhaps the problem is to use currently not existing variables ot just not set page object'
-                    }
+                    };
                 })
             }
             var debounceRenderPreview = debounce(1000, renderMailPreview);
@@ -231,8 +231,7 @@ angular.module('app')
                     if(!confirm('Are you sure want to send mail without last not saved changes in mail template? For save changes click "Save mail template" button.'))
                         return;
                 }
-
-                $scope.status.mail.loading = true;
+                Notification.info({message: 'Sending mail...', replaceMessage: true, delay: 999999});
 
                 $scope.mail.sub_data = {};
                 $scope.mail.sub_data_array.forEach(function(sub_item){
@@ -244,18 +243,15 @@ angular.module('app')
                 $scope.mail.$save().then(function(result){
                     $scope.mail = angular.copy(defaultMail);
 
-                    $scope.alert = 'Mail sent!';
+                    Notification.success({message: 'Mail sent!', replaceMessage: true});
 
                     $scope.getSentMails();
 
                     $scope.status.mail = {};
                 }, function(){
                     $scope.status.mail.error = true;
+                    Notification.error({message: 'Error. Something wrong...', replaceMessage: true});
                 })
-            };
-
-            $scope.closeAlert = function(){
-                $scope.alert = ''
             };
 
             $scope.addNewSubItem = function(){

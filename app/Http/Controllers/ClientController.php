@@ -91,23 +91,4 @@ class ClientController extends Controller
 
         return redirect('thanks-for-subscribe')->withInput();
     }
-
-    public function registration(Request $request){
-        $data = $request->all();
-        if (User::where('email', $data['email'])->first()) {
-            Session::flash('message_type', 'error');
-            Session::flash('message_text', 'User with same email already registered.');
-            return redirect()->intended('/');
-        } else {
-            User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => bcrypt($data['password']),
-            ]);
-
-            Session::flash('message_type', 'success');
-            Session::flash('message_text', 'Registration successful.');
-            return redirect('thanks-for-registration')->withInput();
-        }
-    }
 }

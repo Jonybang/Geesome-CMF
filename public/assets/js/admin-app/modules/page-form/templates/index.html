@@ -9,8 +9,6 @@
 <button ng-if="page.id" class="btn btn-primary" ng-click="savePage()">Save page</button>
 
 <br>
-<uib-alert ng-if="alert" type="success" close="closeAlert()" dismiss-on-timeout="3000">{{alert}}</uib-alert>
-<br>
 
 <div class="row">
     <div class="col-md-8">
@@ -96,7 +94,7 @@
                 </div>
 
                 <label>Alias:</label>
-                <ae-text-input ng-model="page.alias" has-error="hasErrors.alias" is-edit="true"></ae-text-input>
+                <ae-text-input ng-model="page.alias" ng-disabled="page.is_alias_blocked" has-error="hasErrors.alias" is-edit="true"></ae-text-input>
 
                 <label>Published:
                     <ae-bool-input ng-model="page.is_published" has-error="hasErrors.is_published" is-edit="true"></ae-bool-input>

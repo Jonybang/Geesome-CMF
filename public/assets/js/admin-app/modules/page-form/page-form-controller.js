@@ -1,6 +1,7 @@
 angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, Notification, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+
         var defaultPage = new Pages();
 
         if($state.params.pageId){
@@ -183,6 +184,7 @@ angular.module('app')
                     $scope.page.seo = seo;
                 });
 
+                Notification.success('Page saved!');
 
                 $scope.app.refreshPagesTree();
             })
