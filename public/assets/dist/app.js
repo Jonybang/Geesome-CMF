@@ -2004,8 +2004,8 @@ angular.module('app')
         var self = this;
 
         var data_variables = {
-            'cur_user': '/admin/api/cur_user',
-            'site_settings': '/admin/api/site_settings_dictionary'
+            'CurrentUser': '/admin/api/current_user',
+            'SiteSettings': '/admin/api/site_settings_dictionary'
         };
 
         self.reload = function(){
@@ -2016,6 +2016,13 @@ angular.module('app')
                     self[var_name].$promise = null;
                     return self[var_name];
                 });
+
+                self['get' + var_name] = function(callback){
+                    if(self[var_name].$promise)
+                        self[var_name].$promise.then(callback);
+                    else
+                        callback(self[var_name]);
+                }
             });
         };
 
@@ -2139,14 +2146,11 @@ angular.module('app')
         }
 
         //Get current user and set his id as author id
-        function setCurUserAuthorId(){
-            defaultPage.author_id = AppData.cur_user.id;
+        AppData.getCurrentUser(function(cur_user){
+            $scope.current_user
+            defaultPage.author_id = cur_user.id;
             angular.extend($scope.page, defaultPage);
-        }
-        if(AppData.cur_user.$promise)
-            AppData.cur_user.$promise.then(setCurUserAuthorId);
-        else
-            setCurUserAuthorId();
+        });
 
         $scope.site_settings = {};
         //Get site settings and set default values to page object

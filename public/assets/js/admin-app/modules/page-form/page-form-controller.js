@@ -16,14 +16,11 @@ angular.module('app')
         }
 
         //Get current user and set his id as author id
-        function setCurUserAuthorId(){
-            defaultPage.author_id = AppData.cur_user.id;
+        AppData.getCurrentUser(function(cur_user){
+            $scope.current_user
+            defaultPage.author_id = cur_user.id;
             angular.extend($scope.page, defaultPage);
-        }
-        if(AppData.cur_user.$promise)
-            AppData.cur_user.$promise.then(setCurUserAuthorId);
-        else
-            setCurUserAuthorId();
+        });
 
         $scope.site_settings = {};
         //Get site settings and set default values to page object
