@@ -3,8 +3,8 @@ angular.module('app')
         var self = this;
 
         var data_variables = {
-            'cur_user': '/admin/api/cur_user',
-            'site_settings': '/admin/api/site_settings_dictionary'
+            'CurrentUser': '/admin/api/current_user',
+            'SiteSettings': '/admin/api/site_settings_dictionary'
         };
 
         self.reload = function(){
@@ -15,6 +15,13 @@ angular.module('app')
                     self[var_name].$promise = null;
                     return self[var_name];
                 });
+
+                self['get' + var_name] = function(callback){
+                    if(self[var_name].$promise)
+                        self[var_name].$promise.then(callback);
+                    else
+                        callback(self[var_name]);
+                }
             });
         };
 

@@ -136,13 +136,10 @@ angular
         }])
     .run(['$rootScope', 'AppData', 'AEditConfig', function($rootScope, AppData, AEditConfig){
 
-        function setDefaultSettings(){
-            $rootScope.cur_user = AppData.cur_user;
-        }
-        if(AppData.cur_user.$promise)
-            AppData.cur_user.$promise.then(setDefaultSettings);
-        else
-            setDefaultSettings();
+        //Get current user and set his id as author id
+        AppData.getCurrentUser(function(current_user){
+            $rootScope.current_user = current_user;
+        });
 
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
             AppData.reload();
