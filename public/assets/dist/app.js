@@ -1,6 +1,6 @@
 // Code goes here
 angular
-  .module('a-edit', ['ui.bootstrap', 'angularMoment', 'ui.select', 'ngSanitize'])
+  .module('a-edit', ['ui.bootstrap', 'angularMoment', 'ui.select', 'ngSanitize', 'wiz.markdown'])
   
   .run(['amMoment', 'uiSelectConfig', '$templateCache', function(amMoment, uiSelectConfig, $templateCache) {
     amMoment.changeLocale('ru');
@@ -71,7 +71,7 @@ angular
                 create: true,
                 edit: true,
                 delete: true,
-                paginate: false,
+                paginate: true,
                 bold_headers: true,
                 modal_adder: false,
                 ajax_handler: false,
@@ -250,9 +250,10 @@ angular
                     tableHtml += '<uib-pagination total-items="gridOptions.filter_items" items-per-page="gridOptions.items_per_page" ng-model="gridOptions.current_page" ng-change="getList()"></uib-pagination>';
                 }
 
-                var template = angular.element('<div>' + tplHtml + tableHtml + '</div>');
+                var template = angular.element(tplHtml + tableHtml);
 
-                angular.element(element).append($compile(template)(scope));
+                var linkFn = $compile(template)(scope);
+                element.html(linkFn);
             });
 
             // *************************************************************
@@ -260,27 +261,20 @@ angular
             // *************************************************************
 
             scope.getList = function(){
-                var query_name = 'get';
+                if(!scope.actualOptions.ajax_handler)
+                    return;
 
-                if(scope.actualOptions.ajax_handler){
+                if(scope.searchQuery)
+                    scope.gridRequestOptions[variables['query']] = scope.searchQuery;
+                else
+                    delete scope.gridRequestOptions[variables['query']];
 
-                    if(scope.searchQuery)
-                        scope.gridRequestOptions[variables['query']] = scope.searchQuery;
-                    else
-                        delete scope.gridRequestOptions[variables['query']];
+                scope.gridRequestOptions[variables['offset']] = (scope.gridOptions.current_page - 1) * scope.gridOptions.items_per_page;
+                scope.gridRequestOptions[variables['limit']] = scope.gridOptions.items_per_page;
 
-                    if(scope.actualOptions.paginate){
-                        scope.gridRequestOptions[variables['offset']] = (scope.gridOptions.current_page - 1) * scope.gridOptions.items_per_page;
-                        scope.gridRequestOptions[variables['limit']] = scope.gridOptions.items_per_page;
-                    }
+                angular.extend(scope.gridRequestOptions, scope.gridOptions.additional_request_params);
 
-                    angular.extend(scope.gridRequestOptions, scope.gridOptions.additional_request_params);
-
-                    query_name = 'search';
-                }
-
-
-                AEditHelpers.getResourceQuery(scope.actualOptions.resource, query_name, scope.gridRequestOptions).then(function(response){
+                AEditHelpers.getResourceQuery(scope.actualOptions.resource, 'search', scope.gridRequestOptions).then(function(response){
                     scope.ngModel = response[variables['list']] || response;
 
                     var meta_info = response[variables['meta_info']];
@@ -300,10 +294,10 @@ angular
             scope.search = function(newQuery, oldQuery){
                 scope.filtredList = scope.ngModel;
 
-                if(newQuery == oldQuery && scope.actualOptions.ajax_handler)
+                if(newQuery == oldQuery)
                     return;
 
-                if(scope.actualOptions.ajax_handler){
+                if(mode != 'local' && scope.actualOptions.ajax_handler){
                     scope.getList();
                     return;
                 }
@@ -481,8 +475,8 @@ angular
                     return;
                 }
 
-                if(confirm('Do you want delete object "' + (item.name || item.key || item.title) + '"?')){
-                    AEditHelpers.getResourceQuery(new scope.actualOptions.resource(item), 'delete').then(function(){
+                if(confirm('Do you want delete object "' + item.name + '"?')){
+                    AEditHelpers.getResourceQuery(item, 'delete').then(function(){
                         deleteCallbacks();
                     });
                 }
@@ -783,12 +777,12 @@ angular
                     '<span ng-if="!isEdit">{{selectedName}}</span>' +
                     '<input type="hidden" name="{{name}}" ng-bind="ngModel" class="form-control" required />' +
 
-                    '<ui-select ' + uiSelect.tags + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small" reset-search-input="{{resetSearchInput}}" on-select="onSelectItem($select)">' +
+                    '<ui-select ' + uiSelect.tags + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small">' +
                         '<ui-select-match placeholder="">' +
                             '{{' + uiSelect.match + '}}' +
                         '</ui-select-match>' +
 
-                        '<ui-select-choices refresh="getListByResource($select.search)" refresh-delay="{{refreshDelay}}" repeat="item.id as item in $parent.local_list | filter: $select.search track by $index">' +
+                        '<ui-select-choices refresh="getListByResource($select.search)" repeat="item.id as item in $parent.local_list | filter: $select.search track by $index">' +
                             '<div ng-bind-html="(item[$parent.nameField] || item.name || item[$parent.orNameField]) | highlight: $select.search"></div>' +
                         '</ui-select-choices>' +
                     '</ui-select>';
@@ -837,7 +831,6 @@ angular
                 //callbacks
                 ngChange: '&',
                 onSave: '&',
-                onSelect: '&',
                 //sub
                 adder: '=?',
                 getList: '=?',
@@ -850,15 +843,6 @@ angular
             link: function (scope, element, attrs, ngModel) {
                 var variables = angular.extend({}, AEditConfig.grid_options.request_variables, AEditConfig.grid_options.response_variables);
 
-                scope.refreshDelay = AEditConfig.select_options.refresh_delay;
-                scope.resetSearchInput = AEditConfig.select_options.reset_search_input;
-                scope.onSelectItem = function($select){
-                    //fix ui-select bug
-                    if(scope.resetSearchInput && $select)
-                        $select.search = '';
-
-                    $timeout(scope.onSelect);
-                };
                 scope.options = {
                     value: scope.ngModel
                 };
@@ -920,9 +904,6 @@ angular
                     scope.getListByResource();
                 }
                 scope.getListByResource = function (query){
-                    if(!scope.ngResource)
-                        return;
-
                     var request_options = {};
                     if(query)
                         request_options[variables['query']] = query;
@@ -952,11 +933,10 @@ angular
                                 names.push(result_name);
                             } else if(scope.ngResource){
                                 // if object with id not exist in current list - get from server
-                                getObjectFromServer(id).then(function(object){
-                                    names.push(getNameFromObj(object));
+                                getNameFromServer(id).then(function(name){
+                                    names.push(name);
                                     scope.selectedName = names.join(', ');
                                     scope.ngModelStr = scope.selectedName;
-                                    scope.local_list.push(object)
                                 })
                             }
                         });
@@ -967,21 +947,19 @@ angular
 
                         // if object with id not exist in current list - get from server
                         if(!scope.selectedName && newVal && scope.ngResource){
-                            getObjectFromServer(newVal).then(function(object){
-                                scope.selectedName = getNameFromObj(object);
+                            getNameFromServer(newVal).then(function(name){
+                                scope.selectedName = name;
                                 scope.ngModelStr = scope.selectedName;
-                                scope.local_list.push(object);
                             })
                         }
                     }
                     scope.ngModelStr = scope.selectedName;
                 };
 
-                function getObjectFromServer(id){
-                    return AEditHelpers.getResourceQuery(scope.ngResource, 'show', {id: id});
-                }
-                function getNameFromObj(obj){
-                    return obj[scope.nameField] || obj.name || obj[scope.orNameField];
+                function getNameFromServer(id){
+                    return AEditHelpers.getResourceQuery(scope.ngResource, 'show', {id: id}).then(function(object){
+                        return object[scope.nameField] || object.name || object[scope.orNameField];
+                    });
                 }
 
                 scope.save = function(){
@@ -1304,9 +1282,7 @@ angular.module('a-edit')
 
         this.select_options = {
             ajax_handler: true,
-            items_per_page: 15,
-            refresh_delay: 200,
-            reset_search_input: true
+            items_per_page: 15
         };
 
         return this;
@@ -1430,7 +1406,7 @@ angular.module('a-edit')
                         possibleFunctions = ['$save', 'create'];
                         break;
                     case 'update':
-                        possibleFunctions = ['$update', 'update', '$save'];
+                        possibleFunctions = ['$update', 'update'];
                         break;
                     case 'delete':
                         possibleFunctions = ['$delete', 'delete'];
@@ -2259,6 +2235,162 @@ angular.module('app')
             mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });
 angular.module('app')
+    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'Upload', 'AppPaths', 'AppData', 'Posts', 'PostsStatuses', 'Users', 'Tags',
+        function($scope, $state, $http, $uibModal, Upload, AppPaths, AppData, Posts, PostsStatuses, Users, Tags) {
+        var defaultPost = new Posts();
+
+        if($state.params.postId){
+            $scope.post = Posts.get({id: $state.params.postId});
+            $scope.post.id = $state.params.postId;
+        } else {
+            defaultPost.tags_ids = [];
+
+            $scope.post = angular.copy(defaultPost);
+        }
+
+        //Get current user and set his id as author id
+        function setCurUserAuthorId(){
+            defaultPost.author_id = AppData.cur_user.id;
+            angular.extend($scope.post, defaultPost);
+        }
+        if(AppData.cur_user.$promise)
+            AppData.cur_user.$promise.then(setCurUserAuthorId);
+        else
+            setCurUserAuthorId();
+
+        $scope.site_settings = {};
+        //Get site settings and set default values to post object
+        function setDefaultSettings(){
+            $scope.site_settings = AppData.site_settings;
+            defaultPost.is_queue = $scope.site_settings.default_post_queue == 1;
+            defaultPost.is_published = !defaultPost.is_queue;
+            if(!$state.params.postId)
+                angular.extend($scope.post, defaultPost);
+        }
+        if(AppData.site_settings.$promise)
+            AppData.site_settings.$promise.then(setDefaultSettings);
+        else
+            setDefaultSettings();
+
+        var old_alias = '';
+        $scope.$watch('post.title', function(title){
+            if(!title)
+                return;
+
+            function changeAlias(new_alias){
+                //Change alias if its empty or if it not touched by manual
+                if((!old_alias && $scope.post.alias) || (old_alias && $scope.post.alias != old_alias))
+                    return;
+
+                $scope.post.alias = new_alias;
+                old_alias = $scope.post.alias;
+            }
+
+            //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
+            //if not: just insert replace spaces to dashes and get lowercase title for set alias
+            if(title && $scope.site_settings.yandex_translate_api_key){
+                $http.get(
+                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
+                    '?key=' + $scope.site_settings.yandex_translate_api_key +
+                    '&text=' + title +
+                    '&lang=en')
+                    .then(function(result){
+                        changeAlias(result.data.text[0].replace(/\s+/g, '-').toLowerCase());
+                    });
+            } else {
+                changeAlias(title.replace(/\s+/g, '-').toLowerCase());
+            }
+        });
+
+        //Models for select inputs
+        $scope.models = {
+            posts: Posts,
+            users: Users,
+            tags: Tags,
+            posts_statuses: PostsStatuses
+        };
+        //Fields for adder functional at select inputs
+        $scope.fields = {
+            tags: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'copyrights',
+                    label: 'Copyrights',
+                    type: 'textarea'
+                },
+                {
+                    name: 'parent_tag_id',
+                    label: 'Parent tag',
+                    type: 'select',
+                    resource: Tags,
+                    list: 'tags'
+                }
+            ],
+            posts_statuses: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'key',
+                    label: 'Key'
+                }
+            ]
+        };
+
+        $scope.images = [];
+
+        $scope.savePost = function(){
+            $scope.post.images_urls = [];
+            var imagesFiles = [];
+
+            $scope.images.forEach(function(image, index){
+                if(image.chosen_mode == 'upload')
+                    imagesFiles.push({index: index, file: image.uploadFile});
+                else if(image.chosen_mode == 'paste-link')
+                    $scope.post.images_urls.push({index: index, url: image.imageUri});
+            });
+            //If post is new - Create, if it not - Update
+            var is_new = $scope.post.id ? false : true;
+
+            var post_query;
+            if(is_new)
+                post_query = $scope.post.$save();
+            else
+                post_query = $scope.post.$update();
+
+            post_query.then(function(result_post){
+                imagesFiles.forEach(function(image){
+                    Upload.upload({
+                        url: 'admin/api/posts/' + result_post.id + '/upload_images',
+                        data: {file: image.file, index: image.index}
+                    });
+                });
+
+                if(is_new)
+                    $scope.post = angular.copy(defaultPost);
+                else
+                    $scope.post = result_post;
+
+                $scope.alert = 'Post saved!';
+            })
+        };
+
+        $scope.closeAlert = function(){
+            $scope.alert = ''
+        };
+        $scope.onTagSelect = function(){
+            $http.post('admin/api/get_auto_tags', {tags_ids: $scope.post.tags_ids})
+                .then(function(result){
+                    $scope.post.tags_ids = result.data;
+                });
+        }
+    }]);
+
+angular.module('app')
     .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
         function($scope, $state, $http, $uibModal, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
         var defaultPage = new Pages();
@@ -2276,23 +2408,18 @@ angular.module('app')
         }
 
         //Get current user and set his id as author id
-        AppData.getCurrentUser(function(cur_user){
-            $scope.current_user
-            defaultPage.author_id = cur_user.id;
+        AppData.getCurrentUser(function(current_user){
+            $scope.current_user = current_user;
+            defaultPage.author_id = current_user.id;
             angular.extend($scope.page, defaultPage);
         });
 
-        $scope.site_settings = {};
         //Get site settings and set default values to page object
-        function setDefaultSettings(){
-            $scope.site_settings = AppData.site_settings;
+        AppData.getSiteSettings(function(site_settings){
+            $scope.site_settings = site_settings;
             defaultPage.template_id = $scope.site_settings.default_template_id;
             angular.extend($scope.page, defaultPage);
-        }
-        if(AppData.site_settings.$promise)
-            AppData.site_settings.$promise.then(setDefaultSettings);
-        else
-            setDefaultSettings();
+        });
 
         var old_alias = '';
         $scope.$watch('page.title', function(title){
@@ -2448,171 +2575,10 @@ angular.module('app')
                     $scope.page.seo = seo;
                 });
 
-                $scope.alert = 'Page saved!';
 
                 $scope.app.refreshPagesTree();
             })
         };
-
-        $scope.closeAlert = function(){
-            $scope.alert = ''
-        };
-    }]);
-
-angular.module('app')
-    .controller('PostFormController', ['$scope', '$state', '$http', '$uibModal', 'Upload', 'AppPaths', 'AppData', 'Posts', 'PostsStatuses', 'Users', 'Tags',
-        function($scope, $state, $http, $uibModal, Upload, AppPaths, AppData, Posts, PostsStatuses, Users, Tags) {
-        var defaultPost = new Posts();
-
-        if($state.params.postId){
-            $scope.post = Posts.get({id: $state.params.postId});
-            $scope.post.id = $state.params.postId;
-        } else {
-            defaultPost.tags_ids = [];
-
-            $scope.post = angular.copy(defaultPost);
-        }
-
-        //Get current user and set his id as author id
-        function setCurUserAuthorId(){
-            defaultPost.author_id = AppData.cur_user.id;
-            angular.extend($scope.post, defaultPost);
-        }
-        if(AppData.cur_user.$promise)
-            AppData.cur_user.$promise.then(setCurUserAuthorId);
-        else
-            setCurUserAuthorId();
-
-        $scope.site_settings = {};
-        //Get site settings and set default values to post object
-        function setDefaultSettings(){
-            $scope.site_settings = AppData.site_settings;
-            defaultPost.is_queue = $scope.site_settings.default_post_queue == 1;
-            defaultPost.is_published = !defaultPost.is_queue;
-            if(!$state.params.postId)
-                angular.extend($scope.post, defaultPost);
-        }
-        if(AppData.site_settings.$promise)
-            AppData.site_settings.$promise.then(setDefaultSettings);
-        else
-            setDefaultSettings();
-
-        var old_alias = '';
-        $scope.$watch('post.title', function(title){
-            if(!title)
-                return;
-
-            function changeAlias(new_alias){
-                //Change alias if its empty or if it not touched by manual
-                if((!old_alias && $scope.post.alias) || (old_alias && $scope.post.alias != old_alias))
-                    return;
-
-                $scope.post.alias = new_alias;
-                old_alias = $scope.post.alias;
-            }
-
-            //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
-            //if not: just insert replace spaces to dashes and get lowercase title for set alias
-            if(title && $scope.site_settings.yandex_translate_api_key){
-                $http.get(
-                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + $scope.site_settings.yandex_translate_api_key +
-                    '&text=' + title +
-                    '&lang=en')
-                    .then(function(result){
-                        changeAlias(result.data.text[0].replace(/\s+/g, '-').toLowerCase());
-                    });
-            } else {
-                changeAlias(title.replace(/\s+/g, '-').toLowerCase());
-            }
-        });
-
-        //Models for select inputs
-        $scope.models = {
-            posts: Posts,
-            users: Users,
-            tags: Tags,
-            posts_statuses: PostsStatuses
-        };
-        //Fields for adder functional at select inputs
-        $scope.fields = {
-            tags: [
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'copyrights',
-                    label: 'Copyrights',
-                    type: 'textarea'
-                },
-                {
-                    name: 'parent_tag_id',
-                    label: 'Parent tag',
-                    type: 'select',
-                    resource: Tags,
-                    list: 'tags'
-                }
-            ],
-            posts_statuses: [
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'key',
-                    label: 'Key'
-                }
-            ]
-        };
-
-        $scope.images = [];
-
-        $scope.savePost = function(){
-            $scope.post.images_urls = [];
-            var imagesFiles = [];
-
-            $scope.images.forEach(function(image, index){
-                if(image.chosen_mode == 'upload')
-                    imagesFiles.push({index: index, file: image.uploadFile});
-                else if(image.chosen_mode == 'paste-link')
-                    $scope.post.images_urls.push({index: index, url: image.imageUri});
-            });
-            //If post is new - Create, if it not - Update
-            var is_new = $scope.post.id ? false : true;
-
-            var post_query;
-            if(is_new)
-                post_query = $scope.post.$save();
-            else
-                post_query = $scope.post.$update();
-
-            post_query.then(function(result_post){
-                imagesFiles.forEach(function(image){
-                    Upload.upload({
-                        url: 'admin/api/posts/' + result_post.id + '/upload_images',
-                        data: {file: image.file, index: image.index}
-                    });
-                });
-
-                if(is_new)
-                    $scope.post = angular.copy(defaultPost);
-                else
-                    $scope.post = result_post;
-
-                $scope.alert = 'Post saved!';
-            })
-        };
-
-        $scope.closeAlert = function(){
-            $scope.alert = ''
-        };
-        $scope.onTagSelect = function(){
-            $http.post('admin/api/get_auto_tags', {tags_ids: $scope.post.tags_ids})
-                .then(function(result){
-                    $scope.post.tags_ids = result.data;
-                });
-        }
     }]);
 
 angular.module('app')

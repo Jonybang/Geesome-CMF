@@ -19,13 +19,13 @@ dt {
 }
 
 .btn-group.select-adder {
-  width: 300px;
+  width: 260px;
   padding: 0 15px;
   margin-left: -15px;
 }
 
 .btn-group.select-adder .ui-select-container {
-  width: 230px !important;
+  width: 190px !important;
   display: inline-block;
 }
 
