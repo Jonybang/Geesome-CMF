@@ -60,6 +60,5 @@ git pull && git submodule init && git submodule update && git submodule status
 
 ## TODO:
 
-- Role and Multilanguage system;
-- Move to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum));
-- Switching between markup and markdown editors by setting.
+- Multilanguage routes with [mcamara/laravel-localization](https://github.com/mcamara/laravel-localization) package;
+- Move to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum)).
