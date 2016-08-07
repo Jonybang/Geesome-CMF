@@ -1659,13 +1659,10 @@ angular
         }])
     .run(['$rootScope', 'AppData', 'AEditConfig', function($rootScope, AppData, AEditConfig){
 
-        function setDefaultSettings(){
-            $rootScope.cur_user = AppData.cur_user;
-        }
-        if(AppData.cur_user.$promise)
-            AppData.cur_user.$promise.then(setDefaultSettings);
-        else
-            setDefaultSettings();
+        //Get current user and set his id as author id
+        AppData.getCurrentUser(function(current_user){
+            $rootScope.current_user = current_user;
+        });
 
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
             AppData.reload();
@@ -2092,8 +2089,8 @@ angular.module('app')
         var self = this;
 
         var data_variables = {
-            'cur_user': '/admin/api/cur_user',
-            'site_settings': '/admin/api/site_settings_dictionary'
+            'CurrentUser': '/admin/api/current_user',
+            'SiteSettings': '/admin/api/site_settings_dictionary'
         };
 
         self.reload = function(){
@@ -2104,6 +2101,13 @@ angular.module('app')
                     self[var_name].$promise = null;
                     return self[var_name];
                 });
+
+                self['get' + var_name] = function(callback){
+                    if(self[var_name].$promise)
+                        self[var_name].$promise.then(callback);
+                    else
+                        callback(self[var_name]);
+                }
             });
         };
 
@@ -2231,26 +2235,18 @@ angular.module('app')
         }
 
         //Get current user and set his id as author id
-        function setCurUserAuthorId(){
-            defaultPage.author_id = AppData.cur_user.id;
+        AppData.getCurrentUser(function(current_user){
+            $scope.current_user = current_user;
+            defaultPage.author_id = current_user.id;
             angular.extend($scope.page, defaultPage);
-        }
-        if(AppData.cur_user.$promise)
-            AppData.cur_user.$promise.then(setCurUserAuthorId);
-        else
-            setCurUserAuthorId();
+        });
 
-        $scope.site_settings = {};
         //Get site settings and set default values to page object
-        function setDefaultSettings(){
-            $scope.site_settings = AppData.site_settings;
+        AppData.getSiteSettings(function(site_settings){
+            $scope.site_settings = site_settings;
             defaultPage.template_id = $scope.site_settings.default_template_id;
             angular.extend($scope.page, defaultPage);
-        }
-        if(AppData.site_settings.$promise)
-            AppData.site_settings.$promise.then(setDefaultSettings);
-        else
-            setDefaultSettings();
+        });
 
         var old_alias = '';
         $scope.$watch('page.title', function(title){

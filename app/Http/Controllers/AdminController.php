@@ -12,7 +12,7 @@ class AdminController extends Controller
     public function index(){
         return view('admin.index');
     }
-    public function cur_user()
+    public function current_user()
     {
         return \Auth::user();
     }

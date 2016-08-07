@@ -35,7 +35,7 @@ Route::get('/logout', 'Auth\AuthController@logout');
 Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', 'role:admin']], function () {
     Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
         //Sub data
-        Route::get('/cur_user', 'AdminController@cur_user');
+        Route::get('/current_user', 'AdminController@current_user');
         Route::get('/site_settings_dictionary', 'AdminController@site_settings_dictionary');
 
         //Sub actions
