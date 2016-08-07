@@ -8,6 +8,7 @@ angular.module('app')
             resource: Tags,
             ajax_handler: true,
             get_list: true,
+            paginate: true,
             fields: [
                 {
                     name: 'id',

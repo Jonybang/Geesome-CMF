@@ -9,11 +9,11 @@
             <div class="row-centered">
                 <div class="col-lg-4 text-center col-centered-lg">
                     <i class="fa fa-phone fa-3x sr-contact"></i>
-                    <p>{{Helper::dict('phone')}}</p>
+                    <p>{{trans('general.phone')}}</p>
                 </div>
                 <div class="col-lg-4 text-center col-centered-lg">
                     <i class="fa fa-envelope-o fa-3x sr-contact"></i>
-                    <p><a href="mailto:{{Helper::dict('email')}}">{{Helper::dict('email')}}</a></p>
+                    <p><a href="mailto:{{trans('general.email')}}">{{trans('general.email')}}</a></p>
                 </div>
             </div>
         </div>

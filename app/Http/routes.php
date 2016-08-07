@@ -62,6 +62,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
         Route::resource('dictionaries', 'Api\DictionaryController');
         Route::resource('dictionaries_words', 'Api\DictionaryWordController');
 
+        Route::resource('translations', 'Api\TranslationController');
+        Route::get('translations_groups', 'Api\TranslationController@getGroups');
+        Route::get('translations_locales', 'Api\TranslationController@getLocales');
+
         Route::resource('subscribers', 'Api\SubscriberController');
         Route::resource('subscribers_groups', 'Api\SubscriberGroupController');
         Route::resource('sent_mails', 'Api\SentMailController');

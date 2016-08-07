@@ -54,11 +54,14 @@ app.factory('ControllerActions', ['$resource', function($resource) {
     return $resource('admin/api/controller_actions/:id', { id: '@id' }, defaultOptions);
 }]);
 
-app.factory('Dictionaries', ['$resource', function($resource) {
-    return $resource('admin/api/dictionaries/:id', { id: '@id' }, defaultOptions);
+app.factory('Translations', ['$resource', function($resource) {
+    return $resource('admin/api/translations/:id', { id: '@id' }, defaultOptions);
 }]);
-app.factory('DictionariesWords', ['$resource', function($resource) {
-    return $resource('admin/api/dictionaries_words/:id', { id: '@id' }, defaultOptions);
+app.factory('TranslationsGroups', ['$resource', function($resource) {
+    return $resource('admin/api/translations_groups/', { }, defaultOptions);
+}]);
+app.factory('TranslationsLocales', ['$resource', function($resource) {
+    return $resource('admin/api/translations_locales/', { }, defaultOptions);
 }]);
 
 app.factory('Subscribers', ['$resource', function($resource) {

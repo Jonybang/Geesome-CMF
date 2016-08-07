@@ -8,8 +8,8 @@ angular.module('app')
                 route:   'app.db.pages'
             },
             {
-                heading: 'Dictionary',
-                route:   'app.db.dictionary'
+                heading: 'Translations',
+                route:   'app.db.translations'
             },
             {
                 heading: 'Mail Templates',

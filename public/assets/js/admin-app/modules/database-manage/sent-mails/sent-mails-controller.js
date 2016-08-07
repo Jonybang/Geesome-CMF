@@ -10,6 +10,7 @@ angular.module('app')
             edit: false,
             ajax_handler: true,
             get_list: true,
+            paginate: true,
             fields: [
                 {
                     name: 'id',

@@ -44,7 +44,7 @@ class TemplateController extends ApiController
 
         UserActionLog::saveAction($template, "create");
 
-        return $template->toArray();
+        return $template;
     }
     public function update(Request $request)
     {
@@ -64,7 +64,7 @@ class TemplateController extends ApiController
         if($is_saved)
             UserActionLog::saveAction($template, "update");
 
-        return $template->toArray();
+        return $template;
     }
     public function destroy($id)
     {        

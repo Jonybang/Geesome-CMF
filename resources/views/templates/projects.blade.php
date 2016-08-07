@@ -30,7 +30,7 @@
                     <h3>{{$child_page->title}}</h3>
                     <h4>{{$child_page->sub_title}}</h4>
                     <p>{{$child_page->description}}</p>
-                    <a class="btn btn-primary" href="/{{$child_page->alias}}">{{Helper::dict('view-project')}} <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    <a class="btn btn-primary" href="/{{$child_page->alias}}">{{trans('general.view-project')}} <span class="glyphicon glyphicon-chevron-right"></span></a>
                 </div>
             </div>
             <!-- /.row -->

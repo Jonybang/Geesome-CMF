@@ -7,6 +7,7 @@ angular.module('app')
             resource: Pages,
             get_list: true,
             ajax_handler: true,
+            paginate: true,
             fields: [
                 {
                     name: 'id',

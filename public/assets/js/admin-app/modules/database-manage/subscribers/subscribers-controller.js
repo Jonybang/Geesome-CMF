@@ -8,6 +8,7 @@ angular.module('app')
             resource: SubscribersGroups,
             ajax_handler: true,
             get_list: true,
+            paginate: true,
             fields: [
                 {
                     name: 'id',

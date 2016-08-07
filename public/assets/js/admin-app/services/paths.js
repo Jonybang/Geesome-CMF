@@ -17,9 +17,9 @@ angular.module('app')
             tags_tpls:              app_modules_path + 'database-manage/tags/templates/',
             templates_tpls:         app_modules_path + 'database-manage/templates/templates/',
             sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
-            dictionary_tpls:        app_modules_path + 'database-manage/dictionary/templates/',
+            translations_tpls:      app_modules_path + 'database-manage/translations/templates/',
             subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/',
-            sent_mails_tpls:       app_modules_path + 'database-manage/sent-mails/templates/',
+            sent_mails_tpls:        app_modules_path + 'database-manage/sent-mails/templates/',
 
             mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });

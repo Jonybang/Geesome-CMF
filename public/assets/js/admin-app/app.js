@@ -55,10 +55,10 @@ angular
                         controller: 'PagesController',
                         templateUrl: AppPaths.pages_tpls + 'index.html'
                     })
-                    .state('app.db.dictionary', {
-                        url: '/dictionary',
-                        controller: 'DictionaryController',
-                        templateUrl: AppPaths.dictionary_tpls + 'index.html'
+                    .state('app.db.translations', {
+                        url: '/translations',
+                        controller: 'TranslationsController',
+                        templateUrl: AppPaths.translations_tpls + 'index.html'
                     })
                     .state('app.db.mail_templates', {
                         url: '/mail_templates',

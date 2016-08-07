@@ -144,7 +144,7 @@ return [
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
-        Illuminate\Translation\TranslationServiceProvider::class,
+        //Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
@@ -164,7 +164,10 @@ return [
 
         Zizaco\Entrust\EntrustServiceProvider::class,
 
-        Marcelgwerder\ApiHandler\ApiHandlerServiceProvider::class
+        Marcelgwerder\ApiHandler\ApiHandlerServiceProvider::class,
+
+        Barryvdh\TranslationManager\ManagerServiceProvider::class,
+        Barryvdh\TranslationManager\TranslationServiceProvider::class,
 
     ],
 

@@ -10,6 +10,7 @@ angular.module('app')
             resource: Logs,
             ajax_handler: true,
             get_list: true,
+            paginate: true,
             fields: [
                 {
                     name: 'id',
