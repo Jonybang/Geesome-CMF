@@ -32,7 +32,7 @@ General entities:
 - [SubField](app/SubField.php) - bound to templates to include custom data for pages, like images, sliders, custom text blocks, etc. Available in templates as variable named by [key](database/migrations/2016_06_05_092703_create_sub_fields_table.php#L18) field. Same as ModX template variables - TVs;
 - [ControllerAction](app/ControllerAction.php) - bound to template to execute Laravel controller action before page render. Such controller action can return data to be rendered at the page. Like MODX snippets;
 - [Setting](app/Setting.php) - global parameters to adjust backend/frontend behavior or mode. It can be fetched in templates using [key](database/migrations/2016_06_05_050515_create_settings_table.php#L18) field;
-- [Dictionary](app/Dictionary.php) and [DictionaryWord](app/DictionaryWord.php) - Dictionary contains Words, those are static custom definitions which can be used e.g. for i18n in future. Available in templates as variable named by [key](database/migrations/2016_06_27_012107_create_dictionary_words_table.php#L18) field.
+- [Translations](https://github.com/barryvdh/laravel-translation-manager/blob/master/src/Models/Translation.php) - Database objects, which synchronize with laravel transaltion with help of [barryvdh/laravel-translation-manager](https://github.com/barryvdh/laravel-translation-manager) package. [Api/TranslationController](app/Http/Controllers/Api/TranslationController.php) provides manage of these translations from admin panel.
 
 Sub entites:  
 - [UserActionLog](app/UserActionLog.php) - User actions are logged in database, including data about the action (create, update, delete);
