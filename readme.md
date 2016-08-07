@@ -62,4 +62,5 @@ git pull && git submodule init && git submodule update && git submodule status
 ## TODO:
 
 - Multilanguage routes with [mcamara/laravel-localization](https://github.com/mcamara/laravel-localization) package;
-- Move to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum)).
+- Move to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum));
+- More customizable sub fields.
