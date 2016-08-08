@@ -53,7 +53,7 @@ Frontend core(Admin panel) located in [public/assets/js/admin-app](https://githu
 
 Frontend and backend separated by REST API, and if desired developer can build his frontend for use created backend.
 
-## Clone for modify admin panel wit submodules:
+## Clone for modify admin panel with submodules:
 
 ```
 git pull && git submodule init && git submodule update && git submodule status
