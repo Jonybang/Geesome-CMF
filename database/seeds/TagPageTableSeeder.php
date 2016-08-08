@@ -15,15 +15,22 @@ class TagPageTableSeeder extends Seeder
     public function run()
     {
         $tag_template = Template::where('key', 'tag')->first();
-        $tag_template->pages()->create([
-            'title' => 'Pages by tag',
-            'alias' => 'tag',
-            'is_published' => true,
-            'context_id' => Context::first()->id
-        ]);
-
         $tag_template->controller_actions()->create([
             'key' => 'ClientController@tag_by_alias'
         ]);
+
+        $seeds = [
+            'default' => 'Pages by tag',
+            'russian' => 'Страницы по тегу'
+        ];
+        foreach($seeds as $context_key => $page_title){
+            $tag_template->pages()->create([
+                'title' => $page_title,
+                'alias' => 'tag',
+                'is_published' => true,
+                'context_id' => Context::where('key', $context_key)->first()->id
+            ]);
+        }
+
     }
 }

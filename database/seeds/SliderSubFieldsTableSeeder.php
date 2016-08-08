@@ -7,7 +7,7 @@ use App\Models\Template;
 use App\Models\SubFieldType;
 use App\Models\SubFieldValue;
 
-class TestSubFieldsTableSeeder extends Seeder
+class SliderSubFieldsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -44,11 +44,13 @@ class TestSubFieldsTableSeeder extends Seeder
             '/assets/img/project-2.png',
             '/assets/img/project-1.jpg',
         ];
-        foreach(Page::where('alias', 'projects')->first()->child_pages as $index => $page){
-            $sub_field->values()->save(new SubFieldValue([
-                'page_id' => $page->id,
-                'value' => $seeds[$index]
-            ]));
+        foreach(Page::where('alias', 'projects')->get() as $projects_parent){
+            foreach($projects_parent->child_pages as $index => $page){
+                $sub_field->values()->save(new SubFieldValue([
+                    'page_id' => $page->id,
+                    'value' => $seeds[$index]
+                ]));
+            }
         }
     }
 }

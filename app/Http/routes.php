@@ -88,28 +88,36 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
 
 Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
     Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null) {
-        if(session('current_context_id'))
-            $current_context = Context::find(session('current_context_id'));
-        else
-            $current_context = Context::whereHas('settings', function($query){
+
+        function getContextByLocale(){
+            $context = Context::whereHas('settings', function($query){
+                //get context, where setting has current locale
                 $query->where([
                     'key' => 'locale',
                     'value' => LaravelLocalization::getCurrentLocale()
                 ]);
             })->first();
 
-        if(!$current_context)
-            $current_context = Context::first();
+            return $context ? $context : Context::first();
+        }
+
+        //Get current context by id or by current locale
+        if(session('current_context_id') && session('last_locale') == LaravelLocalization::getCurrentLocale())
+            $current_context = Context::find(session('current_context_id'));
+        else
+            $current_context = getContextByLocale();
+
 
         Session::put('current_context_id', $current_context->id);
+        Session::put('last_locale', LaravelLocalization::getCurrentLocale());
 
         $page = null;
-        //find by alias or get main page
+        //find page by alias or get main page from current context
         if($alias)
             $page = $current_context->pages()->where('alias', 'like', $alias . '%')->orWhere('id', $alias)->first();
         else{
             $main_page_id = $current_context->settings()->where('key', 'main_page')->first()->value;
-            $page = Page::find($main_page_id)->first();
+            $page = Page::find($main_page_id);
         }
 
         //if page exist and published get all page data, else return 404 template
@@ -117,8 +125,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         $settings = [];
         $page_data = [];
         if($page && $page->is_published){
+            //Get path to laravel template from resources/views/templates folder
             $path = $page->template->key;
-
+            //Get page/value dictionary sub fieds of current page
             $sub_fields = $page->sub_fields_values;
 
             //execute controller actions on page template and get data from they
@@ -144,20 +153,18 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         }
 
         //get menu items
-        $page_data['menu_items'] = Page::where([
+        $page_data['menu_items'] = $current_context->pages()->where([
             'is_menu_hide' => false,
             'is_published' => true,
             'is_deleted' => false,
             'parent_page_id' => null
         ])->orderBy('menu_index', 'ASC')->with('child_pages')->get();
 
-        //get general settings and add or rewrite by settings in page context
-        $general_settings = \DB::table('settings')->whereNull('context_id')->orWhere('context_id', 0)->lists('value', 'key');
-        $context_settings = [];
-        if($page)
-            $context_settings = $page->context->settings_values;
+        //get general settings and add or rewrite by settings in current context
+        $general_settings = \DB::table('settings')->whereNull('context_id')->lists('value', 'key');
+        $context_settings = $current_context->settings_values;
         $settings = $context_settings ? array_merge($general_settings, $context_settings) : $general_settings;
-
+        //dd($general_settings);
         //get language contexts
         $lang_contexts = Context::where('role', 'lang')->get();
 

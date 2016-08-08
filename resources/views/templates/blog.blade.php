@@ -9,7 +9,7 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 @foreach($page->child_pages as $child_page)
                     <div class="post-preview">
-                        <a href="/{{$child_page->alias}}">
+                        <a href="{{Helper::localeUrl($child_page)}}">
                             <h2 class="post-title">
                                 {{$child_page->title}}
                             </h2>

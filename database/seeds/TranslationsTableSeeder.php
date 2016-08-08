@@ -14,31 +14,41 @@ class TranslationsTableSeeder extends Seeder
     public function run()
     {
         $translations_by_groups = [
+            //group
             'general' => [
-                ['email', env('SITE_ADMIN_EMAIL')],
-                ['phone', '123-456-6789'],
-                ['view-project', 'View Project']
+                //key               //en value                  //ru value
+                ['email',           env('SITE_ADMIN_EMAIL'),    env('SITE_ADMIN_EMAIL')],
+                ['phone',           '123-456-6789',             '9876-654-321'],
+                ['view-project',    'View Project',             'Подробнее о проекте']
             ],
             'feedback' => [
-                ['fullname', 'Fullname:'],
-                ['email', 'Email:'],
-                ['message', 'Message:'],
-                ['submit', 'Submit']
+                ['fullname',        'Fullname:',                'Ваше имя:'],
+                ['email',           'Email:',                   'Email:'],
+                ['message',         'Message:',                 'Ваше сообщение:'],
+                ['submit',          'Submit',                   'Отправить']
             ],
             'subscribe' => [
-                ['title', 'Subscribe for news'],
-                ['email', 'Email'],
-                ['submit', 'Subscribe!']
+                ['title',           'Subscribe for news',       'Подписаться на новости'],
+                ['email',           'Email',                    'Email'],
+                ['submit',          'Subscribe!',               'Подписаться!']
             ]
         ];
 
         foreach($translations_by_groups as $group_name => $translations){
             foreach($translations as $seed){
+                //create for en locale
                 Translation::create([
                     'key' => $seed[0],
                     'value' => $seed[1],
                     'group' => $group_name,
                     'locale' => 'en'
+                ]);
+                //create for ru locale
+                Translation::create([
+                    'key' => $seed[0],
+                    'value' => $seed[2],
+                    'group' => $group_name,
+                    'locale' => 'ru'
                 ]);
             }
             \App::call('Barryvdh\\TranslationManager\\Controller@postPublish', ['group' => $group_name]);

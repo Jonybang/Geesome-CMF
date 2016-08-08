@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Seeder;
 
+use App\Models\SubFieldType;
+
 class SubFieldTypesTableSeeder extends Seeder
 {
     /**

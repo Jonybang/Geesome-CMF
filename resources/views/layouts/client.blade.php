@@ -17,7 +17,7 @@
 @endsection
 
 @section('navbar')
-    <!-- Navigation -->
+            <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -28,9 +28,12 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="/">{{$site_title}}</a>
-
                 @foreach($lang_contexts as $context)
-                    <a class="btn {{$context->id == session('current_context_id') ? 'btn-primary' : 'btn-default'}}">{{$context->name}}</a>
+                    <a  href="{{ LaravelLocalization::getLocalizedURL($context->settings_values['locale']) }}"
+                        class="btn {{$context->id == session('current_context_id') ? 'btn-primary' : 'btn-default'}}">
+
+                        {{$context->name}}
+                    </a>
                 @endforeach
             </div>
 
@@ -39,15 +42,15 @@
                 <ul class="nav navbar-nav navbar-right">
                     @foreach($menu_items as $menu_item)
                         <li>
-                            <a href="\{{$menu_item->alias}}">{{$menu_item->menu_title}}</a>
+                            <a href="{{Helper::localeUrl($menu_item)}}">{{$menu_item->menu_title}}</a>
                         </li>
                     @endforeach
 
-                     @if(Auth::user() && Auth::user()->hasRole('admin'))
+                    @if(Auth::user() && Auth::user()->hasRole('admin'))
                         <li class="active">
                             <a href="\admin">Admin panel</a>
                         </li>
-                     @endif
+                    @endif
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -77,50 +80,50 @@
     @if(!session('subscribed'))
         <div class="container">
             {!! Form::open(array('url' => 'subscribe', 'class'=> "form-horizontal")) !!}
-                <div class="center-block text-center col-md-3">
-                    <label>{{trans('subscribe.title')}}</label>
-                    <input type="email" class="form-control" placeholder="{{trans('subscribe.email')}}" name="email"><br>
-                    <button type="submit" class="btn btn-primary">{{trans('subscribe.submit')}}</button>
-                </div>
+            <div class="center-block text-center col-md-3">
+                <label>{{trans('subscribe.title')}}</label>
+                <input type="email" class="form-control" placeholder="{{trans('subscribe.email')}}" name="email"><br>
+                <button type="submit" class="btn btn-primary">{{trans('subscribe.submit')}}</button>
+            </div>
             {!! Form::close() !!}
         </div>
-    @endif
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <ul class="list-inline text-center">
-                        <li>
-                            <a href="#">
+        @endif
+                <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                        <ul class="list-inline text-center">
+                            <li>
+                                <a href="#">
                                 <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
                                 </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
                                 <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
                                 </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
                                 <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-github fa-stack-1x fa-inverse"></i>
                                 </span>
-                            </a>
-                        </li>
-                    </ul>
-                    <p class="copyright text-muted">Copyright &copy; Lanit Dev Site 2016</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <p class="copyright text-muted">Copyright &copy; Lanit Dev Site 2016</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
 @endsection
 
 @section('scripts')

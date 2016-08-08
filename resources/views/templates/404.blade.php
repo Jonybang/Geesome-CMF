@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', "Not Found")
+@section('seo_title', "Not Found")
 
 @section('header')
     <br><br><br>
