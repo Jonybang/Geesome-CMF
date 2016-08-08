@@ -1,7 +1,12 @@
 @extends('layouts.master')
 
 @section('seo_title')
-    {{$site_title}} - {{$page->title}}
+    {{$site_title}} - {{$page->seo_title}}
+@endsection
+
+@section('meta')
+    <meta name="description" content="{{$page->seo_description}}">
+    <meta name="keywords" content="{{$page->seo_keywords}}">
 @endsection
 
 @section('styles')

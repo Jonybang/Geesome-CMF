@@ -192,4 +192,32 @@ class Page extends Model
         else
             return $this->alias;
     }
+
+    public function getSeoTitleAttribute(){
+        if($this->seo && $this->seo->title)
+            return $this->seo->title;
+        else
+            return $this->title;
+    }
+
+    public function getSeoDescriptionAttribute(){
+        if($this->seo && $this->seo->description)
+            return $this->seo->description;
+        else
+            return $this->description;
+    }
+
+    public function getSeoKeywordsAttribute(){
+        if($this->seo && $this->seo->keywords)
+            return $this->seo->keywords;
+        else
+            return '';
+    }
+
+    public function getSeoImageAttribute(){
+        if($this->seo && $this->seo->image)
+            return $this->seo->image;
+        else
+            return '';
+    }
 }
