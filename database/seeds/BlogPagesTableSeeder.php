@@ -34,7 +34,7 @@ class BlogPagesTableSeeder extends Seeder
 
         foreach($seeds as $context_key => $pages_seeds) {
             $context_id = Context::where('key', $context_key)->first()->id;
-            $parent_page_id = Page::where('alias', 'projects')->where('context_id', $context_id)->first()->id;
+            $parent_page_id = Page::where('alias', 'blog')->where('context_id', $context_id)->first()->id;
 
             foreach ($pages_seeds as $seed) {
                 $page = Page::create([
