@@ -19,6 +19,8 @@ class CreateContextsTable extends Migration
             $table->string('name')->nullable();
             $table->text('description')->nullable();
 
+            $table->string('role')->nullable();
+
             $table->timestamps();
         });
     }

@@ -23,4 +23,10 @@ class Context extends Model
     public function getSettingsValuesAttribute() {
         return $this->settings->lists('value', 'key')->toArray();
     }
+    /**
+     * @Relation
+     */
+    public function pages() {
+        return $this->hasMany(Page::class, 'context_id');
+    }
 }

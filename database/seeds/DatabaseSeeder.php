@@ -34,8 +34,6 @@ class DatabaseSeeder extends Seeder
         $this->call(MainPageSeeder::class);
 
         $this->call(MailingSeeder::class);
-
-        $this->call(CabinetContextSeeder::class);
     }
 }
 

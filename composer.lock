@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a1cb98a3c8e42bffe343cf0f66487a0d",
-    "content-hash": "d52b065eee7d12ec23fdea4b94aee055",
+    "hash": "7685560ddff2082269a3c484d2d5ce41",
+    "content-hash": "c33ea720073f9952944a944234e163d2",
     "packages": [
         {
             "name": "barryvdh/laravel-translation-manager",
@@ -1053,6 +1053,54 @@
                 "url"
             ],
             "time": "2015-06-18 14:41:01"
+        },
+        {
+            "name": "mcamara/laravel-localization",
+            "version": "1.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mcamara/laravel-localization.git",
+                "reference": "72d5e8bf48d10e59a0c47a708e28da9b3da734fe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mcamara/laravel-localization/zipball/72d5e8bf48d10e59a0c47a708e28da9b3da734fe",
+                "reference": "72d5e8bf48d10e59a0c47a708e28da9b3da734fe",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "~5.2",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "3.2.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [],
+                "psr-0": {
+                    "Mcamara\\LaravelLocalization": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marc Cámara",
+                    "email": "mcamara88@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easy localization for Laravel",
+            "homepage": "https://github.com/mcamara/laravel-localization",
+            "keywords": [
+                "laravel",
+                "localization",
+                "php"
+            ],
+            "time": "2016-08-05 08:13:21"
         },
         {
             "name": "monolog/monolog",

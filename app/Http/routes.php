@@ -2,6 +2,7 @@
 
 use App\Models\Page;
 use App\Models\Setting;
+use App\Models\Context;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,69 +86,83 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
 // CMS CORE - RENDER PAGE AND SET DATA FOR TEMPLATE
 //========================================================================================================
 
-Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null) {
-    $page = null;
-    //find by alias or get main page
-    if($alias)
-        $page = Page::where('alias', $alias)->orWhere('id', $alias)->first();
-    else{
-        $main_page_id = Setting::where('key', 'main_page')->first()->value;
-        $page = Page::find($main_page_id)->first();
-    }
+Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
+    Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null) {
+        if(session('current_context_id'))
+            $current_context = Context::find(session('current_context_id'));
+        else
+            $current_context = Context::whereHas('settings', function($query){
+                $query->where([
+                    'key' => 'locale',
+                    'value' => LaravelLocalization::getCurrentLocale()
+                ]);
+            })->first();
 
-    //if page exist and published get all page data, else return 404 template
-    $sub_fields = [];
-    $settings = [];
-    $page_data = [];
-    if($page && $page->is_published){
-        $path = $page->template->key;
+        if(!$current_context)
+            $current_context = Context::first();
 
-        $sub_fields = $page->sub_fields_values;
+        Session::put('current_context_id', $current_context->id);
 
-        //execute controller actions on page template and get data from they
-        foreach($page->template->controller_actions as $controller_action){
-            $result = \App::call('App\\Http\\Controllers\\' . $controller_action->key, [
-                'page' => $page,
-                'sub_alias' => $sub_alias
-            ]);
-
-            if($result instanceof \Illuminate\Http\JsonResponse)
-                $result_data = (array)$result->getData();
-            else
-                $result_data = $result;
-
-            //if action return data for render another template - set this template
-            if(isset($result_data['render_template']))
-                $path = $result_data['render_template'];
-
-            $page_data = array_merge($page_data, $result_data);
+        $page = null;
+        //find by alias or get main page
+        if($alias)
+            $page = $current_context->pages()->where('alias', 'like', $alias . '%')->orWhere('id', $alias)->first();
+        else{
+            $main_page_id = $current_context->settings()->where('key', 'main_page')->first()->value;
+            $page = Page::find($main_page_id)->first();
         }
-    } else {
-        $path = '404';
-    }
 
-    //get menu items
-    $page_data['menu_items'] = Page::where([
-        'is_menu_hide' => false,
-        'is_published' => true,
-        'is_deleted' => false,
-        'parent_page_id' => null
-    ])->orderBy('menu_index', 'ASC')->with('child_pages')->get();
+        //if page exist and published get all page data, else return 404 template
+        $sub_fields = [];
+        $settings = [];
+        $page_data = [];
+        if($page && $page->is_published){
+            $path = $page->template->key;
 
-    //get general settings and add or rewrite by settings in page context
-    $general_settings = \DB::table('settings')->whereNull('context_id')->orWhere('context_id', 0)->lists('value', 'key');
-    $context_settings = [];
-    if($page)
-        $context_settings = $page->context->settings_values;
-    $settings = $context_settings ? array_merge($general_settings, $context_settings) : $general_settings;
+            $sub_fields = $page->sub_fields_values;
 
-    //auth users logic
-    if(isset($settings['need_auth']) && $settings['need_auth']){
-        if(!\Auth::user())
-            return redirect('login');
-    }
+            //execute controller actions on page template and get data from they
+            foreach($page->template->controller_actions as $controller_action){
+                $result = \App::call('App\\Http\\Controllers\\' . $controller_action->key, [
+                    'page' => $page,
+                    'sub_alias' => $sub_alias
+                ]);
 
-    //sf -sub fields and st -settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming
-    $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields, 'st' => $settings], $sub_fields, $settings);
-    return view('templates.' . $path, $page_data);
+                if($result instanceof \Illuminate\Http\JsonResponse)
+                    $result_data = (array)$result->getData();
+                else
+                    $result_data = $result;
+
+                //if action return data for render another template - set this template
+                if(isset($result_data['render_template']))
+                    $path = $result_data['render_template'];
+
+                $page_data = array_merge($page_data, $result_data);
+            }
+        } else {
+            $path = '404';
+        }
+
+        //get menu items
+        $page_data['menu_items'] = Page::where([
+            'is_menu_hide' => false,
+            'is_published' => true,
+            'is_deleted' => false,
+            'parent_page_id' => null
+        ])->orderBy('menu_index', 'ASC')->with('child_pages')->get();
+
+        //get general settings and add or rewrite by settings in page context
+        $general_settings = \DB::table('settings')->whereNull('context_id')->orWhere('context_id', 0)->lists('value', 'key');
+        $context_settings = [];
+        if($page)
+            $context_settings = $page->context->settings_values;
+        $settings = $context_settings ? array_merge($general_settings, $context_settings) : $general_settings;
+
+        //get language contexts
+        $lang_contexts = Context::where('role', 'lang')->get();
+
+        //sf - sub fields and st -settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming
+        $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields, 'st' => $settings, 'lang_contexts' => $lang_contexts], $sub_fields, $settings);
+        return view('templates.' . $path, $page_data);
+    });
 });

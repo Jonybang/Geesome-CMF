@@ -169,6 +169,8 @@ return [
         Barryvdh\TranslationManager\ManagerServiceProvider::class,
         Barryvdh\TranslationManager\TranslationServiceProvider::class,
 
+        Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class
+
     ],
 
     /*
@@ -224,6 +226,8 @@ return [
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
 
         'ApiHandler' => Marcelgwerder\ApiHandler\Facades\ApiHandler::class,
+
+        'LaravelLocalization'   => Mcamara\LaravelLocalization\Facades\LaravelLocalization::class,
     ],
 
 ];

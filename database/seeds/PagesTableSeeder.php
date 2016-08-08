@@ -16,27 +16,30 @@ class PagesTableSeeder extends Seeder
     public function run()
     {
         $contexts = [
-            ['default', 'Default'],
-            ['cabinet', 'User cabinet']
+            ['default', 'ENG', 'en'],
+            ['russian', 'RUS', 'ru']
         ];
-        foreach ($contexts as $context) {
-            Context::create([
-                'key' => $context[0],
-                'name' => $context[1]
+        foreach ($contexts as $seed) {
+            $context = Context::create([
+                'key' => $seed[0],
+                'name' => $seed[1],
+                'role' => 'lang'
             ]);
+            $context->settings()->create(['key' => 'locale', 'value' => $seed[2]]);
         }
         
         $seeds = [
-            ['Main', '', false, 'index', 'Main page subtitle', 'Main page description', 'Main page content', false, 'default'],
-            ['Blog', 'blog', false, 'blog', '', '', '', false, 'default'],
-            ['Projects', 'projects', false, 'projects', '', '', '', false, 'default'],
-            ['About', 'about', false, 'page', '', '', 'About page content', false, 'default'],
-            ['Feedback', 'feedback', false, 'form', '', '', 'Feedback page content', false, 'default'],
-            ['Thanks for feedback', 'thanks-for-feedback', true, 'page', '', '', 'Thanks for feedback content', true, 'default'],
-            ['Thanks for subscribe', 'thanks-for-subscribe', true, 'page', '', '', 'Thanks for subscribe content', true, 'default'],
-            ['Login', 'login', true, 'login', '', '', 'Please log in', true, 'default'],
-            ['Cabinet', 'cabinet', true, 'cabinet', '', '', 'User cabinet', true, 'cabinet'],
+            ['Main', '', false, 'index', 'Main page subtitle', 'Main page description', 'Main page content', false],
+            ['Blog', 'blog', false, 'blog', '', '', '', false],
+            ['Projects', 'projects', false, 'projects', '', '', '', false],
+            ['About', 'about', false, 'page', '', '', 'About page content', false],
+            ['Feedback', 'feedback', false, 'form', '', '', 'Feedback page content', false],
+            ['Thanks for feedback', 'thanks-for-feedback', true, 'page', '', '', 'Thanks for feedback content', true],
+            ['Thanks for subscribe', 'thanks-for-subscribe', true, 'page', '', '', 'Thanks for subscribe content', true],
+            ['Login', 'login', true, 'login', '', '', 'Please log in', true],
+            ['Cabinet', 'cabinet', true, 'cabinet', '', '', 'User cabinet', true],
         ];
+        $context_id = Context::first()->id;
         foreach($seeds as $index => $seed){
             $page = Page::create([
                 'title' => $seed[0],
@@ -47,7 +50,7 @@ class PagesTableSeeder extends Seeder
                 'sub_title' => $seed[4],
                 'description' => $seed[5],
                 'is_menu_hide' => $seed[7],
-                'context_id' => Context::where('key', $seed[8])->first()->id,
+                'context_id' => $context_id,
                 'menu_index' => $index
             ]);
             $page->content_text = $seed[6];

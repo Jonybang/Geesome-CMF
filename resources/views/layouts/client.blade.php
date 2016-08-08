@@ -28,6 +28,10 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="/">{{$site_title}}</a>
+
+                @foreach($lang_contexts as $context)
+                    <a class="btn {{$context->id == session('current_context_id') ? 'btn-primary' : 'btn-default'}}">{{$context->name}}</a>
+                @endforeach
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->

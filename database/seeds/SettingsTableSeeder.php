@@ -4,6 +4,8 @@ use Illuminate\Database\Seeder;
 
 use App\Models\Page;
 use App\Models\Template;
+use App\Models\Context;
+use App\Models\Setting;
 
 class SettingsTableSeeder extends Seeder
 {
@@ -23,11 +25,14 @@ class SettingsTableSeeder extends Seeder
             ['Admin email', 'admin_email', env('SITE_ADMIN_EMAIL')],
             ['Markdown instead markup editor', 'markdown_mode', env('SITE_MARKDOWN_MODE')]
         ];
+
+        $context_id = Context::first()->id;
         foreach($seeds as $seed){
-            DB::table('settings')->insert([
+            Setting::create([
                 'name' => $seed[0],
                 'key' => $seed[1],
-                'value' => $seed[2]
+                'value' => $seed[2],
+                'context_id' => $context_id
             ]);
         }
     }

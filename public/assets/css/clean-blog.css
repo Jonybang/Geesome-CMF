@@ -529,3 +529,8 @@ aside {
 [class*="col-"].center-block {
   float: none!important;
 }
+.navbar-header .btn {
+  padding: 5px 10px;
+  font-size: 12px;
+  margin-top: 15px;
+}
