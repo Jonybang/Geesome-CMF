@@ -41,6 +41,11 @@ Sub entites:
 - [MailTemplate](app/Models/MailTemplate.php) - mailings templates with support of [Blade](https://laravel.com/docs/5.0/templates) syntax (allows to use variables). Templates are stored in database, and can be edited inside admin panel; [Here](database/seeds/MailingSeeder.php#L14) is example of MailTemplate;
 - [SentMail](app/Models/SentMail.php) - for possibly of resend previosly sent mails.
 
+## Requirements
+
+**MySQL 5.7.8+** - [for support json](http://stackoverflow.com/a/36017215) field. [Install instruction for ubuntu 14](https://www.digitalocean.com/community/questions/mysql-5-7-x-on-ubuntu-14-lamp-already-installed).
+**PHP 5.6.19+**(7+ recommended) - [for support json](http://stackoverflow.com/a/34295663) field too. [Install instructions 7.0 for ubuntu 14](https://www.digitalocean.com/community/tutorials/how-to-upgrade-to-php-7-on-ubuntu-14-04)
+
 ## Official Documentation
 
 The project is now on beta version, and soon, when the first version - his will be documented.
