@@ -66,4 +66,5 @@ git pull && git submodule init && git submodule update && git submodule status
 - More customizable sub fields on admin panel(custom directives in a-edit grid);
 - Rename some entities;
 - Reusable components;
-- Bind translations pages(same as Babel on MODX).
+- Bind translations pages(same as Babel on MODX);
+- More beauty admin panel.
