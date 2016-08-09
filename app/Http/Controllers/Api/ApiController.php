@@ -11,8 +11,4 @@ use App\Http\Controllers\Controller;
 
 class ApiController extends Controller
 {
-    public function __construct()
-    {
-        unset($_GET['q']);
-    }
 }
