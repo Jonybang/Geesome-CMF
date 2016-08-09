@@ -15,6 +15,7 @@ class ContextController extends Controller
     public function index(Request $request)
     {
         $data = $request->all();
+        unset($data['q']);
         return ApiHandler::parseMultiple(Context::query(), ['id', 'name', 'key', 'role', 'description'], $data)->getResponse();
     }
     public function show($id)
