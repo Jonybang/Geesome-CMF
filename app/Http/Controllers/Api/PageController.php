@@ -50,7 +50,7 @@ class PageController extends ApiController
     public function store(Request $request)
     {
         $data = $request->all();
-        $data['context_id'] = Context::first()->id;
+        $data['context_id'] = isset($data['context_id']) ? $data['context_id'] : Context::first()->id;
         $obj = Page::create($data);
         $obj->save();
 
