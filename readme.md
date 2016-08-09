@@ -67,4 +67,5 @@ git pull && git submodule init && git submodule update && git submodule status
 - Rename some entities;
 - Reusable components;
 - Bind translations pages(same as Babel on MODX);
-- More beauty admin panel.
+- More beauty admin panel;
+- Move angular app to resources folder for compile into public/assets.
