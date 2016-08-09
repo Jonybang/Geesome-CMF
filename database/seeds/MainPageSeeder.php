@@ -19,7 +19,6 @@ class MainPageSeeder extends Seeder
     public function run()
     {
         $main_template = Template::where('key', 'index')->first();
-        $main_page = $main_template->pages()->first();
 
         //==================================================================
         //template controller action
@@ -84,6 +83,9 @@ class MainPageSeeder extends Seeder
             ]);
         }
 
+        //==================================================================
+        // main blocks for main page in each context
+        //==================================================================
         $seeds = [
             'default' => [
                 [
@@ -138,35 +140,35 @@ class MainPageSeeder extends Seeder
                     'main_blocks.text_and_button_block',
                     //sub fields values
                     [   //sub field key     //sub field value for block
-                        'button_text' => 'First button text',
+                        'button_text' => 'Кнопка первого блока',
                         'button_link' => 'http://first-button-link.com'
                     ]
                 ],
                 [
-                    'Second block title',
+                    'Заголовок второго блока',
                     '',
                     'main_blocks.offers_block',
                     [
                         'offers' => json_encode([
-                            ['icon' => 'diamond', 'title' => 'First icon title', 'description' => 'First icon description'],
-                            ['icon' => 'paper-plane', 'title' => 'Second icon title', 'description' => 'Second icon description'],
-                            ['icon' => 'newspaper-o', 'title' => 'Third icon title', 'description' => 'Third icon description'],
-                            ['icon' => 'heart', 'title' => 'Fourth icon title', 'description' => 'Fourth icon description'],
+                            ['icon' => 'diamond', 'title' => 'Заголовок первой иконки', 'description' => 'Описание первой иконки'],
+                            ['icon' => 'paper-plane', 'title' => 'Заголовок второй иконки', 'description' => 'Описание второй иконки'],
+                            ['icon' => 'newspaper-o', 'title' => 'Заголовок третей иконки', 'description' => 'Описание третей иконки'],
+                            ['icon' => 'heart', 'title' => 'Заголовок четвертой иконки', 'description' => 'Описание четвертой иконки'],
                         ])
                     ]
                 ],
                 [
-                    'Projects block title',
+                    'Заголовок блока проектов',
                     '',
                     'main_blocks.projects_block',
                     [
-                        'button_text' => 'Projects button text',
+                        'button_text' => 'Кнопка блока проектов',
                         'button_link' => 'http://projects-button-link.com'
                     ]
                 ],
                 [
-                    'Fourth block title',
-                    'Fourth block content',
+                    'Заголовок четвертового блока',
+                    'Содержимое четвертового блока',
                     'main_blocks.contact_block',
                     []
                 ]
@@ -174,6 +176,7 @@ class MainPageSeeder extends Seeder
         ];
         foreach ($seeds as $context_key => $blocks_seeds){
             $context = Context::where('key', $context_key)->first();
+            $main_page = $main_template->pages()->where('context_id', $context->id)->first();
 
             foreach ($blocks_seeds as $block) {
                 $page = Page::create([

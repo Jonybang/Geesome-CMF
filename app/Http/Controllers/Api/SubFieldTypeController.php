@@ -17,11 +17,11 @@ class SubFieldTypeController extends ApiController
 {
     public function index()
     {
-        return ApiHandler::parseMultiple(SubFieldType::query(), ['name', 'key', 'directive'])->getResponse();
+        return ApiHandler::parseMultiple(SubFieldType::query(), ['id', 'name', 'key', 'directive'])->getResponse();
     }
     public function show($id)
     {
-        return SubFieldType::find($id)->toArray();
+        return SubFieldType::find($id);
     }
     public function store(Request $request)
     {
@@ -30,7 +30,7 @@ class SubFieldTypeController extends ApiController
 
         UserActionLog::saveAction($obj, "create");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function update(Request $request)
     {
@@ -41,7 +41,7 @@ class SubFieldTypeController extends ApiController
         if ($is_saved)
             UserActionLog::saveAction($obj, "update");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function destroy($id)
     {

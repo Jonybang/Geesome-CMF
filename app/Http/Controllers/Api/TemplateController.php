@@ -17,7 +17,7 @@ class TemplateController extends ApiController
 {
     public function index()
     {
-        return ApiHandler::parseMultiple(Template::query(), ['key', 'name', 'description'])->getResponse();
+        return ApiHandler::parseMultiple(Template::query(), ['id', 'key', 'name', 'description'])->getResponse();
     }
     public function show($id)
     {

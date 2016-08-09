@@ -250,15 +250,9 @@ angular
                     tableHtml += '<uib-pagination total-items="gridOptions.filter_items" items-per-page="gridOptions.items_per_page" ng-model="gridOptions.current_page" ng-change="getList()"></uib-pagination>';
                 }
 
-                angular.element(element).html('');
-
                 var template = angular.element('<div>' + tplHtml + tableHtml + '</div>');
 
                 angular.element(element).append($compile(template)(scope));
-            });
-            
-            scope.$watchCollection('options.lists', function(new_lists) {
-                angular.extend(scope.actualOptions.lists, new_lists);
             });
 
             // *************************************************************
@@ -274,9 +268,6 @@ angular
                         scope.gridRequestOptions[variables['query']] = scope.searchQuery;
                     else
                         delete scope.gridRequestOptions[variables['query']];
-
-                    if(scope.actualOptions.order_by)
-                        scope.gridRequestOptions[variables['sort']] = scope.actualOptions.order_by;
 
                     if(scope.actualOptions.paginate){
                         scope.gridRequestOptions[variables['offset']] = (scope.gridOptions.current_page - 1) * scope.gridOptions.items_per_page;
@@ -472,6 +463,7 @@ angular
                     }
                 }
             };
+
             // *************************************************************
             // DELETE
             // *************************************************************
@@ -776,19 +768,13 @@ angular
             options = options || {};
 
             var uiSelect = {
-                attributes: '',
+                tags: '',
                 match: 'selectedName',
-                itemId: 'item.id',
-                itemName: '(item[$parent.nameField] || item.name || item[$parent.orNameField])',
                 subClasses: ''
             };
             if(type == 'multiselect'){
-                uiSelect.attributes = 'multiple close-on-select="false"';
+                uiSelect.tags = 'multiple close-on-select="false" ';
                 uiSelect.match = '$item[$parent.nameField] || $item.name || $item[$parent.orNameField]';
-            }
-            if(type == 'textselect'){
-                uiSelect.itemId = '';
-                uiSelect.itemName = 'item';
             }
             if(options.adder){
                 uiSelect.subClasses = 'btn-group select-adder';
@@ -799,16 +785,15 @@ angular
                     '<span ng-if="!isEdit">{{selectedName}}</span>' +
                     '<input type="hidden" name="{{name}}" ng-bind="ngModel" class="form-control" required />' +
 
-                    '<div ng-if="isEdit">' +
-                        '<ui-select ' + uiSelect.attributes + ' ng-model="options.value" ng-click="changer()" class="input-small" reset-search-input="{{resetSearchInput}}" on-select="onSelectItem($select)">' +
-                            '<ui-select-match placeholder="">' +
-                                '{{' + uiSelect.match + '}}' +
-                            '</ui-select-match>' +
+                    '<ui-select ' + uiSelect.tags + ' ng-model="options.value" ng-if="isEdit" ng-click="changer()" class="input-small" reset-search-input="{{resetSearchInput}}" on-select="onSelectItem($select)">' +
+                        '<ui-select-match placeholder="">' +
+                            '{{' + uiSelect.match + '}}' +
+                        '</ui-select-match>' +
 
-                            '<ui-select-choices refresh="getListByResource($select.search)" refresh-delay="{{refreshDelay}}" repeat="' + (uiSelect.itemId ? uiSelect.itemId + ' as ' : '') + 'item in $parent.local_list | filter: $select.search track by $index">' +
-                                '<div ng-bind-html="' + uiSelect.itemName + ' | highlight: $select.search"></div>' +
-                            '</ui-select-choices>' +
-                        '</ui-select>';
+                        '<ui-select-choices refresh="getListByResource($select.search)" refresh-delay="{{refreshDelay}}" repeat="item.id as item in $parent.local_list | filter: $select.search track by $index">' +
+                            '<div ng-bind-html="(item[$parent.nameField] || item.name || item[$parent.orNameField]) | highlight: $select.search"></div>' +
+                        '</ui-select-choices>' +
+                    '</ui-select>';
 
             if(options.adder){
                 template += '' +
@@ -823,7 +808,7 @@ angular
                     '</button>';
             }
 
-            template += '</div>' +
+            template += '' +
                 '</div>';
             return template;
         }
@@ -831,8 +816,6 @@ angular
         var typeTemplates = {
             'select': $compile(getTemplateByType('')),
             'select-adder': $compile(getTemplateByType('', {adder: true})),
-            'textselect': $compile(getTemplateByType('textselect')),
-            'textselect-adder': $compile(getTemplateByType('textselect', {adder: true})),
             'multiselect': $compile(getTemplateByType('multiselect')),
             'multiselect-adder': $compile(getTemplateByType('multiselect', {adder: true}))
         };
@@ -871,7 +854,6 @@ angular
 
                 scope.refreshDelay = AEditConfig.select_options.refresh_delay;
                 scope.resetSearchInput = AEditConfig.select_options.reset_search_input;
-
                 scope.onSelectItem = function($select){
                     //fix ui-select bug
                     if(scope.resetSearchInput && $select)
@@ -883,11 +865,11 @@ angular
                     value: scope.ngModel
                 };
 
-                scope.full_type = scope.type = scope.type || 'select';
+                scope.type = scope.type || 'select';
                 if(scope.adder)
-                    scope.full_type += '-adder';
+                    scope.type += '-adder';
 
-                var template = typeTemplates[scope.full_type],
+                var template = typeTemplates[scope.type],
                     templateElement;
 
                 template(scope, function (clonedElement, scope) {
@@ -962,11 +944,6 @@ angular
                     if(!scope.local_list || !scope.local_list.length)
                         return;
 
-                    if(scope.type == 'textselect'){
-                        scope.selectedName = newVal ? newVal : '';
-                        return;
-                    }
-
                     if(Array.isArray(newVal)){
                         // if ngModel - array of ids
                         var names = [];
@@ -1020,9 +997,6 @@ angular
                     var popoverTemplate = '' +
                         '<div ng-click="popoverContentClick($event)">';
 
-                    if(scope.type == 'textselect' && !scope.ngResourceFields)
-                        scope.ngResourceFields = [{name: 'name', label: ''}];
-
                     scope.ngResourceFields.forEach(function(field){
                         popoverTemplate += '' +
                             '<div class="form-group col-md-12 row">' +
@@ -1065,20 +1039,6 @@ angular
 
                 scope.saveToList = function(new_object){
                     scope.popover.is_open = false;
-
-                    if(scope.type == 'textselect'){
-                        //get first property of object and add it to list
-                        var is_first_prop = true;
-                        angular.forEach(new_object, function(prop_value){
-                            if(is_first_prop){
-                                scope.local_list.unshift(prop_value);
-                                scope.ngModel = prop_value;
-                            }
-                            is_first_prop = false;
-                        });
-                        return;
-                    }
-
                     AEditHelpers.getResourceQuery(new scope.ngResource(new_object), 'create').then(function(object){
                         scope.local_list.unshift(object);
 
@@ -1373,7 +1333,6 @@ angular.module('a-edit')
 
                 switch(field.type){
                     case 'select':
-                    case 'textselect':
                     case 'multiselect':
                         directive = 'select-input';
                         break;
@@ -1444,7 +1403,6 @@ angular.module('a-edit')
                 if(directive == 'select-input'){
                     output += 'name-field="' + (field.name_field || '') + '" ';
                     output += 'or-name-field="' + (field.or_name_field || '') + '" ';
-                    output += 'adder="' + (field.adder || 'false') + '" ';
                 }
 
                 if(field.modal && !config.already_modal && field.modal == 'self'){
@@ -1554,12 +1512,12 @@ angular
                     abstract: true
                 })
                     .state('app.page.create', {
-                        url: '',
+                        url: '?context_id',
                         controller: 'PageFormController',
                         templateUrl: AppPaths.page_form_tpls + 'index.html'
                     })
                     .state('app.page.edit', {
-                        url: '/page/:pageId',
+                        url: '/page/:pageId?context_id',
                         controller: 'PageFormController',
                         templateUrl: AppPaths.page_form_tpls + 'index.html'
                     })
@@ -1692,7 +1650,7 @@ angular
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
 angular.module('app')
-    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', 'Pages', function($scope, $http, AppPaths, AppData, Pages) {
+    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', 'Contexts', 'Pages', function($scope, $http, AppPaths, AppData, Contexts, Pages) {
         var self = this;
 
         self.menuList = [
@@ -1743,7 +1701,7 @@ angular.module('app')
         ];
 
         self.refreshPagesTree = function(){
-            self.pages_tree = Pages.query({tree_mode: true});
+            self.contexts = Contexts.query({_with: 'pages_tree'});
         };
 
         self.refreshPagesTree();
@@ -2125,6 +2083,10 @@ app.factory('Settings', ['$resource', function($resource) {
     return $resource('admin/api/settings/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('Contexts', ['$resource', function($resource) {
+    return $resource('admin/api/contexts/:id', { id: '@id' }, defaultOptions);
+}]);
+
 app.factory('Pages', ['$resource', function($resource) {
     return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
 }]);
@@ -2217,8 +2179,8 @@ angular.module('app')
             mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });
 angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, Notification, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'AppData', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, Notification, AppPaths, AppData, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
 
         var defaultPage = new Pages();
 
@@ -2230,6 +2192,8 @@ angular.module('app')
             defaultPage.tags_ids = [];
             defaultPage.controller_actions_ids = [];
             defaultPage.seo = {};
+            console.log('$state.params', $state.params);
+            defaultPage.context_id = $state.params.context_id;
 
             $scope.page = angular.copy(defaultPage);
         }
@@ -2245,6 +2209,7 @@ angular.module('app')
         AppData.getSiteSettings(function(site_settings){
             $scope.site_settings = site_settings;
             defaultPage.template_id = $scope.site_settings.default_template_id;
+            defaultPage.context_id = defaultPage.context_id || $scope.site_settings.default_context_id;
             angular.extend($scope.page, defaultPage);
         });
 
@@ -2299,6 +2264,7 @@ angular.module('app')
         //Models for select inputs
         $scope.models = {
             templates: Templates,
+            contexts: Contexts,
             pages: Pages,
             users: Users,
             tags: Tags,
@@ -2314,6 +2280,20 @@ angular.module('app')
                 {
                     name: 'key',
                     label: 'Key(Path in templates directory)'
+                }
+            ],
+            contexts: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'key',
+                    label: 'Key'
+                },
+                {
+                    name: 'role',
+                    label: 'Role of context(lang for example)'
                 }
             ],
             pages: [

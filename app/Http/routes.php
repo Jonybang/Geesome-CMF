@@ -44,6 +44,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
 
         //REST API
         Route::resource('settings', 'Api\SettingController');
+        Route::resource('contexts', 'Api\ContextController');
         Route::resource('pages', 'Api\PageController');
 
         Route::resource('pages/{page_id}/seo', 'Api\PageSEOController');

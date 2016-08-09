@@ -16,7 +16,7 @@ class SentMailController extends ApiController
 {
     public function index()
     {
-        return ApiHandler::parseMultiple(SentMail::query(), ['result_title', 'result_content', 'sub_data', 'result_addresses'])->getResponse();
+        return ApiHandler::parseMultiple(SentMail::query(), ['id', 'result_title', 'result_content', 'sub_data', 'result_addresses'])->getResponse();
     }
     public function show($id)
     {
@@ -43,7 +43,7 @@ class SentMailController extends ApiController
 
         UserActionLog::saveAction($obj, "send_mail");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function update(Request $request)
     {
@@ -57,7 +57,7 @@ class SentMailController extends ApiController
         if ($is_saved)
             UserActionLog::saveAction($obj, "update");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function destroy($id)
     {

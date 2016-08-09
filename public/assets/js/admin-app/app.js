@@ -31,12 +31,12 @@ angular
                     abstract: true
                 })
                     .state('app.page.create', {
-                        url: '',
+                        url: '?context_id',
                         controller: 'PageFormController',
                         templateUrl: AppPaths.page_form_tpls + 'index.html'
                     })
                     .state('app.page.edit', {
-                        url: '/page/:pageId',
+                        url: '/page/:pageId?context_id',
                         controller: 'PageFormController',
                         templateUrl: AppPaths.page_form_tpls + 'index.html'
                     })

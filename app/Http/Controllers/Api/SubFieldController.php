@@ -22,7 +22,7 @@ class SubFieldController extends ApiController
         if($template_id)
             $list = Template::find($template_id)->sub_fields->toArray();
         else
-            $list = ApiHandler::parseMultiple(SubField::query(), ['name', 'key', 'config', 'description', 'default_value'])->getResponse();
+            $list = ApiHandler::parseMultiple(SubField::query(), ['id', 'name', 'key', 'config', 'description', 'default_value'])->getResponse();
 
         return $list;
     }
@@ -44,7 +44,7 @@ class SubFieldController extends ApiController
 
         UserActionLog::saveAction($sub_field, "create");
 
-        return $sub_field->toArray();
+        return $sub_field;
     }
     public function update(Request $request)
     {
@@ -58,7 +58,7 @@ class SubFieldController extends ApiController
         if ($is_saved)
             UserActionLog::saveAction($obj, "update");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function destroy($id)
     {

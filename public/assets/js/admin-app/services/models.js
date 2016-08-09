@@ -8,6 +8,10 @@ app.factory('Settings', ['$resource', function($resource) {
     return $resource('admin/api/settings/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('Contexts', ['$resource', function($resource) {
+    return $resource('admin/api/contexts/:id', { id: '@id' }, defaultOptions);
+}]);
+
 app.factory('Pages', ['$resource', function($resource) {
     return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
 }]);

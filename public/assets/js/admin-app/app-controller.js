@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', 'Pages', function($scope, $http, AppPaths, AppData, Pages) {
+    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', 'Contexts', 'Pages', function($scope, $http, AppPaths, AppData, Contexts, Pages) {
         var self = this;
 
         self.menuList = [
@@ -50,7 +50,7 @@ angular.module('app')
         ];
 
         self.refreshPagesTree = function(){
-            self.pages_tree = Pages.query({tree_mode: true});
+            self.contexts = Contexts.query({_with: 'pages_tree'});
         };
 
         self.refreshPagesTree();

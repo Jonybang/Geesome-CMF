@@ -31,7 +31,7 @@ class TranslationController extends Controller
 
 		$this->translation_manager->importTranslations($import_replace);
 
-		return ApiHandler::parseMultiple($query, ['locale', 'group', 'key', 'value'], $data)->getResponse();
+		return ApiHandler::parseMultiple($query, ['id', 'locale', 'group', 'key', 'value'], $data)->getResponse();
 	}
 
 	public function show($translation_key, Request $request){

@@ -29,4 +29,10 @@ class Context extends Model
     public function pages() {
         return $this->hasMany(Page::class, 'context_id');
     }
+    /**
+     * @Relation
+     */
+    public function pages_tree() {
+        return $this->hasMany(Page::class, 'context_id')->whereNull('parent_page_id')->with('child_pages_by_index');
+    }
 }
