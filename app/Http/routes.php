@@ -99,6 +99,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
                 ]);
             })->first();
 
+            if(!$context){
+                $context = Context::find(Setting::where('key', 'default_context_id')->first()->value);
+            }
+
             return $context ? $context : Context::first();
         }
 
