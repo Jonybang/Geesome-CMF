@@ -25,7 +25,8 @@ class Authenticate
             }
         }
 
-        $request->replace(['q' => null]);
+        unset ($request['q']);
+
         return $next($request);
     }
 }
