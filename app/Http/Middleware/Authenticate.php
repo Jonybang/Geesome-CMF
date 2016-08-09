@@ -25,7 +25,7 @@ class Authenticate
             }
         }
 
-        unset ($request['q']);
+        unset($request['q']);
 
         return $next($request);
     }
