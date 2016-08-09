@@ -48,6 +48,7 @@ The project is now on beta version, and soon, when the first version - his will 
 ## Backend and frontend
 
 Now backend core is located in [app/Http/routes.php](https://github.com/Jonybang/Lanit-Laravel-CMF/blob/master/app/Http/routes.php) file.
+In core uses multilanguage routes with [mcamara/laravel-localization](https://github.com/mcamara/laravel-localization) package
 
 Frontend core(Admin panel) located in [public/assets/js/admin-app](https://github.com/Jonybang/Lanit-Laravel-CMF/tree/master/public/assets/js/admin-app) folder and used [Awesome edit](https://github.com/Jonybang/awesome-edit) angular module for manage database tables and admin forms. Frontend architecture develop with DRY principle, adheres to the minimalist approach of development and has some specified and bulky code only in create/edit controllers and directives of complex forms(like [page-form-controller.js](public/assets/js/admin-app/modules/page-form/page-form-controller.js) and [mailing-controller.js](public/assets/js/admin-app/modules/site-manage/mailing/mailing-controller.js))
 
@@ -61,6 +62,8 @@ git pull && git submodule init && git submodule update && git submodule status
 
 ## TODO:
 
-- Multilanguage routes with [mcamara/laravel-localization](https://github.com/mcamara/laravel-localization) package;
 - Move to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum));
-- More customizable sub fields.
+- More customizable sub fields on admin panel(custom directives in a-edit grid);
+- Rename some entities;
+- Reusable components;
+- Bind translations pages(same as Babel on MODX).
