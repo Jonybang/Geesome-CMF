@@ -21,15 +21,15 @@ angular.module('app')
         //Get current user and set his id as author id
         AppData.getCurrentUser(function(current_user){
             $scope.current_user = current_user;
-            defaultPage.author_id = current_user.id;
+            defaultPage.author_id = $scope.page.author_id || current_user.id;
             angular.extend($scope.page, defaultPage);
         });
 
         //Get site settings and set default values to page object
         AppData.getSiteSettings(function(site_settings){
             $scope.site_settings = site_settings;
-            defaultPage.template_id = $scope.site_settings.default_template_id;
-            defaultPage.context_id = defaultPage.context_id || $scope.site_settings.default_context_id;
+            defaultPage.template_id = $scope.page.template_id || $scope.site_settings.default_template_id;
+            defaultPage.context_id = $scope.page.context_id || $scope.site_settings.default_context_id;
             angular.extend($scope.page, defaultPage);
         });
 
