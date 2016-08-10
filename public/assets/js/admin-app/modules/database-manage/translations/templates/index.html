@@ -1,4 +1,8 @@
-<a href ng-click="importWithReplace()" class="pull-right">Import from resources/lang files with replace</a>
+<div class="pull-right">
+    <a href ng-click="importWithReplace()"><span class="glyphicon glyphicon-arrow-up"></span>Import from resources/lang files with replace</a>
+    <br>
+    <a href ng-click="exportToFiles()"><span class="glyphicon glyphicon-arrow-down"></span>Export to resources/lang files all translations</a>
+</div>
 
 <h2>Translations</h2>
 <ae-grid ng-model="items" options="aGridOptions"></ae-grid>

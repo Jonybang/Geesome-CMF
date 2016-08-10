@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('TranslationsController', ['$scope', 'Translations', 'TranslationsGroups', 'TranslationsLocales', function($scope, Translations, TranslationsGroups, TranslationsLocales) {
+    .controller('TranslationsController', ['$scope', '$http', 'Notification', 'Translations', 'TranslationsGroups', 'TranslationsLocales', function($scope, $http, Notification, Translations, TranslationsGroups, TranslationsLocales) {
         $scope.items = [];
 
         $scope.aGridOptions = {
@@ -48,8 +48,25 @@ angular.module('app')
         };
 
         $scope.importWithReplace = function(){
-            $scope.items = Translations.query({_import_replace: true});
-            $scope.aGridOptions = angular.copy($scope.aGridOptions);
+            if(!confirm('Are you sure to IMPORT to database with replace all translations? This action will rewrite database data.'))
+                return;
+
+            $http.post('admin/api/import_translations').then(function(){
+                Notification.success('Import success!');
+                $scope.aGridOptions = angular.copy($scope.aGridOptions);
+            }, function(){
+                Notification.error('Import error!');
+            });
         };
 
+        $scope.exportToFiles = function(){
+            if(!confirm('Are you sure to EXPORT to files all translations? This action will rewrite resources/lang files content.'))
+                return;
+
+            $http.post('admin/api/export_translations').then(function(){
+                Notification.success('Export success!');
+            }, function(){
+                Notification.error('Export error!');
+            });
+        }
     }]);

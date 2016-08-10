@@ -67,6 +67,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
         Route::resource('translations', 'Api\TranslationController');
         Route::get('translations_groups', 'Api\TranslationController@getGroups');
         Route::get('translations_locales', 'Api\TranslationController@getLocales');
+        Route::post('import_translations', 'Api\TranslationController@importAll');
+        Route::post('export_translations', 'Api\TranslationController@exportAll');
 
         Route::resource('subscribers', 'Api\SubscriberController');
         Route::resource('subscribers_groups', 'Api\SubscriberGroupController');
