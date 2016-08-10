@@ -1,7 +1,7 @@
 <?php
 
 return array (
-  'email' => 'dev@lanitp.ru',
-  'phone' => '8-914-544-57-47',
+  'email' => 'test.lanit.cms@openmail.cc',
+  'phone' => '9876-654-321',
   'view-project' => 'Подробнее о проекте',
 );
