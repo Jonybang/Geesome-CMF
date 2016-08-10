@@ -23,7 +23,7 @@ class ClientController extends Controller
 
     public function get_projects(){
 
-        $projects = Template::where('key', 'projects')->first()->pages->first()->child_pages;
+        $projects = Template::where('key', 'projects')->first()->pages()->where('context_id', session('current_context_id'))->first()->child_pages_by_index;
         return ['projects' => $projects];
     }
 
