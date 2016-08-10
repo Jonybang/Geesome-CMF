@@ -89,7 +89,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
 
 Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
     Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null) {
-
         function getContextByLocale(){
             $context = Context::whereHas('settings', function($query){
                 //get context, where setting has current locale
