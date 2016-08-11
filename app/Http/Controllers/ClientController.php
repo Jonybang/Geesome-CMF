@@ -12,6 +12,7 @@ use App\Models\Setting;
 use App\Models\SentMail;
 use App\Models\SubscriberGroup;
 use App\Models\Subscriber;
+use App\Models\User;
 use Mail;
 
 class ClientController extends Controller
@@ -32,12 +33,25 @@ class ClientController extends Controller
         if(!$sub_alias)
             return $none_tag_data;
 
-        $tag = Tag::where('name', 'like', $sub_alias)->first();
+        $tag = Tag::where('name', 'like', $sub_alias)->orWhere('id', $sub_alias)->first();
 
         if($tag)
             return ['tag' => $tag];
         else
             return $none_tag_data;
+    }
+
+    public function user_by_alias($sub_alias = null){
+        $none_user_data = ['render_template' => '404'];
+        if(!$sub_alias)
+            return $none_user_data;
+
+        $user = User::where('name', 'like', $sub_alias)->orWhere('id', $sub_alias)->first();
+
+        if($user)
+            return ['user' => $user];
+        else
+            return $none_user_data;
     }
 
     public function sendFeedbackMessage(Request $request){

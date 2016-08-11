@@ -1,7 +1,7 @@
 @extends('layouts.client')
 
 @section('seo_title')
-    {{$site_title}} - Tag {{$tag->name}}
+    {{$site_title}} - User {{$user->name}}
 @endsection
 
 @section('header')
@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>{{$tag->name}}</h1>
+                        <h1>{{$user->name}}</h1>
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                @foreach($tag->pages as $page)
+                @foreach($user->pages as $page)
                     @include('chunks.blogPagePreview', ['page' => $page])
                 @endforeach
                 <!-- Pager -->

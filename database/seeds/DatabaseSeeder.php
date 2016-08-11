@@ -39,6 +39,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ProjectPagesTableSeeder::class);
         // create page for get pages by tag(for eng and rus contexts)
         $this->call(TagPageTableSeeder::class);
+        // create page for get pages by user(for eng and rus contexts)
+        $this->call(UserPageTableSeeder::class);
         // create translations(for ru and eng) and export to resource/lang folder
         $this->call(TranslationsTableSeeder::class);
         // create slider sub field for projects pages

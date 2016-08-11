@@ -18,6 +18,7 @@ class TemplatesTableSeeder extends Seeder
             ['Page', 'page'],
             ['Projects', 'projects'],
             ['Tag', 'tag'],
+            ['User', 'user'],
             ['Form', 'form'],
             ['Login', 'login'],
             ['Cabinet', 'cabinet'],

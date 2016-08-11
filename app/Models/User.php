@@ -33,6 +33,12 @@ class User extends Authenticatable
     public function roles() {
         return $this->belongsToMany(Role::class, 'role_user');
     }
+    /**
+     * @Relation
+     */
+    public function pages() {
+        return $this->hasMany(Page::class, 'author_id');
+    }
 
     /**
      * The attributes that should be hidden for arrays.
