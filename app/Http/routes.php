@@ -127,7 +127,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         if($page && $page->is_published){
             //Get path to laravel template from resources/views/templates folder
             $path = $page->template->key;
-            //Get page/value dictionary sub fieds of current page
+            //Get name/value dictionary sub fieds of current page
             $sub_fields = $page->sub_fields_values;
 
             //execute controller actions on page template and get data from they
