@@ -22,13 +22,13 @@ class ControllerActionController extends ApiController
         if($template_id)
             $list = Template::find($template_id)->controller_actions->toArray();
         else
-            $list = ApiHandler::parseMultiple(ControllerAction::query(), ['name'])->getResponse();
+            $list = ApiHandler::parseMultiple(ControllerAction::query(), ['id', 'name'])->getResponse();
 
         return $list;
     }
     public function show($id)
     {
-        return ControllerAction::find($id)->toArray();
+        return ControllerAction::find($id);
     }
     public function store(Request $request)
     {
@@ -37,7 +37,7 @@ class ControllerActionController extends ApiController
 
         UserActionLog::saveAction($obj, "create");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function update(Request $request)
     {
@@ -48,7 +48,7 @@ class ControllerActionController extends ApiController
         if ($is_saved)
             UserActionLog::saveAction($obj, "update");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function destroy($id)
     {

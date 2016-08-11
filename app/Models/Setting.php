@@ -12,7 +12,8 @@ class Setting extends Model
         'key',
         'value',
         'name',
-        'description'
+        'description',
+        'context_id'
     ];
 
     /**

@@ -1,6 +1,6 @@
 angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, Notification, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'AppData', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, Notification, AppPaths, AppData, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
 
         var defaultPage = new Pages();
 
@@ -12,6 +12,8 @@ angular.module('app')
             defaultPage.tags_ids = [];
             defaultPage.controller_actions_ids = [];
             defaultPage.seo = {};
+            console.log('$state.params', $state.params);
+            defaultPage.context_id = $state.params.context_id;
 
             $scope.page = angular.copy(defaultPage);
         }
@@ -19,14 +21,15 @@ angular.module('app')
         //Get current user and set his id as author id
         AppData.getCurrentUser(function(current_user){
             $scope.current_user = current_user;
-            defaultPage.author_id = current_user.id;
+            defaultPage.author_id = $scope.page.author_id || current_user.id;
             angular.extend($scope.page, defaultPage);
         });
 
         //Get site settings and set default values to page object
         AppData.getSiteSettings(function(site_settings){
             $scope.site_settings = site_settings;
-            defaultPage.template_id = $scope.site_settings.default_template_id;
+            defaultPage.template_id = $scope.page.template_id || $scope.site_settings.default_template_id;
+            defaultPage.context_id = $scope.page.context_id || $scope.site_settings.default_context_id;
             angular.extend($scope.page, defaultPage);
         });
 
@@ -81,6 +84,7 @@ angular.module('app')
         //Models for select inputs
         $scope.models = {
             templates: Templates,
+            contexts: Contexts,
             pages: Pages,
             users: Users,
             tags: Tags,
@@ -96,6 +100,20 @@ angular.module('app')
                 {
                     name: 'key',
                     label: 'Key(Path in templates directory)'
+                }
+            ],
+            contexts: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'key',
+                    label: 'Key'
+                },
+                {
+                    name: 'role',
+                    label: 'Role of context(lang for example)'
                 }
             ],
             pages: [

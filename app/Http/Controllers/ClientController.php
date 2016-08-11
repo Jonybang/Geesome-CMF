@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Page;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Helpers\Helper;
@@ -12,6 +13,7 @@ use App\Models\Setting;
 use App\Models\SentMail;
 use App\Models\SubscriberGroup;
 use App\Models\Subscriber;
+use App\Models\User;
 use Mail;
 
 class ClientController extends Controller
@@ -23,7 +25,7 @@ class ClientController extends Controller
 
     public function get_projects(){
 
-        $projects = Template::where('key', 'projects')->first()->pages->first()->child_pages;
+        $projects = Template::where('key', 'projects')->first()->pages()->where('context_id', session('current_context_id'))->first()->child_pages_by_index;
         return ['projects' => $projects];
     }
 
@@ -32,12 +34,27 @@ class ClientController extends Controller
         if(!$sub_alias)
             return $none_tag_data;
 
-        $tag = Tag::where('name', 'like', $sub_alias)->first();
+        $tag = Tag::where('name', 'like', $sub_alias)->orWhere('id', $sub_alias)->first();
 
         if($tag)
             return ['tag' => $tag];
         else
             return $none_tag_data;
+    }
+
+    public function user_by_alias($page, $sub_alias = null){
+        $none_user_data = ['render_template' => '404'];
+        if(!$sub_alias)
+            return $none_user_data;
+
+        $user = User::where('name', 'like', $sub_alias)->orWhere('id', $sub_alias)->first();
+        $blog = Page::where('alias', 'blog')->where('context_id', $page->context_id)->first();
+        $blog_pages = $blog->published_child_pages->where('author_id', $user->id);
+
+        if($user)
+            return ['user' => $user, 'blog_pages' => $blog_pages];
+        else
+            return $none_user_data;
     }
 
     public function sendFeedbackMessage(Request $request){

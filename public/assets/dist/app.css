@@ -45,6 +45,27 @@ pre {
   word-wrap: break-word;
   /* Internet Explorer 5.5+ */
 }
+
+.ui-select-bootstrap.ng-empty .clear-btn,
+.ui-select-multiple .clear-btn {
+  display: none;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 20px;
+  z-index: 999;
+  top: 7px;
+  font-size: 18px;
+}
+
+/*.clear-btn-offset {*/
+
+/*position: absolute;*/
+
+/*left: 14px;*/
+
+/*}*/
 /*!
  * Start Bootstrap - SB Admin Bootstrap Admin Template (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
@@ -345,4 +366,9 @@ ul.child_pages.empty {
 
 .panel-body {
   border-top: 1px solid #ddd;
+}
+
+.pages-tree h4 {
+  color: white;
+  margin: 0;
 }

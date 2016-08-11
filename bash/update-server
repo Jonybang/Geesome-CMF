@@ -1,0 +1,9 @@
+#!/bin/sh
+
+git checkout -- .
+
+git pull
+
+sudo chmod 777 -R resources
+
+composer update

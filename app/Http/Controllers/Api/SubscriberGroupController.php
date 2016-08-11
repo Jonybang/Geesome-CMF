@@ -16,7 +16,7 @@ class SubscriberGroupController extends ApiController
 {
     public function index()
     {
-        return ApiHandler::parseMultiple(SubscriberGroup::query(), ['key', 'name'])->getResponse();
+        return ApiHandler::parseMultiple(SubscriberGroup::query(), ['id', 'key', 'name'])->getResponse();
     }
     public function show($id, Request $request)
     {
@@ -40,7 +40,7 @@ class SubscriberGroupController extends ApiController
 
         UserActionLog::saveAction($obj, "create");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function update(Request $request)
     {
@@ -54,7 +54,7 @@ class SubscriberGroupController extends ApiController
         if ($is_saved)
             UserActionLog::saveAction($obj, "update");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function destroy($id)
     {

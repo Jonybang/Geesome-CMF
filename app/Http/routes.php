@@ -44,6 +44,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
 
         //REST API
         Route::resource('settings', 'Api\SettingController');
+        Route::resource('contexts', 'Api\ContextController');
         Route::resource('pages', 'Api\PageController');
 
         Route::resource('pages/{page_id}/seo', 'Api\PageSEOController');
@@ -66,6 +67,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
         Route::resource('translations', 'Api\TranslationController');
         Route::get('translations_groups', 'Api\TranslationController@getGroups');
         Route::get('translations_locales', 'Api\TranslationController@getLocales');
+        Route::post('import_translations', 'Api\TranslationController@importAll');
+        Route::post('export_translations', 'Api\TranslationController@exportAll');
 
         Route::resource('subscribers', 'Api\SubscriberController');
         Route::resource('subscribers_groups', 'Api\SubscriberGroupController');
@@ -88,7 +91,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
 
 Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
     Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null) {
-
         function getContextByLocale(){
             $context = Context::whereHas('settings', function($query){
                 //get context, where setting has current locale
@@ -97,6 +99,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
                     'value' => LaravelLocalization::getCurrentLocale()
                 ]);
             })->first();
+
+            if(!$context){
+                $context = Context::find(Setting::where('key', 'default_context_id')->first()->value);
+            }
 
             return $context ? $context : Context::first();
         }

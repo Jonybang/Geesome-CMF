@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+    .controller('SettingsController', ['$scope', 'Settings', 'Contexts', function($scope, Settings, Contexts) {
         $scope.settings = [];
 
         $scope.aGridOptions = {
@@ -34,6 +34,13 @@ angular.module('app')
                 {
                     name: 'description',
                     label: 'Description'
+                },
+                {
+                    name: 'context_id',
+                    label: 'Context',
+                    type: 'select',
+                    list: 'contexts',
+                    resource: Contexts
                 }
             ]
         };

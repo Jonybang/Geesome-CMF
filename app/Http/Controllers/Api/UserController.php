@@ -16,11 +16,11 @@ class UserController extends ApiController
 {
     public function index()
     {
-        return ApiHandler::parseMultiple(User::query(), ['name', 'email'])->getResponse();
+        return ApiHandler::parseMultiple(User::query(), ['id', 'name', 'email'])->getResponse();
     }
     public function show($id)
     {
-        return User::find($id)->toArray();
+        return User::find($id);
     }
     public function store(Request $request)
     {
@@ -30,7 +30,7 @@ class UserController extends ApiController
 
         UserActionLog::saveAction($obj, "create");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function update(Request $request)
     {

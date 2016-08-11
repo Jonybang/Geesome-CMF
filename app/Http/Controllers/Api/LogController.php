@@ -16,17 +16,17 @@ class LogController extends ApiController
 {
     public function index()
     {
-        return ApiHandler::parseMultiple(UserActionLog::with('logable'), ['action', 'description'])->getResponse();
+        return ApiHandler::parseMultiple(UserActionLog::with('logable'), ['id', 'action', 'description'])->getResponse();
     }
     public function show($id)
     {
-        return UserActionLog::find($id)->toArray();
+        return UserActionLog::find($id);
     }
     public function store(Request $request)
     {
         $data = $request->all();
 
-        return UserActionLog::create($data)->toArray();
+        return UserActionLog::create($data);
     }
     public function update(Request $request)
     {

@@ -90,6 +90,13 @@ class Page extends Model
     /**
      * @Relation
      */
+    public function published_child_pages()
+    {
+        return $this->hasMany(Page::class, 'parent_page_id')->orderBy('created_at', 'DESC')->where(['is_deleted' => false, 'is_published' => true])->with('published_child_pages');
+    }
+    /**
+     * @Relation
+     */
     public function child_pages_by_index()
     {
         return $this->hasMany(Page::class, 'parent_page_id')->orderBy('menu_index', 'ASC')->with('child_pages_by_index');
@@ -191,5 +198,33 @@ class Page extends Model
             return $this->parent_page->page_uri . '#' . $this->alias;
         else
             return $this->alias;
+    }
+
+    public function getSeoTitleAttribute(){
+        if($this->seo && $this->seo->title)
+            return $this->seo->title;
+        else
+            return $this->title;
+    }
+
+    public function getSeoDescriptionAttribute(){
+        if($this->seo && $this->seo->description)
+            return $this->seo->description;
+        else
+            return $this->description;
+    }
+
+    public function getSeoKeywordsAttribute(){
+        if($this->seo && $this->seo->keywords)
+            return $this->seo->keywords;
+        else
+            return '';
+    }
+
+    public function getSeoImageAttribute(){
+        if($this->seo && $this->seo->image)
+            return $this->seo->image;
+        else
+            return '';
     }
 }

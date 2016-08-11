@@ -23,15 +23,9 @@ class TranslationController extends Controller
 		$query = Translation::query();
 		$data = $request->all();
 
-		$import_replace = false;
-		if(isset($data['_import_replace'])){
-			$import_replace = $data['_import_replace'];
-			unset($data['_import_replace']);
-		}
+		$this->translation_manager->importTranslations();
 
-		$this->translation_manager->importTranslations($import_replace);
-
-		return ApiHandler::parseMultiple($query, ['locale', 'group', 'key', 'value'], $data)->getResponse();
+		return ApiHandler::parseMultiple($query, ['id', 'locale', 'group', 'key', 'value'], $data)->getResponse();
 	}
 
 	public function show($translation_key, Request $request){
@@ -99,5 +93,14 @@ class TranslationController extends Controller
 
 	public function getLocales(){
 		return Translation::groupBy('locale')->lists('locale');
+	}
+	public function exportAll(){
+		$groups = $this->getGroups();
+		foreach($groups as $group){
+			$this->translation_manager->exportTranslations($group);
+		}
+	}
+	public function importAll(){
+		$this->translation_manager->importTranslations(true);
 	}
 }

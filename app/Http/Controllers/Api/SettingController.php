@@ -17,11 +17,11 @@ class SettingController extends ApiController
 {
     public function index()
     {
-        return ApiHandler::parseMultiple(Setting::query(), ['name', 'key', 'value', 'description'])->getResponse();
+        return ApiHandler::parseMultiple(Setting::query(), ['id', 'name', 'key', 'value', 'description'])->getResponse();
     }
     public function show($id)
     {
-        return Setting::find($id)->toArray();
+        return Setting::find($id);
     }
     public function store(Request $request)
     {
@@ -30,7 +30,7 @@ class SettingController extends ApiController
 
         UserActionLog::saveAction($obj, "create");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function update(Request $request)
     {
@@ -41,7 +41,7 @@ class SettingController extends ApiController
         if ($is_saved)
             UserActionLog::saveAction($obj, "update");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function destroy($id)
     {

@@ -802,6 +802,7 @@ angular
                     '<div ng-if="isEdit">' +
                         '<ui-select ' + uiSelect.attributes + ' ng-model="options.value" ng-click="changer()" class="input-small" reset-search-input="{{resetSearchInput}}" on-select="onSelectItem($select)">' +
                             '<ui-select-match placeholder="">' +
+                                '<a class="close clear-btn" ng-click="clearInput($event)"><span>×</span></a>' +
                                 '{{' + uiSelect.match + '}}' +
                             '</ui-select-match>' +
 
@@ -867,18 +868,14 @@ angular
                 type: '@' //select or multiselect
             },
             link: function (scope, element, attrs, ngModel) {
+                //=============================================================
+                // Config
+                //=============================================================
                 var variables = angular.extend({}, AEditConfig.grid_options.request_variables, AEditConfig.grid_options.response_variables);
 
                 scope.refreshDelay = AEditConfig.select_options.refresh_delay;
                 scope.resetSearchInput = AEditConfig.select_options.reset_search_input;
 
-                scope.onSelectItem = function($select){
-                    //fix ui-select bug
-                    if(scope.resetSearchInput && $select)
-                        $select.search = '';
-
-                    $timeout(scope.onSelect);
-                };
                 scope.options = {
                     value: scope.ngModel
                 };
@@ -887,6 +884,9 @@ angular
                 if(scope.adder)
                     scope.full_type += '-adder';
 
+                //=============================================================
+                // Compile
+                //=============================================================
                 var template = typeTemplates[scope.full_type],
                     templateElement;
 
@@ -902,16 +902,42 @@ angular
                     templateElement = null;
                 });
 
+                //=============================================================
+                // Output validation
+                //=============================================================
                 scope.$watch('hasError', function(hasError){
                     scope.input_class = hasError ? "has-error" : '';
                 });
 
+                //=============================================================
+                // Callbacks
+                //=============================================================
+                scope.onSelectItem = function($select){
+                    //fix ui-select bug
+                    if(scope.resetSearchInput && $select)
+                        $select.search = '';
+
+                    $timeout(scope.onSelect);
+                    $timeout(scope.ngChange);
+                };
+                scope.clearInput = function($event){
+                    $event.stopPropagation();
+                    scope.ngModel = scope.type == 'multiselect' ? [] : null;
+                    $timeout(scope.ngChange);
+                };
+                scope.save = function(){
+                    if(scope.onSave)
+                        $timeout(scope.onSave);
+                };
+
+                //=============================================================
+                // Hotfix for work with ngModel and ui-select
+                //=============================================================
                 scope.changer = function() {
                     ngModel.$setViewValue(scope.options.value)
                 };
 
                 scope.$watch('ngModel', function(newVal){
-
                     if(scope.options.value == newVal)
                         return;
 
@@ -928,11 +954,9 @@ angular
                     scope.setSelectedName(newVal);
                 });
 
-                scope.$watch('list', function(list){
-                    scope.local_list = list;
-                    scope.setSelectedName(scope.ngModel);
-                });
-
+                //=============================================================
+                // Init select list
+                //=============================================================
                 function initListGetByResource(){
                     if(!scope.ngResource || !scope.getList || (scope.local_list && scope.local_list.length))
                         return;
@@ -958,6 +982,13 @@ angular
                 scope.$watch('ngResource', initListGetByResource);
                 scope.$watch('refreshListOn', initListGetByResource);
 
+                //=============================================================
+                // Output non edit mode
+                //=============================================================
+                scope.$watch('list', function(list){
+                    scope.local_list = list;
+                    scope.setSelectedName(scope.ngModel);
+                });
                 scope.setSelectedName = function (newVal){
                     if(!scope.local_list || !scope.local_list.length)
                         return;
@@ -1009,11 +1040,9 @@ angular
                     return obj[scope.nameField] || obj.name || obj[scope.orNameField];
                 }
 
-                scope.save = function(){
-                    if(scope.onSave)
-                        $timeout(scope.onSave);
-                };
-
+                //=============================================================
+                // Compile Adder button
+                //=============================================================
                 if(scope.adder){
                     scope.new_object = {};
 
@@ -1063,6 +1092,9 @@ angular
                     $templateCache.put(scope.popover.template_name, popoverTemplate);
                 }
 
+                //=============================================================
+                // Add new item to select list by adder
+                //=============================================================
                 scope.saveToList = function(new_object){
                     scope.popover.is_open = false;
 
@@ -1554,12 +1586,12 @@ angular
                     abstract: true
                 })
                     .state('app.page.create', {
-                        url: '',
+                        url: '?context_id',
                         controller: 'PageFormController',
                         templateUrl: AppPaths.page_form_tpls + 'index.html'
                     })
                     .state('app.page.edit', {
-                        url: '/page/:pageId',
+                        url: '/page/:pageId?context_id',
                         controller: 'PageFormController',
                         templateUrl: AppPaths.page_form_tpls + 'index.html'
                     })
@@ -1673,18 +1705,17 @@ angular
             allowedContent: true,
             entities: false,
             toolbarGroups: [
-                { name: 'editing',     groups: [ 'find', 'selection' ] },
-                '/',
                 { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-                { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-                { name: 'links' },
-                { name: 'insert' },
-                '/',
+                { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'justify'] },
                 { name: 'styles' },
                 { name: 'colors' },
+                '/',
+                { name: 'links' },
+                { name: 'insert' },
                 { name: 'tools' },
                 { name: 'others' },
-                { name: 'document',    groups: [ 'mode', 'document', 'doctools' ] },
+                { name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
+                { name: 'editing',     groups: [ 'find', 'selection' ] }
             ]
         };
 
@@ -1692,7 +1723,7 @@ angular
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
 angular.module('app')
-    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', 'Pages', function($scope, $http, AppPaths, AppData, Pages) {
+    .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', 'Contexts', 'Pages', function($scope, $http, AppPaths, AppData, Contexts, Pages) {
         var self = this;
 
         self.menuList = [
@@ -1743,7 +1774,7 @@ angular.module('app')
         ];
 
         self.refreshPagesTree = function(){
-            self.pages_tree = Pages.query({tree_mode: true});
+            self.contexts = Contexts.query({_with: 'pages_tree'});
         };
 
         self.refreshPagesTree();
@@ -2125,6 +2156,10 @@ app.factory('Settings', ['$resource', function($resource) {
     return $resource('admin/api/settings/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('Contexts', ['$resource', function($resource) {
+    return $resource('admin/api/contexts/:id', { id: '@id' }, defaultOptions);
+}]);
+
 app.factory('Pages', ['$resource', function($resource) {
     return $resource('admin/api/pages/:id', { id: '@id' }, defaultOptions);
 }]);
@@ -2217,8 +2252,8 @@ angular.module('app')
             mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
     });
 angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'AppData', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, Notification, AppPaths, AppData, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'AppData', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, Notification, AppPaths, AppData, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
 
         var defaultPage = new Pages();
 
@@ -2230,6 +2265,8 @@ angular.module('app')
             defaultPage.tags_ids = [];
             defaultPage.controller_actions_ids = [];
             defaultPage.seo = {};
+            console.log('$state.params', $state.params);
+            defaultPage.context_id = $state.params.context_id;
 
             $scope.page = angular.copy(defaultPage);
         }
@@ -2237,14 +2274,15 @@ angular.module('app')
         //Get current user and set his id as author id
         AppData.getCurrentUser(function(current_user){
             $scope.current_user = current_user;
-            defaultPage.author_id = current_user.id;
+            defaultPage.author_id = $scope.page.author_id || current_user.id;
             angular.extend($scope.page, defaultPage);
         });
 
         //Get site settings and set default values to page object
         AppData.getSiteSettings(function(site_settings){
             $scope.site_settings = site_settings;
-            defaultPage.template_id = $scope.site_settings.default_template_id;
+            defaultPage.template_id = $scope.page.template_id || $scope.site_settings.default_template_id;
+            defaultPage.context_id = $scope.page.context_id || $scope.site_settings.default_context_id;
             angular.extend($scope.page, defaultPage);
         });
 
@@ -2299,6 +2337,7 @@ angular.module('app')
         //Models for select inputs
         $scope.models = {
             templates: Templates,
+            contexts: Contexts,
             pages: Pages,
             users: Users,
             tags: Tags,
@@ -2314,6 +2353,20 @@ angular.module('app')
                 {
                     name: 'key',
                     label: 'Key(Path in templates directory)'
+                }
+            ],
+            contexts: [
+                {
+                    name: 'name',
+                    label: 'Name'
+                },
+                {
+                    name: 'key',
+                    label: 'Key'
+                },
+                {
+                    name: 'role',
+                    label: 'Role of context(lang for example)'
                 }
             ],
             pages: [
@@ -2663,7 +2716,7 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', function($scope, Settings) {
+    .controller('SettingsController', ['$scope', 'Settings', 'Contexts', function($scope, Settings, Contexts) {
         $scope.settings = [];
 
         $scope.aGridOptions = {
@@ -2698,6 +2751,13 @@ angular.module('app')
                 {
                     name: 'description',
                     label: 'Description'
+                },
+                {
+                    name: 'context_id',
+                    label: 'Context',
+                    type: 'select',
+                    list: 'contexts',
+                    resource: Contexts
                 }
             ]
         };
@@ -3013,7 +3073,7 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('TranslationsController', ['$scope', 'Translations', 'TranslationsGroups', 'TranslationsLocales', function($scope, Translations, TranslationsGroups, TranslationsLocales) {
+    .controller('TranslationsController', ['$scope', '$http', 'Notification', 'Translations', 'TranslationsGroups', 'TranslationsLocales', function($scope, $http, Notification, Translations, TranslationsGroups, TranslationsLocales) {
         $scope.items = [];
 
         $scope.aGridOptions = {
@@ -3062,10 +3122,27 @@ angular.module('app')
         };
 
         $scope.importWithReplace = function(){
-            $scope.items = Translations.query({_import_replace: true});
-            $scope.aGridOptions = angular.copy($scope.aGridOptions);
+            if(!confirm('Are you sure to IMPORT to database with replace all translations? This action will rewrite database data.'))
+                return;
+
+            $http.post('admin/api/import_translations').then(function(){
+                Notification.success('Import success!');
+                $scope.aGridOptions = angular.copy($scope.aGridOptions);
+            }, function(){
+                Notification.error('Import error!');
+            });
         };
 
+        $scope.exportToFiles = function(){
+            if(!confirm('Are you sure to EXPORT to files all translations? This action will rewrite resources/lang files content.'))
+                return;
+
+            $http.post('admin/api/export_translations').then(function(){
+                Notification.success('Export success!');
+            }, function(){
+                Notification.error('Export error!');
+            });
+        }
     }]);
 
 angular.module('app')

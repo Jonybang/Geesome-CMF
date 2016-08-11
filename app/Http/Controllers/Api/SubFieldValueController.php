@@ -21,13 +21,13 @@ class SubFieldValueController extends ApiController
         if(isset($data['sub_field_id']) && isset($data['page_id']))
             $sub_fields = SubFieldValue::where('sub_field_id', $data['sub_field_id'])->where('page_id', $data['page_id'])->get()->toArray();
         else
-            $sub_fields = ApiHandler::parseMultiple(SubFieldValue::query(), ['value'])->getResponse();
+            $sub_fields = ApiHandler::parseMultiple(SubFieldValue::query(), ['id', 'value'])->getResponse();
 
         return $sub_fields;
     }
     public function show($id)
     {
-        return SubFieldValue::find($id)->toArray();
+        return SubFieldValue::find($id);
     }
     public function store(Request $request)
     {
@@ -36,7 +36,7 @@ class SubFieldValueController extends ApiController
 
         UserActionLog::saveAction($obj, "create");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function update(Request $request)
     {
@@ -49,7 +49,7 @@ class SubFieldValueController extends ApiController
         if ($is_saved && $prev_value != $obj->value)
             UserActionLog::saveAction($obj, "update");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function destroy($id)
     {

@@ -17,11 +17,11 @@ class TagController extends ApiController
 {
     public function index()
     {
-        return ApiHandler::parseMultiple(Tag::query(), ['name'])->getResponse();
+        return ApiHandler::parseMultiple(Tag::query(), ['id', 'name'])->getResponse();
     }
     public function show($id)
     {
-        return Tag::find($id)->toArray();
+        return Tag::find($id);
     }
     public function store(Request $request)
     {
@@ -30,7 +30,7 @@ class TagController extends ApiController
 
         UserActionLog::saveAction($obj, "create");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function update(Request $request)
     {
@@ -41,7 +41,7 @@ class TagController extends ApiController
         if ($is_saved)
             UserActionLog::saveAction($obj, "update");
 
-        return $obj->toArray();
+        return $obj;
     }
     public function destroy($id)
     {

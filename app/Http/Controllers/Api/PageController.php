@@ -18,12 +18,7 @@ class PageController extends ApiController
 {
     public function index(Request $request)
     {
-        if($request->input('tree_mode'))
-            return Page::whereNull('parent_page_id')->with('child_pages_by_index')->get();
-        else
-            $pages = Page::query();
-
-        return ApiHandler::parseMultiple($pages, ['title', 'alias', 'menu_title', 'sub_title', 'description'])->getResponse();
+        return ApiHandler::parseMultiple(Page::query(), ['id', 'title', 'alias', 'menu_title', 'sub_title', 'description'])->getResponse();
     }
 
     private function getPageSubData($page){
@@ -55,7 +50,7 @@ class PageController extends ApiController
     public function store(Request $request)
     {
         $data = $request->all();
-        $data['context_id'] = Context::first()->id;
+        $data['context_id'] = isset($data['context_id']) ? $data['context_id'] : Context::first()->id;
         $obj = Page::create($data);
         $obj->save();
 

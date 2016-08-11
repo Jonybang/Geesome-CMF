@@ -134,6 +134,9 @@
                         Edit sub info <span class="caret"></span><br>
                     </a>
                     <div ng-if="subInfoShow">
+                        <label>Context:</label>
+                        <ae-select-input ng-model="page.context_id" has-error="hasErrors.context_id" ng-resource="models.contexts" ng-resource-fields="fields.contexts" is-edit="true" adder="true" get-list="true"></ae-select-input>
+
                         <label>
                             Is deleted:
                             <ae-bool-input ng-model="page.is_deleted" has-error="hasErrors.is_deleted" is-edit="true"></ae-bool-input>

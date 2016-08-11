@@ -9,6 +9,7 @@ class ControllerAction extends Model
     protected $table = 'controller_actions';
 
     protected $fillable = [
+        'key',
         'name'
     ];
 

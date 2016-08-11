@@ -289,3 +289,8 @@ ul.child_pages.empty {
     border-top: 1px solid #ddd;
 }
 
+
+.pages-tree h4 {
+    color: white;
+    margin: 0;
+}

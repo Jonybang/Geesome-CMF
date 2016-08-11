@@ -41,6 +41,11 @@ Sub entites:
 - [MailTemplate](app/Models/MailTemplate.php) - mailings templates with support of [Blade](https://laravel.com/docs/5.0/templates) syntax (allows to use variables). Templates are stored in database, and can be edited inside admin panel; [Here](database/seeds/MailingSeeder.php#L14) is example of MailTemplate;
 - [SentMail](app/Models/SentMail.php) - for possibly of resend previosly sent mails.
 
+## Requirements
+
+**MySQL 5.7.8+** - [for support json](http://stackoverflow.com/a/36017215) field. [Install instruction for ubuntu 14](https://www.digitalocean.com/community/questions/mysql-5-7-x-on-ubuntu-14-lamp-already-installed).
+**PHP 5.6.19+**(7+ recommended) - [for support json](http://stackoverflow.com/a/34295663) field too. [Install instructions 7.0 for ubuntu 14](https://www.digitalocean.com/community/tutorials/how-to-upgrade-to-php-7-on-ubuntu-14-04)
+
 ## Official Documentation
 
 The project is now on beta version, and soon, when the first version - his will be documented.
@@ -48,6 +53,7 @@ The project is now on beta version, and soon, when the first version - his will 
 ## Backend and frontend
 
 Now backend core is located in [app/Http/routes.php](https://github.com/Jonybang/Lanit-Laravel-CMF/blob/master/app/Http/routes.php) file.
+In core uses multilanguage routes with [mcamara/laravel-localization](https://github.com/mcamara/laravel-localization) package
 
 Frontend core(Admin panel) located in [public/assets/js/admin-app](https://github.com/Jonybang/Lanit-Laravel-CMF/tree/master/public/assets/js/admin-app) folder and used [Awesome edit](https://github.com/Jonybang/awesome-edit) angular module for manage database tables and admin forms. Frontend architecture develop with DRY principle, adheres to the minimalist approach of development and has some specified and bulky code only in create/edit controllers and directives of complex forms(like [page-form-controller.js](public/assets/js/admin-app/modules/page-form/page-form-controller.js) and [mailing-controller.js](public/assets/js/admin-app/modules/site-manage/mailing/mailing-controller.js))
 
@@ -61,6 +67,10 @@ git pull && git submodule init && git submodule update && git submodule status
 
 ## TODO:
 
-- Multilanguage routes with [mcamara/laravel-localization](https://github.com/mcamara/laravel-localization) package;
 - Move to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum));
-- More customizable sub fields.
+- More customizable sub fields on admin panel(custom directives in a-edit grid);
+- Rename some entities;
+- Reusable components;
+- Bind translations pages(same as Babel on MODX);
+- More beauty admin panel;
+- Move angular app to resources folder for compile into public/assets.

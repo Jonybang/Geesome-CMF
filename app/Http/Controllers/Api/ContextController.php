@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\UserActionLog;
 use Illuminate\Http\Request;
-use \Response;
-use \Auth;
-use App\Models\MailTemplate;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use \App\Models\Context;
+use \App\Models\UserActionLog;
 use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
-class MailTemplateController extends ApiController
+class ContextController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return ApiHandler::parseMultiple(MailTemplate::query(), ['id', 'key', 'name', 'title', 'content'])->getResponse();
+        $data = $request->all();
+        unset($data['q']);
+        return ApiHandler::parseMultiple(Context::query(), ['id', 'name', 'key', 'role', 'description'], $data)->getResponse();
     }
     public function show($id)
     {
-        return MailTemplate::find($id);
+        return Context::find($id);
     }
     public function store(Request $request)
     {
         $data = $request->all();
-        $obj = MailTemplate::create($data);
+        $obj = Context::create($data);
 
         UserActionLog::saveAction($obj, "create");
 
@@ -34,7 +34,7 @@ class MailTemplateController extends ApiController
     public function update(Request $request)
     {
         $data = $request->all();
-        $obj = MailTemplate::find($data['id']);
+        $obj = Context::find($data['id']);
         $is_saved = $obj->update($data);
 
         if ($is_saved)
@@ -44,8 +44,8 @@ class MailTemplateController extends ApiController
     }
     public function destroy($id)
     {
-        $obj = MailTemplate::find($id);
-        $is_destroyed = MailTemplate::destroy($id);
+        $obj = Context::find($id);
+        $is_destroyed = Context::destroy($id);
 
         if ($is_destroyed)
             UserActionLog::saveAction($obj, "destroy");

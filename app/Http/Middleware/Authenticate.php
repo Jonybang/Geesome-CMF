@@ -25,6 +25,8 @@ class Authenticate
             }
         }
 
+        unset($request['q']);
+
         return $next($request);
     }
 }
