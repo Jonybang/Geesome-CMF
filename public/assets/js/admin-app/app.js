@@ -150,18 +150,17 @@ angular
             allowedContent: true,
             entities: false,
             toolbarGroups: [
-                { name: 'editing',     groups: [ 'find', 'selection' ] },
-                '/',
                 { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-                { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-                { name: 'links' },
-                { name: 'insert' },
-                '/',
+                { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'justify'] },
                 { name: 'styles' },
                 { name: 'colors' },
+                '/',
+                { name: 'links' },
+                { name: 'insert' },
                 { name: 'tools' },
                 { name: 'others' },
-                { name: 'document',    groups: [ 'mode', 'document', 'doctools' ] },
+                { name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
+                { name: 'editing',     groups: [ 'find', 'selection' ] }
             ]
         };
 
