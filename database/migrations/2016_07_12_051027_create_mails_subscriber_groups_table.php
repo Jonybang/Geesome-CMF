@@ -14,10 +14,10 @@ class CreateMailsSubscriberGroupsTable extends Migration
     {
         Schema::create('mails_subscriber_groups', function (Blueprint $table) {
             $table->integer('sent_mail_id')->unsigned()->index();
-            $table->foreign('sent_mail_id')->references('id')->on('sent_mails');
+            $table->foreign('sent_mail_id')->references('id')->on('sent_mails')->onDelete('cascade');
 
             $table->integer('subscriber_group_id')->unsigned()->index();
-            $table->foreign('subscriber_group_id')->references('id')->on('subscriber_groups');
+            $table->foreign('subscriber_group_id')->references('id')->on('subscriber_groups')->onDelete('cascade');
 
             $table->primary(['sent_mail_id', 'subscriber_group_id']);
         });

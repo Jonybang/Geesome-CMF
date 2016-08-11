@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSubFieldsValuesTable extends Migration
+class CreatePageTranslationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,14 @@ class CreateSubFieldsValuesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sub_fields_values', function (Blueprint $table) {
+        Schema::create('page_translations', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('sub_field_id')->unsigned();
-            $table->foreign('sub_field_id')->references('id')->on('sub_fields')->onDelete('cascade');
-
-            $table->integer('page_id')->unsigned()->nullable();
+            $table->integer('page_id')->unsigned();
             $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
 
-            $table->text('value')->nullable();
+            $table->string('hash_key');
+            $table->string('locale');
 
             $table->timestamps();
         });
@@ -34,6 +32,6 @@ class CreateSubFieldsValuesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('sub_fields_values');
+        Schema::drop('page_translations');
     }
 }

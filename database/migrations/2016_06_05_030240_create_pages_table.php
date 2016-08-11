@@ -33,13 +33,13 @@ class CreatePagesTable extends Migration
             $table->boolean('is_part')->default(false);
 
             $table->integer('parent_page_id')->unsigned()->nullable();
-            $table->foreign('parent_page_id')->references('id')->on('pages');
+            $table->foreign('parent_page_id')->references('id')->on('pages')->onDelete('cascade');
 
             $table->integer('author_id')->unsigned()->nullable();
-            $table->foreign('author_id')->references('id')->on('users');
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->integer('template_id')->unsigned();
-            $table->foreign('template_id')->references('id')->on('templates');
+            $table->foreign('template_id')->references('id')->on('templates')->onDelete('cascade');
 
             $table->integer('context_id')->unsigned();
             $table->foreign('context_id')->references('id')->on('contexts');

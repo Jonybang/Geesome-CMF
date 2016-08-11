@@ -22,7 +22,7 @@ class CreateSettingsTable extends Migration
             $table->string('description')->nullable();
 
             $table->integer('context_id')->unsigned()->nullable();
-            $table->foreign('context_id')->references('id')->on('contexts');
+            $table->foreign('context_id')->references('id')->on('contexts')->onDelete('cascade');
 
             $table->timestamps();
         });

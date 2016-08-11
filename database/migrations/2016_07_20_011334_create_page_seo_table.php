@@ -21,7 +21,7 @@ class CreatePageSeoTable extends Migration
             $table->string('image')->nullable();
 
             $table->integer('page_id')->unsigned();
-            $table->foreign('page_id')->references('id')->on('pages');
+            $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
 
             $table->timestamps();
         });

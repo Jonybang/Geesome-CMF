@@ -14,10 +14,10 @@ class CreateTemplatesSubFieldsTable extends Migration
     {
         Schema::create('templates_sub_fields', function (Blueprint $table) {
             $table->integer('template_id')->unsigned()->index();
-            $table->foreign('template_id')->references('id')->on('templates');
+            $table->foreign('template_id')->references('id')->on('templates')->onDelete('cascade');
 
             $table->integer('sub_field_id')->unsigned()->index();
-            $table->foreign('sub_field_id')->references('id')->on('sub_fields');
+            $table->foreign('sub_field_id')->references('id')->on('sub_fields')->onDelete('cascade');
 
             $table->primary(['template_id', 'sub_field_id']);
         });
