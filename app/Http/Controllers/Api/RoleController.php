@@ -2,36 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Role;
 use App\Models\UserActionLog;
 use Illuminate\Http\Request;
-use \Response;
-use \Auth;
-use \App\Models\User;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Marcelgwerder\ApiHandler\Facades\ApiHandler;
 
-class UserController extends ApiController
+class RoleController extends Controller
 {
     public function index()
     {
-        return ApiHandler::parseMultiple(User::query(), ['id', 'name', 'email'])->getResponse();
+        return ApiHandler::parseMultiple(Role::query(), ['id', 'name', 'display_name', 'description'])->getResponse();
     }
     public function show($id)
     {
-        $obj = User::find($id);
-        $user_data = $obj->toArray();
-        $user_data['roles_ids'] = $obj->roles_ids;
-        return $user_data;
+        return Role::find($id);
     }
     public function store(Request $request)
     {
         $data = $request->all();
-        $data['password'] = bcrypt($data['password']);
-        $obj = User::create($data);
-
-        $obj->roles_ids = $data['roles_ids'];
+        $obj = Role::create($data);
 
         UserActionLog::saveAction($obj, "create");
 
@@ -40,25 +32,18 @@ class UserController extends ApiController
     public function update(Request $request)
     {
         $data = $request->all();
-
-        if(isset($data['password']) && $data['password'])
-            $data['password'] = bcrypt($data['password']);
-
-        $obj = User::find($data['id']);
-
-        $obj->roles_ids = $data['roles_ids'];
-
+        $obj = Role::find($data['id']);
         $is_saved = $obj->update($data);
 
-        if($is_saved)
+        if ($is_saved)
             UserActionLog::saveAction($obj, "update");
 
         return $obj;
     }
     public function destroy($id)
     {
-        $obj = User::find($id);
-        $is_destroyed = User::destroy($id);
+        $obj = Role::find($id);
+        $is_destroyed = Role::destroy($id);
 
         if ($is_destroyed)
             UserActionLog::saveAction($obj, "destroy");

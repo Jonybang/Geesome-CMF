@@ -40,6 +40,18 @@ class User extends Authenticatable
         return $this->hasMany(Page::class, 'author_id');
     }
 
+    public function setRolesIdsAttribute($value)
+    {
+        $this->roles()->sync($value);
+    }
+    public function getRolesIdsAttribute()
+    {
+        $ids = [];
+        foreach($this->roles as $role)
+            $ids[] = $role->id;
+        return $ids;
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

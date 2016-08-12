@@ -53,6 +53,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
         Route::resource('mail_templates', 'Api\MailTemplateController');
         Route::resource('logs', 'Api\LogController');
         Route::resource('users', 'Api\UserController');
+        Route::resource('roles', 'Api\RoleController');
         Route::resource('tags', 'Api\TagController');
 
         Route::resource('sub_fields', 'Api\SubFieldController');

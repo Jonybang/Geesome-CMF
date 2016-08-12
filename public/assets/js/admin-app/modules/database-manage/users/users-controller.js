@@ -1,5 +1,5 @@
 angular.module('app')
-    .controller('UserController', ['$scope', 'Users', function($scope, Users) {
+    .controller('UserController', ['$scope', 'Users', 'Roles', function($scope, Users, Roles) {
         $scope.users = [];
 
         $scope.aGridOptions = {
@@ -33,6 +33,14 @@ angular.module('app')
                     type: 'password',
                     label: 'Password',
                     required: true
+                },
+                {
+                    name: 'roles_ids',
+                    type: 'multiselect',
+                    label: 'Roles',
+                    list: 'roles',
+                    resource: Roles,
+                    table_hide: true
                 }
             ]
         };

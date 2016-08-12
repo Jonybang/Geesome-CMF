@@ -2184,6 +2184,10 @@ app.factory('Users', ['$resource', function($resource) {
     return $resource('admin/api/users/:id', { id: '@id' }, defaultOptions);
 }]);
 
+app.factory('Roles', ['$resource', function($resource) {
+    return $resource('admin/api/roles/:id', { id: '@id' }, defaultOptions);
+}]);
+
 app.factory('Tags', ['$resource', function($resource) {
     return $resource('admin/api/tags/:id', { id: '@id' }, defaultOptions);
 }]);
@@ -3146,7 +3150,7 @@ angular.module('app')
     }]);
 
 angular.module('app')
-    .controller('UserController', ['$scope', 'Users', function($scope, Users) {
+    .controller('UserController', ['$scope', 'Users', 'Roles', function($scope, Users, Roles) {
         $scope.users = [];
 
         $scope.aGridOptions = {
@@ -3180,6 +3184,14 @@ angular.module('app')
                     type: 'password',
                     label: 'Password',
                     required: true
+                },
+                {
+                    name: 'roles_ids',
+                    type: 'multiselect',
+                    label: 'Roles',
+                    list: 'roles',
+                    resource: Roles,
+                    table_hide: true
                 }
             ]
         };
