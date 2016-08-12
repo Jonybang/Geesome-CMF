@@ -75,6 +75,14 @@ class Page extends Model
     /**
      * @Relation
      */
+    public function page_translation()
+    {
+        return $this->hasOne(PageTranslation::class);
+    }
+
+    /**
+     * @Relation
+     */
 
     public function parent_page()
     {
@@ -226,5 +234,12 @@ class Page extends Model
             return $this->seo->image;
         else
             return '';
+    }
+
+    public function getPageByTranslation($locale){
+        return PageTranslation::where([
+            'hash_key' => $this->page_translation->hash_key,
+            'locale' => $locale
+        ])->first()->page;
     }
 }

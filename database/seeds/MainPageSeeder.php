@@ -87,7 +87,7 @@ class MainPageSeeder extends Seeder
         // main blocks for main page in each context
         //==================================================================
         $seeds = [
-            'default' => [
+            'en' => [
                 [
                     // block title
                     'First block title',
@@ -130,7 +130,7 @@ class MainPageSeeder extends Seeder
                     []
                 ]
             ],
-            'russian' => [
+            'ru' => [
                 [
                     // block title
                     'Заголовок первого блока',
@@ -174,9 +174,17 @@ class MainPageSeeder extends Seeder
                 ]
             ]
         ];
+
+        $hash_key = uniqid();
+
         foreach ($seeds as $context_key => $blocks_seeds){
             $context = Context::where('key', $context_key)->first();
             $main_page = $main_template->pages()->where('context_id', $context->id)->first();
+
+            $main_page->page_translation()->create([
+                'hash_key' => $hash_key,
+                'locale' => $context_key
+            ]);
 
             foreach ($blocks_seeds as $block) {
                 $page = Page::create([
@@ -193,7 +201,7 @@ class MainPageSeeder extends Seeder
                 foreach ($block[3] as $sub_field_key => $sub_field_value) {
                     $sub_field = SubField::where('key', $sub_field_key)->first();
                     //attach only on first iteration
-                    if($context_key == 'default')
+                    if($context_key == 'en')
                         $page->template->sub_fields()->attach($sub_field->id);
 
                     SubFieldValue::create([

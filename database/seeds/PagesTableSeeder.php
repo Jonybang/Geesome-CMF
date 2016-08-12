@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\PageTranslation;
 use Illuminate\Database\Seeder;
 
 use App\Models\Context;
@@ -17,7 +18,7 @@ class PagesTableSeeder extends Seeder
     public function run()
     {
         $seeds = [
-            'default' => [
+            'en' => [
                 ['Main', '', false, 'index', 'Main page subtitle', 'Main page description', 'Main page content', false],
                 ['Blog', 'blog', false, 'blog', '', '', '', false],
                 ['Projects', 'projects', false, 'projects', '', '', '', false],
@@ -28,7 +29,7 @@ class PagesTableSeeder extends Seeder
                 ['Login', 'login', true, 'login', '', '', 'Please log in', true],
                 ['Cabinet', 'cabinet', true, 'cabinet', '', '', 'User cabinet', true],
             ],
-            'russian' => [
+            'ru' => [
                 ['Главная', '', false, 'index', 'Подзаголовок главной страницы', 'Описание главной страницы', 'Содержимое главной страницы', false],
                 ['Блог', 'blog', false, 'blog', '', '', '', false],
                 ['Проекты', 'projects', false, 'projects', '', '', '', false],
@@ -41,8 +42,9 @@ class PagesTableSeeder extends Seeder
             ]
         ];
 
-        foreach($seeds as $context_key => $page_seeds){
+        $hash_keys = [];
 
+        foreach($seeds as $context_key => $page_seeds){
             $context = Context::where('key', $context_key)->first();
             foreach($page_seeds as $index => $seed){
                 $page = Page::create([
@@ -58,6 +60,14 @@ class PagesTableSeeder extends Seeder
                     'menu_index' => $index
                 ]);
                 $page->content_text = $seed[6];
+
+                if(!isset($hash_keys[$index]))
+                    $hash_keys[$index] = uniqid();
+
+                $page->page_translation()->create([
+                    'hash_key' => $hash_keys[$index],
+                    'locale' => $context_key
+                ]);
 
                 if($index == 0){
                     Setting::create([

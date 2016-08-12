@@ -20,15 +20,23 @@ class TagPageTableSeeder extends Seeder
         ]);
 
         $seeds = [
-            'default' => 'Pages by tag',
-            'russian' => 'Страницы по тегу'
+            'en' => 'Pages by tag',
+            'ru' => 'Страницы по тегу'
         ];
+
+        $hash_key = uniqid();
+
         foreach($seeds as $context_key => $page_title){
-            $tag_template->pages()->create([
+            $page = $tag_template->pages()->create([
                 'title' => $page_title,
                 'alias' => 'tag',
                 'is_published' => true,
                 'context_id' => Context::where('key', $context_key)->first()->id
+            ]);
+
+            $page->page_translation()->create([
+                'hash_key' => $hash_key,
+                'locale' => $context_key
             ]);
         }
 

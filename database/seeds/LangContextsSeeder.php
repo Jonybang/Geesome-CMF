@@ -14,8 +14,8 @@ class LangContextsSeeder extends Seeder
     public function run()
     {
         $contexts = [
-            ['default', 'ENG', 'en'],
-            ['russian', 'RUS', 'ru']
+            ['en', 'ENG', 'en'],
+            ['ru', 'RUS', 'ru']
         ];
         foreach ($contexts as $seed) {
             $context = Context::create([

@@ -119,18 +119,23 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
 
         $page = null;
         //find page by alias or get main page from current context
-        if($alias)
+        if($alias){
             $page = $current_context->pages()->where('alias', 'like', $alias . '%')->orWhere('id', $alias)->first();
+        }
         else{
             $main_page_id = $current_context->settings()->where('key', 'main_page')->first()->value;
             $page = Page::find($main_page_id);
+        }
+
+        if($page->context_id != $current_context->id){
+            $page = $page->getPageByTranslation(LaravelLocalization::getCurrentLocale());
         }
 
         //if page exist and published get all page data, else return 404 template
         $sub_fields = [];
         $settings = [];
         $page_data = [];
-        if($page && $page->is_published){
+        if($page && $page->is_published && !$page->is_deleted){
             //Get path to laravel template from resources/views/templates folder
             $path = $page->template->key;
             //Get name/value dictionary sub fieds of current page

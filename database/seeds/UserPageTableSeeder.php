@@ -20,15 +20,22 @@ class UserPageTableSeeder extends Seeder
         ]);
 
         $seeds = [
-            'default' => 'Pages by user',
-            'russian' => 'Страницы по пользователю'
+            'en' => 'Pages by user',
+            'ru' => 'Страницы по пользователю'
         ];
+
+        $hash_key = uniqid();
         foreach($seeds as $context_key => $page_title){
-            $user_template->pages()->create([
+            $page = $user_template->pages()->create([
                 'title' => $page_title,
                 'alias' => 'user',
                 'is_published' => true,
                 'context_id' => Context::where('key', $context_key)->first()->id
+            ]);
+
+            $page->page_translation()->create([
+                'hash_key' => $hash_key,
+                'locale' => $context_key
             ]);
         }
 
