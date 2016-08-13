@@ -31,7 +31,7 @@ angular.module('admin-app')
                 $scope.current_user = current_user;
                 defaultPage.author_id = current_user.id;
 
-                $scope.page = angular.extend({}, defaultPage, $scope.page);
+                angular.extend($scope.page, defaultPage, angular.copy($scope.page));
             });
 
             //Get site settings and set default values to page object
@@ -40,7 +40,7 @@ angular.module('admin-app')
                 defaultPage.template_id = $scope.site_settings.default_template_id;
                 defaultPage.context_id = $scope.site_settings.default_context_id;
 
-                $scope.page = angular.extend({}, defaultPage, $scope.page);
+                angular.extend($scope.page, defaultPage, angular.copy($scope.page));
             });
 
             var old_alias = '';
