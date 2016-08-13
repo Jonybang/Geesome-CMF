@@ -19,7 +19,7 @@
 
         <br><br>
 
-        @foreach($page->child_pages as $child_page)
+        @foreach($page->published_child_pages_by_date as $child_page)
             <div class="row">
                 <div class="col-md-7">
                     <a href="/{{$child_page->alias}}">

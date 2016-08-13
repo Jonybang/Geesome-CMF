@@ -93,21 +93,28 @@ class Page extends Model
      */
     public function child_pages()
     {
-        return $this->hasMany(Page::class, 'parent_page_id')->orderBy('created_at', 'DESC')->with('child_pages');
+        return $this->hasMany(Page::class, 'parent_page_id')->with('child_pages');
     }
     /**
      * @Relation
      */
     public function published_child_pages()
     {
-        return $this->hasMany(Page::class, 'parent_page_id')->orderBy('created_at', 'DESC')->where(['is_deleted' => false, 'is_published' => true])->with('published_child_pages');
+        return $this->hasMany(Page::class, 'parent_page_id')->where(['is_deleted' => false, 'is_published' => true])->with('published_child_pages');
     }
     /**
      * @Relation
      */
-    public function child_pages_by_index()
+    public function published_child_pages_by_index()
     {
-        return $this->hasMany(Page::class, 'parent_page_id')->orderBy('menu_index', 'ASC')->with('child_pages_by_index');
+        return $this->hasMany(Page::class, 'parent_page_id')->orderBy('menu_index', 'ASC')->where(['is_deleted' => false, 'is_published' => true])->with('published_child_pages_by_index');
+    }
+    /**
+     * @Relation
+     */
+    public function published_child_pages_by_date()
+    {
+        return $this->hasMany(Page::class, 'parent_page_id')->orderBy('created_at', 'DESC')->where(['is_deleted' => false, 'is_published' => true])->with('published_child_pages_by_date');
     }
 
     /**

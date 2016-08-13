@@ -25,7 +25,7 @@ class ClientController extends Controller
 
     public function get_projects(){
 
-        $projects = Template::where('key', 'projects')->first()->pages()->where('context_id', session('current_context_id'))->first()->child_pages_by_index;
+        $projects = Template::where('key', 'projects')->first()->pages()->where('context_id', session('current_context_id'))->first()->published_child_pages_by_date;
         return ['projects' => $projects];
     }
 
@@ -49,7 +49,7 @@ class ClientController extends Controller
 
         $user = User::where('name', 'like', $sub_alias)->orWhere('id', $sub_alias)->first();
         $blog = Page::where('alias', 'blog')->where('context_id', $page->context_id)->first();
-        $blog_pages = $blog->published_child_pages->where('author_id', $user->id);
+        $blog_pages = $blog->published_child_pages_by_date->where('author_id', $user->id);
 
         if($user)
             return ['user' => $user, 'blog_pages' => $blog_pages];
