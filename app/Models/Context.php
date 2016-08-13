@@ -32,6 +32,13 @@ class Context extends Model
     /**
      * @Relation
      */
+    public function published_pages()
+    {
+        return $this->hasMany(Page::class, 'context_id')->orderBy('menu_index', 'ASC')->where(['is_deleted' => false, 'is_published' => true])->with('published_pages');
+    }
+    /**
+     * @Relation
+     */
     public function pages_tree() {
         return $this->hasMany(Page::class, 'context_id')->whereNull('parent_page_id')->with('child_pages_by_index');
     }
