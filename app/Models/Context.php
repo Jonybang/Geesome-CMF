@@ -34,7 +34,7 @@ class Context extends Model
      */
     public function published_pages()
     {
-        return $this->hasMany(Page::class, 'context_id')->orderBy('menu_index', 'ASC')->where(['is_deleted' => false, 'is_published' => true])->with('published_pages');
+        return $this->hasMany(Page::class, 'context_id')->where(['is_deleted' => false, 'is_published' => true])->with('published_pages');
     }
     /**
      * @Relation
