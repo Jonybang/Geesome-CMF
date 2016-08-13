@@ -21,6 +21,10 @@ class CreateContextsTable extends Migration
 
             $table->string('role')->nullable();
 
+            $table->integer('index')->nullable();
+
+            $table->boolean('is_hide')->nullable();
+
             $table->timestamps();
         });
     }
