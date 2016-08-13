@@ -92,28 +92,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
 
 Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
     Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null) {
-        function getContextByLocale(){
-            $context = Context::whereHas('settings', function($query){
-                //get context, where setting has current locale
-                $query->where([
-                    'key' => 'locale',
-                    'value' => LaravelLocalization::getCurrentLocale()
-                ]);
-            })->first();
 
-            if(!$context){
-                $context = Context::find(Setting::where('key', 'default_context_id')->first()->value);
-            }
-
-            return $context ? $context : Context::first();
-        }
-
-        //Get current context by id or by current locale
-        if(session('current_context_id') && session('last_locale') == LaravelLocalization::getCurrentLocale())
-            $current_context = Context::find(session('current_context_id'));
-        else
-            $current_context = getContextByLocale();
-
+        $current_context = Context::getByLocale(LaravelLocalization::getCurrentLocale());
 
         Session::put('current_context_id', $current_context->id);
         Session::put('last_locale', LaravelLocalization::getCurrentLocale());

@@ -35,4 +35,24 @@ class Context extends Model
     public function pages_tree() {
         return $this->hasMany(Page::class, 'context_id')->whereNull('parent_page_id')->with('child_pages_by_index');
     }
+
+    //Get current context by id from session(if actual) or by current locale
+    public static function getByLocale($locale){
+        if(session('current_context_id') && session('last_locale') == $locale)
+            return Context::find(session('current_context_id'));
+
+        $context = Context::whereHas('settings', function($query) use($locale){
+            //get context, where setting has current locale
+            $query->where([
+                'key' => 'locale',
+                'value' => $locale
+            ]);
+        })->first();
+
+        if(!$context){
+            $context = Context::find(Setting::where('key', 'default_context_id')->first()->value);
+        }
+
+        return $context ? $context : Context::first();
+    }
 }
