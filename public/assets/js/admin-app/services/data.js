@@ -1,4 +1,4 @@
-angular.module('app')
+angular.module('admin-app')
     .service('AppData', ['$http', function($http){
         var self = this;
 

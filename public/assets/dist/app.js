@@ -1554,7 +1554,7 @@ angular.module('a-edit')
     }]);
 
 angular
-    .module('app', [
+    .module('admin-app', [
         'ngResource',
         'ui.bootstrap',
         'ui.router',
@@ -1564,7 +1564,8 @@ angular
         'dndLists',
         'rt.debounce',
         'ckeditor',
-        'a-edit'])
+        'a-edit'
+    ])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
 
@@ -1605,60 +1606,94 @@ angular
                     template: '<ui-view></ui-view>',
                     abstract: true
                 })
+                    // modules/database-manage routes
                     .state('app.db.pages', {
                         url: '/pages',
-                        controller: 'PagesController',
-                        templateUrl: AppPaths.pages_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManagePagesConfig'
+                        }
                     })
                     .state('app.db.translations', {
                         url: '/translations',
-                        controller: 'TranslationsController',
-                        templateUrl: AppPaths.translations_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_translations_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageTranslationsConfig'
+                        }
                     })
                     .state('app.db.mail_templates', {
                         url: '/mail_templates',
-                        controller: 'MailTemplatesController',
-                        templateUrl: AppPaths.mail_templates_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageMailTemplatesConfig'
+                        }
                     })
                     .state('app.db.subscribers', {
                         url: '/subscribers',
-                        controller: 'SubscribersController',
-                        templateUrl: AppPaths.subscribers_tpls + 'index.html'
+                        controller: 'DBManageSubscribersController',
+                        templateUrl: AppPaths.db_manage_subscribers_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageSubscribersConfig'
+                        }
                     })
                     .state('app.db.sent_mails', {
                         url: '/sent_mails',
-                        controller: 'SentMailsController',
-                        templateUrl: AppPaths.sent_mails_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageSentMailsConfig'
+                        }
                     })
                     .state('app.db.settings', {
                         url: '/settings',
-                        controller: 'SettingsController',
-                        templateUrl: AppPaths.settings_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageSettingsConfig'
+                        }
                     })
                     .state('app.db.logs', {
                         url: '/logs',
-                        controller: 'LogsController',
-                        templateUrl: AppPaths.logs_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageLogsConfig'
+                        }
                     })
                     .state('app.db.tags', {
                         url: '/tags',
-                        controller: 'TagsController',
-                        templateUrl: AppPaths.tags_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageTagsConfig'
+                        }
                     })
                     .state('app.db.templates', {
                         url: '/templates',
-                        controller: 'TemplatesController',
-                        templateUrl: AppPaths.templates_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageTemplatesConfig'
+                        }
                     })
                     .state('app.db.sub_fields', {
                         url: '/sub_fields',
-                        controller: 'SubFieldsController',
-                        templateUrl: AppPaths.sub_fields_tpls + 'index.html'
+                        controller: 'DBManageSubFieldsController',
+                        templateUrl: AppPaths.db_manage_sub_fields_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageSubFieldsConfig'
+                        }
                     })
                     .state('app.db.users', {
                         url: '/users',
-                        controller: 'UserController',
-                        templateUrl: AppPaths.users_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageUsersConfig'
+                        }
                     })
 
                 //=====================================================
@@ -1722,7 +1757,7 @@ angular
         //config for marcelgwerder/laravel-api-handler
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
-angular.module('app')
+angular.module('admin-app')
     .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', 'Contexts', 'Pages', function($scope, $http, AppPaths, AppData, Contexts, Pages) {
         var self = this;
 
@@ -1804,7 +1839,7 @@ angular.module('app')
     }]);
 //<loading-gif ng-if="!dataLoaded"> </loading-gif>
 // TODO: добавить throttle - не показывать гифку если идет тут-же переключение туда - обратно
-angular.module('app')
+angular.module('admin-app')
     .directive('loadingGif', [function() {
         return {
             restrict: 'E',
@@ -1815,7 +1850,7 @@ angular.module('app')
         };
     }]);
 angular
-    .module('app')
+    .module('admin-app')
     .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -1841,7 +1876,7 @@ angular
         };
     }]);
 angular
-    .module('app')
+    .module('admin-app')
     .directive('sfImage', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -1858,7 +1893,7 @@ angular
         };
     }]);
 angular
-    .module('app')
+    .module('admin-app')
     .directive('sfJson', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -1921,7 +1956,7 @@ angular
         };
     }]);
 angular
-    .module('app')
+    .module('admin-app')
     .directive('sfText', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -1938,7 +1973,7 @@ angular
         };
     }]);
 angular
-    .module('app')
+    .module('admin-app')
     .directive('sfTextarea', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -1955,7 +1990,7 @@ angular
         };
     }]);
 angular
-    .module('app')
+    .module('admin-app')
     .directive('subFieldsManager', ['$timeout', '$compile', '$uibModal', 'AppPaths', 'SubFields', 'SubFieldsValues', function($timeout, $compile, $uibModal, AppPaths, SubFields, SubFieldsValues) {
         return {
             restrict: 'E',
@@ -2115,7 +2150,7 @@ angular
             }
         };
     }]);
-angular.module('app')
+angular.module('admin-app')
     .service('AppData', ['$http', function($http){
         var self = this;
 
@@ -2146,7 +2181,7 @@ angular.module('app')
 
         return self;
     }]);
-var app = angular.module('app');
+var app = angular.module('admin-app');
 
 var defaultOptions = {
     'update': { method: 'PUT' }
@@ -2233,251 +2268,69 @@ app.factory('SentMails', ['$resource', function($resource) {
 var app_path = '/assets/js/admin-app/';
 var app_modules_path = app_path + 'modules/';
 
-angular.module('app')
+angular.module('admin-app')
     .constant('AppPaths', {
-            app:                    app_path,
-            app_tpls:               app_path + 'templates/',
-            modules:                app_modules_path,
-            db_manage_module:       app_modules_path + 'database-manage',
-            page_form_tpls:         app_modules_path + 'page-form/templates/',
+        app:                            app_path,
+        app_tpls:                       app_path + 'templates/',
+        modules:                        app_modules_path,
+        db_manage_module:               app_modules_path + 'database-manage',
 
-            settings_tpls:          app_modules_path + 'database-manage/settings/templates/',
-            pages_tpls:             app_modules_path + 'database-manage/pages/templates/',
-            mail_templates_tpls:    app_modules_path + 'database-manage/mail-templates/templates/',
-            logs_tpls:              app_modules_path + 'database-manage/logs/templates/',
-            users_tpls:             app_modules_path + 'database-manage/users/templates/',
-            tags_tpls:              app_modules_path + 'database-manage/tags/templates/',
-            templates_tpls:         app_modules_path + 'database-manage/templates/templates/',
-            sub_fields_tpls:        app_modules_path + 'database-manage/sub-fields/templates/',
-            translations_tpls:      app_modules_path + 'database-manage/translations/templates/',
-            subscribers_tpls:       app_modules_path + 'database-manage/subscribers/templates/',
-            sent_mails_tpls:        app_modules_path + 'database-manage/sent-mails/templates/',
+        db_manage_general_tpls:         app_modules_path + 'database-manage/_general/templates/',
+        db_manage_sub_fields_tpls:      app_modules_path + 'database-manage/sub-fields/templates/',
+        db_manage_translations_tpls:    app_modules_path + 'database-manage/translations/templates/',
+        db_manage_subscribers_tpls:     app_modules_path + 'database-manage/subscribers/templates/',
 
-            mailing_tpls:           app_modules_path + 'site-manage/mailing/templates/'
+        page_form_tpls:                 app_modules_path + 'site-manage/page-form/templates/',
+        mailing_tpls:                   app_modules_path + 'site-manage/mailing/templates/'
     });
-angular.module('app')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'AppData', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, Notification, AppPaths, AppData, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+angular.module('admin-app')
+    .factory('DBManageGeneralConfig', [function() {
 
-        var defaultPage = new Pages();
+        this.entityName = 'Entity Name';
 
-        if($state.params.pageId){
-            $scope.page = Pages.get({id: $state.params.pageId});
-            $scope.page.id = $state.params.pageId;
-        } else {
-            defaultPage.is_menu_hide = true;
-            defaultPage.tags_ids = [];
-            defaultPage.controller_actions_ids = [];
-            defaultPage.seo = {};
-            console.log('$state.params', $state.params);
-            defaultPage.context_id = $state.params.context_id;
-
-            $scope.page = angular.copy(defaultPage);
-        }
-
-        //Get current user and set his id as author id
-        AppData.getCurrentUser(function(current_user){
-            $scope.current_user = current_user;
-            defaultPage.author_id = $scope.page.author_id || current_user.id;
-            angular.extend($scope.page, defaultPage);
-        });
-
-        //Get site settings and set default values to page object
-        AppData.getSiteSettings(function(site_settings){
-            $scope.site_settings = site_settings;
-            defaultPage.template_id = $scope.page.template_id || $scope.site_settings.default_template_id;
-            defaultPage.context_id = $scope.page.context_id || $scope.site_settings.default_context_id;
-            angular.extend($scope.page, defaultPage);
-        });
-
-        var old_alias = '';
-        $scope.$watch('page.title', function(title){
-            if(!title)
-                return;
-
-            function changeAlias(new_alias){
-                //Change alias if its empty or if it not touched by manual
-                if((!old_alias && $scope.page.alias) || (old_alias && $scope.page.alias != old_alias))
-                    return;
-
-                $scope.page.alias = new_alias;
-                old_alias = $scope.page.alias;
-            }
-
-            //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
-            //if not: just insert replace spaces to dashes and get lowercase title for set alias
-            if(title && $scope.site_settings.yandex_translate_api_key){
-                $http.get(
-                    'https://translate.yandex.net/api/v1.5/tr.json/translate' +
-                    '?key=' + $scope.site_settings.yandex_translate_api_key +
-                    '&text=' + title +
-                    '&lang=en')
-                    .then(function(result){
-                        changeAlias(result.data.text[0].replace(/\s+/g, '-').toLowerCase());
-                    });
-            } else {
-                changeAlias(title.replace(/\s+/g, '-').toLowerCase());
-            }
-        });
-
-        $scope.getSubFields = function(){
-            SubFields.query({'template_id': $scope.page.template_id}).$promise.then(function(data){
-                $scope.sub_fields = data;
-            });
-        };
-
-        $scope.$watch('page.template_id', function(template_id){
-            if(!template_id)
-                return;
-
-            $scope.getSubFields();
-
-            ControllerActions.query({'template_id': template_id}).$promise.then(function(data){
-                $scope.page.controller_actions_ids = data.map(function(action){return action.id});
-            });
-        });
-        $scope.subFieldsApi = {};
-
-        //Models for select inputs
-        $scope.models = {
-            templates: Templates,
-            contexts: Contexts,
-            pages: Pages,
-            users: Users,
-            tags: Tags,
-            controller_actions: ControllerActions
-        };
-        //Fields for adder functional at select inputs
-        $scope.fields = {
-            templates: [
+        this.aeGridOptions = {
+            caption: '',
+            create: true,
+            edit: true,
+            orderBy: '-id',
+            resource: null,
+            ajax_handler: true,
+            get_list: true,
+            fields: [
                 {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'key',
-                    label: 'Key(Path in templates directory)'
-                }
-            ],
-            contexts: [
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'key',
-                    label: 'Key'
-                },
-                {
-                    name: 'role',
-                    label: 'Role of context(lang for example)'
-                }
-            ],
-            pages: [
-                {
-                    name: 'title',
-                    label: 'Title'
-                },
-                {
-                    name: 'template_id',
-                    label: 'Template',
-                    type: 'select',
-                    model: Templates,
-                    list: 'templates',
-                    or_name_field: 'key'
-                }
-            ],
-            users: [
-                {
-                    name: 'name',
-                    label: 'Name'
-                },
-                {
-                    name: 'email',
-                    label: 'Email'
-                },
-                {
-                    name: 'password',
-                    label: 'Password',
-                    type: 'password'
-                }
-            ],
-            tags: [
-                {
-                    name: 'name',
-                    label: 'Name'
-                }
-            ],
-            controller_actions: [
-                {
-                    name: 'key',
-                    label: 'Key(ControllerName@actionName)'
+                    name: 'id',
+                    label: '#',
+                    readonly: true
                 },
                 {
                     name: 'name',
-                    label: 'Name'
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Entity',
+                    required: true
                 }
             ]
         };
 
-        $scope.savePage = function(){
-            //Validate for require fields
-            $scope.hasErrors = {};
-            var required = ['title', 'template_id'];
-            required.forEach(function(reqField){
-                if(!$scope.page[reqField])
-                    $scope.hasErrors[reqField] = true;
-                else
-                    delete $scope.hasErrors[reqField];
-            });
-
-            if(!_.isEmpty($scope.hasErrors))
-                return;
-
-            //If page is new - Create, if it not - Update
-            var is_new = $scope.page.id ? false : true;
-
-            var page_seo = angular.copy($scope.page.seo);
-
-            var page_query;
-            if(is_new)
-                page_query = $scope.page.$save();
-            else
-                page_query = $scope.page.$update();
-
-            page_query.then(function(result_page){
-                //After save page - we have it id, so save sub fields
-                $scope.subFieldsApi.saveSubFieldsValues(result_page);
-
-                if(is_new)
-                    $scope.page = angular.copy(defaultPage);
-                else
-                    $scope.page = result_page;
-
-                var seo_resource = new PagesSEO(page_seo);
-                seo_resource.$save({page_id: $scope.page.id}).then(function(seo){
-                    $scope.page.seo = seo;
-                });
-
-                Notification.success('Page saved!');
-                $scope.app.refreshPagesTree();
-            })
-        };
+        return this;
     }]);
+angular.module('admin-app')
+    .controller('DBManageGeneralController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
+        $scope.items = [];
 
-angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
-        $scope.logs = [];
+        angular.extend($scope, EntityConfig);
 
-        $scope.aGridOptions = {
-            caption: '',
+        $scope.aeGridOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridOptions);
+    }]);
+angular.module('admin-app')
+    .factory('DBManageLogsConfig', ['Logs', 'Users', function(Logs, Users) {
+
+        this.entityName = 'Logs';
+
+        this.aeGridOptions = {
             create: false,
             edit: false,
-            orderBy: '-id',
             resource: Logs,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -2512,19 +2365,16 @@ angular.module('app')
                 }
             ]
         };
-    }]);
 
-angular.module('app')
-    .controller('MailTemplatesController', ['$scope', 'MailTemplates', function($scope, MailTemplates) {
-        $scope.mail_templates = [];
+        return this;
+}]);
+angular.module('admin-app')
+    .factory('DBManageMailTemplatesConfig', ['MailTemplates', function(MailTemplates) {
 
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
+        this.entityName = 'Mail templates';
+
+        this.aeGridOptions = {
             resource: MailTemplates,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -2554,18 +2404,16 @@ angular.module('app')
                 }
             ]
         };
-    }]);
 
-angular.module('app')
-    .controller('PagesController', ['$scope', 'Pages', 'Templates', 'Users', function($scope, Pages, Templates, Users) {
+        return this;
+}]);
+angular.module('admin-app')
+    .factory('DBManagePagesConfig', ['Pages', 'Templates', 'Users', function(Pages, Templates, Users) {
 
-        $scope.aGridOptions = {
-            caption: '',
-            order_by: '-id',
+        this.entityName = 'Pages';
+
+        this.aeGridOptions = {
             resource: Pages,
-            get_list: true,
-            ajax_handler: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -2657,21 +2505,18 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);
+angular.module('admin-app')
+    .factory('DBManageSentMailsConfig', ['SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function(SentMails, MailTemplates, Pages, SubscribersGroups) {
 
-angular.module('app')
-    .controller('SentMailsController', ['$scope', 'SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function($scope, SentMails, MailTemplates, Pages, SubscribersGroups) {
-        $scope.sent_mails = SentMails.query();
+        this.entityName = 'Sent Mails';
 
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
+        this.aeGridOptions = {
             resource: SentMails,
             create: false,
             edit: false,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -2717,19 +2562,17 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);
+angular.module('admin-app')
+    .factory('DBManageSettingsConfig', ['Settings', 'Contexts', function(Settings, Contexts) {
 
-angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', 'Contexts', function($scope, Settings, Contexts) {
-        $scope.settings = [];
+        this.entityName = 'Settings';
 
-        $scope.aGridOptions = {
+        this.aeGridOptions = {
             caption: 'All settings available in templates.',
-            orderBy: '-id',
             resource: Settings,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -2765,19 +2608,16 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);
+angular.module('admin-app')
+    .factory('DBManageSubFieldsConfig', ['SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', 'DBManageGeneralConfig', function(SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages, DBManageGeneralConfig) {
 
-angular.module('app')
-    .controller('SubFieldsController', ['$scope', 'SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', function($scope, SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages) {
-        $scope.sub_fields_types = [];
+        this.subFieldsTypesName = 'Sub Fields Types';
 
-        $scope.aGridSubFieldsTypesOptions = {
-            caption: '',
-            orderBy: '-id',
+        this.aeGridSubFieldsTypesOptions = {
             resource: SubFieldsTypes,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -2802,14 +2642,10 @@ angular.module('app')
             ]
         };
 
-        $scope.sub_fields = [];
+        this.subFieldsName = 'Sub Fields';
 
-        $scope.aGridSubFieldsOptions = {
-            caption: '',
-            orderBy: '-id',
+        this.aeGridSubFieldsOptions = {
             resource: SubFields,
-            ajax_handler: true,
-            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2862,14 +2698,10 @@ angular.module('app')
             ]
         };
 
-        $scope.sub_fields_values = [];
+        this.subFieldsValuesName = 'Sub Fields Values';
 
-        $scope.aGridSubFieldsValuesOptions = {
-            caption: '',
-            orderBy: '-id',
+        this.aeGridSubFieldsValuesOptions = {
             resource: SubFieldsValues,
-            ajax_handler: true,
-            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -2903,19 +2735,55 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);
+angular.module('admin-app')
+    .controller('DBManageSubFieldsController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
 
-angular.module('app')
-    .controller('SubscribersController', ['$scope', 'SubscribersGroups', 'Subscribers', 'Templates', function($scope, SubscribersGroups, Subscribers, Templates) {
-        $scope.subscribers_groups = [];
+        angular.extend($scope, EntityConfig);
 
-        $scope.aGridSubscribersGroupsOptions = {
-            caption: '',
-            orderBy: '-id',
+        $scope.sub_fields_types = [];
+        $scope.aeGridSubFieldsTypesOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridSubFieldsTypesOptions);
+
+        $scope.sub_fields = [];
+        $scope.aeGridSubFieldsOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridSubFieldsOptions);
+
+        $scope.sub_fields_values = [];
+        $scope.aeGridSubFieldsValuesOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridSubFieldsValuesOptions);
+    }]);
+angular.module('admin-app')
+    .factory('DBManageTagsConfig', ['Tags', function(Tags) {
+
+        this.entityName = 'Tags';
+
+        this.aeGridOptions = {
+            resource: Tags,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Tag',
+                    required: true
+                }
+            ]
+        };
+
+        return this;
+    }]);
+angular.module('admin-app')
+    .factory('DBManageSubscribersConfig', ['SubscribersGroups', 'Subscribers', function(SubscribersGroups, Subscribers) {
+
+        this.subscribersGroupsName = 'Subscribers Groups';
+
+        this.aeGridSubscribersGroupsOptions = {
             resource: SubscribersGroups,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -2945,9 +2813,9 @@ angular.module('app')
             ]
         };
 
-        $scope.subscribers = [];
+        this.subscribersName = 'Subscribers';
 
-        $scope.aGridSubscribersOptions = {
+        this.aeGridSubscribersOptions = {
             caption: '',
             orderBy: '-id',
             resource: Subscribers,
@@ -2991,47 +2859,27 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);
+angular.module('admin-app')
+    .controller('DBManageSubscribersController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
+            angular.extend($scope, EntityConfig);
 
-angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
+            $scope.subscribers_groups = [];
+            $scope.aeGridSubscribersGroupsOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridSubscribersGroupsOptions);
 
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Tags,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Tag',
-                    required: true
-                }
-            ]
-        };
+            $scope.subscribers = [];
+            $scope.aeGridSubscribersOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridSubscribersOptions);
     }]);
+angular.module('admin-app')
+    .factory('DBManageTemplatesConfig', ['Templates', 'SubFields', 'ControllerActions', function(Templates, SubFields, ControllerActions) {
 
-angular.module('app')
-    .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
-        $scope.templates = [];
+        this.entityName = 'Tags';
 
-        $scope.aGridOptions = {
+        this.aeGridOptions = {
             caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
-            orderBy: '-id',
             resource: Templates,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -3074,19 +2922,16 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);
+angular.module('admin-app')
+    .factory('DBManageTranslationsConfig', ['Translations', 'TranslationsGroups', 'TranslationsLocales', 'DBManageGeneralConfig', function(Translations, TranslationsGroups, TranslationsLocales, DBManageGeneralConfig) {
 
-angular.module('app')
-    .controller('TranslationsController', ['$scope', '$http', 'Notification', 'Translations', 'TranslationsGroups', 'TranslationsLocales', function($scope, $http, Notification, Translations, TranslationsGroups, TranslationsLocales) {
-        $scope.items = [];
+        this.entityName = 'Translations';
 
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
+        this.aeGridOptions = {
             resource: Translations,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -3125,6 +2970,16 @@ angular.module('app')
             }
         };
 
+        return this;
+    }]);
+angular.module('admin-app')
+    .controller('DBManageTranslationsController', ['$scope', '$http', 'Notification', 'DBManageGeneralConfig', 'EntityConfig', function($scope, $http, Notification, DBManageGeneralConfig, EntityConfig) {
+
+        angular.extend($scope, EntityConfig);
+
+        $scope.items = [];
+        $scope.aeGridOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridOptions);
+
         $scope.importWithReplace = function(){
             if(!confirm('Are you sure to IMPORT to database with replace all translations? This action will rewrite database data.'))
                 return;
@@ -3148,19 +3003,13 @@ angular.module('app')
             });
         }
     }]);
+angular.module('admin-app')
+    .factory('DBManageUsersConfig', ['Users', 'Roles', function(Users, Roles) {
 
-angular.module('app')
-    .controller('UserController', ['$scope', 'Users', 'Roles', function($scope, Users, Roles) {
-        $scope.users = [];
+        this.entityName = 'Users';
 
-        $scope.aGridOptions = {
-            caption: '',
-            create: true,
-            edit: true,
-            orderBy: '-id',
+        this.aeGridOptions = {
             resource: Users,
-            ajax_handler: true,
-            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -3195,9 +3044,231 @@ angular.module('app')
                 }
             ]
         };
-    }]);
 
-angular.module('app')
+        return this;
+    }]);
+angular.module('admin-app')
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'AppData', 'PageFormManage', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, Notification, AppPaths, AppData, PageFormManage, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+
+            $scope.subFieldsApi = {};
+
+            //Models for select inputs
+            $scope.models = PageFormManage.models;
+
+            //Fields for adder functional at select inputs
+            $scope.fields = PageFormManage.fields;
+
+            var defaultPage = new Pages();
+
+            if($state.params.pageId){
+                $scope.page = Pages.get({id: $state.params.pageId});
+                $scope.page.id = $state.params.pageId;
+            } else {
+                defaultPage.is_menu_hide = true;
+                defaultPage.tags_ids = [];
+                defaultPage.controller_actions_ids = [];
+                defaultPage.seo = {};
+
+                defaultPage.context_id = $state.params.context_id;
+
+                $scope.page = angular.copy(defaultPage);
+            }
+
+            //Get current user and set his id as author id
+            AppData.getCurrentUser(function(current_user){
+                $scope.current_user = current_user;
+                defaultPage.author_id = current_user.id;
+
+                $scope.page = angular.extend({}, defaultPage, $scope.page);
+            });
+
+            //Get site settings and set default values to page object
+            AppData.getSiteSettings(function(site_settings){
+                $scope.site_settings = site_settings;
+                defaultPage.template_id = $scope.site_settings.default_template_id;
+                defaultPage.context_id = $scope.site_settings.default_context_id;
+
+                $scope.page = angular.extend({}, defaultPage, $scope.page);
+            });
+
+            var old_alias = '';
+            $scope.$watch('page.title', function(title){
+                if(!title)
+                    return;
+
+                function changeAlias(new_alias){
+                    //Change alias if its empty or if it not touched by manual
+                    if((!old_alias && $scope.page.alias) || (old_alias && $scope.page.alias != old_alias))
+                        return;
+
+                    $scope.page.alias = new_alias;
+                    old_alias = $scope.page.alias;
+                }
+
+                //Translate title to english and paste to alias field if defined yandex_translate_api_key site setting
+                //if not: just insert replace spaces to dashes and get lowercase title for set alias
+                if(title && $scope.site_settings.yandex_translate_api_key){
+                    $http.get(
+                        'https://translate.yandex.net/api/v1.5/tr.json/translate' +
+                        '?key=' + $scope.site_settings.yandex_translate_api_key +
+                        '&text=' + title +
+                        '&lang=en')
+                        .then(function(result){
+                            changeAlias(result.data.text[0].replace(/\s+/g, '-').toLowerCase());
+                        });
+                } else {
+                    changeAlias(title.replace(/\s+/g, '-').toLowerCase());
+                }
+            });
+
+            $scope.getSubFields = function(){
+                SubFields.query({'template_id': $scope.page.template_id}).$promise.then(function(data){
+                    $scope.sub_fields = data;
+                });
+            };
+
+            $scope.$watch('page.template_id', function(template_id){
+                if(!template_id)
+                    return;
+
+                $scope.getSubFields();
+
+                ControllerActions.query({'template_id': template_id}).$promise.then(function(data){
+                    $scope.page.controller_actions_ids = data.map(function(action){return action.id});
+                });
+            });
+
+            $scope.savePage = function(){
+                //Validate for require fields
+                $scope.hasErrors = {};
+                var required = ['title', 'template_id'];
+                required.forEach(function(reqField){
+                    if(!$scope.page[reqField])
+                        $scope.hasErrors[reqField] = true;
+                    else
+                        delete $scope.hasErrors[reqField];
+                });
+
+                if(!_.isEmpty($scope.hasErrors))
+                    return;
+
+                //If page is new - Create, if it not - Update
+                var is_new = $scope.page.id ? false : true;
+
+                var page_seo = angular.copy($scope.page.seo);
+
+                var page_query;
+                if(is_new)
+                    page_query = $scope.page.$save();
+                else
+                    page_query = $scope.page.$update();
+
+                page_query.then(function(result_page){
+                    //After save page - we have it id, so save sub fields
+                    $scope.subFieldsApi.saveSubFieldsValues(result_page);
+
+                    if(is_new)
+                        $scope.page = angular.copy(defaultPage);
+                    else
+                        $scope.page = result_page;
+
+                    var seo_resource = new PagesSEO(page_seo);
+                    seo_resource.$save({page_id: $scope.page.id}).then(function(seo){
+                        $scope.page.seo = seo;
+                    });
+
+                    Notification.success('Page saved!');
+                    $scope.app.refreshPagesTree();
+                })
+            };
+    }]);
+app.factory('PageFormManage', ['Templates', 'Contexts', 'Pages', 'Users', 'Tags', 'ControllerActions', function(Templates, Contexts, Pages, Users, Tags, ControllerActions) {
+
+    this.models = {
+        templates: Templates,
+        contexts: Contexts,
+        pages: Pages,
+        users: Users,
+        tags: Tags,
+        controller_actions: ControllerActions
+    };
+
+    this.fields = {
+        templates: [
+            {
+                name: 'name',
+                label: 'Name'
+            },
+            {
+                name: 'key',
+                label: 'Key(Path in templates directory)'
+            }
+        ],
+        contexts: [
+            {
+                name: 'name',
+                label: 'Name'
+            },
+            {
+                name: 'key',
+                label: 'Key'
+            },
+            {
+                name: 'role',
+                label: 'Role of context(lang for example)'
+            }
+        ],
+        pages: [
+            {
+                name: 'title',
+                label: 'Title'
+            },
+            {
+                name: 'template_id',
+                label: 'Template',
+                type: 'select',
+                model: Templates,
+                list: 'templates',
+                or_name_field: 'key'
+            }
+        ],
+        users: [
+            {
+                name: 'name',
+                label: 'Name'
+            },
+            {
+                name: 'email',
+                label: 'Email'
+            },
+            {
+                name: 'password',
+                label: 'Password',
+                type: 'password'
+            }
+        ],
+        tags: [
+            {
+                name: 'name',
+                label: 'Name'
+            }
+        ],
+        controller_actions: [
+            {
+                name: 'key',
+                label: 'Key(ControllerName@actionName)'
+            },
+            {
+                name: 'name',
+                label: 'Name'
+            }
+        ]
+    };
+
+    return this;
+}]);
+angular.module('admin-app')
     .controller('MailingController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'AppData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
         function($scope, $state, $http, $uibModal, debounce, Notification, AppPaths, AppData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
 

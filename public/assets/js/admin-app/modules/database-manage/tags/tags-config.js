@@ -1,14 +1,10 @@
-angular.module('app')
-    .controller('TagsController', ['$scope', 'Tags', function($scope, Tags) {
-        $scope.tags = Tags.query();
+angular.module('admin-app')
+    .factory('DBManageTagsConfig', ['Tags', function(Tags) {
 
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
+        this.entityName = 'Tags';
+
+        this.aeGridOptions = {
             resource: Tags,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -24,4 +20,6 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);

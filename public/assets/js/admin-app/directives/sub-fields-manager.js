@@ -1,5 +1,5 @@
 angular
-    .module('app')
+    .module('admin-app')
     .directive('subFieldsManager', ['$timeout', '$compile', '$uibModal', 'AppPaths', 'SubFields', 'SubFieldsValues', function($timeout, $compile, $uibModal, AppPaths, SubFields, SubFieldsValues) {
         return {
             restrict: 'E',

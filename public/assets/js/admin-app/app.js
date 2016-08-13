@@ -1,5 +1,5 @@
 angular
-    .module('app', [
+    .module('admin-app', [
         'ngResource',
         'ui.bootstrap',
         'ui.router',
@@ -9,7 +9,8 @@ angular
         'dndLists',
         'rt.debounce',
         'ckeditor',
-        'a-edit'])
+        'a-edit'
+    ])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
 
@@ -50,60 +51,94 @@ angular
                     template: '<ui-view></ui-view>',
                     abstract: true
                 })
+                    // modules/database-manage routes
                     .state('app.db.pages', {
                         url: '/pages',
-                        controller: 'PagesController',
-                        templateUrl: AppPaths.pages_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManagePagesConfig'
+                        }
                     })
                     .state('app.db.translations', {
                         url: '/translations',
-                        controller: 'TranslationsController',
-                        templateUrl: AppPaths.translations_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_translations_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageTranslationsConfig'
+                        }
                     })
                     .state('app.db.mail_templates', {
                         url: '/mail_templates',
-                        controller: 'MailTemplatesController',
-                        templateUrl: AppPaths.mail_templates_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageMailTemplatesConfig'
+                        }
                     })
                     .state('app.db.subscribers', {
                         url: '/subscribers',
-                        controller: 'SubscribersController',
-                        templateUrl: AppPaths.subscribers_tpls + 'index.html'
+                        controller: 'DBManageSubscribersController',
+                        templateUrl: AppPaths.db_manage_subscribers_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageSubscribersConfig'
+                        }
                     })
                     .state('app.db.sent_mails', {
                         url: '/sent_mails',
-                        controller: 'SentMailsController',
-                        templateUrl: AppPaths.sent_mails_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageSentMailsConfig'
+                        }
                     })
                     .state('app.db.settings', {
                         url: '/settings',
-                        controller: 'SettingsController',
-                        templateUrl: AppPaths.settings_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageSettingsConfig'
+                        }
                     })
                     .state('app.db.logs', {
                         url: '/logs',
-                        controller: 'LogsController',
-                        templateUrl: AppPaths.logs_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageLogsConfig'
+                        }
                     })
                     .state('app.db.tags', {
                         url: '/tags',
-                        controller: 'TagsController',
-                        templateUrl: AppPaths.tags_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageTagsConfig'
+                        }
                     })
                     .state('app.db.templates', {
                         url: '/templates',
-                        controller: 'TemplatesController',
-                        templateUrl: AppPaths.templates_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageTemplatesConfig'
+                        }
                     })
                     .state('app.db.sub_fields', {
                         url: '/sub_fields',
-                        controller: 'SubFieldsController',
-                        templateUrl: AppPaths.sub_fields_tpls + 'index.html'
+                        controller: 'DBManageSubFieldsController',
+                        templateUrl: AppPaths.db_manage_sub_fields_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageSubFieldsConfig'
+                        }
                     })
                     .state('app.db.users', {
                         url: '/users',
-                        controller: 'UserController',
-                        templateUrl: AppPaths.users_tpls + 'index.html'
+                        controller: 'DBManageGeneralController',
+                        templateUrl: AppPaths.db_manage_general_tpls + 'index.html',
+                        resolve: {
+                            EntityConfig: 'DBManageUsersConfig'
+                        }
                     })
 
                 //=====================================================

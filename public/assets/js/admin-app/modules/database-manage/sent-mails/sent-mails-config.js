@@ -1,16 +1,12 @@
-angular.module('app')
-    .controller('SentMailsController', ['$scope', 'SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function($scope, SentMails, MailTemplates, Pages, SubscribersGroups) {
-        $scope.sent_mails = SentMails.query();
+angular.module('admin-app')
+    .factory('DBManageSentMailsConfig', ['SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function(SentMails, MailTemplates, Pages, SubscribersGroups) {
 
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
+        this.entityName = 'Sent Mails';
+
+        this.aeGridOptions = {
             resource: SentMails,
             create: false,
             edit: false,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -56,4 +52,6 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);

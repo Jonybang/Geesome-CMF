@@ -1,14 +1,11 @@
-angular.module('app')
-    .controller('TemplatesController', ['$scope', 'Templates', 'SubFields', 'ControllerActions', function($scope, Templates, SubFields, ControllerActions) {
-        $scope.templates = [];
+angular.module('admin-app')
+    .factory('DBManageTemplatesConfig', ['Templates', 'SubFields', 'ControllerActions', function(Templates, SubFields, ControllerActions) {
 
-        $scope.aGridOptions = {
+        this.entityName = 'Tags';
+
+        this.aeGridOptions = {
             caption: 'You must to add blade template file on address /resources/views/templates/example.bade.php(path:"example") before/after add row to DB!',
-            orderBy: '-id',
             resource: Templates,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -51,4 +48,6 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);

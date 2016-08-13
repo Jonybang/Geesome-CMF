@@ -1,5 +1,5 @@
 angular
-    .module('app')
+    .module('admin-app')
     .directive('sfJson', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',

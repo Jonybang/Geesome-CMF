@@ -1,16 +1,12 @@
-angular.module('app')
-    .controller('LogsController', ['$scope', 'Logs', 'Users', function($scope, Logs, Users) {
-        $scope.logs = [];
+angular.module('admin-app')
+    .factory('DBManageLogsConfig', ['Logs', 'Users', function(Logs, Users) {
 
-        $scope.aGridOptions = {
-            caption: '',
+        this.entityName = 'Logs';
+
+        this.aeGridOptions = {
             create: false,
             edit: false,
-            orderBy: '-id',
             resource: Logs,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -45,4 +41,6 @@ angular.module('app')
                 }
             ]
         };
-    }]);
+
+        return this;
+}]);

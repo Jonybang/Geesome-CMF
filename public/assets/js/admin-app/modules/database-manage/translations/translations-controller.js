@@ -1,51 +1,10 @@
-angular.module('app')
-    .controller('TranslationsController', ['$scope', '$http', 'Notification', 'Translations', 'TranslationsGroups', 'TranslationsLocales', function($scope, $http, Notification, Translations, TranslationsGroups, TranslationsLocales) {
-        $scope.items = [];
+angular.module('admin-app')
+    .controller('DBManageTranslationsController', ['$scope', '$http', 'Notification', 'DBManageGeneralConfig', 'EntityConfig', function($scope, $http, Notification, DBManageGeneralConfig, EntityConfig) {
 
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
-            resource: Translations,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    modal: 'self',
-                    label: 'Translation key',
-                    new_placeholder: 'New Translation',
-                    required: true
-                },
-                {
-                    name: 'value',
-                    label: 'Value'
-                },
-                {
-                    name: 'locale',
-                    label: 'Locale',
-                    type: 'textselect',
-                    list: 'locales',
-                    adder: true
-                },
-                {
-                    name: 'group',
-                    label: 'Group',
-                    type: 'textselect',
-                    list: 'groups',
-                    adder: true
-                }
-            ],
-            lists: {
-                locales: TranslationsLocales.query(),
-                groups: TranslationsGroups.query()
-            }
-        };
+        angular.extend($scope, EntityConfig);
+
+        $scope.items = [];
+        $scope.aeGridOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridOptions);
 
         $scope.importWithReplace = function(){
             if(!confirm('Are you sure to IMPORT to database with replace all translations? This action will rewrite database data.'))

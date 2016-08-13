@@ -1,13 +1,10 @@
-angular.module('app')
-    .controller('PagesController', ['$scope', 'Pages', 'Templates', 'Users', function($scope, Pages, Templates, Users) {
+angular.module('admin-app')
+    .factory('DBManagePagesConfig', ['Pages', 'Templates', 'Users', function(Pages, Templates, Users) {
 
-        $scope.aGridOptions = {
-            caption: '',
-            order_by: '-id',
+        this.entityName = 'Pages';
+
+        this.aeGridOptions = {
             resource: Pages,
-            get_list: true,
-            ajax_handler: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -99,4 +96,6 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);

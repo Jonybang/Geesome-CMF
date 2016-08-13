@@ -3,7 +3,7 @@
 @section('page_name', 'Admin Panel')
 
 @section('content')
-    <div ng-app="app" ng-strict-di="">
+    <div ng-app="admin-app" ng-strict-di="">
         <ui-view></ui-view>
     </div>
 @endsection

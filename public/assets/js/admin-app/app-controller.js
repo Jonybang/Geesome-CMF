@@ -1,4 +1,4 @@
-angular.module('app')
+angular.module('admin-app')
     .controller('AppController', ['$scope', '$http', 'AppPaths', 'AppData', 'Contexts', 'Pages', function($scope, $http, AppPaths, AppData, Contexts, Pages) {
         var self = this;
 

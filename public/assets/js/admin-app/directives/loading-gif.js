@@ -1,6 +1,6 @@
 //<loading-gif ng-if="!dataLoaded"> </loading-gif>
 // TODO: добавить throttle - не показывать гифку если идет тут-же переключение туда - обратно
-angular.module('app')
+angular.module('admin-app')
     .directive('loadingGif', [function() {
         return {
             restrict: 'E',

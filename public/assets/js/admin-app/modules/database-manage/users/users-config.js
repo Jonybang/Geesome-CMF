@@ -1,15 +1,10 @@
-angular.module('app')
-    .controller('UserController', ['$scope', 'Users', 'Roles', function($scope, Users, Roles) {
-        $scope.users = [];
+angular.module('admin-app')
+    .factory('DBManageUsersConfig', ['Users', 'Roles', function(Users, Roles) {
 
-        $scope.aGridOptions = {
-            caption: '',
-            create: true,
-            edit: true,
-            orderBy: '-id',
+        this.entityName = 'Users';
+
+        this.aeGridOptions = {
             resource: Users,
-            ajax_handler: true,
-            get_list: true,
             fields: [
                 {
                     name: 'id',
@@ -44,4 +39,6 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);

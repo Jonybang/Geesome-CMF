@@ -1,14 +1,11 @@
-angular.module('app')
-    .controller('SettingsController', ['$scope', 'Settings', 'Contexts', function($scope, Settings, Contexts) {
-        $scope.settings = [];
+angular.module('admin-app')
+    .factory('DBManageSettingsConfig', ['Settings', 'Contexts', function(Settings, Contexts) {
 
-        $scope.aGridOptions = {
+        this.entityName = 'Settings';
+
+        this.aeGridOptions = {
             caption: 'All settings available in templates.',
-            orderBy: '-id',
             resource: Settings,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -44,4 +41,6 @@ angular.module('app')
                 }
             ]
         };
+
+        return this;
     }]);

@@ -1,14 +1,10 @@
-angular.module('app')
-    .controller('MailTemplatesController', ['$scope', 'MailTemplates', function($scope, MailTemplates) {
-        $scope.mail_templates = [];
+angular.module('admin-app')
+    .factory('DBManageMailTemplatesConfig', ['MailTemplates', function(MailTemplates) {
 
-        $scope.aGridOptions = {
-            caption: '',
-            orderBy: '-id',
+        this.entityName = 'Mail templates';
+
+        this.aeGridOptions = {
             resource: MailTemplates,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
             fields: [
                 {
                     name: 'id',
@@ -38,4 +34,6 @@ angular.module('app')
                 }
             ]
         };
-    }]);
+
+        return this;
+}]);

@@ -1,4 +1,4 @@
-var app = angular.module('app');
+var app = angular.module('admin-app');
 
 var defaultOptions = {
     'update': { method: 'PUT' }
