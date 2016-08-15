@@ -9,10 +9,10 @@ Designed for developers who want to have basic CMS functions as pages, templates
 ## Demo
 
 Client side:  
-http://lanit.jonybang.ru/
+http://laravel-cmf.jonybang.ru/
 
 Admin side:  
-http://lanit.jonybang.ru/admin  
+http://laravel-cmf.jonybang.ru/admin  
 User: test.lanit.cms@openmail.cc  
 Password: Lt192837
 
