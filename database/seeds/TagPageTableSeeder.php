@@ -34,7 +34,7 @@ class TagPageTableSeeder extends Seeder
                 'context_id' => Context::where('key', $context_key)->first()->id
             ]);
 
-            $page->page_translation()->create([
+            $page->entity_translation()->create([
                 'hash_key' => $hash_key,
                 'locale' => $context_key
             ]);

@@ -54,7 +54,7 @@ class BlogPagesTableSeeder extends Seeder
                 if(!isset($hash_keys[$index]))
                     $hash_keys[$index] = uniqid();
 
-                $page->page_translation()->create([
+                $page->entity_translation()->create([
                     'hash_key' => $hash_keys[$index],
                     'locale' => $context_key
                 ]);

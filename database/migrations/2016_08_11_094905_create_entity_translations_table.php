@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePageTranslationsTable extends Migration
+class CreateEntityTranslationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,11 @@ class CreatePageTranslationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('page_translations', function (Blueprint $table) {
+        Schema::create('entity_translations', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('page_id')->unsigned();
-            $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
+            $table->integer('entity_id')->unsigned();
+            $table->string('entity_type');
 
             $table->string('hash_key');
             $table->string('locale');
@@ -32,6 +32,6 @@ class CreatePageTranslationsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('page_translations');
+        Schema::drop('entity_translations');
     }
 }

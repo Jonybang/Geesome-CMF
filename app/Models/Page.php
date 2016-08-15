@@ -75,9 +75,9 @@ class Page extends Model
     /**
      * @Relation
      */
-    public function page_translation()
+    public function entity_translation()
     {
-        return $this->hasOne(PageTranslation::class);
+        return $this->morphOne(EntityTranslation::class, 'entity');
     }
 
     /**
@@ -251,9 +251,9 @@ class Page extends Model
     }
 
     public function getPageByTranslation($locale){
-        return PageTranslation::where([
-            'hash_key' => $this->page_translation->hash_key,
+        return EntityTranslation::where([
+            'hash_key' => $this->entity_translation->hash_key,
             'locale' => $locale
-        ])->first()->page;
+        ])->first()->entity;
     }
 }

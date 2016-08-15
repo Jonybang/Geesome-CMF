@@ -181,7 +181,7 @@ class MainPageSeeder extends Seeder
             $context = Context::where('key', $context_key)->first();
             $main_page = $main_template->pages()->where('context_id', $context->id)->first();
 
-            $main_page->page_translation()->create([
+            $main_page->entity_translation()->create([
                 'hash_key' => $hash_key,
                 'locale' => $context_key
             ]);
