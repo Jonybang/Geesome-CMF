@@ -101,7 +101,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         $page = null;
         //find page by alias or get main page from current context
         if($alias){
-            $page = $current_context->pages()->where('alias', 'like', $alias . '%')->orWhere('id', $alias)->first();
+            $page = $current_context->pages()->where('alias', $alias)->first();
+            if(!$page)
+                $page = $current_context->pages()->where('alias', 'like', $alias . '%')->orWhere('id', $alias)->first();
         }
         else{
             $main_page_id = $current_context->settings()->where('key', 'main_page')->first()->value;

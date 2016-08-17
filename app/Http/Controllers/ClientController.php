@@ -101,4 +101,13 @@ class ClientController extends Controller
 
         return redirect('thanks-for-subscribe')->withInput();
     }
+    public function getBreadcrumbs($page){
+        $breadcrumbs = [];
+        $parent_page = $page->parent_page;
+        while($parent_page){
+            $breadcrumbs[] = $parent_page;
+            $parent_page = $parent_page->parent_page;
+        }
+        return ['breadcrumbs' => $breadcrumbs];
+    }
 }
