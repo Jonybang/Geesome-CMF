@@ -103,14 +103,18 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         if($alias){
             $page = $current_context->pages()->where('alias', $alias)->first();
             if(!$page)
-                $page = $current_context->pages()->where('alias', 'like', $alias . '%')->orWhere('id', $alias)->first();
+                $page = $current_context->pages()->where('id', '=', $alias)
+                                                    ->orWhere(function ($query) use ($alias){
+                                                        $query->where('alias', 'like', $alias)
+                                                            ->where('is_allow_short_alias', true);
+                                                    })->first();
         }
         else{
             $main_page_id = $current_context->settings()->where('key', 'main_page')->first()->value;
             $page = Page::find($main_page_id);
         }
 
-        if($page->context_id != $current_context->id){
+        if($page && $page->context_id != $current_context->id){
             $page = $page->getPageByTranslation(LaravelLocalization::getCurrentLocale());
         }
 

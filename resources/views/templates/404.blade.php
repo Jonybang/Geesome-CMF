@@ -1,6 +1,8 @@
-@extends('layouts.client')
+@extends('layouts.master')
 
-@section('seo_title', "Not Found")
+@section('seo_title', 'Not Found')
+
+@section('meta', '')
 
 @section('header')
     <br><br><br>
