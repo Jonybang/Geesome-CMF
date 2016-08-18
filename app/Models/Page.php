@@ -21,10 +21,12 @@ class Page extends Model
 
         'is_published',
         'is_menu_hide',
-        'is_published',
+        'is_deleted',
 
         'is_abstract',
         'is_part',
+        'is_allow_short_alias',
+        'is_alias_blocked',
 
         'parent_page_id',
         'author_id',

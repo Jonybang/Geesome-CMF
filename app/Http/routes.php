@@ -105,7 +105,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
             if(!$page)
                 $page = $current_context->pages()->where('id', '=', $alias)
                                                     ->orWhere(function ($query) use ($alias){
-                                                        $query->where('alias', 'like', $alias)
+                                                        $query->where('alias', 'like', $alias . '%')
                                                             ->where('is_allow_short_alias', true);
                                                     })->first();
         }

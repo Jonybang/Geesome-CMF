@@ -138,6 +138,11 @@
                         <ae-select-input ng-model="page.context_id" has-error="hasErrors.context_id" ng-resource="models.contexts" ng-resource-fields="fields.contexts" is-edit="true" adder="true" get-list="true"></ae-select-input>
 
                         <label>
+                            Allow short alias:
+                            <ae-bool-input ng-model="page.is_allow_short_alias" has-error="hasErrors.is_allow_short_alias" is-edit="true"></ae-bool-input>
+                        </label>
+
+                        <label>
                             Is deleted:
                             <ae-bool-input ng-model="page.is_deleted" has-error="hasErrors.is_deleted" is-edit="true"></ae-bool-input>
                         </label>
