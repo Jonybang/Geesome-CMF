@@ -16,11 +16,11 @@ angular
                     .state('app.page.create', {
                         url: '?context_id',
                         controller: 'PageFormController',
-                        templateUrl: AppPaths.pages + 'page-form/templates/index.html'
+                        templateUrl: AppPaths.pages + 'page_form/templates/index.html'
                     })
                     .state('app.page.edit', {
                         url: '/page/:pageId?context_id',
                         controller: 'PageFormController',
-                        templateUrl: AppPaths.pages + 'page-form/templates/index.html'
+                        templateUrl: AppPaths.pages + 'page_form/templates/index.html'
                     });
         }]);
