@@ -28,7 +28,7 @@ var dist_dir = 'public/assets/dist/';
 var paths = {
     styles: [
         angular_dir + 'awesome-edit/dist/a-edit.css',
-        css_dir     + 'sb-admin.css'
+        css_dir     + 'admin_app.css'
     ]
 };
 

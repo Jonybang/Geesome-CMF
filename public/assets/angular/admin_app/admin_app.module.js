@@ -1,6 +1,10 @@
 angular
     .module('admin_app', [
         'ngResource',
+        'ngAnimate',
+        'ngAria',
+        'ngMessages',
+        'ngMaterial',
         'ui.bootstrap',
         'ui.router',
         'ui.router.tabs',
