@@ -26,17 +26,6 @@ var css_dir = 'public/assets/css/';
 var dist_dir = 'public/assets/dist/';
 
 var paths = {
-    scripts: [
-        js_dir +'angular/awesome-edit/dist/a-edit.js',
-
-        js_dir +'admin-app/modules/general/general.js',
-        js_dir +'admin-app/modules/pages/pages.js',
-        js_dir +'admin-app/modules/database/database.js',
-        js_dir +'admin-app/modules/mailing/mailing.js',
-
-        js_dir +'admin-app/app.js',
-        js_dir +'admin-app/**/*.js'
-    ],
     styles: [
         js_dir + 'angular/awesome-edit/dist/a-edit.css',
         css_dir + 'sb-admin.css'
