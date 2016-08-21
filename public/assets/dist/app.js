@@ -1,26 +1,26 @@
 angular
-    .module('admin-app.general', [
+    .module('admin_app.general', [
     ]);
 angular
-    .module('admin-app.pages', [
+    .module('admin_app.pages', [
         'ui.router',
 
-        'admin-app.general'
+        'admin_app.general'
     ]);
 angular
-    .module('admin-app.database', [
+    .module('admin_app.database', [
         'ui.router',
 
-        'admin-app.general'
+        'admin_app.general'
     ]);
 angular
-    .module('admin-app.mailing', [
+    .module('admin_app.mailing', [
         'ui.router',
 
-        'admin-app.general'
+        'admin_app.general'
     ]);
 angular
-    .module('admin-app', [
+    .module('admin_app', [
         'ngResource',
         'ui.bootstrap',
         'ui.router',
@@ -32,10 +32,10 @@ angular
         'ckeditor',
         'a-edit',
 
-        'admin-app.general',
-        'admin-app.pages',
-        'admin-app.database',
-        'admin-app.mailing'
+        'admin_app.general',
+        'admin_app.pages',
+        'admin_app.database',
+        'admin_app.mailing'
     ])
     .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
         function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
@@ -106,7 +106,7 @@ angular
         //config for marcelgwerder/laravel-api-handler
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
-angular.module('admin-app')
+angular.module('admin_app')
     .controller('AppController', ['$scope', '$http', 'AppPaths', 'ServerData', 'Contexts', 'Pages', 'DatabaseConfig', function($scope, $http, AppPaths, ServerData, Contexts, Pages, DatabaseConfig) {
         var self = this;
 
@@ -146,7 +146,7 @@ angular.module('admin-app')
     }]);
 //<loading-gif ng-if="!dataLoaded"> </loading-gif>
 // TODO: добавить throttle - не показывать гифку если идет тут-же переключение туда - обратно
-angular.module('admin-app')
+angular.module('admin_app')
     .directive('loadingGif', [function() {
         return {
             restrict: 'E',
@@ -157,7 +157,7 @@ angular.module('admin-app')
         };
     }]);
 angular
-    .module('admin-app')
+    .module('admin_app')
     .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -183,7 +183,7 @@ angular
         };
     }]);
 angular
-    .module('admin-app')
+    .module('admin_app')
     .directive('sfImage', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -200,7 +200,7 @@ angular
         };
     }]);
 angular
-    .module('admin-app')
+    .module('admin_app')
     .directive('sfJson', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -263,7 +263,7 @@ angular
         };
     }]);
 angular
-    .module('admin-app')
+    .module('admin_app')
     .directive('sfText', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -280,7 +280,7 @@ angular
         };
     }]);
 angular
-    .module('admin-app')
+    .module('admin_app')
     .directive('sfTextarea', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -297,7 +297,7 @@ angular
         };
     }]);
 angular
-    .module('admin-app')
+    .module('admin_app')
     .directive('subFieldsManager', ['$timeout', '$compile', '$uibModal', 'AppPaths', 'SubFields', 'SubFieldsValues', function($timeout, $compile, $uibModal, AppPaths, SubFields, SubFieldsValues) {
         return {
             restrict: 'E',
@@ -471,18 +471,18 @@ var resources_names = [
 resources_names.forEach(function(resource_name){
     var ResourceName = _.upperFirst(_.camelCase(resource_name));
     console.log('ResourceName', ResourceName);
-    angular.module('admin-app').factory(ResourceName, ['$resource', function($resource) {
+    angular.module('admin_app').factory(ResourceName, ['$resource', function($resource) {
         return $resource('admin/api/' + resource_name + '/:id', { id: '@id' }, defaultOptions);
     }]);
 });
 
 // advanced resources
-angular.module('admin-app').factory('PagesSEO', ['$resource', function($resource) {
+angular.module('admin_app').factory('PagesSEO', ['$resource', function($resource) {
     return $resource('admin/api/pages/:page_id/seo', { id: '@page_id' }, defaultOptions);
 }]);
 
 angular
-    .module('admin-app')
+    .module('admin_app')
     .service('ServerData', ['$http', function($http){
         var self = this;
 
@@ -521,7 +521,7 @@ angular
 
         return self;
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .service('DatabaseConfig', [function(){
 
         this.menu = [
@@ -574,7 +574,7 @@ angular.module('admin-app.database')
         return this;
     }]);
 angular
-    .module('admin-app.database')
+    .module('admin_app.database')
     .config(['$stateProvider', 'AppPaths', function($stateProvider, AppPaths) {
 
         $stateProvider
@@ -626,7 +626,7 @@ angular
         });
     }]);
 angular
-    .module('admin-app.mailing')
+    .module('admin_app.mailing')
     .config(['$stateProvider', 'AppPaths', function($stateProvider, AppPaths) {
 
             $stateProvider
@@ -647,7 +647,7 @@ angular
                     });
         }]);
 angular
-    .module('admin-app.pages')
+    .module('admin_app.pages')
     .config(['$stateProvider', 'AppPaths', function($stateProvider, AppPaths) {
 
             $stateProvider
@@ -672,7 +672,7 @@ angular
                         templateUrl: AppPaths.pages + 'page-form/templates/index.html'
                     });
         }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageGeneralConfig', [function() {
 
         this.entityName = 'Entity Name';
@@ -703,7 +703,7 @@ angular.module('admin-app.database')
 
         return this;
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .controller('DBManageGeneralController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
         $scope.items = [];
 
@@ -711,7 +711,7 @@ angular.module('admin-app.database')
 
         $scope.aeGridOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridOptions);
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageLogsConfig', ['Logs', 'Users', function(Logs, Users) {
 
         this.entityName = 'Logs';
@@ -757,7 +757,7 @@ angular.module('admin-app.database')
 
         return this;
 }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageMailTemplatesConfig', ['MailTemplates', function(MailTemplates) {
 
         this.entityName = 'Mail templates';
@@ -796,7 +796,7 @@ angular.module('admin-app.database')
 
         return this;
 }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManagePagesConfig', ['Pages', 'Templates', 'Users', function(Pages, Templates, Users) {
 
         this.entityName = 'Pages';
@@ -897,7 +897,7 @@ angular.module('admin-app.database')
 
         return this;
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageSentMailsConfig', ['SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function(SentMails, MailTemplates, Pages, SubscribersGroups) {
 
         this.entityName = 'Sent Mails';
@@ -954,7 +954,7 @@ angular.module('admin-app.database')
 
         return this;
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageSettingsConfig', ['Settings', 'Contexts', function(Settings, Contexts) {
 
         this.entityName = 'Settings';
@@ -1000,7 +1000,7 @@ angular.module('admin-app.database')
 
         return this;
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageSubFieldsConfig', ['SubFields', 'SubFieldsTypes', 'SubFieldsValues', 'Templates', 'Pages', 'DBManageGeneralConfig', function(SubFields, SubFieldsTypes, SubFieldsValues, Templates, Pages, DBManageGeneralConfig) {
 
         this.subFieldsTypesName = 'Sub Fields Types';
@@ -1127,7 +1127,7 @@ angular.module('admin-app.database')
 
         return this;
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .controller('DBManageSubFieldsController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
 
         angular.extend($scope, EntityConfig);
@@ -1141,7 +1141,7 @@ angular.module('admin-app.database')
         $scope.sub_fields_values = [];
         $scope.aeGridSubFieldsValuesOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridSubFieldsValuesOptions);
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageSubscribersConfig', ['SubscribersGroups', 'Subscribers', function(SubscribersGroups, Subscribers) {
 
         this.subscribersGroupsName = 'Subscribers Groups';
@@ -1226,7 +1226,7 @@ angular.module('admin-app.database')
 
         return this;
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .controller('DBManageSubscribersController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
             angular.extend($scope, EntityConfig);
 
@@ -1236,7 +1236,7 @@ angular.module('admin-app.database')
             $scope.subscribers = [];
             $scope.aeGridSubscribersOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridSubscribersOptions);
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageTagsConfig', ['Tags', function(Tags) {
 
         this.entityName = 'Tags';
@@ -1261,7 +1261,7 @@ angular.module('admin-app.database')
 
         return this;
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageTemplatesConfig', ['Templates', 'SubFields', 'ControllerActions', function(Templates, SubFields, ControllerActions) {
 
         this.entityName = 'Tags';
@@ -1314,7 +1314,7 @@ angular.module('admin-app.database')
 
         return this;
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageTranslationsConfig', ['Translations', 'TranslationsGroups', 'TranslationsLocales', 'DBManageGeneralConfig', function(Translations, TranslationsGroups, TranslationsLocales, DBManageGeneralConfig) {
 
         this.entityName = 'Translations';
@@ -1361,7 +1361,7 @@ angular.module('admin-app.database')
 
         return this;
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .controller('DBManageTranslationsController', ['$scope', '$http', 'Notification', 'DBManageGeneralConfig', 'EntityConfig', function($scope, $http, Notification, DBManageGeneralConfig, EntityConfig) {
 
         angular.extend($scope, EntityConfig);
@@ -1392,7 +1392,7 @@ angular.module('admin-app.database')
             });
         }
     }]);
-angular.module('admin-app.database')
+angular.module('admin_app.database')
     .factory('DBManageUsersConfig', ['Users', 'Roles', function(Users, Roles) {
 
         this.entityName = 'Users';
@@ -1436,10 +1436,10 @@ angular.module('admin-app.database')
 
         return this;
     }]);
-var app_path = '/assets/js/admin-app/',
+var app_path = '/assets/js/admin_app/',
     modules_path = app_path + 'modules/';
 
-angular.module('admin-app.general')
+angular.module('admin_app.general')
     .constant('AppPaths', {
         app:            app_path,
         modules:        modules_path,
@@ -1448,7 +1448,7 @@ angular.module('admin-app.general')
         pages:          modules_path + 'pages/',
         mailing:        modules_path + 'mailing/'
     });
-angular.module('admin-app.mailing')
+angular.module('admin_app.mailing')
     .controller('MailFormController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'ServerData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
         function($scope, $state, $http, $uibModal, debounce, Notification, AppPaths, ServerData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
 
@@ -1709,7 +1709,7 @@ angular.module('admin-app.mailing')
             }
     }]);
 angular
-    .module('admin-app.pages')
+    .module('admin_app.pages')
     .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'ServerData', 'PageFormManage', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
         function($scope, $state, $http, $uibModal, Notification, AppPaths, ServerData, PageFormManage, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
 
@@ -1846,7 +1846,7 @@ angular
             };
     }]);
 angular
-    .module('admin-app.pages')
+    .module('admin_app.pages')
     .factory('PageFormManage', ['Templates', 'Contexts', 'Pages', 'Users', 'Tags', 'ControllerActions', function(Templates, Contexts, Pages, Users, Tags, ControllerActions) {
 
     this.models = {
