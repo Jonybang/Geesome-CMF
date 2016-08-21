@@ -46,13 +46,13 @@ gulp.task('concatAngularVendorJS', function() {
 gulp.task('concatAdminAppJS', function() {
     return gulp
         .src([
-            js_dir + 'admin-app/modules/general/general.module.js',
-            js_dir + 'admin-app/modules/pages/pages.module.js',
-            js_dir + 'admin-app/modules/database/database.module.js',
-            js_dir + 'admin-app/modules/mailing/mailing.module.js',
-            js_dir + 'admin-app/app.module.js',
+            js_dir + 'admin_app/modules/general/general.module.js',
+            js_dir + 'admin_app/modules/pages/pages.module.js',
+            js_dir + 'admin_app/modules/database/database.module.js',
+            js_dir + 'admin_app/modules/mailing/mailing.module.js',
+            js_dir + 'admin_app/app.module.js',
 
-            js_dir + 'admin-app/**/*.js'
+            js_dir + 'admin_app/**/*.js'
         ])
         .pipe(concat('app.js'))
         .pipe(gulp.dest(dist_dir));
@@ -66,7 +66,7 @@ gulp.task('concatAdminAppCSS', function() {
 
 gulp.task('watch', function() {
     gulp.watch(js_dir + 'angular/**/*.js', ['concatAngularVendorJS']);
-    gulp.watch(js_dir + 'admin-app/**/*.js', ['concatAdminAppJS']);
+    gulp.watch(js_dir + 'admin_app/**/*.js', ['concatAdminAppJS']);
     gulp.watch(paths.styles, ['concatAdminAppCSS']);
 });
 
