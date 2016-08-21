@@ -1,25 +1,4 @@
 angular
-    .module('admin_app.general', [
-    ]);
-angular
-    .module('admin_app.pages', [
-        'ui.router',
-
-        'admin_app.general'
-    ]);
-angular
-    .module('admin_app.database', [
-        'ui.router',
-
-        'admin_app.general'
-    ]);
-angular
-    .module('admin_app.mailing', [
-        'ui.router',
-
-        'admin_app.general'
-    ]);
-angular
     .module('admin_app', [
         'ngResource',
         'ui.bootstrap',
@@ -106,6 +85,27 @@ angular
         //config for marcelgwerder/laravel-api-handler
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
+angular
+    .module('admin_app.database', [
+        'ui.router',
+
+        'admin_app.general'
+    ]);
+angular
+    .module('admin_app.general', [
+    ]);
+angular
+    .module('admin_app.mailing', [
+        'ui.router',
+
+        'admin_app.general'
+    ]);
+angular
+    .module('admin_app.pages', [
+        'ui.router',
+
+        'admin_app.general'
+    ]);
 angular.module('admin_app')
     .controller('AppController', ['$scope', '$http', 'AppPaths', 'ServerData', 'Contexts', 'Pages', 'DatabaseConfig', function($scope, $http, AppPaths, ServerData, Contexts, Pages, DatabaseConfig) {
         var self = this;
@@ -156,38 +156,76 @@ angular.module('admin_app')
             }
         };
     }]);
+var defaultOptions = {
+    'update': { method: 'PUT' }
+};
+
+//  simple resources
+var resources_names = [
+    'settings', 'contexts', 'pages', 'templates', 'mail_templates', 'logs', 'users', 'roles', 'tags',
+    'sub_fields', 'sub_fields_types', 'sub_fields_values', 'controller_actions', 'translations', 'translations_groups',
+    'translations_locales', 'subscribers', 'subscribers_groups', 'sent_mails'
+];
+
+resources_names.forEach(function(resource_name){
+    var ResourceName = _.upperFirst(_.camelCase(resource_name));
+    console.log('ResourceName', ResourceName);
+    angular.module('admin_app').factory(ResourceName, ['$resource', function($resource) {
+        return $resource('admin/api/' + resource_name + '/:id', { id: '@id' }, defaultOptions);
+    }]);
+});
+
+// advanced resources
+angular.module('admin_app').factory('PagesSEO', ['$resource', function($resource) {
+    return $resource('admin/api/pages/:page_id/seo', { id: '@page_id' }, defaultOptions);
+}]);
+
 angular
     .module('admin_app')
-    .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
-        return {
-            restrict: 'E',
-            templateUrl: AppPaths.app + 'directives/sf-date.html',
-            scope: {
-                /* SubFieldValues resource */
-                ngModel: '=',
-                pageResource: '=?',
-                templateResource: '=?'
-            },
-            link: function (scope, element) {
-                scope.$watch('ngModel', function(){
-                    if(!scope.ngModel || !scope.ngModel.value)
-                        return;
+    .service('ServerData', ['$http', function($http){
+        var self = this;
 
-                    if(new Date(scope.ngModel.value) != scope.fakeModel)
-                        scope.fakeModel = new Date(scope.ngModel.value);
-                });
-                scope.$watch('fakeModel', function(){
-                    scope.ngModel.value = scope.fakeModel;
-                });
-            }
+        var data_variables = {
+            'CurrentUser': '/admin/api/current_user',
+            'SiteSettings': '/admin/api/site_settings_dictionary'
         };
+
+        self.reload = function(){
+            angular.forEach(data_variables, function(url, var_name) {
+                //get data from service and set to service object as field by var_name
+                self[var_name] = {};
+                self[var_name].$promise = $http.get(url).then(function (response) {
+                    angular.extend(self[var_name], response.data);
+                    self[var_name].$promise = null;
+                    return self[var_name];
+                });
+
+                //generate callbacks for simple get data, for example:
+                //
+                //ServerData.getCurrentUser(function(current_user){
+                //  $scope.current_user = current_user;
+                //});
+                //
+                self['get' + var_name] = function(callback){
+                    //if data not yet received or already received
+                    if(self[var_name].$promise)
+                        self[var_name].$promise.then(callback);
+                    else
+                        callback(self[var_name]);
+                }
+            });
+        };
+
+        self.reload();
+
+        return self;
     }]);
 angular
     .module('admin_app')
     .directive('sfImage', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
-            templateUrl: AppPaths.app + 'directives/sf-image.html',
+            templateUrl: AppPaths.directives + 'sf_image/sf_image.html',
             scope: {
                 /* SubFieldValues resource */
                 ngModel: '=',
@@ -204,7 +242,7 @@ angular
     .directive('sfJson', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
-            templateUrl: AppPaths.app + 'directives/sf-json.html',
+            templateUrl: AppPaths.directives + 'sf_json/sf_json.html',
             scope: {
                 /* SubFieldValues resource */
                 ngModel: '=',
@@ -264,10 +302,36 @@ angular
     }]);
 angular
     .module('admin_app')
+    .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
+        return {
+            restrict: 'E',
+            templateUrl: AppPaths.directives + 'sf_date/sf_date.html',
+            scope: {
+                /* SubFieldValues resource */
+                ngModel: '=',
+                pageResource: '=?',
+                templateResource: '=?'
+            },
+            link: function (scope, element) {
+                scope.$watch('ngModel', function(){
+                    if(!scope.ngModel || !scope.ngModel.value)
+                        return;
+
+                    if(new Date(scope.ngModel.value) != scope.fakeModel)
+                        scope.fakeModel = new Date(scope.ngModel.value);
+                });
+                scope.$watch('fakeModel', function(){
+                    scope.ngModel.value = scope.fakeModel;
+                });
+            }
+        };
+    }]);
+angular
+    .module('admin_app')
     .directive('sfText', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
-            templateUrl: AppPaths.app + 'directives/sf-text.html',
+            templateUrl: AppPaths.directives + 'sf_text/sf_text.html',
             scope: {
                 /* SubFieldValues resource */
                 ngModel: '=',
@@ -284,7 +348,7 @@ angular
     .directive('sfTextarea', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
-            templateUrl: AppPaths.app + 'directives/sf-textarea.html',
+            templateUrl: AppPaths.directives + 'sf_textarea/sf_textarea.html',
             scope: {
                 /* SubFieldValues resource */
                 ngModel: '=',
@@ -374,7 +438,7 @@ angular
                 scope.addSubField = function(){
                     var modalInstance = $uibModal.open({
                         animation: true,
-                        templateUrl: AppPaths.app + 'directives/addSubFieldModal.html',
+                        templateUrl: AppPaths.directives + 'sub_fields_manager/add_sub_field.modal.html',
                         controller: ['$scope', 'subField', 'SubFieldsTypes', function($scope, subField, SubFieldsTypes){
                             $scope.subField = subField;
 
@@ -456,70 +520,6 @@ angular
                 }
             }
         };
-    }]);
-var defaultOptions = {
-    'update': { method: 'PUT' }
-};
-
-//  simple resources
-var resources_names = [
-    'settings', 'contexts', 'pages', 'templates', 'mail_templates', 'logs', 'users', 'roles', 'tags',
-    'sub_fields', 'sub_fields_types', 'sub_fields_values', 'controller_actions', 'translations', 'translations_groups',
-    'translations_locales', 'subscribers', 'subscribers_groups', 'sent_mails'
-];
-
-resources_names.forEach(function(resource_name){
-    var ResourceName = _.upperFirst(_.camelCase(resource_name));
-    console.log('ResourceName', ResourceName);
-    angular.module('admin_app').factory(ResourceName, ['$resource', function($resource) {
-        return $resource('admin/api/' + resource_name + '/:id', { id: '@id' }, defaultOptions);
-    }]);
-});
-
-// advanced resources
-angular.module('admin_app').factory('PagesSEO', ['$resource', function($resource) {
-    return $resource('admin/api/pages/:page_id/seo', { id: '@page_id' }, defaultOptions);
-}]);
-
-angular
-    .module('admin_app')
-    .service('ServerData', ['$http', function($http){
-        var self = this;
-
-        var data_variables = {
-            'CurrentUser': '/admin/api/current_user',
-            'SiteSettings': '/admin/api/site_settings_dictionary'
-        };
-
-        self.reload = function(){
-            angular.forEach(data_variables, function(url, var_name) {
-                //get data from service and set to service object as field by var_name
-                self[var_name] = {};
-                self[var_name].$promise = $http.get(url).then(function (response) {
-                    angular.extend(self[var_name], response.data);
-                    self[var_name].$promise = null;
-                    return self[var_name];
-                });
-
-                //generate callbacks for simple get data, for example:
-                //
-                //ServerData.getCurrentUser(function(current_user){
-                //  $scope.current_user = current_user;
-                //});
-                //
-                self['get' + var_name] = function(callback){
-                    //if data not yet received or already received
-                    if(self[var_name].$promise)
-                        self[var_name].$promise.then(callback);
-                    else
-                        callback(self[var_name]);
-                }
-            });
-        };
-
-        self.reload();
-
-        return self;
     }]);
 angular.module('admin_app.database')
     .service('DatabaseConfig', [function(){
@@ -664,12 +664,12 @@ angular
                     .state('app.page.create', {
                         url: '?context_id',
                         controller: 'PageFormController',
-                        templateUrl: AppPaths.pages + 'page-form/templates/index.html'
+                        templateUrl: AppPaths.pages + 'page_form/templates/index.html'
                     })
                     .state('app.page.edit', {
                         url: '/page/:pageId?context_id',
                         controller: 'PageFormController',
-                        templateUrl: AppPaths.pages + 'page-form/templates/index.html'
+                        templateUrl: AppPaths.pages + 'page_form/templates/index.html'
                     });
         }]);
 angular.module('admin_app.database')
@@ -1436,13 +1436,14 @@ angular.module('admin_app.database')
 
         return this;
     }]);
-var app_path = '/assets/js/admin_app/',
+var app_path = '/assets/angular/admin_app/',
     modules_path = app_path + 'modules/';
 
 angular.module('admin_app.general')
     .constant('AppPaths', {
         app:            app_path,
         modules:        modules_path,
+        directives:     app_path + 'directives/',
 
         database:       modules_path + 'database/',
         pages:          modules_path + 'pages/',
@@ -1710,16 +1711,103 @@ angular.module('admin_app.mailing')
     }]);
 angular
     .module('admin_app.pages')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'ServerData', 'PageFormManage', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, Notification, AppPaths, ServerData, PageFormManage, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+    .factory('PageFormConfig', ['Templates', 'Contexts', 'Pages', 'Users', 'Tags', 'ControllerActions', function(Templates, Contexts, Pages, Users, Tags, ControllerActions) {
+
+    this.models = {
+        templates: Templates,
+        contexts: Contexts,
+        pages: Pages,
+        users: Users,
+        tags: Tags,
+        controller_actions: ControllerActions
+    };
+
+    this.fields = {
+        templates: [
+            {
+                name: 'name',
+                label: 'Name'
+            },
+            {
+                name: 'key',
+                label: 'Key(Path in templates directory)'
+            }
+        ],
+        contexts: [
+            {
+                name: 'name',
+                label: 'Name'
+            },
+            {
+                name: 'key',
+                label: 'Key'
+            },
+            {
+                name: 'role',
+                label: 'Role of context(lang for example)'
+            }
+        ],
+        pages: [
+            {
+                name: 'title',
+                label: 'Title'
+            },
+            {
+                name: 'template_id',
+                label: 'Template',
+                type: 'select',
+                model: Templates,
+                list: 'templates',
+                or_name_field: 'key'
+            }
+        ],
+        users: [
+            {
+                name: 'name',
+                label: 'Name'
+            },
+            {
+                name: 'email',
+                label: 'Email'
+            },
+            {
+                name: 'password',
+                label: 'Password',
+                type: 'password'
+            }
+        ],
+        tags: [
+            {
+                name: 'name',
+                label: 'Name'
+            }
+        ],
+        controller_actions: [
+            {
+                name: 'key',
+                label: 'Key(ControllerName@actionName)'
+            },
+            {
+                name: 'name',
+                label: 'Name'
+            }
+        ]
+    };
+
+    return this;
+}]);
+angular
+    .module('admin_app.pages')
+    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'ServerData', 'PageFormConfig', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, $uibModal, Notification, AppPaths, ServerData, PageFormConfig, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
 
             $scope.subFieldsApi = {};
 
             //Models for select inputs
-            $scope.models = PageFormManage.models;
+            $scope.models = PageFormConfig.models;
 
             //Fields for adder functional at select inputs
-            $scope.fields = PageFormManage.fields;
+            $scope.fields = PageFormConfig.fields;
 
             var defaultPage = new Pages();
 
@@ -1845,90 +1933,3 @@ angular
                 })
             };
     }]);
-angular
-    .module('admin_app.pages')
-    .factory('PageFormManage', ['Templates', 'Contexts', 'Pages', 'Users', 'Tags', 'ControllerActions', function(Templates, Contexts, Pages, Users, Tags, ControllerActions) {
-
-    this.models = {
-        templates: Templates,
-        contexts: Contexts,
-        pages: Pages,
-        users: Users,
-        tags: Tags,
-        controller_actions: ControllerActions
-    };
-
-    this.fields = {
-        templates: [
-            {
-                name: 'name',
-                label: 'Name'
-            },
-            {
-                name: 'key',
-                label: 'Key(Path in templates directory)'
-            }
-        ],
-        contexts: [
-            {
-                name: 'name',
-                label: 'Name'
-            },
-            {
-                name: 'key',
-                label: 'Key'
-            },
-            {
-                name: 'role',
-                label: 'Role of context(lang for example)'
-            }
-        ],
-        pages: [
-            {
-                name: 'title',
-                label: 'Title'
-            },
-            {
-                name: 'template_id',
-                label: 'Template',
-                type: 'select',
-                model: Templates,
-                list: 'templates',
-                or_name_field: 'key'
-            }
-        ],
-        users: [
-            {
-                name: 'name',
-                label: 'Name'
-            },
-            {
-                name: 'email',
-                label: 'Email'
-            },
-            {
-                name: 'password',
-                label: 'Password',
-                type: 'password'
-            }
-        ],
-        tags: [
-            {
-                name: 'name',
-                label: 'Name'
-            }
-        ],
-        controller_actions: [
-            {
-                name: 'key',
-                label: 'Key(ControllerName@actionName)'
-            },
-            {
-                name: 'name',
-                label: 'Name'
-            }
-        ]
-    };
-
-    return this;
-}]);
