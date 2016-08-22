@@ -45,14 +45,17 @@ angular
                     var template = angular.element("<div>" + tplHtml + "</div>");
 
                     var linkFn = $compile(template)(scope);
-                    element.replaceWith(linkFn);
+                    element.empty();
+                    element.append(linkFn);
                 }
+
+                var debounceInit = _.debounce(init, 300);
 
                 function checkForInit(){
                     if(!scope.ngModel || (scope.pageResource && scope.pageResource.$promise && !scope.pageResource.$promise.$$state.status))
                         return;
 
-                    init();
+                    debounceInit();
                 }
                 scope.$watchCollection('ngModel', checkForInit);
                 scope.$watchCollection('pageResource', checkForInit);
