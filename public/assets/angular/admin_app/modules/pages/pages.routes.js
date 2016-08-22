@@ -10,8 +10,11 @@ angular
 
                 .state('app.page', {
                     url: '',
-                    template: '<ui-view></ui-view>',
-                    abstract: true
+                    abstract: true,
+                    views: {
+                        header:     { template: "<h3 class='text-center'>Pages</h3>" },
+                        content:    { templateUrl: AppPaths.pages + 'templates/index.html', controller: "PagesController" }
+                    }
                 })
                     .state('app.page.create', {
                         url: '?context_id',

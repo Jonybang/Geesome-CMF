@@ -1,22 +1,53 @@
-@extends('layouts.admin')
+<!DOCTYPE html>
+<html lang="{{env('SITE_DEFAULT_LOCALE', 'en')}}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('page_name', 'Admin Panel')
+    @yield('meta')
 
-@section('content')
-    <div ng-app="admin_app" ng-strict-di="" ng-cloak>
-        <ui-view></ui-view>
-    </div>
-@endsection
+    <base href="/">
 
-@section('scripts')
+    <title>@yield('seo_title')</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Morris Charts CSS -->
+    <link href="/assets/css/angular/select.min.css" rel="stylesheet">
+    <link href="/assets/css/angular/angular-ui-notification.min.css" rel="stylesheet">
+    <link href="/assets/css/angular/angular-material.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/assets/dist/app.css" rel="stylesheet">
+</head>
+
+<body ng-app="admin_app" ng-strict-di="" ng-cloak>
+    <ui-view layout="row"></ui-view>
+
     <script src="/assets/js/lodash.min.js"></script>
     <script src="/assets/js/moment.min.js"></script>
     <script src="/assets/js/moment-ru.js"></script>
-    {{--<script src="//cdn.ckeditor.com/4.5.10/basic/ckeditor.js"></script>--}}
-    {{--<script src="//cdn.ckeditor.com/4.5.10/standard/ckeditor.js"></script>--}}
 
+    <!--<script src="//cdn.ckeditor.com/4.5.10/basic/ckeditor.js"></script>-->
+    <!--<script src="//cdn.ckeditor.com/4.5.10/standard/ckeditor.js"></script>-->
     <script src="//cdn.ckeditor.com/4.5.10/full/ckeditor.js"></script>
 
     <script src="/assets/dist/vendor.js"></script>
     <script src="/assets/dist/app.js"></script>
-@endsection
+</body>
+</html>

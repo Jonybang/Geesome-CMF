@@ -42,10 +42,10 @@ angular
                     tplHtml += '<button class="btn btn-warning margin-top" ng-click="addSubField()" title="Add SubField"><span class="glyphicon glyphicon-plus"></span> Add sub field to current template</button>' +
                         ' <span class="glyphicon glyphicon-question-sign" style="color: #8a6d3b;" uib-tooltip="Need to change template source code for take effect!"></span>';
 
-                    var template = angular.element(tplHtml);
+                    var template = angular.element("<div>" + tplHtml + "</div>");
 
                     var linkFn = $compile(template)(scope);
-                    element.html(linkFn);
+                    element.replaceWith(linkFn);
                 }
 
                 function checkForInit(){

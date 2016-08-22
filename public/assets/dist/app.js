@@ -115,38 +115,11 @@ angular.module('admin_app')
         var self = this;
 
         self.tabs = [
-            {title:'Pages Tree', name: 'pages-tree'},
-            {title: 'Database Manage', name:'db-manage'}
+            {title:'Pages Tree', route: 'app.page.create', icon: 'description'},
+            {title: 'Database Manage', icon: 'storage', children: DatabaseConfig.menu}
         ];
 
-        self.activeTab = 'pages-tree';
-
         self.databaseMenu = DatabaseConfig.menu;
-
-        self.refreshPagesTree = function(){
-            self.contexts = Contexts.query({_with: 'pages_tree'});
-        };
-
-        self.refreshPagesTree();
-
-        self.changeParent = function(event, dropped_index, dropped_item, parent){
-            if(parent.id == dropped_item.id)
-                return;
-
-            dropped_item.parent_page_id = parent.id;
-            dropped_item.menu_index = dropped_index;
-
-            Pages.update({ id: dropped_item.id }, dropped_item);
-
-            parent.child_pages_by_index.forEach(function(page, page_index){
-                if(page_index >= dropped_index && page.id != dropped_item.id){
-                    page.menu_index = page_index + 1;
-                    Pages.update({ id: page.id }, page);
-                }
-            });
-
-            return dropped_item;
-        };
     }]);
 //<loading-gif ng-if="!dataLoaded"> </loading-gif>
 // TODO: добавить throttle - не показывать гифку если идет тут-же переключение туда - обратно
@@ -408,10 +381,10 @@ angular
                     tplHtml += '<button class="btn btn-warning margin-top" ng-click="addSubField()" title="Add SubField"><span class="glyphicon glyphicon-plus"></span> Add sub field to current template</button>' +
                         ' <span class="glyphicon glyphicon-question-sign" style="color: #8a6d3b;" uib-tooltip="Need to change template source code for take effect!"></span>';
 
-                    var template = angular.element(tplHtml);
+                    var template = angular.element("<div>" + tplHtml + "</div>");
 
                     var linkFn = $compile(template)(scope);
-                    element.html(linkFn);
+                    element.replaceWith(linkFn);
                 }
 
                 function checkForInit(){
@@ -530,47 +503,47 @@ angular.module('admin_app.database')
 
         this.menu = [
             {
-                heading: 'Pages',
+                title: 'Pages',
                 route:   'app.db.pages'
             },
             {
-                heading: 'Translations',
+                title: 'Translations',
                 route:   'app.db.translations'
             },
             {
-                heading: 'Mail Templates',
+                title: 'Mail Templates',
                 route:   'app.db.mail_templates'
             },
             {
-                heading: 'Subscribers',
+                title: 'Subscribers',
                 route:   'app.db.subscribers'
             },
             {
-                heading: 'Sent Mails',
+                title: 'Sent Mails',
                 route:   'app.db.sent_mails'
             },
             {
-                heading: 'Settings',
+                title: 'Settings',
                 route:   'app.db.settings'
             },
             {
-                heading: 'Logs',
+                title: 'Logs',
                 route:   'app.db.logs'
             },
             {
-                heading: 'Tags',
+                title: 'Tags',
                 route:   'app.db.tags'
             },
             {
-                heading: 'Templates',
+                title: 'Templates',
                 route:   'app.db.templates'
             },
             {
-                heading: 'SubFields',
+                title: 'SubFields',
                 route:   'app.db.sub_fields'
             },
             {
-                heading: 'Users',
+                title: 'Users',
                 route:   'app.db.users'
             }
         ];
@@ -589,8 +562,11 @@ angular
 
             .state('app.db', {
                 url: '/db',
-                template: '<ui-view></ui-view>',
-                abstract: true
+                abstract: true,
+                views: {
+                    header:     { template: "<h3 class='text-center'>Database</h3>" },
+                    content:    { template: "<ui-view></ui-view>" }
+                }
             });
 
         // states WITHOUT custom controller and template
@@ -641,8 +617,11 @@ angular
 
                 .state('app.mailing', {
                     url: '/manage',
-                    template: '<ui-view></ui-view>',
-                    abstract: true
+                    abstract: true,
+                    views: {
+                        header:     { template: "<h3 class='text-center'>Mailing</h3>" },
+                        content:    { template: "<ui-view></ui-view>" }
+                    }
                 })
                     .state('app.mailing.manage', {
                         url: '/mailing/:sentMailId',
@@ -650,6 +629,34 @@ angular
                         templateUrl: AppPaths.mailing + 'mail_form/templates/index.html'
                     });
         }]);
+angular.module('admin_app')
+    .controller('PagesController', ['$scope', '$http', 'AppPaths', 'ServerData', 'Contexts', 'Pages', 'DatabaseConfig', function($scope, $http, AppPaths, ServerData, Contexts, Pages, DatabaseConfig) {
+
+        $scope.refreshPagesTree = function(){
+            $scope.contexts = Contexts.query({_with: 'pages_tree'});
+        };
+
+        $scope.refreshPagesTree();
+
+        $scope.changeParent = function(event, dropped_index, dropped_item, parent){
+            if(parent.id == dropped_item.id)
+                return;
+
+            dropped_item.parent_page_id = parent.id;
+            dropped_item.menu_index = dropped_index;
+
+            Pages.update({ id: dropped_item.id }, dropped_item);
+
+            parent.child_pages_by_index.forEach(function(page, page_index){
+                if(page_index >= dropped_index && page.id != dropped_item.id){
+                    page.menu_index = page_index + 1;
+                    Pages.update({ id: page.id }, page);
+                }
+            });
+
+            return dropped_item;
+        };
+    }]);
 angular
     .module('admin_app.pages')
     .config(['$stateProvider', 'AppPaths', function($stateProvider, AppPaths) {
@@ -662,8 +669,11 @@ angular
 
                 .state('app.page', {
                     url: '',
-                    template: '<ui-view></ui-view>',
-                    abstract: true
+                    abstract: true,
+                    views: {
+                        header:     { template: "<h3 class='text-center'>Pages</h3>" },
+                        content:    { templateUrl: AppPaths.pages + 'templates/index.html', controller: "PagesController" }
+                    }
                 })
                     .state('app.page.create', {
                         url: '?context_id',

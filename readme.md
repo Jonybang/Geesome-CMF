@@ -59,6 +59,14 @@ Frontend core(Admin panel) located in [public/assets/js/admin-app](https://githu
 
 Frontend and backend separated by REST API, and if desired developer can build his frontend for use created backend.
 
+## Material design frontend
+
+Angular material: https://material.angularjs.org/latest/getting-started
+
+Icons: https://design.google.com/icons/
+
+Colors: https://material.google.com/style/color.html
+
 ## Clone for modify admin panel with submodules:
 
 ```

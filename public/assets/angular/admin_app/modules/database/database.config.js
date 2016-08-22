@@ -3,47 +3,47 @@ angular.module('admin_app.database')
 
         this.menu = [
             {
-                heading: 'Pages',
+                title: 'Pages',
                 route:   'app.db.pages'
             },
             {
-                heading: 'Translations',
+                title: 'Translations',
                 route:   'app.db.translations'
             },
             {
-                heading: 'Mail Templates',
+                title: 'Mail Templates',
                 route:   'app.db.mail_templates'
             },
             {
-                heading: 'Subscribers',
+                title: 'Subscribers',
                 route:   'app.db.subscribers'
             },
             {
-                heading: 'Sent Mails',
+                title: 'Sent Mails',
                 route:   'app.db.sent_mails'
             },
             {
-                heading: 'Settings',
+                title: 'Settings',
                 route:   'app.db.settings'
             },
             {
-                heading: 'Logs',
+                title: 'Logs',
                 route:   'app.db.logs'
             },
             {
-                heading: 'Tags',
+                title: 'Tags',
                 route:   'app.db.tags'
             },
             {
-                heading: 'Templates',
+                title: 'Templates',
                 route:   'app.db.templates'
             },
             {
-                heading: 'SubFields',
+                title: 'SubFields',
                 route:   'app.db.sub_fields'
             },
             {
-                heading: 'Users',
+                title: 'Users',
                 route:   'app.db.users'
             }
         ];

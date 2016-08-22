@@ -1,39 +1,55 @@
-<div layout="row">
-    <md-sidenav flex="20" class="md-sidenav-left md-whiteframe-z1" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
-        <md-toolbar class="md-primary md-hue-3">
-            <h3>Project Title</h3>
-        </md-toolbar>
-
-        <md-content flex class="sidebar">
-            <md-menu-item flex layout="row">
-                <md-button ng-href="">
-                    <span flex="15">
-                      <i class="material-icons">&#xE8B6;</i>
-                    </span>
-                    <span flex md-menu-align-target>Item 1</span>
-                </md-button>
-            </md-menu-item>
-            <md-divider></md-divider>
-            <md-menu-item flex layout="row">
-                <md-button ng-href="">
-        <span flex="15">
-          <i class="material-icons">&#xE8E5;</i>
-        </span>
-                    <span flex md-menu-align-target>Prediction</span>
-                </md-button>
-            </md-menu-item>
-            <md-divider></md-divider>
-        </md-content>
-    </md-sidenav>
-</div>
-
-<div layout="column" flex>
-    <md-toolbar layout="row" layout-align="end center" class="md-primary md-hue-3">
-        <!-- Toolbar Content Here -->
+<md-sidenav layout="column" md-is-locked-open='true'>
+    <md-toolbar class="md-primary md-hue-3">
+        <h3 class="text-center">Laravel CMF</h3>
     </md-toolbar>
-    <md-content>
-        <div flex="100" layout-padding>
-            <!-- Main Content Here -->
+
+    <md-list-item class="md-2-line" ui-sref="app.page.create">
+        <md-icon>description</md-icon>
+        <div class="md-list-item-text">
+            <h3>Pages</h3>
         </div>
-    </md-content>
-</div>
+    </md-list-item>
+
+    <md-divider></md-divider>
+
+    <md-list-item class="md-2-line">
+        <md-icon class="md-avatar-icon md-48">storage</md-icon>
+        <div class="md-list-item-text">
+            <h3>Database</h3>
+        </div>
+
+        <md-menu class="md-secondary" md-position-mode="target-left target">
+            <md-button class="md-icon-button" ng-click="$mdOpenMenu()">
+                <md-icon md-menu-origin>keyboard_arrow_right</md-icon>
+            </md-button>
+            <md-menu-content width="4">
+
+                <md-menu-item ng-repeat="menuItem in app.databaseMenu">
+                    <md-button ui-sref="{{menuItem.route}}">
+                        {{menuItem.title}}
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+    </md-list-item>
+
+    <md-divider></md-divider>
+
+    <md-list-item class="md-2-line" ui-sref="app.mailing.manage({sentMailId: null})">
+        <md-icon>description</md-icon>
+        <div class="md-list-item-text">
+            <h3>Mailing</h3>
+        </div>
+    </md-list-item>
+
+    <md-divider></md-divider>
+</md-sidenav>
+
+<md-content flex layout="column">
+    <md-toolbar class="md-primary md-hue-3">
+        <div ui-view="header"></div>
+    </md-toolbar>
+    <div class="content">
+        <div ui-view="content"></div>
+    </div>
+</md-content>

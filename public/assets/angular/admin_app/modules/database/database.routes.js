@@ -10,8 +10,11 @@ angular
 
             .state('app.db', {
                 url: '/db',
-                template: '<ui-view></ui-view>',
-                abstract: true
+                abstract: true,
+                views: {
+                    header:     { template: "<h3 class='text-center'>Database</h3>" },
+                    content:    { template: "<ui-view></ui-view>" }
+                }
             });
 
         // states WITHOUT custom controller and template
