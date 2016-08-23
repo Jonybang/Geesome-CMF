@@ -14,8 +14,9 @@ class Page extends Model
 
     protected $fillable = [
         'title',
-        'sub_title',
         'alias',
+        'menu_title',
+        'sub_title',
         'description',
         'menu_index',
 
@@ -23,10 +24,10 @@ class Page extends Model
         'is_menu_hide',
         'is_deleted',
 
+        'is_alias_blocked',
+        'is_allow_short_alias',
         'is_abstract',
         'is_part',
-        'is_allow_short_alias',
-        'is_alias_blocked',
 
         'parent_page_id',
         'author_id',
