@@ -47,7 +47,15 @@
 
 <md-content flex layout="column">
     <md-toolbar class="md-primary md-hue-3">
-        <div ui-view="header"></div>
+        <div class="md-toolbar-tools">
+            <div ui-view="header"></div>
+
+            <span flex></span>
+
+            <md-button class="md-raised" href="/" target="_self">
+                Site content
+            </md-button>
+        </div>
     </md-toolbar>
     <div class="content">
         <div ui-view="content"></div>

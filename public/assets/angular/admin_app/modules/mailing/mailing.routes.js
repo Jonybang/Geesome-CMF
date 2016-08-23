@@ -12,7 +12,7 @@ angular
                     url: '/manage',
                     abstract: true,
                     views: {
-                        header:     { template: "<h3 class='text-center'>Mailing</h3>" },
+                        header:     { template: "<h3>Mailing</h3>" },
                         content:    { template: "<ui-view></ui-view>" }
                     }
                 })

@@ -3,7 +3,7 @@ body > ui-view {
     height: 100%;
 }
 body > ui-view > md-sidenav  {
-    width: 200px;
+    width: 205px;
     height: 100%;
     background-color: #64B5F6;
 }

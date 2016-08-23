@@ -567,7 +567,7 @@ angular
                 url: '/db',
                 abstract: true,
                 views: {
-                    header:     { template: "<h3 class='text-center'>Database</h3>" },
+                    header:     { template: "<h3>Database</h3>" },
                     content:    { template: "<ui-view></ui-view>" }
                 }
             });
@@ -622,7 +622,7 @@ angular
                     url: '/manage',
                     abstract: true,
                     views: {
-                        header:     { template: "<h3 class='text-center'>Mailing</h3>" },
+                        header:     { template: "<h3>Mailing</h3>" },
                         content:    { template: "<ui-view></ui-view>" }
                     }
                 })
@@ -674,7 +674,7 @@ angular
                     url: '',
                     abstract: true,
                     views: {
-                        header:     { template: "<h3 class='text-center'>Pages</h3>" },
+                        header:     { template: "<h3>Pages</h3>" },
                         content:    { templateUrl: AppPaths.pages + 'templates/index.html', controller: "PagesController" }
                     }
                 })
