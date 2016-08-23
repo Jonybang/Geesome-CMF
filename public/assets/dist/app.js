@@ -90,13 +90,13 @@ angular
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
 angular
-    .module('admin_app.general', [
-    ]);
-angular
     .module('admin_app.database', [
         'ui.router',
 
         'admin_app.general'
+    ]);
+angular
+    .module('admin_app.general', [
     ]);
 angular
     .module('admin_app.mailing', [
@@ -146,7 +146,6 @@ var resources_names = [
 
 resources_names.forEach(function(resource_name){
     var ResourceName = _.upperFirst(_.camelCase(resource_name));
-    console.log('ResourceName', ResourceName);
     angular.module('admin_app').factory(ResourceName, ['$resource', function($resource) {
         return $resource('admin/api/' + resource_name + '/:id', { id: '@id' }, defaultOptions);
     }]);
@@ -693,19 +692,6 @@ angular
                         templateUrl: AppPaths.pages + 'page_form/templates/index.html'
                     });
         }]);
-var app_path = '/assets/angular/admin_app/',
-    modules_path = app_path + 'modules/';
-
-angular.module('admin_app.general')
-    .constant('AppPaths', {
-        app:            app_path,
-        modules:        modules_path,
-        directives:     app_path + 'directives/',
-
-        database:       modules_path + 'database/',
-        pages:          modules_path + 'pages/',
-        mailing:        modules_path + 'mailing/'
-    });
 angular.module('admin_app.database')
     .factory('DBManageContextsConfig', ['Contexts', function(Contexts) {
 
@@ -1472,6 +1458,63 @@ angular.module('admin_app.database')
             });
         }
     }]);
+angular.module('admin_app.database')
+    .factory('DBManageUsersConfig', ['Users', 'Roles', function(Users, Roles) {
+
+        this.entityName = 'Users';
+
+        this.aeGridOptions = {
+            resource: Users,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New User',
+                    required: true
+                },
+                {
+                    name: 'email',
+                    label: 'E-mail',
+                    required: true
+                },
+                {
+                    name: 'password',
+                    type: 'password',
+                    label: 'Password',
+                    required: true
+                },
+                {
+                    name: 'roles_ids',
+                    type: 'multiselect',
+                    label: 'Roles',
+                    list: 'roles',
+                    resource: Roles,
+                    table_hide: true
+                }
+            ]
+        };
+
+        return this;
+    }]);
+var app_path = '/assets/angular/admin_app/',
+    modules_path = app_path + 'modules/';
+
+angular.module('admin_app.general')
+    .constant('AppPaths', {
+        app:            app_path,
+        modules:        modules_path,
+        directives:     app_path + 'directives/',
+
+        database:       modules_path + 'database/',
+        pages:          modules_path + 'pages/',
+        mailing:        modules_path + 'mailing/'
+    });
 angular.module('admin_app.mailing')
     .controller('MailFormController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'ServerData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
         function($scope, $state, $http, $uibModal, debounce, Notification, AppPaths, ServerData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
@@ -1731,50 +1774,6 @@ angular.module('admin_app.mailing')
             $scope.addNewSubItem = function(){
                 angular.merge($scope.mail.sub_data, {'':''});
             }
-    }]);
-angular.module('admin_app.database')
-    .factory('DBManageUsersConfig', ['Users', 'Roles', function(Users, Roles) {
-
-        this.entityName = 'Users';
-
-        this.aeGridOptions = {
-            resource: Users,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New User',
-                    required: true
-                },
-                {
-                    name: 'email',
-                    label: 'E-mail',
-                    required: true
-                },
-                {
-                    name: 'password',
-                    type: 'password',
-                    label: 'Password',
-                    required: true
-                },
-                {
-                    name: 'roles_ids',
-                    type: 'multiselect',
-                    label: 'Roles',
-                    list: 'roles',
-                    resource: Roles,
-                    table_hide: true
-                }
-            ]
-        };
-
-        return this;
     }]);
 angular
     .module('admin_app.pages')

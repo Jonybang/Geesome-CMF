@@ -11,7 +11,6 @@ var resources_names = [
 
 resources_names.forEach(function(resource_name){
     var ResourceName = _.upperFirst(_.camelCase(resource_name));
-    console.log('ResourceName', ResourceName);
     angular.module('admin_app').factory(ResourceName, ['$resource', function($resource) {
         return $resource('admin/api/' + resource_name + '/:id', { id: '@id' }, defaultOptions);
     }]);
