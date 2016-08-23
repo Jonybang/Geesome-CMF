@@ -87,7 +87,7 @@
             {!! Form::open(array('url' => 'subscribe', 'class'=> "form-horizontal")) !!}
             <div class="center-block text-center col-md-3">
                 <label>{{trans('subscribe.title')}}</label>
-                <input type="email" class="form-control" placeholder="{{trans('subscribe.email')}}" name="email"><br>
+                <input type="email" class="form-control" placeholder="{{trans('subscribe.email')}}" name="email" required><br>
                 <button type="submit" class="btn btn-primary">{{trans('subscribe.submit')}}</button>
             </div>
             {!! Form::close() !!}

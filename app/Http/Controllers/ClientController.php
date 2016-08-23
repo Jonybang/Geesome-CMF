@@ -86,6 +86,10 @@ class ClientController extends Controller
     }
 
     public function subscribe(Request $request){
+        $this->validate($request, [
+            'email' => 'required|email'
+        ]);
+
         $subscriber = Subscriber::create([
             'mail' => $request->input('email'),
             'provider' => 'email',
