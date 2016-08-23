@@ -36,10 +36,18 @@ class Page extends Model
 
     protected $casts = [
         'id' => 'integer',
+        'is_published' => 'boolean',
+        'is_menu_hide' => 'boolean',
+        'is_deleted' => 'boolean',
+        'is_abstract' => 'boolean',
+        'is_part' => 'boolean',
+        'is_allow_short_alias' => 'boolean',
+        'is_alias_blocked' => 'boolean',
         'menu_index' => 'integer',
         'parent_page_id' => 'integer',
         'author_id' => 'integer',
-        'template_id' => 'integer'
+        'template_id' => 'integer',
+        'context_id' => 'integer'
     ];
 
     /**

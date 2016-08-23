@@ -11,7 +11,15 @@ class Context extends Model
     protected $fillable = [
         'key',
         'name',
-        'description'
+        'description',
+        'role',
+        'index',
+        'is_hide'
+    ];
+
+    protected $casts = [
+        'is_hide' => 'boolean',
+        'index' => 'integer'
     ];
 
     /**

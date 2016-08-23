@@ -23,7 +23,7 @@ class CreateContextsTable extends Migration
 
             $table->integer('index')->nullable();
 
-            $table->boolean('is_hide')->nullable();
+            $table->boolean('is_hide')->default(false);
 
             $table->timestamps();
         });

@@ -19,7 +19,7 @@ angular
 
         // states WITHOUT custom controller and template
         var generalStates = [
-            'pages', 'mail_templates', 'sent_mails', 'settings', 'logs', 'tags', 'templates', 'users'
+            'pages', 'mail_templates', 'sent_mails', 'settings', 'logs', 'tags', 'templates', 'users', 'contexts'
         ];
 
         generalStates.forEach(function(state_name){

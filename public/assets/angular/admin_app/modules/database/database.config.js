@@ -27,6 +27,10 @@ angular.module('admin_app.database')
                 route:   'app.db.settings'
             },
             {
+                title: 'Contexts',
+                route:   'app.db.contexts'
+            },
+            {
                 title: 'Logs',
                 route:   'app.db.logs'
             },
