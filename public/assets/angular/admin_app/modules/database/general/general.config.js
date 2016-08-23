@@ -11,6 +11,7 @@ angular.module('admin_app.database')
             resource: null,
             ajax_handler: true,
             get_list: true,
+            paginate: true,
             fields: [
                 {
                     name: 'id',
