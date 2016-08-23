@@ -22,10 +22,10 @@ class CreateSentMailsTable extends Migration
             $table->json('sub_data');
 
             $table->integer('mail_template_id')->unsigned();
-            $table->foreign('mail_template_id')->references('id')->on('mail_templates');
+            $table->foreign('mail_template_id')->references('id')->on('mail_templates')->onDelete('cascade');
 
             $table->integer('page_id')->unsigned()->nullable();
-            $table->foreign('page_id')->references('id')->on('pages');
+            $table->foreign('page_id')->references('id')->on('pages')->onDelete('set null');
 
             $table->timestamps();
         });

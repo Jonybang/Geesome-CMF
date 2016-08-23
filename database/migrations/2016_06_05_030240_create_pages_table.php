@@ -37,7 +37,7 @@ class CreatePagesTable extends Migration
             $table->foreign('parent_page_id')->references('id')->on('pages')->onDelete('cascade');
 
             $table->integer('author_id')->unsigned()->nullable();
-            $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
 
             $table->integer('template_id')->unsigned();
             $table->foreign('template_id')->references('id')->on('templates')->onDelete('cascade');
