@@ -31,7 +31,8 @@ class UserController extends ApiController
         $data['password'] = bcrypt($data['password']);
         $obj = User::create($data);
 
-        $obj->roles_ids = $data['roles_ids'];
+        if(isset($data['roles_ids']))
+            $obj->roles_ids = $data['roles_ids'];
 
         UserActionLog::saveAction($obj, "create");
 
@@ -46,7 +47,8 @@ class UserController extends ApiController
 
         $obj = User::find($data['id']);
 
-        $obj->roles_ids = $data['roles_ids'];
+        if(isset($data['roles_ids']))
+            $obj->roles_ids = $data['roles_ids'];
 
         $is_saved = $obj->update($data);
 
