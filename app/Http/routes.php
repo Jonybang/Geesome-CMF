@@ -33,6 +33,10 @@ Route::get('/logout', 'Auth\AuthController@logout');
 // ADMIN AND API
 //========================================================================================================
 
+Route::get('admin-login/', ['as' => 'admin-login', function () {
+    return view('admin.login');
+}]);
+
 Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', 'role:admin']], function () {
     Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
         //Sub data

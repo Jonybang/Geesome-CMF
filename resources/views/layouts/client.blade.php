@@ -10,8 +10,11 @@
 @endsection
 
 @section('styles')
-    <!-- Custom CSS -->
-    <link href="assets/css/clean-blog.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Magnific Popup CSS -->
     <link href="assets/css/plugins/magnific-popup.css" rel="stylesheet">
@@ -19,10 +22,13 @@
     <!-- Slick Slider CSS -->
     <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
     <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick-theme.css"/>
+
+    <!-- Custom CSS -->
+    <link href="assets/css/clean-blog.css" rel="stylesheet">
 @endsection
 
 @section('navbar')
-            <!-- Navigation -->
+        <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -91,44 +97,45 @@
                 <button type="submit" class="btn btn-primary">{{trans('subscribe.submit')}}</button>
             </div>
             {!! Form::close() !!}
-        </div>
-        @endif
-                <!-- Footer -->
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                        <ul class="list-inline text-center">
-                            <li>
-                                <a href="#">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                                </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                                </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                </span>
-                                </a>
-                            </li>
-                        </ul>
-                        <p class="copyright text-muted">Copyright &copy; Lanit Dev Site 2016</p>
-                    </div>
+    </div>
+    @endif
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="#">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                        </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                        </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                        </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Lanit Dev Site 2016</p>
                 </div>
             </div>
-        </footer>
+        </div>
+    </footer>
 @endsection
 
 @section('scripts')
@@ -143,4 +150,16 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="assets/js/clean-blog.js"></script>
+@endsection
+
+@section('body')
+    <body>
+        @yield('navbar')
+
+        @yield('header')
+        @yield('content')
+        @yield('footer')
+
+        @yield('scripts')
+    </body>
 @endsection
