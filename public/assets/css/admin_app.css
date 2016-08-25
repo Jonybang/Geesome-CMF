@@ -11,20 +11,43 @@ body > ui-view > md-sidenav  {
 body > ui-view > md-content {
     background-color: white;
     height: 100%;
+    overflow: hidden;
 }
 body > ui-view > md-content > .content {
     padding: 0 20px;
 }
-
+/* Fix icon position when md-list-item with menu*/
+md-sidenav md-list-item.md-2-line md-icon.md-avatar-icon{
+    margin-top: 16px !important;
+    margin-bottom: 12px;
+    margin-left: -5px;
+}
 .inside-nav {
     position: relative !important;
     left: -20px;
     background-color: #E0F7FA;
     padding: 20px;
+    width: 205px;
 }
 md-toolbar.md-default-theme.md-hue-3:not(.md-menu-toolbar),
 md-toolbar.md-hue-3:not(.md-menu-toolbar) {
     background-color: #FFAB00;
+}
+
+md-sidenav.collapsed-nav {
+    width: 60px;
+}
+md-sidenav.collapsed-nav .md-list-item-text {
+    display: none;
+}
+md-sidenav.collapsed-nav md-icon {
+    margin-left: 15px;
+}
+md-sidenav.collapsed-nav md-list-item.md-2-line md-icon.md-avatar-icon {
+    margin-left: 60px;
+}
+md-sidenav.collapsed-nav .sidenav-header {
+    font-size: 14px;
 }
 /* Helpers */
 .margin-top {

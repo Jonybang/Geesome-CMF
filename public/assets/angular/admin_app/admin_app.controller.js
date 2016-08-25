@@ -8,4 +8,6 @@ angular.module('admin_app')
         ];
 
         self.databaseMenu = DatabaseConfig.menu;
+
+        self.collapseNav = false;
     }]);

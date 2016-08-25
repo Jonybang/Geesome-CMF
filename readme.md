@@ -1,6 +1,6 @@
-# Laravel CMF(CMS)
+# Geesome Laravel CMF(CMS)
 
-Content managment system based on [laravel framework](https://laravel.com/) with its templates and controller actions.
+Content management system based on [laravel framework](https://laravel.com/) with its templates and controller actions.
 
 Admin panel built with AngularJS, and has the opportunity of drag and drop pages tree, flexible page and mailing forms create/edit functionality.
 
@@ -13,8 +13,8 @@ http://laravel-cmf.jonybang.ru/
 
 Admin side:  
 http://laravel-cmf.jonybang.ru/admin  
-User: test.lanit.cms@openmail.cc  
-Password: Lt192837
+User: geesome.test@openmail.cc
+Password: Gm192837
 
 ![Admin panel screenshot](public/assets/img/admin-panel-screenshot.png)
 

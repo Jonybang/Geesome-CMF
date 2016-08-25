@@ -1,6 +1,6 @@
-<md-sidenav layout="column" md-is-locked-open='true'>
+<md-sidenav layout="column" md-is-locked-open='true' ng-class="{'collapsed-nav':app.collapseNav}">
     <md-toolbar class="md-primary md-hue-3">
-        <h3 class="text-center">Laravel CMF</h3>
+        <h3 class="text-center sidenav-header">Geesome CMF</h3>
     </md-toolbar>
 
     <md-list-item class="md-2-line" ui-sref="app.page.create">
@@ -36,7 +36,7 @@
     <md-divider></md-divider>
 
     <md-list-item class="md-2-line" ui-sref="app.mailing.manage({sentMailId: null})">
-        <md-icon>description</md-icon>
+        <md-icon>mail_outline</md-icon>
         <div class="md-list-item-text">
             <h3>Mailing</h3>
         </div>
@@ -48,6 +48,10 @@
 <md-content flex layout="column">
     <md-toolbar class="md-primary md-hue-3">
         <div class="md-toolbar-tools">
+
+            <md-button class="md-icon-button" ng-click="app.collapseNav = !app.collapseNav">
+                <md-icon>{{app.collapseNav ? 'keyboard_arrow_right' : 'keyboard_arrow_left'}}</md-icon>
+            </md-button>
             <div ui-view="header"></div>
 
             <span flex></span>

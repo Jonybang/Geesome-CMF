@@ -120,6 +120,8 @@ angular.module('admin_app')
         ];
 
         self.databaseMenu = DatabaseConfig.menu;
+
+        self.collapseNav = false;
     }]);
 //<loading-gif ng-if="!dataLoaded"> </loading-gif>
 // TODO: добавить throttle - не показывать гифку если идет тут-же переключение туда - обратно
@@ -241,23 +243,6 @@ angular
     }]);
 angular
     .module('admin_app')
-    .directive('sfText', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
-        return {
-            restrict: 'E',
-            templateUrl: AppPaths.directives + 'sf_text/sf_text.html',
-            scope: {
-                /* SubFieldValues resource */
-                ngModel: '=',
-                pageResource: '=?',
-                templateResource: '=?'
-            },
-            link: function (scope, element) {
-
-            }
-        };
-    }]);
-angular
-    .module('admin_app')
     .directive('sfJson', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -317,6 +302,23 @@ angular
                 }
             }
 
+        };
+    }]);
+angular
+    .module('admin_app')
+    .directive('sfText', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
+        return {
+            restrict: 'E',
+            templateUrl: AppPaths.directives + 'sf_text/sf_text.html',
+            scope: {
+                /* SubFieldValues resource */
+                ngModel: '=',
+                pageResource: '=?',
+                templateResource: '=?'
+            },
+            link: function (scope, element) {
+
+            }
         };
     }]);
 angular
