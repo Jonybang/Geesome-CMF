@@ -11,7 +11,7 @@ body > ui-view > md-sidenav  {
 body > ui-view > md-content {
     background-color: white;
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 body > ui-view > md-content > .content {
     padding: 0 20px;
