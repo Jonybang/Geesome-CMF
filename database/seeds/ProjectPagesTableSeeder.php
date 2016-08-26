@@ -16,6 +16,11 @@ class ProjectPagesTableSeeder extends Seeder
      */
     public function run()
     {
+        $projects_template = Template::where('key', 'projects')->first();
+        $projects_template->controller_actions()->create([
+            'key' => 'ClientController@getPaginateChildrenByIndex'
+        ]);
+
         $seeds = [
             'en' => [
                 ['Project 1', 'Project 1 sub title', 'Project 1 description', 'Project 1 content'],

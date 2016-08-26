@@ -16,6 +16,11 @@ class BlogPagesTableSeeder extends Seeder
      */
     public function run()
     {
+        $projects_template = Template::where('key', 'blog')->first();
+        $projects_template->controller_actions()->create([
+            'key' => 'ClientController@getPaginateChildrenByDate'
+        ]);
+
         $seeds = [
             'en' => [
                 ['Blog page 1', 'Blog page subtitle 1', 'Blog page content 1'],

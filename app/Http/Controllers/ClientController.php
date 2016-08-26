@@ -114,4 +114,16 @@ class ClientController extends Controller
         }
         return ['breadcrumbs' => $breadcrumbs];
     }
+
+    function getPaginateChildrenByDate($page){
+        $paginate = $page->published_child_pages_by_date()->paginate(5);
+
+        return ['paginate_children' => $paginate->getCollection(), 'paginate_links' => $paginate->links()];
+    }
+
+    function getPaginateChildrenByIndex($page){
+        $paginate = $page->published_child_pages_by_index()->paginate(5);
+
+        return ['paginate_children' => $paginate->getCollection(), 'paginate_links' => $paginate->links()];
+    }
 }

@@ -19,7 +19,7 @@
 
         <br><br>
 
-        @foreach($page->published_child_pages_by_date as $child_page)
+        @foreach($paginate_children as $child_page)
             <div class="row">
                 <div class="col-md-7">
                     <a href="/{{$child_page->alias}}">
@@ -40,31 +40,7 @@
 
         <!-- Pagination -->
         <div class="row text-center">
-            <div class="col-lg-12">
-                <ul class="pagination">
-                    <li>
-                        <a href="#">&laquo;</a>
-                    </li>
-                    <li class="active">
-                        <a href="#">1</a>
-                    </li>
-                    <li>
-                        <a href="#">2</a>
-                    </li>
-                    <li>
-                        <a href="#">3</a>
-                    </li>
-                    <li>
-                        <a href="#">4</a>
-                    </li>
-                    <li>
-                        <a href="#">5</a>
-                    </li>
-                    <li>
-                        <a href="#">&raquo;</a>
-                    </li>
-                </ul>
-            </div>
+            {!! $paginate_links !!}
         </div>
         <!-- /.row -->
     </div>
