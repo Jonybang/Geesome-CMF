@@ -139,6 +139,7 @@
 @endsection
 
 @section('scripts')
+    <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/plugins/jquery.bootstrap-autohidingnavbar.min.js"></script>
 
     <script src="assets/js/plugins/scrollreveal.min.js"></script>

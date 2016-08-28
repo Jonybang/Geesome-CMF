@@ -169,7 +169,10 @@ return [
         Barryvdh\TranslationManager\ManagerServiceProvider::class,
         Barryvdh\TranslationManager\TranslationServiceProvider::class,
 
-        Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class
+        Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class,
+
+        Unisharp\Laravelfilemanager\LaravelFilemanagerServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class
 
     ],
 
@@ -228,6 +231,8 @@ return [
         'ApiHandler' => Marcelgwerder\ApiHandler\Facades\ApiHandler::class,
 
         'LaravelLocalization'   => Mcamara\LaravelLocalization\Facades\LaravelLocalization::class,
+
+        'Image'     => Intervention\Image\Facades\Image::class,
     ],
 
 ];

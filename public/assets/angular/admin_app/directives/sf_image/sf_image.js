@@ -11,7 +11,9 @@ angular
                 templateResource: '=?'
             },
             link: function (scope, element) {
-
+                scope.openFileManager = function(){
+                    window.open('/filemanager?type=Images', 'FileManager', 'width=900,height=600');
+                }
             }
         };
     }]);

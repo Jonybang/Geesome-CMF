@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7685560ddff2082269a3c484d2d5ce41",
-    "content-hash": "c33ea720073f9952944a944234e163d2",
+    "hash": "166b48b0c23614cca1afa49c3dc7c0ee",
+    "content-hash": "5e5f3a977bfa3f5395c755442b28f41b",
     "packages": [
         {
             "name": "barryvdh/laravel-translation-manager",
@@ -652,16 +652,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.2.44",
+            "version": "v5.2.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "f24b7acfb494437ef00bdd062bed61eb21535546"
+                "reference": "2a79f920d5584ec6df7cf996d922a742d11095d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/f24b7acfb494437ef00bdd062bed61eb21535546",
-                "reference": "f24b7acfb494437ef00bdd062bed61eb21535546",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/2a79f920d5584ec6df7cf996d922a742d11095d1",
+                "reference": "2a79f920d5584ec6df7cf996d922a742d11095d1",
                 "shasum": ""
             },
             "require": {
@@ -778,7 +778,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-08-23 13:03:29"
+            "time": "2016-08-26 11:44:52"
         },
         {
             "name": "laravie/html",
@@ -2526,29 +2526,32 @@
             "time": "2016-07-26 08:03:56"
         },
         {
-            "name": "tsawler/laravel-filemanager",
-            "version": "0.6.2",
+            "name": "unisharp/laravel-filemanager",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/tsawler/laravel-filemanager.git",
-                "reference": "c92aefe790a0648db885c830204502b919ff15f0"
+                "url": "https://github.com/UniSharp/laravel-filemanager.git",
+                "reference": "8ffe49ae2b0b371c40563c37c0356ec484ff2ee9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tsawler/laravel-filemanager/zipball/c92aefe790a0648db885c830204502b919ff15f0",
-                "reference": "c92aefe790a0648db885c830204502b919ff15f0",
+                "url": "https://api.github.com/repos/UniSharp/laravel-filemanager/zipball/8ffe49ae2b0b371c40563c37c0356ec484ff2ee9",
+                "reference": "8ffe49ae2b0b371c40563c37c0356ec484ff2ee9",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": ">=5.0.0",
+                "illuminate/support": ">=4.2.0",
                 "intervention/image": "2.*",
-                "laravelcollective/html": ">=5.1.0",
-                "php": ">=5.5.0"
+                "php": ">=5.4.0"
+            },
+            "suggest": {
+                "ext-gd": "to use GD library based image processing.",
+                "ext-imagick": "to use Imagick based image processing."
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Tsawler\\Laravelfilemanager\\": "src/"
+                    "Unisharp\\Laravelfilemanager\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2559,10 +2562,24 @@
                 {
                     "name": "Trevor Sawler",
                     "email": "trevor.sawler@gmail.com"
+                },
+                {
+                    "name": "UniSharp Ltd.",
+                    "email": "unisharp-service@unisharp.com"
                 }
             ],
-            "description": "A file upload/editor intended for use with Laravel 5 and CKEditor",
-            "time": "2016-05-31 14:01:26"
+            "description": "A file upload/editor intended for use with Laravel 5 and CKEditor / TinyMCE",
+            "keywords": [
+                "CKEditor",
+                "file",
+                "filemanager",
+                "image",
+                "laravel",
+                "manager",
+                "tinymce",
+                "upload"
+            ],
+            "time": "2016-08-03 12:18:58"
         },
         {
             "name": "vlucas/phpdotenv",
