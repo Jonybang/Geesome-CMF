@@ -19,9 +19,6 @@
         "intervention/image": "^2.3",
         "unisharp/laravel-filemanager": "^1.6"
     },
-    "repositories": [
-        { "type": "vcs", "url": "https://github.com/Jonybang/laravel-filemanager" }
-    ],
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
