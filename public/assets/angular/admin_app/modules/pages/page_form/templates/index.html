@@ -34,30 +34,7 @@
                 </div>
 
                 <label>Content:</label>
-                <div ckeditor="CKEditorOptions" ng-model="$parent.page.content" ng-if="site_settings.markdown_mode != 1"></div>
-
-                <wiz-markdown-editor content="$parent.page.content" textareaclass="form-control" ng-if="site_settings.markdown_mode == 1">
-                    <wiz-toolbar-button command="bold">Bold</wiz-toolbar-button>
-                    <wiz-toolbar-button command="italic">Italic</wiz-toolbar-button>
-                    <wiz-toolbar-button command="undo">UNDO</wiz-toolbar-button>
-                    <wiz-toolbar-button command="redo">REDO</wiz-toolbar-button>
-                    <wiz-toolbar-button command="heading">HEADING</wiz-toolbar-button>
-                    <wiz-toolbar-button command="code">CODE</wiz-toolbar-button>
-                    <wiz-toolbar-button command="ullist">ULLIST</wiz-toolbar-button>
-                    <wiz-toolbar-button command="ollist">OLLIST</wiz-toolbar-button>
-                    <wiz-toolbar-button command="indent">INDENT</wiz-toolbar-button>
-                    <wiz-toolbar-button command="outdent">OUTDENT</wiz-toolbar-button>
-                    <wiz-toolbar-button command="link">LINK</wiz-toolbar-button>
-                    <wiz-toolbar-button command="img">IMG</wiz-toolbar-button>
-                    <wiz-toolbar-button command="hr">HR</wiz-toolbar-button>
-                    <wiz-toolbar-button command="h0">H0</wiz-toolbar-button>
-                    <wiz-toolbar-button command="h1">H1</wiz-toolbar-button>
-                    <wiz-toolbar-button command="h2">H2</wiz-toolbar-button>
-                    <wiz-toolbar-button command="h3">H3</wiz-toolbar-button>
-                    <wiz-toolbar-button command="h4">H4</wiz-toolbar-button>
-                    <wiz-toolbar-button command="h5">H5</wiz-toolbar-button>
-                    <wiz-toolbar-button command="h6">H6</wiz-toolbar-button>
-                </wiz-markdown-editor>
+                <sf-texteditor ng-model="page.content"></sf-texteditor>
             </div>
             <div class="panel-footer" ng-if="site_settings.markdown_mode == 1">
                 <label>Content preview:</label>

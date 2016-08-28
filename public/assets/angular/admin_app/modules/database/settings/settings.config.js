@@ -1,5 +1,5 @@
 angular.module('admin_app.database')
-    .factory('DBManageSettingsConfig', ['Settings', 'Contexts', function(Settings, Contexts) {
+    .factory('DBManageSettingsConfig', ['Settings', 'Contexts', 'ServerData', function(Settings, Contexts, ServerData) {
 
         this.entityName = 'Settings';
 
@@ -39,7 +39,10 @@ angular.module('admin_app.database')
                     list: 'contexts',
                     resource: Contexts
                 }
-            ]
+            ],
+            callbacks: {
+                onChange: ServerData.reload
+            }
         };
 
         return this;

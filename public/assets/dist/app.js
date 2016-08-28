@@ -66,26 +66,6 @@ angular
         //$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
         //    ServerData.reload();
         //});
-
-        $rootScope.CKEditorOptions = {
-            language: 'en',
-            allowedContent: true,
-            entities: false,
-            toolbarGroups: [
-                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-                { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'justify'] },
-                { name: 'styles' },
-                { name: 'colors' },
-                '/',
-                { name: 'links' },
-                { name: 'insert' },
-                { name: 'tools' },
-                { name: 'others' },
-                { name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
-                { name: 'editing',     groups: [ 'find', 'selection' ] }
-            ]
-        };
-
         //config for marcelgwerder/laravel-api-handler
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
@@ -198,6 +178,44 @@ angular
 
         return self;
     }]);
+angular
+	.module('admin_app')
+	.directive('sfTexteditor', ['$timeout', 'AppPaths', 'ServerData', function($timeout, AppPaths, ServerData) {
+		return {
+			restrict: 'E',
+			templateUrl: AppPaths.directives + 'sf-texteditor/sf-texteditor.html',
+			scope: {
+				/* SubFieldValues resource */
+				ngModel: '=',
+				pageResource: '=?',
+				templateResource: '=?'
+			},
+			link: function (scope, element) {
+				ServerData.getSiteSettings(function(site_settings){
+					scope.site_settings = site_settings;
+				});
+
+				scope.CKEditorOptions = {
+					language: 'en',
+					allowedContent: true,
+					entities: false,
+					toolbarGroups: [
+						{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+						{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'justify'] },
+						{ name: 'styles' },
+						{ name: 'colors' },
+						'/',
+						{ name: 'links' },
+						{ name: 'insert' },
+						{ name: 'tools' },
+						{ name: 'others' },
+						{ name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
+						{ name: 'editing',     groups: [ 'find', 'selection' ] }
+					]
+				};
+			}
+		};
+	}]);
 angular
     .module('admin_app')
     .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
@@ -1024,7 +1042,7 @@ angular.module('admin_app.database')
         return this;
     }]);
 angular.module('admin_app.database')
-    .factory('DBManageSettingsConfig', ['Settings', 'Contexts', function(Settings, Contexts) {
+    .factory('DBManageSettingsConfig', ['Settings', 'Contexts', 'ServerData', function(Settings, Contexts, ServerData) {
 
         this.entityName = 'Settings';
 
@@ -1064,7 +1082,10 @@ angular.module('admin_app.database')
                     list: 'contexts',
                     resource: Contexts
                 }
-            ]
+            ],
+            callbacks: {
+                onChange: ServerData.reload
+            }
         };
 
         return this;

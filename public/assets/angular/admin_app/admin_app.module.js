@@ -66,26 +66,6 @@ angular
         //$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
         //    ServerData.reload();
         //});
-
-        $rootScope.CKEditorOptions = {
-            language: 'en',
-            allowedContent: true,
-            entities: false,
-            toolbarGroups: [
-                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-                { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'justify'] },
-                { name: 'styles' },
-                { name: 'colors' },
-                '/',
-                { name: 'links' },
-                { name: 'insert' },
-                { name: 'tools' },
-                { name: 'others' },
-                { name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
-                { name: 'editing',     groups: [ 'find', 'selection' ] }
-            ]
-        };
-
         //config for marcelgwerder/laravel-api-handler
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
