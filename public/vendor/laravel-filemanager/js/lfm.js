@@ -23,6 +23,8 @@
 
 
 function SetUrl(url){
+    console.log('Set url', url);
+    localStorage.setItem('lfm-result-url', url);
   //set the value of the desired input to image url
   var target_input = $('#' + localStorage.getItem('target_input'));
   target_input.val(url);
