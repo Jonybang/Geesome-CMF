@@ -28,6 +28,7 @@ $('#to-previous').click(function () {
   $('#working_dir').val(previous_dir);
   loadItems();
   setOpenFolders();
+  return false;
 });
 
 $('#add-folder').click(function () {
@@ -36,6 +37,7 @@ $('#add-folder').click(function () {
       createFolder(result);
     }
   });
+  return false;
 });
 
 $('#upload-btn').click(function () {
@@ -78,11 +80,13 @@ $('#upload-btn').click(function () {
 $('#thumbnail-display').click(function () {
   $('#show_list').val(0);
   loadItems();
+  return false;
 });
 
 $('#list-display').click(function () {
   $('#show_list').val(1);
   loadItems();
+  return false;
 });
 
 // ======================
@@ -91,6 +95,7 @@ $('#list-display').click(function () {
 
 $(document).on('click', '.folder-item', function (e) {
   clickFolder($(this).data('id'));
+  return false;
 });
 
 function clickFolder(new_dir) {

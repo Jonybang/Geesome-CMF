@@ -1,14 +1,29 @@
 <ul class="list-unstyled">
-    <li style="margin-left: -5px;">
-        <a class="pointer" id="folder_top" data-id="/" onclick="clickRoot()">
-            <i class="fa fa-folder-open" data-id="/"></i> {!! Lang::get('laravel-filemanager::lfm.title-root') !!}
-        </a>
-    </li>
-    @foreach($dirs as $key => $dir)
-        <li>
-            <a class="pointer" id="folder_{{ $key }}" data-id="{{ $dir }}" onclick="clickFolder('folder_{{ $key }}', 0)">
-                <i class="fa fa-folder folder-item" data-id="{{ $dir }}" id="{{ $dir }}-folder"></i> {!! $dir !!}
-            </a>
-        </li>
-    @endforeach
+  @if(Config::get('lfm.allow_multi_user'))
+  <li style="margin-left: -10px;">
+    <a class="pointer folder-item" data-id="{{ $user_dir }}">
+      <i class="fa fa-folder-open"></i> {{ Lang::get('laravel-filemanager::lfm.title-root') }}
+    </a>
+  </li>
+  @foreach($dirs as $key => $dir_name)
+  <li>
+    <a class="pointer folder-item" data-id="{{ $dir_name['long'] }}">
+      <i class="fa fa-folder"></i> {{ $dir_name['short'] }}
+    </a>
+  </li>
+  @endforeach
+  <hr>
+  @endif
+  <li style="margin-left: -10px;">
+    <a class="pointer folder-item" data-id="{{ $share_dir }}">
+      <i class="fa fa-folder"></i> {{ Lang::get('laravel-filemanager::lfm.title-shares') }}
+    </a>
+  </li>
+  @foreach($shares as $key => $dir_name)
+  <li>
+    <a class="pointer folder-item" data-id="{{ $dir_name['long'] }}">
+      <i class="fa fa-folder"></i> {{ $dir_name['short'] }}
+    </a>
+  </li>
+  @endforeach
 </ul>
