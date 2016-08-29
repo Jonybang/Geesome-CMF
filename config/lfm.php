@@ -21,9 +21,9 @@ return [
     'user_field'            => 'id',
     'shared_folder_name'    => '',
     'thumb_folder_name'     => 'thumbs',
-    'images_dir'            => 'public/images/',
+    'images_dir'            => 'public/images',
     'images_url'            => '/images',
-    'files_dir'             => 'public/files/',
+    'files_dir'             => 'public/files',
     'files_url'             => '/files',
     // available since v1.3.0
     'valid_image_mimetypes' => [

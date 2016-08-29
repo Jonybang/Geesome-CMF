@@ -13,10 +13,9 @@ angular
             link: function (scope, element) {
                 scope.openFileManager = function(){
                     FileManger.getPath().then(function(path){
-                        scope.ngModel.value = path;
-                        console.log('resolve');
+                        scope.ngModel = path;
                     }, function(){
-                        console.log('reject');
+                        //closed
                     })
                 }
             }

@@ -12,7 +12,7 @@ angular
             },
             link: function (scope, element) {
                 scope.$watch('ngModel', function(){
-                    if(!scope.ngModel || !scope.ngModel.value)
+                    if(!scope.ngModel)
                         return;
 
                     if(new Date(scope.ngModel.value) != scope.fakeModel)

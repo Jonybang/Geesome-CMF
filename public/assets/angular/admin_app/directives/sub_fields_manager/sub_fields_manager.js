@@ -33,7 +33,7 @@ angular
 
                         var directive = sub_field.type.directive;
                         tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.key + ' } }">' + (sub_field.name || sub_field.key) + '</span></label>';
-                        tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '" ' +
+                        tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '.value" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
                             'sub-field-resource="resources.' + sub_field.key + '"></' + directive + '>';
                         tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><hr>';
