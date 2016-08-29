@@ -22,7 +22,7 @@
         @foreach($paginate_children as $child_page)
             <div class="row">
                 <div class="col-md-7">
-                    <a href="/{{$child_page->alias}}">
+                    <a href="{{Helper::localeUrl($child_page)}}">
                         <img class="img-responsive" src="{{$child_page->sub_fields_values['imageLink']}}" alt="">
                     </a>
                 </div>
