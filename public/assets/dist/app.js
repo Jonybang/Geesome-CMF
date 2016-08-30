@@ -115,6 +115,24 @@ angular.module('admin_app')
             }
         };
     }]);
+angular
+    .module('admin_app')
+    .service('FileManger', ['$q', function($q){
+        this.getPath = function(){
+            return $q(function(resolve, reject) {
+                //https://github.com/UniSharp/laravel-filemanager/
+                var flm_window = window.open('/laravel-filemanager?type=Images', 'FileManager', 'width=900,height=600');
+
+                window.SetUrl = function(url){
+                    var l = document.createElement("a");
+                    l.href = url;
+                    resolve(l.pathname);
+                };
+
+                flm_window.onbeforeunload = reject;
+            });
+        }
+    }]);
 var defaultOptions = {
     'update': { method: 'PUT' }
 };
@@ -179,63 +197,6 @@ angular
         return self;
     }]);
 angular
-	.module('admin_app')
-	.directive('sfTexteditor', ['$timeout', 'AppPaths', 'ServerData', function($timeout, AppPaths, ServerData) {
-		return {
-			restrict: 'E',
-			templateUrl: AppPaths.directives + 'sf-texteditor/sf-texteditor.html',
-			scope: {
-				/* SubFieldValues resource */
-				ngModel: '=',
-				pageResource: '=?',
-				templateResource: '=?'
-			},
-			link: function (scope, element) {
-				ServerData.getSiteSettings(function(site_settings){
-					scope.site_settings = site_settings;
-				});
-
-				scope.CKEditorOptions = {
-					language: 'en',
-					allowedContent: true,
-					entities: false,
-					toolbarGroups: [
-						{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-						{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'justify'] },
-						{ name: 'styles' },
-						{ name: 'colors' },
-						'/',
-						{ name: 'links' },
-						{ name: 'insert' },
-						{ name: 'tools' },
-						{ name: 'others' },
-						{ name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
-						{ name: 'editing',     groups: [ 'find', 'selection' ] }
-					]
-				};
-			}
-		};
-	}]);
-angular
-    .module('admin_app')
-    .directive('sfImage', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
-        return {
-            restrict: 'E',
-            templateUrl: AppPaths.directives + 'sf_image/sf_image.html',
-            scope: {
-                /* SubFieldValues resource */
-                ngModel: '=',
-                pageResource: '=?',
-                templateResource: '=?'
-            },
-            link: function (scope, element) {
-                scope.openFileManager = function(){
-                    window.open('/filemanager?type=Images', 'FileManager', 'width=900,height=600');
-                }
-            }
-        };
-    }]);
-angular
     .module('admin_app')
     .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
@@ -249,7 +210,7 @@ angular
             },
             link: function (scope, element) {
                 scope.$watch('ngModel', function(){
-                    if(!scope.ngModel || !scope.ngModel.value)
+                    if(!scope.ngModel)
                         return;
 
                     if(new Date(scope.ngModel.value) != scope.fakeModel)
@@ -258,6 +219,30 @@ angular
                 scope.$watch('fakeModel', function(){
                     scope.ngModel.value = scope.fakeModel;
                 });
+            }
+        };
+    }]);
+angular
+    .module('admin_app')
+    .directive('sfImage', ['$timeout', 'AppPaths', 'FileManger', function($timeout, AppPaths, FileManger) {
+        return {
+            restrict: 'E',
+            templateUrl: AppPaths.directives + 'sf_image/sf_image.html',
+            scope: {
+                /* SubFieldValues resource */
+                ngModel: '=',
+                pageResource: '=?',
+                templateResource: '=?',
+                isEdit: '=?'
+            },
+            link: function (scope, element) {
+                scope.openFileManager = function(){
+                    FileManger.getPath().then(function(path){
+                        scope.ngModel = path;
+                    }, function(){
+                        //closed
+                    })
+                }
             }
         };
     }]);
@@ -306,19 +291,17 @@ angular
                 });
 
                 scope.$watch('ngModel', function(){
-                    if(!scope.ngModel)
-                        return;
-
-                    if(scope.ngModel.value){
-                        if(JSON.parse(scope.ngModel.value) != scope.fakeModel)
-                            scope.fakeModel = JSON.parse(scope.ngModel.value);
-                    }
-                    else
+                    if(!scope.ngModel){
                         scope.fakeModel = [];
+                        return;
+                    }
+
+                    if(JSON.parse(scope.ngModel) != scope.fakeModel)
+                        scope.fakeModel = JSON.parse(scope.ngModel);
                 });
 
                 scope.changed = function(){
-                    scope.ngModel.value = JSON.stringify(scope.fakeModel);
+                    scope.ngModel = JSON.stringify(scope.fakeModel);
                 }
             }
 
@@ -359,6 +342,50 @@ angular
         };
     }]);
 angular
+	.module('admin_app')
+	.directive('sfTexteditor', ['$timeout', 'AppPaths', 'ServerData', function($timeout, AppPaths, ServerData) {
+		return {
+			restrict: 'E',
+			templateUrl: AppPaths.directives + 'sf_texteditor/sf_texteditor.html',
+			scope: {
+				/* SubFieldValues resource */
+				ngModel: '=',
+				pageResource: '=?',
+				templateResource: '=?',
+				isEdit: '=?'
+			},
+			link: function (scope, element) {
+				ServerData.getSiteSettings(function(site_settings){
+					scope.site_settings = site_settings;
+				});
+
+				scope.CKEditorOptions = {
+					language: 'en',
+					allowedContent: true,
+					entities: false,
+					toolbarGroups: [
+						{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+						{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'justify'] },
+						{ name: 'styles' },
+						{ name: 'colors' },
+						'/',
+						{ name: 'links' },
+						{ name: 'insert' },
+						{ name: 'tools' },
+						{ name: 'others' },
+						{ name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
+						{ name: 'editing',     groups: [ 'find', 'selection' ] }
+					],
+					// https://github.com/UniSharp/laravel-filemanager/blob/master/doc/integration.md
+					filebrowserImageBrowseUrl: '/laravel-filemanager?type=Images',
+					filebrowserImageUploadUrl: '/laravel-filemanager/upload?type=Images&_token={{csrf_token()}}',
+					filebrowserBrowseUrl: '/laravel-filemanager?type=Files',
+					filebrowserUploadUrl: '/laravel-filemanager/upload?type=Files&_token={{csrf_token()}}'
+				};
+			}
+		};
+	}]);
+angular
     .module('admin_app')
     .directive('subFieldsManager', ['$timeout', '$compile', '$uibModal', 'AppPaths', 'SubFields', 'SubFieldsValues', function($timeout, $compile, $uibModal, AppPaths, SubFields, SubFieldsValues) {
         return {
@@ -393,9 +420,9 @@ angular
 
                         var directive = sub_field.type.directive;
                         tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.key + ' } }">' + (sub_field.name || sub_field.key) + '</span></label>';
-                        tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '" ' +
+                        tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '.value" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
-                            'sub-field-resource="resources.' + sub_field.key + '"></' + directive + '>';
+                            'sub-field-resource="resources.' + sub_field.key + '" is-edit="true"></' + directive + '>';
                         tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><hr>';
                     });
 
@@ -937,7 +964,7 @@ angular.module('admin_app.database')
                 {
                     name: 'content',
                     label: 'Content',
-                    type: 'textarea',
+                    directive: 'sf-texteditor',
                     table_hide: true
                 },
                 {

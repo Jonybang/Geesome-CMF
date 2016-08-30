@@ -1,6 +1,6 @@
 angular
     .module('admin_app')
-    .directive('sfImage', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
+    .directive('sfImage', ['$timeout', 'AppPaths', 'FileManger', function($timeout, AppPaths, FileManger) {
         return {
             restrict: 'E',
             templateUrl: AppPaths.directives + 'sf_image/sf_image.html',
@@ -8,11 +8,16 @@ angular
                 /* SubFieldValues resource */
                 ngModel: '=',
                 pageResource: '=?',
-                templateResource: '=?'
+                templateResource: '=?',
+                isEdit: '=?'
             },
             link: function (scope, element) {
                 scope.openFileManager = function(){
-                    window.open('/filemanager?type=Images', 'FileManager', 'width=900,height=600');
+                    FileManger.getPath().then(function(path){
+                        scope.ngModel = path;
+                    }, function(){
+                        //closed
+                    })
                 }
             }
         };

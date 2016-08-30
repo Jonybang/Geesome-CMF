@@ -28,6 +28,7 @@ class SliderSubFieldsTableSeeder extends Seeder
                     [
                         'name' => 'image',
                         'label' => 'Image Link',
+                        'directive' => 'sf-image',
                         'new_placeholder' => 'New Image'
                     ]
                 ]
