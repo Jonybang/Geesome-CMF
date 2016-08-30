@@ -120,6 +120,7 @@ angular
     .service('FileManger', ['$q', function($q){
         this.getPath = function(){
             return $q(function(resolve, reject) {
+                //https://github.com/UniSharp/laravel-filemanager/
                 var flm_window = window.open('/laravel-filemanager?type=Images', 'FileManager', 'width=900,height=600');
 
                 window.SetUrl = function(url){
@@ -374,7 +375,12 @@ angular
 						{ name: 'others' },
 						{ name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
 						{ name: 'editing',     groups: [ 'find', 'selection' ] }
-					]
+					],
+					// https://github.com/UniSharp/laravel-filemanager/blob/master/doc/integration.md
+					filebrowserImageBrowseUrl: '/laravel-filemanager?type=Images',
+					filebrowserImageUploadUrl: '/laravel-filemanager/upload?type=Images&_token={{csrf_token()}}',
+					filebrowserBrowseUrl: '/laravel-filemanager?type=Files',
+					filebrowserUploadUrl: '/laravel-filemanager/upload?type=Files&_token={{csrf_token()}}'
 				};
 			}
 		};

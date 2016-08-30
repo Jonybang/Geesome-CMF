@@ -32,7 +32,12 @@ angular
 						{ name: 'others' },
 						{ name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
 						{ name: 'editing',     groups: [ 'find', 'selection' ] }
-					]
+					],
+					// https://github.com/UniSharp/laravel-filemanager/blob/master/doc/integration.md
+					filebrowserImageBrowseUrl: '/laravel-filemanager?type=Images',
+					filebrowserImageUploadUrl: '/laravel-filemanager/upload?type=Images&_token={{csrf_token()}}',
+					filebrowserBrowseUrl: '/laravel-filemanager?type=Files',
+					filebrowserUploadUrl: '/laravel-filemanager/upload?type=Files&_token={{csrf_token()}}'
 				};
 			}
 		};
