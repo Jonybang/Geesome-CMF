@@ -1,5 +1,5 @@
 <div class="post-preview">
-    <a href="/{{$page->alias}}">
+    <a href="{{Helper::localeUrl($page)}}">
         <h2 class="post-title">
             {{$page->title}}
         </h2>

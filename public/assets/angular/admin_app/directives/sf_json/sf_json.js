@@ -43,19 +43,17 @@ angular
                 });
 
                 scope.$watch('ngModel', function(){
-                    if(!scope.ngModel)
-                        return;
-
-                    if(scope.ngModel.value){
-                        if(JSON.parse(scope.ngModel.value) != scope.fakeModel)
-                            scope.fakeModel = JSON.parse(scope.ngModel.value);
-                    }
-                    else
+                    if(!scope.ngModel){
                         scope.fakeModel = [];
+                        return;
+                    }
+
+                    if(JSON.parse(scope.ngModel) != scope.fakeModel)
+                        scope.fakeModel = JSON.parse(scope.ngModel);
                 });
 
                 scope.changed = function(){
-                    scope.ngModel.value = JSON.stringify(scope.fakeModel);
+                    scope.ngModel = JSON.stringify(scope.fakeModel);
                 }
             }
 
