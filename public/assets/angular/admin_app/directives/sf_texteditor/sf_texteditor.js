@@ -3,12 +3,13 @@ angular
 	.directive('sfTexteditor', ['$timeout', 'AppPaths', 'ServerData', function($timeout, AppPaths, ServerData) {
 		return {
 			restrict: 'E',
-			templateUrl: AppPaths.directives + 'sf-texteditor/sf-texteditor.html',
+			templateUrl: AppPaths.directives + 'sf_texteditor/sf_texteditor.html',
 			scope: {
 				/* SubFieldValues resource */
 				ngModel: '=',
 				pageResource: '=?',
-				templateResource: '=?'
+				templateResource: '=?',
+				isEdit: '=?'
 			},
 			link: function (scope, element) {
 				ServerData.getSiteSettings(function(site_settings){

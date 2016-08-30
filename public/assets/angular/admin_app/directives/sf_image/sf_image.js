@@ -8,7 +8,8 @@ angular
                 /* SubFieldValues resource */
                 ngModel: '=',
                 pageResource: '=?',
-                templateResource: '=?'
+                templateResource: '=?',
+                isEdit: '=?'
             },
             link: function (scope, element) {
                 scope.openFileManager = function(){

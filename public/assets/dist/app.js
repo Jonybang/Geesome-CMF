@@ -196,44 +196,6 @@ angular
         return self;
     }]);
 angular
-	.module('admin_app')
-	.directive('sfTexteditor', ['$timeout', 'AppPaths', 'ServerData', function($timeout, AppPaths, ServerData) {
-		return {
-			restrict: 'E',
-			templateUrl: AppPaths.directives + 'sf-texteditor/sf-texteditor.html',
-			scope: {
-				/* SubFieldValues resource */
-				ngModel: '=',
-				pageResource: '=?',
-				templateResource: '=?'
-			},
-			link: function (scope, element) {
-				ServerData.getSiteSettings(function(site_settings){
-					scope.site_settings = site_settings;
-				});
-
-				scope.CKEditorOptions = {
-					language: 'en',
-					allowedContent: true,
-					entities: false,
-					toolbarGroups: [
-						{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-						{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'justify'] },
-						{ name: 'styles' },
-						{ name: 'colors' },
-						'/',
-						{ name: 'links' },
-						{ name: 'insert' },
-						{ name: 'tools' },
-						{ name: 'others' },
-						{ name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
-						{ name: 'editing',     groups: [ 'find', 'selection' ] }
-					]
-				};
-			}
-		};
-	}]);
-angular
     .module('admin_app')
     .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
@@ -269,7 +231,8 @@ angular
                 /* SubFieldValues resource */
                 ngModel: '=',
                 pageResource: '=?',
-                templateResource: '=?'
+                templateResource: '=?',
+                isEdit: '=?'
             },
             link: function (scope, element) {
                 scope.openFileManager = function(){
@@ -378,6 +341,45 @@ angular
         };
     }]);
 angular
+	.module('admin_app')
+	.directive('sfTexteditor', ['$timeout', 'AppPaths', 'ServerData', function($timeout, AppPaths, ServerData) {
+		return {
+			restrict: 'E',
+			templateUrl: AppPaths.directives + 'sf_texteditor/sf_texteditor.html',
+			scope: {
+				/* SubFieldValues resource */
+				ngModel: '=',
+				pageResource: '=?',
+				templateResource: '=?',
+				isEdit: '=?'
+			},
+			link: function (scope, element) {
+				ServerData.getSiteSettings(function(site_settings){
+					scope.site_settings = site_settings;
+				});
+
+				scope.CKEditorOptions = {
+					language: 'en',
+					allowedContent: true,
+					entities: false,
+					toolbarGroups: [
+						{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+						{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'justify'] },
+						{ name: 'styles' },
+						{ name: 'colors' },
+						'/',
+						{ name: 'links' },
+						{ name: 'insert' },
+						{ name: 'tools' },
+						{ name: 'others' },
+						{ name: 'document',     groups: [ 'mode', 'document', 'doctools' ] },
+						{ name: 'editing',     groups: [ 'find', 'selection' ] }
+					]
+				};
+			}
+		};
+	}]);
+angular
     .module('admin_app')
     .directive('subFieldsManager', ['$timeout', '$compile', '$uibModal', 'AppPaths', 'SubFields', 'SubFieldsValues', function($timeout, $compile, $uibModal, AppPaths, SubFields, SubFieldsValues) {
         return {
@@ -414,7 +416,7 @@ angular
                         tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.key + ' } }">' + (sub_field.name || sub_field.key) + '</span></label>';
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '.value" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
-                            'sub-field-resource="resources.' + sub_field.key + '"></' + directive + '>';
+                            'sub-field-resource="resources.' + sub_field.key + '" is-edit="true"></' + directive + '>';
                         tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><hr>';
                     });
 
@@ -956,7 +958,7 @@ angular.module('admin_app.database')
                 {
                     name: 'content',
                     label: 'Content',
-                    type: 'textarea',
+                    directive: 'sf-texteditor',
                     table_hide: true
                 },
                 {

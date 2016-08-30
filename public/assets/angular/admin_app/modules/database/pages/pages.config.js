@@ -50,7 +50,7 @@ angular.module('admin_app.database')
                 {
                     name: 'content',
                     label: 'Content',
-                    type: 'textarea',
+                    directive: 'sf-texteditor',
                     table_hide: true
                 },
                 {
