@@ -7,7 +7,7 @@ angular.module('admin_app.database')
             caption: '',
             create: true,
             edit: true,
-            orderBy: '-id',
+            order_by: '-id',
             resource: null,
             ajax_handler: true,
             get_list: true,

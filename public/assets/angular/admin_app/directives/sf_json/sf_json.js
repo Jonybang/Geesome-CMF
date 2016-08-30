@@ -15,8 +15,8 @@ angular
             link: function (scope, element) {
                 var defaultConfig = {
                     caption: 'For add data - fill first row fields, than save.',
-                    orderBy: '-id',
-                    boldHeaders: false,
+                    order_by: '-json_id',
+                    bold_headers: false,
                     fields: [
                         {
                             name: 'json_id',
