@@ -4,6 +4,10 @@ git checkout -- .
 
 git pull
 
-sudo chmod 777 -R resources
+#sudo chmod 777 -R resources
+sudo chown -R www-data:www-data ./
+
+#sudo chgrp -R www-data storage bootstrap/cache resources/lang public
+sudo chmod -R ug+rwx storage bootstrap/cache resources/lang public
 
 composer update
