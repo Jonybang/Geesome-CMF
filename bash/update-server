@@ -1,13 +1,15 @@
 #!/bin/sh
 
+sudo chown -R $USER:$USER ./
+
 git checkout -- .
 
 git pull
+
+composer update
 
 sudo chmod -R 755 ./
 sudo chown -R www-data:www-data ./
 
 #sudo chgrp -R www-data storage bootstrap/cache resources/lang public
 sudo chmod -R ug+rwx storage bootstrap/cache resources/lang public
-
-composer update
