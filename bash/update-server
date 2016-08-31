@@ -4,7 +4,7 @@ git checkout -- .
 
 git pull
 
-#sudo chmod 777 -R resources
+sudo chmod -R 755 ./
 sudo chown -R www-data:www-data ./
 
 #sudo chgrp -R www-data storage bootstrap/cache resources/lang public
