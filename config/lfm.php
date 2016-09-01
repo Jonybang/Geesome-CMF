@@ -9,7 +9,7 @@ return [
     'alphanumeric_directory' => false,
     'use_package_routes'    => true,
     // For laravel 5.2, please set to ['web', 'auth']
-    'middlewares'           => ['web', 'auth'],
+    'middlewares'           => ['web', 'auth', 'role:admin'],
     // Add prefix for routes
     'prefix'           => 'laravel-filemanager',
     // Allow multi_user mode or not.
