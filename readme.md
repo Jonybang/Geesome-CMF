@@ -16,7 +16,10 @@ http://geesome.jonybang.ru/admin
 User: geesome.test@openmail.cc
 Password: Gm192837
 
+Page form:
 ![Admin panel screenshot](public/assets/img/admin-panel-screenshot.png)
+Database edit:
+![Admin panel screenshot](public/assets/img/admin-panel-screenshot-2.png)
 
 Demo site built completely using [database seeds](database/seeds). In these files developer can trace relations of CMF entities.
 
