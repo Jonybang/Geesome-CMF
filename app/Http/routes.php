@@ -232,7 +232,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
                 $result = \App::call('App\\Http\\Controllers\\' . $controller_action->key, [
                     'page' => $page,
                     'url_query' => $url_query,
-                    'last_alias' => $url_query_array ? $url_query_array[count($url_query_array) - 1] : null
+                    'last_alias' => isset($url_query_array) ? $url_query_array[count($url_query_array) - 1] : null
                 ]);
 
                 if($result instanceof \Illuminate\Http\JsonResponse)
