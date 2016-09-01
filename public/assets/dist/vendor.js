@@ -404,6 +404,7 @@ angular
                 ajax_handler: false,
                 resource: null,
                 order_by: '-id',
+                track_by: '',
                 default_attrs: {},
                 modal_index: 0,
                 search_debounce: 200,
@@ -467,9 +468,12 @@ angular
                         '<tbody>' +
                             '<tr>';
 
+                if(!scope.actualOptions.track_by)
+                    scope.actualOptions.track_by = mode == 'remote' ? 'id' : 'json_id';
+
                 var tplBodyItem =
                         '<tbody>' +
-                            '<tr ng-repeat="item in filtredList track by item.' + (mode == 'remote' ? 'id' : 'json_id') + '">';
+                            '<tr ng-repeat="item in filtredList track by item.' + scope.actualOptions.track_by + '">';
 
 
                 var select_list_request_options = {};
@@ -723,11 +727,12 @@ angular
                 // local json mode
                 if(mode != 'remote'){
                     if(item.is_new){
+                        var track_by = scope.actualOptions.track_by;
 
-                        item.json_id = 1;
+                        item[track_by] = 1;
                         scope.ngModel.forEach(function(local_item){
-                            if(local_item.json_id >= item.json_id)
-                                item.json_id = local_item.json_id + 1;
+                            if(local_item[track_by] >= item[track_by])
+                                item[track_by] = local_item[track_by] + 1;
                         });
 
                         scope.ngModel.unshift(item);
@@ -842,9 +847,10 @@ angular
                     return;
 
                 if(mode == 'local'){
+                    var track_by = scope.actualOptions.track_by;
                     list.forEach(function(item, index){
-                        if(!item.json_id)
-                            item.json_id = list.length + index + 1;
+                        if(!item[track_by])
+                            item[track_by] = list.length + index + 1;
                     })
                 }
 

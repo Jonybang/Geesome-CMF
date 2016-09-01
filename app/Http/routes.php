@@ -164,7 +164,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
 //========================================================================================================
 
 Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
-    Route::get('/{alias?}/{sub_alias?}', function ($alias = null, $sub_alias = null) {
+    Route::any('{all?}', function ($url_query = null) {
 
         $current_context = Context::getByLocale(LaravelLocalization::getCurrentLocale());
 
@@ -172,17 +172,43 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         Session::put('last_locale', LaravelLocalization::getCurrentLocale());
 
         $page = null;
-        //find page by alias or get main page from current context
-        if($alias){
-            $page = $current_context->pages()->where('alias', $alias)->first();
-            if(!$page)
-                $page = $current_context->pages()->where('id', '=', $alias)
-                                                    ->orWhere(function ($query) use ($alias){
-                                                        $query->where('alias', 'like', $alias . '%')
-                                                            ->where('is_allow_short_alias', true);
-                                                    })->first();
-        }
-        else{
+        //find page by url or get main page from current context
+        if($url_query && $url_query != '/'){
+            $page = $current_context->pages()->where('alias', $url_query)->first();
+
+            // uri_1/uri_2/uri_3/.../uri_n => ['uri_1','uri_2','uri_3', ... , 'uri_n']
+            $url_query_array = explode('/', $url_query);
+
+            if(!$page && count($url_query_array) > 1){
+
+                function whereParent(&$pages_query, $url_query_array, $index)
+                {
+                    if ($index < 0)
+                        return null;
+                    //where page.parent.alias == 'uri_(n-1)'
+                    return $pages_query->whereHas('parent_page', function ($query) use ($url_query_array, $index) {
+                        $url_part = $url_query_array[$index];
+                        $query->where('alias', '=', $url_part);
+                        whereParent($query, $url_query_array, $index - 1);
+                    })->first();
+                }
+
+                $index = count($url_query_array) - 1;
+                //where page.alias == 'uri_n'
+                $pages_query = $current_context->pages()->where('alias', '=', $url_query_array[$index]);
+                //if not exist try to get 'uri_(n-1)'
+                if($pages_query->count() == 0){
+                    $index -= 1;
+                    $pages_query = $current_context->pages()->where('alias', '=', $url_query_array[$index])->where('is_allow_nested_alias', true);
+                }
+                //if no parent uri - just get page
+                if($index == 0)
+                    $page = $pages_query->first();
+                //if still not exist - page not found
+                else if($pages_query->count())
+                    $page = whereParent($pages_query, $url_query_array, $index - 1);
+            }
+        } else {
             $main_page_id = $current_context->settings()->where('key', 'main_page')->first()->value;
             $page = Page::find($main_page_id);
         }
@@ -205,7 +231,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
             foreach($page->template->controller_actions as $controller_action){
                 $result = \App::call('App\\Http\\Controllers\\' . $controller_action->key, [
                     'page' => $page,
-                    'sub_alias' => $sub_alias
+                    'url_query' => $url_query,
+                    'last_alias' => $url_query_array ? $url_query_array[count($url_query_array) - 1] : null
                 ]);
 
                 if($result instanceof \Illuminate\Http\JsonResponse)
@@ -242,5 +269,5 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         //sf - sub fields and st -settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming
         $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields, 'st' => $settings, 'lang_contexts' => $lang_contexts], $sub_fields, $settings);
         return view('templates.' . $path, $page_data);
-    });
+    })->where('all', '.*');
 });

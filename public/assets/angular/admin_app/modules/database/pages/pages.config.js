@@ -1,5 +1,5 @@
 angular.module('admin_app.database')
-    .factory('DBManagePagesConfig', ['Pages', 'Templates', 'Users', function(Pages, Templates, Users) {
+    .factory('DBManagePagesConfig', ['Pages', 'Templates', 'Users', 'Contexts', function(Pages, Templates, Users, Contexts) {
 
         this.entityName = 'Pages';
 
@@ -51,6 +51,14 @@ angular.module('admin_app.database')
                     name: 'content',
                     label: 'Content',
                     directive: 'sf-texteditor',
+                    table_hide: true
+                },
+                {
+                    name: 'context_id',
+                    label: 'Context',
+                    type: 'select',
+                    resource: Contexts,
+                    list: 'contexts',
                     table_hide: true
                 },
                 {

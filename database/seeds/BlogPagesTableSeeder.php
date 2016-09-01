@@ -54,6 +54,8 @@ class BlogPagesTableSeeder extends Seeder
                     'context_id' => $context_id
                 ]);
                 $page->content_text = $seed[2];
+                $page->alias = $page->id;
+                $page->save();
 
 
                 if(!isset($hash_keys[$index]))

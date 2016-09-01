@@ -31,6 +31,7 @@ class TagPageTableSeeder extends Seeder
                 'title' => $page_title,
                 'alias' => 'tag',
                 'is_published' => true,
+                'is_allow_nested_alias' => true,
                 'context_id' => Context::where('key', $context_key)->first()->id
             ]);
 

@@ -97,7 +97,7 @@ class Page extends Model
 
     public function parent_page()
     {
-        return $this->belongsTo(Page::class);
+        return $this->belongsTo(Page::class, 'parent_page_id');
     }
     /**
      * @Relation

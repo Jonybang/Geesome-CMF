@@ -55,6 +55,8 @@ class ProjectPagesTableSeeder extends Seeder
                     'context_id' => $context_id
                 ]);
                 $page->content_text = $seed[3];
+                $page->alias = $page->id;
+                $page->save();
 
                 if(!isset($hash_keys[$index]))
                     $hash_keys[$index] = uniqid();

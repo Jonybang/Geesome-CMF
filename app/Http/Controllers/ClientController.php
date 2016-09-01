@@ -29,12 +29,12 @@ class ClientController extends Controller
         return ['projects' => $projects];
     }
 
-    public function tag_by_alias($sub_alias = null){
+    public function tag_by_alias($last_alias = null){
         $none_tag_data = ['render_template' => '404'];
-        if(!$sub_alias)
+        if(!$last_alias)
             return $none_tag_data;
 
-        $tag = Tag::where('name', 'like', $sub_alias)->orWhere('id', $sub_alias)->first();
+        $tag = Tag::where('name', 'like', $last_alias)->orWhere('id', $last_alias)->first();
 
         if($tag)
             return ['tag' => $tag];
@@ -42,12 +42,12 @@ class ClientController extends Controller
             return $none_tag_data;
     }
 
-    public function user_by_alias($page, $sub_alias = null){
+    public function user_by_alias($page, $last_alias = null){
         $none_user_data = ['render_template' => '404'];
-        if(!$sub_alias)
+        if(!$last_alias)
             return $none_user_data;
 
-        $user = User::where('name', 'like', $sub_alias)->orWhere('id', $sub_alias)->first();
+        $user = User::where('name', 'like', $last_alias)->orWhere('id', $last_alias)->first();
         $blog = Page::where('alias', 'blog')->where('context_id', $page->context_id)->first();
         $blog_pages = $blog->published_child_pages_by_date->where('author_id', $user->id);
 

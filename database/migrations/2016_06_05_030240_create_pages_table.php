@@ -27,6 +27,7 @@ class CreatePagesTable extends Migration
             $table->boolean('is_deleted')->default(false);
             $table->boolean('is_alias_blocked')->default(false);
             $table->boolean('is_allow_short_alias')->default(false);
+            $table->boolean('is_allow_nested_alias')->default(false);
 
             //has no body, but have children(section for children pages for example)
             $table->boolean('is_abstract')->default(false);
