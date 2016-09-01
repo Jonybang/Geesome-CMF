@@ -495,6 +495,9 @@ angular
                     if(field.resource){
                         scope[field.name + '_resource'] = field.resource;
                     }
+                    if(field.fields){
+                        scope[field.name + '_fields'] = field.fields;
+                    }
 
                     var headerEl = scope.actualOptions.bold_headers ? 'th' : 'td';
                     tplHead += '<' + headerEl + '>' + field.label + '</' + headerEl + '>';
@@ -505,9 +508,9 @@ angular
                     style += '"';
 
                     //for new item row
-                    tplBodyNewItem += '<td><div ' + style + ' >';
+                    tplBodyNewItem += '<td ' + style + ' ><div ' + style + ' >';
                     //for regular item row
-                    tplBodyItem += '<td ng-dblclick="item.is_edit = !item.is_edit"><div ' + style + ' >';
+                    tplBodyItem += '<td ' + style + ' ng-dblclick="item.is_edit = !item.is_edit"><div ' + style + ' >';
 
                     function getFieldDirective(is_new) {
                         var item_name = (is_new ? 'new_' : '' ) + 'item';
@@ -849,7 +852,7 @@ angular
                 if(mode == 'local'){
                     var track_by = scope.actualOptions.track_by;
                     list.forEach(function(item, index){
-                        if(!item[track_by])
+                        if(!item[track_by] || item[track_by] == 0)
                             item[track_by] = list.length + index + 1;
                     })
                 }
@@ -975,6 +978,7 @@ angular
                 modalOptions: '=?',
                 hasError: '=?',
                 ngDisabled: '=?',
+                defaultValue: '@',
                 //callbacks
                 ngChange: '&',
                 onSave: '&',
@@ -1008,6 +1012,14 @@ angular
                 scope.$watch('hasError', function(hasError){
                     scope.input_class = hasError ? "has-error" : '';
                 });
+
+                function setDefaultValue(){
+                    if(!scope.ngModel && scope.defaultValue)
+                        scope.ngModel = scope.defaultValue;
+                }
+                setDefaultValue();
+                //scope.$watch('ngModel', setDefaultValue);
+                //scope.$watch('defaultValue', setDefaultValue);
 
                 scope.save = function(){
                     if(scope.required && !scope.ngModel){
@@ -1792,6 +1804,9 @@ angular.module('a-edit')
                 if(field.resource)
                     output += 'ng-resource="' + field.name + '_resource" ';
 
+                if(field.fields)
+                    output += 'ng-resource-fields="' + field.name + '_fields" ';
+
                 if(config.list_variable)
                     output += 'list="' + config.list_variable + '" ';
                 else if(config.lists_container)
@@ -1814,6 +1829,7 @@ angular.module('a-edit')
                     'has-error="' + item_name + '.errors.' + field_name + '" ' +
                     'ng-model-str="' + item_name + '.' +  field_name + '_str" ' +
                     'ng-model-sub-str="' + item_name + '.' +  field_name + '_sub_str" ' +
+                    (field.default_value ? 'default-value="' + field.default_value + '" ' : '') +
                     'is-edit="' + is_edit + '" '+
                     'is-new="' + (config.is_new ? 'true': 'false') + '" '+
                     'placeholder="' + ((config.always_edit ? field.new_placeholder : field.placeholder) || '') + '" ';

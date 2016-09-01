@@ -9,10 +9,10 @@ Designed for developers who want to have basic CMS functions as pages, templates
 ## Demo
 
 Client side:  
-http://laravel-cmf.jonybang.ru/
+http://geesome.jonybang.ru/
 
 Admin side:  
-http://laravel-cmf.jonybang.ru/admin  
+http://geesome.jonybang.ru/admin
 User: geesome.test@openmail.cc
 Password: Gm192837
 
