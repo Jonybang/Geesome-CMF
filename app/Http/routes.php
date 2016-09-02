@@ -8,11 +8,9 @@ use App\Models\Context;
 |--------------------------------------------------------------------------
 | Application Routes
 |--------------------------------------------------------------------------
-|
 | Here is where you can register all of the routes for an application.
 | It's a breeze. Simply tell Laravel the URIs it should respond to
 | and give it the controller to call when that URI is requested.
-|
 */
 
 //========================================================================================================
@@ -37,83 +35,18 @@ Route::get('admin-login/', ['as' => 'admin-login', function () {
     return view('admin.login');
 }]);
 
-$middleware = array_merge(\Config::get('lfm.middlewares'), ['\Unisharp\Laravelfilemanager\middleware\MultiUser']);
-$prefix = \Config::get('lfm.prefix', 'laravel-filemanager');
-$as = 'unisharp.lfm.';
-$namespace = '\Unisharp\Laravelfilemanager\controllers';
-// make sure authenticated
-Route::group(compact('middleware', 'prefix', 'as', 'namespace'), function () {
-    // Show LFM
-    Route::get('/', [
-        'uses' => 'LfmController@show',
-        'as' => 'show'
-    ]);
-    // upload
-    Route::any('/upload', [
-        'uses' => 'UploadController@upload',
-        'as' => 'upload'
-    ]);
-    // list images & files
-    Route::get('/jsonitems', [
-        'uses' => 'ItemsController@getItems',
-        'as' => 'getItems'
-    ]);
-    // folders
-    Route::get('/newfolder', [
-        'uses' => 'FolderController@getAddfolder',
-        'as' => 'getAddfolder'
-    ]);
-    Route::get('/deletefolder', [
-        'uses' => 'FolderController@getDeletefolder',
-        'as' => 'getDeletefolder'
-    ]);
-    Route::get('/folders', [
-        'uses' => 'FolderController@getFolders',
-        'as' => 'getFolders'
-    ]);
-    // crop
-    Route::get('/crop', [
-        'uses' => 'CropController@getCrop',
-        'as' => 'getCrop'
-    ]);
-    Route::get('/cropimage', [
-        'uses' => 'CropController@getCropimage',
-        'as' => 'getCropimage'
-    ]);
-    // rename
-    Route::get('/rename', [
-        'uses' => 'RenameController@getRename',
-        'as' => 'getRename'
-    ]);
-    // scale/resize
-    Route::get('/resize', [
-        'uses' => 'ResizeController@getResize',
-        'as' => 'getResize'
-    ]);
-    Route::get('/doresize', [
-        'uses' => 'ResizeController@performResize',
-        'as' => 'performResize'
-    ]);
-    // download
-    Route::get('/download', [
-        'uses' => 'DownloadController@getDownload',
-        'as' => 'getDownload'
-    ]);
-    // delete
-    Route::get('/delete', [
-        'uses' => 'DeleteController@getDelete',
-        'as' => 'getDelete'
-    ]);
-});
-
 Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', 'role:admin']], function () {
     Route::group(['prefix' => 'api', 'as' => 'api::'], function () {
         //Sub data
         Route::get('/current_user', 'AdminController@current_user');
         Route::get('/site_settings_dictionary', 'AdminController@site_settings_dictionary');
+        Route::get('translations_groups', 'Api\TranslationController@getGroups');
+        Route::get('translations_locales', 'Api\TranslationController@getLocales');
 
         //Sub actions
         Route::post('/preview_mail', 'AdminController@preview_mail');
+        Route::post('import_translations', 'Api\TranslationController@importAll');
+        Route::post('export_translations', 'Api\TranslationController@exportAll');
 
         //REST API
         Route::resource('settings', 'Api\SettingController');
@@ -139,10 +72,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
         Route::resource('dictionaries_words', 'Api\DictionaryWordController');
 
         Route::resource('translations', 'Api\TranslationController');
-        Route::get('translations_groups', 'Api\TranslationController@getGroups');
-        Route::get('translations_locales', 'Api\TranslationController@getLocales');
-        Route::post('import_translations', 'Api\TranslationController@importAll');
-        Route::post('export_translations', 'Api\TranslationController@exportAll');
 
         Route::resource('subscribers', 'Api\SubscriberController');
         Route::resource('subscribers_groups', 'Api\SubscriberGroupController');
@@ -262,12 +191,14 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         $general_settings = \DB::table('settings')->whereNull('context_id')->lists('value', 'key');
         $context_settings = $current_context->settings_values;
         $settings = $context_settings ? array_merge($general_settings, $context_settings) : $general_settings;
-        //dd($general_settings);
+
         //get language contexts
         $lang_contexts = Context::where('role', 'lang')->get();
 
-        //sf - sub fields and st -settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming
+        //sf - sub fields and st - settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming
         $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields, 'st' => $settings, 'lang_contexts' => $lang_contexts], $sub_fields, $settings);
+
+        //render view by template->key or custom view name from some controller action returned data['render_template']
         return view('templates.' . $path, $page_data);
-    })->where('all', '.*');
+    })->where('all', '(?!laravel-filemanager|robots.txt|sitemap).*');
 });
