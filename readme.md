@@ -23,6 +23,44 @@ Database edit:
 
 Demo site built completely using [database seeds](database/seeds). In these files developer can trace relations of CMF entities.
 
+## Getting started
+
+Generally you just must to clone repo, getting worked laravel, change as you wish and apply database seeds, then open site by artisan serve or nginx or whatever.  
+
+### Step by step(on Ubuntu 14 for example)
+
+Clone repo:
+```
+git clone https://github.com/Jonybang/Geesome-CMF
+```
+Automatically install php and mysql requirements:
+```
+sudo chmod +x bash/install-ubuntu-14 && bash/install-ubuntu-14
+```
+Automatically install and init laravel requirements:
+```
+sudo chmod +x bash/init-server && bash/init-server
+```
+Change and apply [seeds](database/seeds) to try demo database:
+```
+php artisan migrate:refresh --seed
+```
+Run artisan serve and open http://localhost:8000:
+```
+php artisan serve
+```
+
+## How to use
+
+For customize of site content on that CMF you must to manage database([Pages](app/Models/Page.php), [Templates](app/Models/Template.php), [SubFields](app/Models/SubField.php), 
+[ControllerActions](app/Models/ControllerAction.php), [Settings](app/Models/Setting.php) and [Translations](https://github.com/barryvdh/laravel-translation-manager/blob/master/src/Models/Translation.php)), [templates](resources/views/templates) and [controllers](app/Http/Controllers).
+
+Laravel views bound to [Pages](app/Models/Page.php) by relation to [Templates](app/Models/Template.php), which has key field for point to Laravel views in [template folder](resources/views/templates).
+
+Actions of controllers bound to [Pages](app/Models/Page.php) by relation to [Templates](app/Models/Template.php), which has relation with [ControllerActions](app/Models/ControllerAction.php). You can see example in [Tag page seeder](database/seeds/TagPageTableSeeder.php).
+
+[SubFields](app/Models/SubField.php) can create in database for make more editable info on [Pages](app/Models/Page.php). [SubFields](app/Models/SubField.php) bound to Pages by relation to [Templates](app/Models/Template.php). You can see example in [Tag page seeder](database/seeds/ImageSubFieldsTableSeeder.php).
+
 ## Overview
 
 Architecture design of the project takes basic concept from [MODX CMF](https://modx.com/) in admin interface and database scheme.
@@ -49,10 +87,6 @@ Sub entites:
 **MySQL 5.7.8+** - [for support json](http://stackoverflow.com/a/36017215) field. [Install instruction for ubuntu 14](https://www.digitalocean.com/community/questions/mysql-5-7-x-on-ubuntu-14-lamp-already-installed).  
 **PHP 5.6.19+**(7+ recommended) - [for support json](http://stackoverflow.com/a/34295663) field too. [Install instructions 7.0 for ubuntu 14](https://www.digitalocean.com/community/tutorials/how-to-upgrade-to-php-7-on-ubuntu-14-04)
 
-## Official Documentation
-
-The project is now on beta version, and soon, when the first version - his will be documented.
-
 ## Backend and frontend
 
 Now backend core is located in [app/Http/routes.php](app/Http/routes.php) file.
@@ -64,21 +98,29 @@ Frontend architecture develop with DRY principle, adheres to the minimalist appr
 
 Frontend and backend separated by REST API, and if desired developer can build his frontend for use created backend.
 
-## Material design frontend
+
+## How to modify angular admin panel
+
+Clone or pull repo with submodule([Awesome edit](https://github.com/Jonybang/awesome-edit)):
+
+```
+git pull --recurse-submodules
+git clone https://github.com/Jonybang/Geesome-CMF --recurse-submodules
+```
+
+Install gulp and run gulp:
+
+```
+bash/init-gulp
+```
+
+## Material design frontend info
 
 Angular material: https://material.angularjs.org/latest/getting-started
 
 Icons: https://design.google.com/icons/
 
 Colors: https://material.google.com/style/color.html
-
-## Clone and pull for modify admin panel with submodule([Awesome edit](https://github.com/Jonybang/awesome-edit)):
-
-```
-git pull --recurse-submodules
-git clone https://github.com/Jonybang/Geesome-CMF --recurse-submodules
-
-```
 
 ## TODO:
 
@@ -87,4 +129,6 @@ git clone https://github.com/Jonybang/Geesome-CMF --recurse-submodules
 - Reusable components;
 - View and control of bind translations pages(same as Babel on MODX);
 - Complete material design integration;
-- Move angular app to resources folder for compile into public/assets.
+- Move angular app to resources folder for compile into public/assets;
+- Documentation;
+- Tests.
