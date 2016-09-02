@@ -45,7 +45,7 @@ Change and apply [seeds](database/seeds) to try demo database:
 ```
 php artisan migrate:refresh --seed
 ```
-Run artisan serve and open http://localhost:8000:
+Run artisan serve and open <http://localhost:8000>:
 ```
 php artisan serve
 ```
