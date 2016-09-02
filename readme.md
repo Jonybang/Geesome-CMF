@@ -31,7 +31,7 @@ Generally you just must to clone repo, getting worked laravel, change as you wis
 
 Clone repo:
 ```
-git clone https://github.com/Jonybang/Geesome-CMF
+git clone https://github.com/Jonybang/Geesome-CMF && cd Geesome-CMF
 ```
 Automatically install php and mysql requirements:
 ```
