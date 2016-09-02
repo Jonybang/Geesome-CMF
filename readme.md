@@ -104,7 +104,9 @@ Frontend and backend separated by REST API, and if desired developer can build h
 Clone or pull repo with submodule([Awesome edit](https://github.com/Jonybang/awesome-edit)):
 
 ```
-git pull --recurse-submodules
+# pull
+git pull && git submodule init && git submodule update && git submodule status
+# or clone
 git clone https://github.com/Jonybang/Geesome-CMF --recurse-submodules
 ```
 
