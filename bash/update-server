@@ -8,6 +8,8 @@ git pull
 
 composer update
 
+php artisan migrate
+
 sudo chmod -R 755 ./
 sudo chown -R www-data:www-data ./
 
