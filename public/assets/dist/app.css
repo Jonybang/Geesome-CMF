@@ -19,24 +19,18 @@ dt {
 }
 
 .btn-group.select-adder {
-  display: block;
-  width: auto;
+  width: 300px;
   padding: 0 15px;
   margin-left: -15px;
 }
 
 .btn-group.select-adder .ui-select-container {
-  width: 61% !important;
+  width: 229px !important;
   display: inline-block;
 }
 
 .btn-group.select-adder .btn-success {
-  position: relative;
-  top: -12px;
-}
-
-.btn-group.select-adder .ui-select-multiple + .btn-success {
-  top: 0;
+  float: right;
 }
 
 pre {
@@ -50,16 +44,6 @@ pre {
   /* Opera 7 */
   word-wrap: break-word;
   /* Internet Explorer 5.5+ */
-}
-
-.ui-select-match a.close {
-  position: absolute;
-  right: 20px;
-  float: none;
-}
-
-.ui-select-container.ng-empty .ui-select-match a.close {
-  display: none;
 }
 /* Page structure */
 
@@ -91,21 +75,9 @@ md-sidenav md-list-item.md-2-line md-icon.md-avatar-icon {
   margin-left: -5px;
 }
 
-.inside-nav {
-  position: relative !important;
-  left: -20px;
-  background-color: #E0F7FA;
-  padding: 20px;
-  width: 205px;
-}
-
 md-toolbar.md-default-theme.md-hue-3:not(.md-menu-toolbar),
 md-toolbar.md-hue-3:not(.md-menu-toolbar) {
   background-color: #FFAB00;
-}
-
-md-sidenav.collapsed-nav {
-  width: 60px;
 }
 
 md-sidenav.collapsed-nav .md-list-item-text {
@@ -120,8 +92,9 @@ md-sidenav.collapsed-nav md-list-item.md-2-line md-icon.md-avatar-icon {
   margin-left: 60px;
 }
 
-md-sidenav.collapsed-nav .sidenav-header {
+md-sidenav.collapsed-nav h3 {
   font-size: 14px;
+  text-align: center;
 }
 
 /* Helpers */

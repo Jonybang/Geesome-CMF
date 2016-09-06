@@ -102,6 +102,8 @@ angular.module('admin_app')
         self.databaseMenu = DatabaseConfig.menu;
 
         self.collapseNav = false;
+
+        //#E0F7FA
     }]);
 //<loading-gif ng-if="!dataLoaded"> </loading-gif>
 // TODO: добавить throttle - не показывать гифку если идет тут-же переключение туда - обратно
