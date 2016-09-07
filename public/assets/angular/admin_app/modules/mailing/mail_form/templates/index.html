@@ -1,172 +1,167 @@
-<h2>Mailing manager</h2>
+<md-content layout layout-wrap>
+    <md-toolbar class="md-primary md-hue-1" layout style="padding: 8px;">
 
-<button class="btn btn-primary" ng-click="sendMail()">Send mail</button>
-<loading-gif lg-if="status.mail.loading"></loading-gif>
+        <md-button class="md-primary md-raised" ng-click="sendMail()">
+            <span>Send mail</span>
+        </md-button>
 
-<br>
-<uib-alert ng-if="alert" type="success" close="closeAlert()" dismiss-on-timeout="3000">{{alert}}</uib-alert>
-<br>
+        <span flex></span>
+    </md-toolbar>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Mailing data</h3>
-            </div>
-            <div class="panel-body">
-                <label>Subscribers groups:</label>
-                <ae-select-input ng-model="mail.subscribers_groups_ids" or-name-field="key" has-error="hasErrors.subscribers_groups_ids" ng-resource="models.subscribers_groups" ng-resource-fields="fields.subscribers_groups" is-edit="true" adder="true" type="multiselect"></ae-select-input>
-                <div>
-                    <a href ng-click="subscribersListShow = !subscribersListShow" ng-class="{'dropup': subscribersListShow}">
-                        See mails list
+    <md-content layout flex="grow">
+        <md-card layout="column" flex="70" style="padding: 8px;">
+
+            <label>Subscribers groups:</label>
+            <ae-select-input ng-model="mail.subscribers_groups_ids" or-name-field="key" has-error="hasErrors.subscribers_groups_ids" ng-resource="models.subscribers_groups" ng-resource-fields="fields.subscribers_groups" is-edit="true" adder="true" type="multiselect"></ae-select-input>
+            <div>
+                <a href ng-click="subscribersListShow = !subscribersListShow" ng-class="{'dropup': subscribersListShow}">
+                    See mails list
                         <span ng-if="mail.subscribers_groups_ids.length && !status.subscribers_list.loading">
                             ({{subscribers_list.length}})
                         </span>
-                        <span class="caret"></span><br>
-                    </a>
-                    <div ng-if="subscribersListShow" class="alert alert-info">
-                        <span ng-repeat="subscriber in subscribers_list">{{subscriber}};</span>
+                    <span class="caret"></span><br>
+                </a>
+                <div ng-if="subscribersListShow" class="alert alert-info">
+                    <span ng-repeat="subscriber in subscribers_list">{{subscriber}};</span>
 
-                        <span ng-if="status.subscribers_list.loading">Loading....</span>
+                    <span ng-if="status.subscribers_list.loading">Loading....</span>
 
-                        <uib-alert ng-if="status.subscribers_list.error" type="danger" dismiss-on-timeout="3000">{{status.subscribers_list.error}}</uib-alert>
-                    </div>
+                    <uib-alert ng-if="status.subscribers_list.error" type="danger" dismiss-on-timeout="3000">{{status.subscribers_list.error}}</uib-alert>
                 </div>
+            </div>
 
-                <label>Mail template:</label>
-                <ae-select-input ng-model="mail.mail_template_id" or-name-field="key" has-error="hasErrors.mail_template_id" ng-resource="models.mail_templates" ng-resource-fields="fields.mail_templates" is-edit="true" adder="true"></ae-select-input>
+            <label>Mail template:</label>
+            <ae-select-input ng-model="mail.mail_template_id" or-name-field="key" has-error="hasErrors.mail_template_id" ng-resource="models.mail_templates" ng-resource-fields="fields.mail_templates" is-edit="true" adder="true"></ae-select-input>
 
-                <div>
-                    <a href ng-click="subTemplateEditShow = !subTemplateEditShow" ng-class="{'dropup': subTemplateEditShow}">
-                        Edit current mail template <span class="caret"></span><br>
-                    </a>
-                    <div ng-if="subTemplateEditShow" class="alert alert-info">
+            <div>
+                <a href ng-click="subTemplateEditShow = !subTemplateEditShow" ng-class="{'dropup': subTemplateEditShow}">
+                    Edit current mail template <span class="caret"></span><br>
+                </a>
+                <div ng-if="subTemplateEditShow" class="alert alert-info">
 
-                        <div ng-if="!status.mail_template.loading && !status.mail_template.error">
-                            <label>Mail template name:</label>
-                            <ae-text-input ng-model="mail.mail_template.name" has-error="hasErrors.mail_template.name" is-edit="true" ng-change="status.mail_template.dirty = true"></ae-text-input>
+                    <div ng-if="!status.mail_template.loading && !status.mail_template.error">
+                        <label>Mail template name:</label>
+                        <ae-text-input ng-model="mail.mail_template.name" has-error="hasErrors.mail_template.name" is-edit="true" ng-change="status.mail_template.dirty = true"></ae-text-input>
 
-                            <label>Mail template key:</label>
-                            <ae-text-input ng-model="mail.mail_template.key" has-error="hasErrors.mail_template.key" is-edit="true" ng-change="status.mail_template.dirty = true"></ae-text-input>
+                        <label>Mail template key:</label>
+                        <ae-text-input ng-model="mail.mail_template.key" has-error="hasErrors.mail_template.key" is-edit="true" ng-change="status.mail_template.dirty = true"></ae-text-input>
 
-                            <label>Mail title template:</label>
-                            <ae-text-input ng-model="mail.mail_template.title" has-error="hasErrors.mail_template.title" is-edit="true" ng-change="status.mail_template.dirty = true"></ae-text-input>
+                        <label>Mail title template:</label>
+                        <ae-text-input ng-model="mail.mail_template.title" has-error="hasErrors.mail_template.title" is-edit="true" ng-change="status.mail_template.dirty = true"></ae-text-input>
 
-                            <label>Mail content template:</label>
-                            <wiz-markdown-editor content="mail.mail_template.content" textareaclass="form-control" ng-change="status.mail_template.dirty = true">
-                                <wiz-toolbar-button command="bold">Bold</wiz-toolbar-button>
-                                <wiz-toolbar-button command="italic">Italic</wiz-toolbar-button>
-                                <wiz-toolbar-button command="undo">UNDO</wiz-toolbar-button>
-                                <wiz-toolbar-button command="redo">REDO</wiz-toolbar-button>
-                                <wiz-toolbar-button command="heading">HEADING</wiz-toolbar-button>
-                                <wiz-toolbar-button command="code">CODE</wiz-toolbar-button>
-                                <wiz-toolbar-button command="ullist">ULLIST</wiz-toolbar-button>
-                                <wiz-toolbar-button command="ollist">OLLIST</wiz-toolbar-button>
-                                <wiz-toolbar-button command="indent">INDENT</wiz-toolbar-button>
-                                <wiz-toolbar-button command="outdent">OUTDENT</wiz-toolbar-button>
-                                <wiz-toolbar-button command="link">LINK</wiz-toolbar-button>
-                                <wiz-toolbar-button command="img">IMG</wiz-toolbar-button>
-                                <wiz-toolbar-button command="hr">HR</wiz-toolbar-button>
-                                <wiz-toolbar-button command="h0">H0</wiz-toolbar-button>
-                                <wiz-toolbar-button command="h1">H1</wiz-toolbar-button>
-                                <wiz-toolbar-button command="h2">H2</wiz-toolbar-button>
-                                <wiz-toolbar-button command="h3">H3</wiz-toolbar-button>
-                                <wiz-toolbar-button command="h4">H4</wiz-toolbar-button>
-                                <wiz-toolbar-button command="h5">H5</wiz-toolbar-button>
-                                <wiz-toolbar-button command="h6">H6</wiz-toolbar-button>
-                            </wiz-markdown-editor>
+                        <label>Mail content template:</label>
+                        <wiz-markdown-editor content="mail.mail_template.content" textareaclass="form-control" ng-change="status.mail_template.dirty = true">
+                            <wiz-toolbar-button command="bold">Bold</wiz-toolbar-button>
+                            <wiz-toolbar-button command="italic">Italic</wiz-toolbar-button>
+                            <wiz-toolbar-button command="undo">UNDO</wiz-toolbar-button>
+                            <wiz-toolbar-button command="redo">REDO</wiz-toolbar-button>
+                            <wiz-toolbar-button command="heading">HEADING</wiz-toolbar-button>
+                            <wiz-toolbar-button command="code">CODE</wiz-toolbar-button>
+                            <wiz-toolbar-button command="ullist">ULLIST</wiz-toolbar-button>
+                            <wiz-toolbar-button command="ollist">OLLIST</wiz-toolbar-button>
+                            <wiz-toolbar-button command="indent">INDENT</wiz-toolbar-button>
+                            <wiz-toolbar-button command="outdent">OUTDENT</wiz-toolbar-button>
+                            <wiz-toolbar-button command="link">LINK</wiz-toolbar-button>
+                            <wiz-toolbar-button command="img">IMG</wiz-toolbar-button>
+                            <wiz-toolbar-button command="hr">HR</wiz-toolbar-button>
+                            <wiz-toolbar-button command="h0">H0</wiz-toolbar-button>
+                            <wiz-toolbar-button command="h1">H1</wiz-toolbar-button>
+                            <wiz-toolbar-button command="h2">H2</wiz-toolbar-button>
+                            <wiz-toolbar-button command="h3">H3</wiz-toolbar-button>
+                            <wiz-toolbar-button command="h4">H4</wiz-toolbar-button>
+                            <wiz-toolbar-button command="h5">H5</wiz-toolbar-button>
+                            <wiz-toolbar-button command="h6">H6</wiz-toolbar-button>
+                        </wiz-markdown-editor>
 
-                            <label>Available variables:</label>
-                            <div>
-                                <small ng-non-bindable>
-                                    In mail templates you may to use all Settings variables, for example: <b>{{$site_url}}</b>, <b>{{$admin_email}}</b>;
-                                    <br>
-                                    also page variables(if page object is set to sent mail): <b>{{$title}}</b>, <b>{{$menu_title}}</b>, <b>{{$sub_title}}</b>, <b>{{$description}}</b>;
-                                    <br>
-                                    and additional sub variables: <b>{{$page_url}}</b>, <b>${{parent_title}}</b>, <b>${{parent_menu_title}}</b>, <b>${{parent_sub_title}}</b>, <b>${{parent_description}}</b>.
-                                    <br>
-                                    Also may be used some form variables, which will recived when the form sent (Ask site developer for this).
-                                </small>
+                        <label>Available variables:</label>
+                        <div>
+                            <small ng-non-bindable>
+                                In mail templates you may to use all Settings variables, for example: <b>{{$site_url}}</b>, <b>{{$admin_email}}</b>;
+                                <br>
+                                also page variables(if page object is set to sent mail): <b>{{$title}}</b>, <b>{{$menu_title}}</b>, <b>{{$sub_title}}</b>, <b>{{$description}}</b>;
+                                <br>
+                                and additional sub variables: <b>{{$page_url}}</b>, <b>${{parent_title}}</b>, <b>${{parent_menu_title}}</b>, <b>${{parent_sub_title}}</b>, <b>${{parent_description}}</b>.
+                                <br>
+                                Also may be used some form variables, which will recived when the form sent (Ask site developer for this).
+                            </small>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <button class="btn btn-primary" ng-if="status.mail_template.dirty" ng-click="saveMailTemplate()">Save mail template</button>
+
+                    <span ng-if="status.mail_template.loading">Loading....</span>
+
+                    <uib-alert ng-if="status.mail_template.error" type="danger" dismiss-on-timeout="3000">{{status.mail_template.error}}</uib-alert>
+                </div>
+            </div>
+
+            <label>Page object for use in template:</label>
+            <ae-select-input ng-model="mail.page_id" name-field="title" has-error="hasErrors.page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" is-edit="true" adder="true"></ae-select-input>
+
+            <div>
+                <a href ng-click="subVariablesShow = !subVariablesShow" ng-class="{'dropup': subVariablesShow}">
+                    Add sub variables
+                    <span class="caret"></span><br>
+                </a>
+                <div ng-if="subVariablesShow" class="alert alert-info">
+                    <div ng-repeat="sub_item in mail.sub_data_array">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <input type="text" ng-model="sub_item.key" class="form-control input-sm" placeholder="Key">
                             </div>
-                        </div>
 
+                            <div class="form-group">
+                                <input type="text" ng-model="sub_item.value" class="form-control input-sm" placeholder="Value">
+                            </div>
+
+                            <button class="btn btn-default btn-sm" ng-click="mail.sub_data_array.splice($index, 1)"><span class="glyphicon glyphicon-remove"></span></button>
+                        </form>
                         <br>
-
-                        <button class="btn btn-primary" ng-if="status.mail_template.dirty" ng-click="saveMailTemplate()">Save mail template</button>
-
-                        <span ng-if="status.mail_template.loading">Loading....</span>
-
-                        <uib-alert ng-if="status.mail_template.error" type="danger" dismiss-on-timeout="3000">{{status.mail_template.error}}</uib-alert>
                     </div>
-                </div>
-
-                <label>Page object for use in template:</label>
-                <ae-select-input ng-model="mail.page_id" name-field="title" has-error="hasErrors.page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" is-edit="true" adder="true"></ae-select-input>
-
-                <div>
-                    <a href ng-click="subVariablesShow = !subVariablesShow" ng-class="{'dropup': subVariablesShow}">
-                        Add sub variables
-                        <span class="caret"></span><br>
-                    </a>
-                    <div ng-if="subVariablesShow" class="alert alert-info">
-                        <div ng-repeat="sub_item in mail.sub_data_array">
-                            <form class="form-inline">
-                                <div class="form-group">
-                                    <input type="text" ng-model="sub_item.key" class="form-control input-sm" placeholder="Key">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="text" ng-model="sub_item.value" class="form-control input-sm" placeholder="Value">
-                                </div>
-
-                                <button class="btn btn-default btn-sm" ng-click="mail.sub_data_array.splice($index, 1)"><span class="glyphicon glyphicon-remove"></span></button>
-                            </form>
-                            <br>
-                        </div>
-                        {{mail.sub_data_array}}
-                        <button class="btn btn-default btn-sm" ng-click="mail.sub_data_array.push({})"><span class="glyphicon glyphicon-plus"></span> Add sub variable</button>
-                    </div>
+                    {{mail.sub_data_array}}
+                    <button class="btn btn-default btn-sm" ng-click="mail.sub_data_array.push({})"><span class="glyphicon glyphicon-plus"></span> Add sub variable</button>
                 </div>
             </div>
-            <div class="panel-footer">
-                <h4>Mail preview:</h4>
 
-                <div ng-if="!status.preview_mail.loading && !status.preview_mail.error">
-                    <label>Title:</label> {{preview_mail.mail_title}}<br>
-                    <label>Content:</label>
-                    <wiz-markdown content="preview_mail.mail_content"></wiz-markdown>
-                </div>
+            <h4>Mail preview:</h4>
 
-                <span ng-if="status.preview_mail.loading">Loading....</span>
-
-                <uib-alert ng-if="status.preview_mail.error" type="danger" dismiss-on-timeout="3000">{{status.preview_mail.error}}</uib-alert>
+            <div ng-if="!status.preview_mail.loading && !status.preview_mail.error">
+                <label>Title:</label> {{preview_mail.mail_title}}<br>
+                <label>Content:</label>
+                <wiz-markdown content="preview_mail.mail_content"></wiz-markdown>
             </div>
 
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Resend sent mail with new data</h3>
-            </div>
-            <div class="panel-body">
-                <label>Sent mails:</label>
+            <span ng-if="status.preview_mail.loading">Loading....</span>
 
-                <div class="list-group">
-                    <a href
-                       ng-repeat="sent_mail in sent_mails | orderBy: '-id'"
-                       ui-sref="app.manage.mailing({sentMailId: sent_mail.id})"
-                       ng-class="['list-group-item', {'active':mail.id == sent_mail.id}]">
-                        <h5 class="list-group-item-heading">{{sent_mail.result_title}}</h5>
-                        <p class="list-group-item-text">{{sent_mail.result_content | limitTo: 50}}...</p>
-                    </a>
-                </div>
-                
-                Or create <a href="/admin/manage/mailing/" class="btn btn-success">New mail</a>
-            </div>
-        </div>
-    </div>
-</div>
+            <uib-alert ng-if="status.preview_mail.error" type="danger" dismiss-on-timeout="3000">{{status.preview_mail.error}}</uib-alert>
 
-<button class="btn btn-primary" ng-click="sendMail()">Send mail</button>
-<loading-gif lg-if="status.mail.loading"></loading-gif>
+        </md-card>
+
+        <md-card layout="column" flex="30" style="padding: 8px;">
+            <label>Sent mails:</label>
+
+            <div class="list-group">
+                <a href
+                   ng-repeat="sent_mail in sent_mails | orderBy: '-id'"
+                   ui-sref="app.manage.mailing({sentMailId: sent_mail.id})"
+                   ng-class="['list-group-item', {'active':mail.id == sent_mail.id}]">
+                    <h5 class="list-group-item-heading">{{sent_mail.result_title}}</h5>
+                    <p class="list-group-item-text">{{sent_mail.result_content | limitTo: 50}}...</p>
+                </a>
+            </div>
+
+            Or create <a href="/admin/manage/mailing/" class="btn btn-success">New mail</a>
+        </md-card>
+    </md-content>
+
+    <md-toolbar class="md-primary md-hue-1" layout style="padding: 8px;">
+
+        <md-button class="md-primary md-raised" ng-click="sendMail()">
+            <span>Send mail</span>
+        </md-button>
+
+        <span flex></span>
+    </md-toolbar>
+</md-content>
