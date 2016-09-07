@@ -16,7 +16,7 @@
 </script>
 
 <div layout="row">
-    <md-sidenav layout="column" md-is-locked-open='true' class="inside-nav">
+    <md-sidenav layout="column" layout-padding md-is-locked-open="true" flex="10">
 
         <div ng-repeat="context in contexts">
             <h4>{{context.name}}</h4>
@@ -44,7 +44,7 @@
 
     </md-sidenav>
 
-    <md-content flex layout="column">
+    <md-content layout="column" flex="90">
         <ui-view class="margin-top"></ui-view>
     </md-content>
 </div>

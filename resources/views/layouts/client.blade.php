@@ -1,5 +1,9 @@
 @extends('layouts.master')
 
+@section('analytics')
+    {!! Analytics::render() !!}
+@endsection
+
 @section('seo_title')
     {{$site_title}} - {{$page->seo_title}}
 @endsection
@@ -155,6 +159,8 @@
 
 @section('body')
     <body>
+        @yield('analytics')
+
         @yield('navbar')
 
         @yield('header')

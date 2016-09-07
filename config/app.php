@@ -172,8 +172,11 @@ return [
         Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class,
 
         Unisharp\Laravelfilemanager\LaravelFilemanagerServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class
+        Intervention\Image\ImageServiceProvider::class,
+        Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class,
 
+        EllisTheDev\Robots\RobotsServiceProvider::class,
+        Roumen\Sitemap\SitemapServiceProvider::class,
     ],
 
     /*
@@ -233,6 +236,10 @@ return [
         'LaravelLocalization'   => Mcamara\LaravelLocalization\Facades\LaravelLocalization::class,
 
         'Image'     => Intervention\Image\Facades\Image::class,
+
+        'Analytics' => Ipunkt\LaravelAnalytics\AnalyticsFacade::class,
+
+        'Robots' => EllisTheDev\Robots\RobotsFacade::class,
     ],
 
 ];

@@ -1,6 +1,6 @@
-<md-sidenav layout="column" md-is-locked-open='true' ng-class="{'collapsed-nav':app.collapseNav}">
+<md-sidenav layout="column" md-is-locked-open='true' ng-class="{'collapsed-nav':app.collapseNav}" flex="10">
     <md-toolbar class="md-primary md-hue-3">
-        <h3 class="text-center sidenav-header">Geesome CMF</h3>
+        <h3 layout="row" layout-align="center"><span>Geesome CMF</span></h3>
     </md-toolbar>
 
     <md-list-item class="md-2-line" ui-sref="app.page.create">
@@ -45,8 +45,8 @@
     <md-divider></md-divider>
 </md-sidenav>
 
-<md-content flex layout="column">
-    <md-toolbar class="md-primary md-hue-3">
+<md-content flex layout="column" flex="90">
+    <md-toolbar class="md-primary md-hue-3" layout="row">
         <div class="md-toolbar-tools">
 
             <md-button class="md-icon-button" ng-click="app.collapseNav = !app.collapseNav">
@@ -61,7 +61,7 @@
             </md-button>
         </div>
     </md-toolbar>
-    <div class="content">
-        <div ui-view="content"></div>
+    <div layout="row">
+        <div ui-view="content" layout="column" flex="grow"></div>
     </div>
 </md-content>

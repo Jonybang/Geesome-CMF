@@ -16,6 +16,7 @@ class SliderSubFieldsTableSeeder extends Seeder
      */
     public function run()
     {
+        // Create Images slider SubField
         Template::where('key', 'page')->first()->sub_fields()->create([
             'key' => 'imagesArray',
             'name' => 'Images slider',
@@ -35,11 +36,13 @@ class SliderSubFieldsTableSeeder extends Seeder
             ], JSON_PRETTY_PRINT)
         ]);
 
+        // Create Simple images SubField
         $sub_field = Template::where('key', 'page')->first()->sub_fields()->create([
                 'key' => 'imageLink',
                 'name' => 'Image Path',
                 'sub_field_type_id' => SubFieldType::where('key', 'image')->first()->id
             ]);
+        // Filling images SubField values by demo data;
         $seeds = [
             '/assets/img/project-3.jpg',
             '/assets/img/project-2.png',

@@ -7,6 +7,8 @@
 
     @yield('meta')
 
+    @yield('analytics')
+
     <base href="/">
 
     <title>@yield('seo_title')</title>

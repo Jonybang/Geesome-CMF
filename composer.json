@@ -9,15 +9,20 @@
         "laravel/framework": "5.2.*",
         "orchestra/asset": "~3.0",
         "orchestra/support-facades": "3.2.x-dev",
-        "graham-campbell/markdown": "^6.1",
         "guzzlehttp/guzzle": "~5.3|~6.0",
         "laravelcollective/html": "5.2.*",
         "zizaco/entrust": "5.2.x-dev",
+
+        "graham-campbell/markdown": "^6.1",
         "marcelgwerder/laravel-api-handler": "dev-master",
         "barryvdh/laravel-translation-manager": "0.2.x",
-        "mcamara/laravel-localization": "1.1.*",
         "intervention/image": "^2.3",
-        "unisharp/laravel-filemanager": "^1.6"
+        "unisharp/laravel-filemanager": "^1.6",
+
+        "mcamara/laravel-localization": "1.1.*",
+        "ellisthedev/laravel-5-robots": "^0.1.0",
+        "roumen/sitemap": "^2.6",
+        "ipunkt/laravel-analytics": "^1.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
