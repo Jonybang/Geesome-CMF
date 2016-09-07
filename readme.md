@@ -126,7 +126,7 @@ Colors: https://material.google.com/style/color.html
 
 Templates:
 - http://flatlogic.github.io/angular-material-dashboard/#/dashboard
-- https://github.com/flatlogic/angular-material-dashboard
+- https://getmdl.io/templates/dashboard/index.html
 
 ## TODO:
 
