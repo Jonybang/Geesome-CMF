@@ -124,6 +124,10 @@ Icons: https://design.google.com/icons/
 
 Colors: https://material.google.com/style/color.html
 
+Templates:
+- http://flatlogic.github.io/angular-material-dashboard/#/dashboard
+- https://github.com/flatlogic/angular-material-dashboard
+
 ## TODO:
 
 - Move to laravel package(for example [Riari/laravel-forum](https://github.com/Riari/laravel-forum));
