@@ -20,8 +20,8 @@ angular
         'admin_app.database',
         'admin_app.mailing'
     ])
-    .config(['$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
-        function($urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
+    .config(['$mdThemingProvider', '$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
+        function($mdThemingProvider, $urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
 
             $stateProvider
                 .state('app', {
@@ -55,6 +55,31 @@ angular
                 positionX: 'right',
                 positionY: 'top'
             });
+
+            var cyanWithWhite = $mdThemingProvider.extendPalette('cyan', {
+                '50': 'FFFFFF',
+                '100': 'E0F7FA',
+                '200': 'B2EBF2',
+                'A100': 'FFFFFF',   // md-menu-content background,
+                'A200': '000000'    // md-menu-content text
+            });
+            $mdThemingProvider.definePalette('cyanWithWhite', cyanWithWhite);
+
+            $mdThemingProvider.theme('default')
+                .primaryPalette('amber', {
+                    'default': '300'
+                })
+                .accentPalette('indigo', {
+                    'default': '100'
+                })
+                .warnPalette('red', {
+                    'default': '500'
+                })
+                .backgroundPalette('cyanWithWhite', {
+                    'default': '50',
+                    'hue-1': '100',
+                    'hue-2': '200'
+                });
         }])
     .run(['$rootScope', 'ServerData', 'AEditConfig', function($rootScope, ServerData, AEditConfig){
 
