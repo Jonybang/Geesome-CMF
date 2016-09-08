@@ -1,6 +1,6 @@
 [submodule "public/angular/awesome-edit"]
 	path = public/angular/awesome-edit
-	url = https://github.com/Jonybang/awesome-edit.git
+	url = https://github.com/Jonybang/awesome-edit
 [submodule "public/angular/--force"]
 	path = public/angular/--force
 	url = https://github.com/Jonybang/awesome-edit.git
