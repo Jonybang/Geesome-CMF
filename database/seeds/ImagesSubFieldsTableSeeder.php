@@ -44,9 +44,9 @@ class SliderSubFieldsTableSeeder extends Seeder
             ]);
         // Filling images SubField values by demo data;
         $seeds = [
-            '/assets/img/project-3.jpg',
-            '/assets/img/project-2.png',
-            '/assets/img/project-1.jpg',
+            '/img/project-3.jpg',
+            '/img/project-2.png',
+            '/img/project-1.jpg',
         ];
         foreach(Page::where('alias', 'projects')->get() as $projects_parent){
             foreach($projects_parent->child_pages as $index => $page){

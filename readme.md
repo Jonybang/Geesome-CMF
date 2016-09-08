@@ -17,9 +17,9 @@ User: geesome.test@openmail.cc
 Password: Gm192837
 
 Page form:
-![Admin panel screenshot](public/assets/img/admin-panel-screenshot.png)
+![Admin panel screenshot](public/img/admin-panel-screenshot.png)
 Database edit:
-![Admin panel screenshot](public/assets/img/admin-panel-screenshot-2.png)
+![Admin panel screenshot](public/img/admin-panel-screenshot-2.png)
 
 Demo site built completely using [database seeds](database/seeds). In these files developer can trace relations of CMF entities.
 
@@ -92,9 +92,9 @@ Sub entites:
 Now backend core is located in [app/Http/routes.php](app/Http/routes.php) file.
 In core uses multilanguage routes with [mcamara/laravel-localization](https://github.com/mcamara/laravel-localization) package
 
-Frontend core(Admin panel) located in [public/assets/angular/admin_app](public/assets/angular/admin_app) folder and used [Awesome edit](https://github.com/Jonybang/awesome-edit) as angular module for manage database tables and admin forms. 
+Frontend core(Admin panel) located in [public/angular/admin_app](public/angular/admin_app) folder and used [Awesome edit](https://github.com/Jonybang/awesome-edit) as angular module for manage database tables and admin forms.
 Frontend architecture develop with DRY principle, adheres to the minimalist approach of development and has some specified and bulky code only in create/edit controllers and directives of complex forms
-(like [page-form.controller.js](public/assets/angular/admin_app/modules/pages/page_form/page_form.controller.js) and [mail-form.controller.js](public/assets/angular/admin_app/modules/mailing/mail_form.controller.js))
+(like [page-form.controller.js](public/angular/admin_app/modules/pages/page_form/page_form.controller.js) and [mail-form.controller.js](public/angular/admin_app/modules/mailing/mail_form.controller.js))
 
 Frontend and backend separated by REST API, and if desired developer can build his frontend for use created backend.
 

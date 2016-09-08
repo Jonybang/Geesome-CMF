@@ -19,18 +19,24 @@ dt {
 }
 
 .btn-group.select-adder {
-  width: 300px;
+  display: block;
+  width: auto;
   padding: 0 15px;
   margin-left: -15px;
 }
 
 .btn-group.select-adder .ui-select-container {
-  width: 229px !important;
+  width: 61% !important;
   display: inline-block;
 }
 
 .btn-group.select-adder .btn-success {
-  float: right;
+  position: relative;
+  top: -12px;
+}
+
+.btn-group.select-adder .ui-select-multiple + .btn-success {
+  top: 0;
 }
 
 pre {
@@ -44,6 +50,16 @@ pre {
   /* Opera 7 */
   word-wrap: break-word;
   /* Internet Explorer 5.5+ */
+}
+
+.ui-select-match a.close {
+  position: absolute;
+  right: 20px;
+  float: none;
+}
+
+.ui-select-container.ng-empty .ui-select-match a.close {
+  display: none;
 }
 /* Page structure */
 

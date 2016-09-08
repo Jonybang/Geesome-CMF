@@ -1,6 +1,6 @@
-[submodule "public/assets/angular/awesome-edit"]
-	path = public/assets/angular/awesome-edit
+[submodule "public/angular/awesome-edit"]
+	path = public/angular/awesome-edit
 	url = https://github.com/Jonybang/awesome-edit.git
-[submodule "public/assets/angular/--force"]
-	path = public/assets/angular/--force
+[submodule "public/angular/--force"]
+	path = public/angular/--force
 	url = https://github.com/Jonybang/awesome-edit.git

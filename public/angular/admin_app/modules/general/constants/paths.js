@@ -1,4 +1,4 @@
-var app_path = '/assets/angular/admin_app/',
+var app_path = '/angular/admin_app/',
     modules_path = app_path + 'modules/';
 
 angular.module('admin_app.general')

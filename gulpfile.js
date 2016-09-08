@@ -21,9 +21,9 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var concatCss = require('gulp-concat-css');
 
-var angular_dir = 'public/assets/angular/';
-var css_dir = 'public/assets/css/';
-var dist_dir = 'public/assets/dist/';
+var angular_dir = 'public/angular/';
+var css_dir = 'public/css/';
+var dist_dir = 'public/dist/';
 
 var paths = {
     styles: [

@@ -14,21 +14,21 @@
 @endsection
 
 @section('styles')
-    <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Magnific Popup CSS -->
-    <link href="assets/css/plugins/magnific-popup.css" rel="stylesheet">
+    <link href="css/plugins/magnific-popup.css" rel="stylesheet">
 
     <!-- Slick Slider CSS -->
     <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
     <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick-theme.css"/>
 
     <!-- Custom CSS -->
-    <link href="assets/css/clean-blog.css" rel="stylesheet">
+    <link href="css/clean-blog.css" rel="stylesheet">
 @endsection
 
 @section('navbar')
@@ -75,7 +75,7 @@
 @endsection
 
 @section('header')
-    <header class="intro-header" style="background-image: url('{{isset($sf['imageLink']) && $sf['imageLink'] ? $sf['imageLink'] : 'assets/img/home-bg.jpg'}}')">
+    <header class="intro-header" style="background-image: url('{{isset($sf['imageLink']) && $sf['imageLink'] ? $sf['imageLink'] : 'img/home-bg.jpg'}}')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -143,18 +143,18 @@
 @endsection
 
 @section('scripts')
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/plugins/jquery.bootstrap-autohidingnavbar.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/plugins/jquery.bootstrap-autohidingnavbar.min.js"></script>
 
-    <script src="assets/js/plugins/scrollreveal.min.js"></script>
-    <script src="assets/js/plugins/jquery.easing.min.js"></script>
-    <script src="assets/js/plugins/jquery.fittext.js"></script>
-    <script src="assets/js/plugins/jquery.magnific-popup.min.js"></script>
+    <script src="js/plugins/scrollreveal.min.js"></script>
+    <script src="js/plugins/jquery.easing.min.js"></script>
+    <script src="js/plugins/jquery.fittext.js"></script>
+    <script src="js/plugins/jquery.magnific-popup.min.js"></script>
 
     <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="assets/js/clean-blog.js"></script>
+    <script src="js/clean-blog.js"></script>
 @endsection
 
 @section('body')

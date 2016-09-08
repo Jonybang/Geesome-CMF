@@ -6,7 +6,7 @@
 
 @section('styles')
     <!-- Bootstrap Core CSS -->
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 @endsection
 
 @section('content')

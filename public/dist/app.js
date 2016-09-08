@@ -136,7 +136,7 @@ angular.module('admin_app')
     .directive('loadingGif', [function() {
         return {
             restrict: 'E',
-            template: '<img ng-if="lgIf" src="assets/img/ajax-loading.gif"/>',
+            template: '<img ng-if="lgIf" src="img/ajax-loading.gif"/>',
             scope: {
                 lgIf: '='
             }
@@ -1590,7 +1590,7 @@ angular.module('admin_app.database')
 
         return this;
     }]);
-var app_path = '/assets/angular/admin_app/',
+var app_path = '/angular/admin_app/',
     modules_path = app_path + 'modules/';
 
 angular.module('admin_app.general')
