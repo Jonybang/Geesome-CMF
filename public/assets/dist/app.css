@@ -84,6 +84,10 @@ body > ui-view > md-content {
   margin-top: 15px;
 }
 
+.no-margin {
+  margin: 0;
+}
+
 .padding {
   padding: 8px;
 }
