@@ -56,29 +56,37 @@ angular
                 positionY: 'top'
             });
 
-            var cyanWithWhite = $mdThemingProvider.extendPalette('cyan', {
+            var cyanWithWhite = $mdThemingProvider.extendPalette('orange', {
                 '50': 'FFFFFF',
-                '100': 'E0F7FA',
-                '200': 'B2EBF2',
+                '100': 'FFF3E0',
+                '200': 'FFE0B2',
                 'A100': 'FFFFFF',   // md-menu-content background,
-                'A200': '000000'    // md-menu-content text
+                'A200': '212121'    // md-menu-content text
             });
-            $mdThemingProvider.definePalette('cyanWithWhite', cyanWithWhite);
+            $mdThemingProvider.definePalette('deepPurpleWithWhite', cyanWithWhite);
 
             $mdThemingProvider.theme('default')
-                .primaryPalette('amber', {
-                    'default': '300'
+                .primaryPalette('orange', {
+                    'default': '500',
+                    'hue-1': '400',
+                    'hue-2': '300',
+                    'hue-3': '200'
                 })
-                .accentPalette('indigo', {
-                    'default': '100'
+                .accentPalette('green', {
+                    'default': '300',
+                    'hue-1': '400',
+                    'hue-2': '500',
+                    'hue-3': '700'
                 })
                 .warnPalette('red', {
-                    'default': '500'
+                    'default': '500',
+                    'hue-1': '700'
                 })
-                .backgroundPalette('cyanWithWhite', {
+                .backgroundPalette('deepPurpleWithWhite', {
                     'default': '50',
-                    'hue-1': '100',
-                    'hue-2': '200'
+                    'hue-1': '50',
+                    'hue-2': '100',
+                    'hue-3': '200'
                 });
         }])
     .run(['$rootScope', 'ServerData', 'AEditConfig', function($rootScope, ServerData, AEditConfig){
@@ -388,6 +396,7 @@ angular
 
 				scope.CKEditorOptions = {
 					language: 'en',
+					skin: 'minimalist',
 					allowedContent: true,
 					entities: false,
 					toolbarGroups: [
@@ -1962,6 +1971,8 @@ angular
 
             //Fields for adder functional at select inputs
             $scope.fields = PageFormConfig.fields;
+
+            $scope.toolbarPath = AppPaths.pages + 'page_form/templates/page_toolbar.html';
 
             var defaultPage = new Pages();
 

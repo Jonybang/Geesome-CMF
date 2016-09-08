@@ -18,6 +18,7 @@ angular
 
 				scope.CKEditorOptions = {
 					language: 'en',
+					skin: 'minimalist',
 					allowedContent: true,
 					entities: false,
 					toolbarGroups: [

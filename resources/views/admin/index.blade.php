@@ -37,7 +37,7 @@
 
     <!--<script src="//cdn.ckeditor.com/4.5.10/basic/ckeditor.js"></script>-->
     <!--<script src="//cdn.ckeditor.com/4.5.10/standard/ckeditor.js"></script>-->
-    <script src="//cdn.ckeditor.com/4.5.10/full/ckeditor.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
 
     <script src="/dist/vendor.js"></script>
     <script src="/dist/app.js"></script>

@@ -1,22 +1,5 @@
-<script type="text/ng-template" id="list.html">
-    <a href ng-click="page.hide_children = !page.hide_children" >{{page.title}}</a>
-    <ul dnd-list="page.child_pages_by_index"
-        dnd-drop="changeParent(event, index, item, page)"
-        ng-class="['child_pages', {'empty':!page.child_pages_by_index.length}]">
-        <li ng-repeat="page in page.child_pages_by_index"
-            dnd-draggable="page"
-            dnd-effect-allowed="move"
-            dnd-moved="$parent.$parent.page.child_pages_by_index.splice($index, 1)"
-            dnd-selected="models.selected = page"
-            ng-class="{selected: models.selected === page}"
-            ng-include="'list.html'"
-            ui-sref="app.page.edit({pageId: page.id})">
-        </li>
-    </ul>
-</script>
-
 <div layout="row">
-    <md-sidenav layout="column" class="md-background md-hue-1 padding" md-is-locked-open="true" flex="15">
+    <md-sidenav layout="column" class="md-background md-hue-2 padding" md-is-locked-open="true" flex="15">
 
         <div ng-repeat="context in contexts">
             <h4>{{context.name}}</h4>
@@ -48,3 +31,20 @@
         <ui-view></ui-view>
     </md-card>
 </div>
+
+<script type="text/ng-template" id="list.html">
+    <a href ng-click="page.hide_children = !page.hide_children" >{{page.title}}</a>
+    <ul dnd-list="page.child_pages_by_index"
+        dnd-drop="changeParent(event, index, item, page)"
+        ng-class="['child_pages', {'empty':!page.child_pages_by_index.length}]">
+        <li ng-repeat="page in page.child_pages_by_index"
+            dnd-draggable="page"
+            dnd-effect-allowed="move"
+            dnd-moved="$parent.$parent.page.child_pages_by_index.splice($index, 1)"
+            dnd-selected="models.selected = page"
+            ng-class="{selected: models.selected === page}"
+            ng-include="'list.html'"
+            ui-sref="app.page.edit({pageId: page.id})">
+        </li>
+    </ul>
+</script>

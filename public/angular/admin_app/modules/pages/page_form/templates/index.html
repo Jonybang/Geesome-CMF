@@ -1,20 +1,8 @@
 <md-content layout layout-wrap>
-    <md-toolbar class="md-primary md-hue-1" layout style="padding: 8px;">
-
-        <md-button class="md-primary md-raised" ng-click="savePage()">
-            <span ng-if="!page.id">Create page</span>
-            <span ng-if="page.id">Save page</span>
-        </md-button>
-
-        <span flex></span>
-
-        <md-button class="md-raised" target="_self" ng-href="/{{page.page_uri}}" ng-disabled="!page.id">
-            Open page
-        </md-button>
-    </md-toolbar>
+    <div ng-include="{{toolbarPath}}"></div>
 
     <md-content layout flex="grow">
-        <md-card layout="column" flex="70" style="padding: 8px;">
+        <div layout="column" flex="70" class="padding">
             <label>Title:</label>
             <ae-text-input ng-model="page.title" is-edit="true" has-error="hasErrors.title" ng-model-options="{debounce: 500}"></ae-text-input>
 
@@ -44,10 +32,10 @@
 
             <h4>Sub fields:</h4>
             <sub-fields-manager ng-model="sub_fields" page-resource="page" api="subFieldsApi" refresh-sub-fields="getSubFields()"></sub-fields-manager>
-        </md-card>
-
-        <md-content layout="column" flex="30">
-            <md-card style="padding: 8px;">
+        </div>
+        <md-divider></md-divider>
+        <div layout="column" flex="30">
+            <md-content class="padding">
                 <label>Template:</label>
                 <ae-select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" is-edit="true" adder="true" get-list="true"></ae-select-input>
 
@@ -125,9 +113,11 @@
                         </label>
                     </div>
                 </div>
-            </md-card>
+            </md-content>
 
-            <md-card style="padding: 8px;">
+            <md-divider></md-divider>
+
+            <md-content class="padding">
                 <label>Title:</label>
                 <ae-text-input ng-model="page.seo.title" is-edit="true"></ae-text-input>
 
@@ -136,22 +126,10 @@
 
                 <label>Keywords:</label>
                 <ae-text-input ng-model="page.seo.keywords" type="textarea" is-edit="true"></ae-text-input>
-            </md-card>
-        </md-content>
+            </md-content>
+        </div>
 
     </md-content>
 
-    <md-toolbar class="md-primary md-hue-1" layout style="padding: 8px;">
-
-        <md-button class="md-primary md-raised" ng-click="savePage()">
-            <span ng-if="!page.id">Create page</span>
-            <span ng-if="page.id">Save</span>
-        </md-button>
-
-        <span flex></span>
-
-        <md-button class="md-raised" target="_self" ng-href="/{{page.page_uri}}" ng-disabled="!page.id">
-            Open page
-        </md-button>
-    </md-toolbar>
-</md-content>
+    <div ng-include="{{toolbarPath}}"></div>
+</md-content >

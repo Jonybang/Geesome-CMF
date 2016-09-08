@@ -11,6 +11,8 @@ angular
             //Fields for adder functional at select inputs
             $scope.fields = PageFormConfig.fields;
 
+            $scope.toolbarPath = AppPaths.pages + 'page_form/templates/page_toolbar.html';
+
             var defaultPage = new Pages();
 
             if($state.params.pageId){
