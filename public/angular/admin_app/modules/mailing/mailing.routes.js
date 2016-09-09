@@ -13,7 +13,7 @@ angular
                     abstract: true,
                     views: {
                         header:     { template: "<h3>Mailing</h3>" },
-                        content:    { template: "<ui-view></ui-view>" }
+                        content:    { template: '<ui-view layout="row" flex="grow"></ui-view>' }
                     }
                 })
                     .state('app.mailing.manage', {

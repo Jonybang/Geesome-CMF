@@ -1,15 +1,6 @@
-<md-content layout layout-wrap class="fixed-fabs-container">
-    <div layout="row" class="fixed-fabs">
-        <md-button class="md-accent md-fab md-fab-top-right" ng-click="sendMail()">
-            <md-tooltip md-direction="left">
-                Send mail
-            </md-tooltip>
-            <md-icon>send</md-icon>
-        </md-button>
-    </div>
-
+<md-content layout layout-wrap class="fixed-fabs-container" flex="grow">
     <md-content layout flex="grow">
-        <md-card layout="column" flex="70" style="padding: 8px;">
+        <md-card layout="column" flex="70" class="padding">
 
             <label>Subscribers groups:</label>
             <ae-select-input ng-model="mail.subscribers_groups_ids" or-name-field="key" has-error="hasErrors.subscribers_groups_ids" ng-resource="models.subscribers_groups" ng-resource-fields="fields.subscribers_groups" is-edit="true" adder="true" type="multiselect"></ae-select-input>
@@ -138,10 +129,32 @@
             <uib-alert ng-if="status.preview_mail.error" type="danger" dismiss-on-timeout="3000">{{status.preview_mail.error}}</uib-alert>
 
         </md-card>
+    </md-content>
 
-        <md-card layout="column" flex="30" style="padding: 8px;">
-            <label>Sent mails:</label>
+    <div layout="row" class="fixed-fabs">
+        <md-button class="md-accent md-fab md-fab-top-right" ng-click="sendMail()">
+            <md-tooltip md-direction="left">
+                Send mail
+            </md-tooltip>
+            <md-icon>send</md-icon>
+        </md-button>
+        <md-button class="md-primary md-fab md-fab-top-right" ng-click="openSentMails()">
+            <md-tooltip md-direction="left">
+                Sent mails
+            </md-tooltip>
+            <md-icon>inbox</md-icon>
+        </md-button>
+    </div>
 
+    <md-sidenav
+            class="md-sidenav-right"
+            md-component-id="sent_mails"
+            md-whiteframe="4">
+
+        <md-toolbar class="md-theme-indigo">
+            <h1 class="md-toolbar-tools">Sent mails</h1>
+        </md-toolbar>
+        <md-content layout-padding>
             <div class="list-group">
                 <a href
                    ng-repeat="sent_mail in sent_mails | orderBy: '-id'"
@@ -151,17 +164,7 @@
                     <p class="list-group-item-text">{{sent_mail.result_content | limitTo: 50}}...</p>
                 </a>
             </div>
+        </md-content>
 
-            Or create <a href="/admin/manage/mailing/" class="btn btn-success">New mail</a>
-        </md-card>
-    </md-content>
-
-    <md-toolbar class="md-primary md-hue-1" layout style="padding: 8px;">
-
-        <md-button class="md-primary md-raised" ng-click="sendMail()">
-            <span>Send mail</span>
-        </md-button>
-
-        <span flex></span>
-    </md-toolbar>
+    </md-sidenav>
 </md-content>

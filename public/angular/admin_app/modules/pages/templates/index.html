@@ -1,13 +1,23 @@
-<div layout="row">
+<div layout="row" flex="grow">
     <md-sidenav layout="column" class="md-background md-hue-2 padding" md-is-locked-open="true" flex="15">
 
         <div ng-repeat="context in contexts">
-            <h4>{{context.name}}</h4>
-            <div class="btn-group btn-group-justified">
-                <div class="btn-group" role="group">
-                    <a class="btn btn-default btn-sm" ui-sref="app.page.edit({pageId: null, context_id: context.id})"><span class="glypicon glyphicon-plus"></span> Add page</a>
+            <md-toolbar class="md-primary md-hue-3">
+                <div class="md-toolbar-tools">
+                    <h2>
+                        <span>{{context.name}}</span>
+                    </h2>
+
+                    <span flex></span>
+
+                    <md-button class="md-fab md-mini md-accent" ui-sref="app.page.edit({pageId: null, context_id: context.id})">
+                        <md-tooltip md-direction="left">
+                            New page
+                        </md-tooltip>
+                        <md-icon>note_add</md-icon>
+                    </md-button>
                 </div>
-            </div>
+            </md-toolbar>
 
             <ul dnd-list="context.pages_tree"
                 dnd-drop="changeParent(event, index, item, {id: 0})"
@@ -27,8 +37,7 @@
 
     </md-sidenav>
 
-    <md-card layout="column" flex="85">
-        <ui-view></ui-view>
+    <md-card ui-view layout="column" flex="85">
     </md-card>
 </div>
 

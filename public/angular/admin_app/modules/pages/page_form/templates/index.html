@@ -1,54 +1,51 @@
-<md-content layout layout-wrap class="fixed-fabs-container">
-    <div layout="row" class="fixed-fabs">
-        <md-button class="md-accent md-fab md-fab-top-right" ng-click="savePage()">
-            <md-tooltip md-direction="left">
-                Save page
-            </md-tooltip>
-            <md-icon>save</md-icon>
-        </md-button>
-        <md-button class="md-primary md-fab md-fab-top-right" ng-disabled="!page.id" target="_self" ng-href="/{{page.page_uri}}">
-            <md-tooltip md-direction="left">
-                Open page
-            </md-tooltip>
-            <md-icon>launch</md-icon>
-        </md-button>
-    </div>
-
+<md-content layout layout-wrap class="fixed-fabs-container" flex="grow">
     <md-content layout flex="grow">
         <div layout="column" flex="70" class="padding">
-            <label>Title:</label>
-            <ae-text-input ng-model="page.title" is-edit="true" has-error="hasErrors.title" ng-model-options="{debounce: 500}"></ae-text-input>
+            <md-content class="padding">
+                <md-subheader class="md-accent">General data</md-subheader>
 
-            <div>
-                <a href ng-click="subTitleDescriptionShow = !subTitleDescriptionShow" ng-class="{'dropup': subTitleDescriptionShow}">
-                    Edit sub title and description <span class="caret"></span><br>
-                </a>
-                <div ng-if="subTitleDescriptionShow">
-                    <label>Sub title:</label>
-                    <ae-text-input ng-model="page.sub_title" has-error="hasErrors.sub_title" is-edit="true"></ae-text-input>
+                <label>Title:</label>
+                <ae-text-input ng-model="page.title" is-edit="true" has-error="hasErrors.title" ng-model-options="{debounce: 500}"></ae-text-input>
 
-                    <label>Description:</label>
-                    <ae-text-input ng-model="page.description" has-error="hasErrors.description" type="textarea" is-edit="true"></ae-text-input>
+                <div>
+                    <a href ng-click="subTitleDescriptionShow = !subTitleDescriptionShow" ng-class="{'dropup': subTitleDescriptionShow}">
+                        Edit sub title and description <span class="caret"></span><br>
+                    </a>
+                    <div ng-if="subTitleDescriptionShow">
+                        <label>Sub title:</label>
+                        <ae-text-input ng-model="page.sub_title" has-error="hasErrors.sub_title" is-edit="true"></ae-text-input>
+
+                        <label>Description:</label>
+                        <ae-text-input ng-model="page.description" has-error="hasErrors.description" type="textarea" is-edit="true"></ae-text-input>
+                    </div>
                 </div>
-            </div>
 
-            <label>Content:</label>
-            <sf-texteditor ng-model="page.content" is-edit="true"></sf-texteditor>
+                <label>Content:</label>
+                <sf-texteditor ng-model="page.content" is-edit="true"></sf-texteditor>
 
-            <md-card ng-if="site_settings.markdown_mode == 1">
-                <label>Content preview:</label>
-                <wiz-markdown content="$parent.page.content"></wiz-markdown>
-            </md-card>
+                <md-card ng-if="site_settings.markdown_mode == 1">
+                    <label>Content preview:</label>
+                    <wiz-markdown content="$parent.page.content"></wiz-markdown>
+                </md-card>
 
-            <label>Tags:</label>
-            <ae-select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" get-list="true" type="multiselect"></ae-select-input>
+                <label>Tags:</label>
+                <ae-select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags" is-edit="true" adder="true" get-list="true" type="multiselect"></ae-select-input>
 
-            <h4>Sub fields:</h4>
-            <sub-fields-manager ng-model="sub_fields" page-resource="page" api="subFieldsApi" refresh-sub-fields="getSubFields()"></sub-fields-manager>
+            </md-content>
+
+            <md-divider></md-divider>
+
+            <md-content class="padding">
+                <md-subheader class="md-accent">Sub fields</md-subheader>
+
+                <sub-fields-manager ng-model="sub_fields" page-resource="page" api="subFieldsApi" refresh-sub-fields="getSubFields()"></sub-fields-manager>
+            </md-content>
         </div>
         <md-divider></md-divider>
         <div layout="column" flex="30">
             <md-content class="padding">
+                <md-subheader class="md-accent">Technical data</md-subheader>
+
                 <label>Template:</label>
                 <ae-select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" is-edit="true" adder="true" get-list="true"></ae-select-input>
 
@@ -131,6 +128,8 @@
             <md-divider></md-divider>
 
             <md-content class="padding">
+                <md-subheader class="md-accent">SEO</md-subheader>
+
                 <label>Title:</label>
                 <ae-text-input ng-model="page.seo.title" is-edit="true"></ae-text-input>
 
@@ -141,6 +140,20 @@
                 <ae-text-input ng-model="page.seo.keywords" type="textarea" is-edit="true"></ae-text-input>
             </md-content>
         </div>
-
     </md-content>
+
+    <div layout="row" class="fixed-fabs">
+        <md-button class="md-accent md-fab md-fab-top-right" ng-click="savePage()">
+            <md-tooltip md-direction="left">
+                Save page
+            </md-tooltip>
+            <md-icon>save</md-icon>
+        </md-button>
+        <md-button class="md-primary md-fab md-fab-top-right" ng-disabled="!page.id" target="_self" ng-href="/{{page.page_uri}}">
+            <md-tooltip md-direction="left">
+                Open page
+            </md-tooltip>
+            <md-icon>launch</md-icon>
+        </md-button>
+    </div>
 </md-content >

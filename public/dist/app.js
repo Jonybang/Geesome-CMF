@@ -711,7 +711,7 @@ angular
                     abstract: true,
                     views: {
                         header:     { template: "<h3>Mailing</h3>" },
-                        content:    { template: "<ui-view></ui-view>" }
+                        content:    { template: '<ui-view layout="row" flex="grow"></ui-view>' }
                     }
                 })
                     .state('app.mailing.manage', {
@@ -1613,8 +1613,8 @@ angular.module('admin_app.general')
         mailing:        modules_path + 'mailing/'
     });
 angular.module('admin_app.mailing')
-    .controller('MailFormController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'ServerData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
-        function($scope, $state, $http, $uibModal, debounce, Notification, AppPaths, ServerData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
+    .controller('MailFormController', ['$scope', '$state', '$http', '$mdSidenav', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'ServerData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
+        function($scope, $state, $http, $mdSidenav, $uibModal, debounce, Notification, AppPaths, ServerData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
 
             //======================================
             //INITIAL ACTIONS
@@ -1700,6 +1700,13 @@ angular.module('admin_app.mailing')
                         list: 'templates'
                     }
                 ]
+            };
+
+            $scope.openSentMails = function(){
+                $mdSidenav('sent_mails')
+                    .toggle()
+                    .then(function () {
+                    });
             };
 
             $scope.getSentMails = function(){
