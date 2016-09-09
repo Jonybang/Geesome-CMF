@@ -1,13 +1,13 @@
 <div ng-if="site_settings.markdown_mode != 1">
-	<div ng-show="isEdit">
+	<div ng-hide="viewMode">
 		<div ckeditor="CKEditorOptions" ng-model="$parent.ngModel"></div>
 	</div>
 
-	<div ng-hide="isEdit" ng-bind-html="$parent.ngModel"></div>
+	<div ng-show="viewMode" ng-bind-html="$parent.ngModel"></div>
 </div>
 
 <div ng-if="site_settings.markdown_mode == 1">
-	<wiz-markdown-editor ng-show="isEdit" content="$parent.ngModel" textareaclass="form-control">
+	<wiz-markdown-editor ng-hide="viewMode" content="$parent.ngModel" textareaclass="form-control">
 		<wiz-toolbar-button command="bold">Bold</wiz-toolbar-button>
 		<wiz-toolbar-button command="italic">Italic</wiz-toolbar-button>
 		<wiz-toolbar-button command="undo">UNDO</wiz-toolbar-button>
@@ -30,5 +30,5 @@
 		<wiz-toolbar-button command="h6">H6</wiz-toolbar-button>
 	</wiz-markdown-editor>
 
-	<wiz-markdown ng-hide="isEdit" content="$parent.ngModel"></wiz-markdown>
+	<wiz-markdown ng-show="viewMode" content="$parent.ngModel"></wiz-markdown>
 </div>
