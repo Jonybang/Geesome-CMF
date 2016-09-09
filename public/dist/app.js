@@ -56,15 +56,6 @@ angular
                 positionY: 'top'
             });
 
-            var cyanWithWhite = $mdThemingProvider.extendPalette('orange', {
-                '50': 'FFFFFF',
-                '100': 'FFF3E0',
-                '200': 'FFE0B2',
-                'A100': 'FFFFFF',   // md-menu-content background,
-                'A200': '212121'    // md-menu-content text
-            });
-            $mdThemingProvider.definePalette('deepPurpleWithWhite', cyanWithWhite);
-
             $mdThemingProvider.theme('default')
                 .primaryPalette('orange', {
                     'default': '500',
@@ -82,7 +73,7 @@ angular
                     'default': '500',
                     'hue-1': '700'
                 })
-                .backgroundPalette('deepPurpleWithWhite', {
+                .backgroundPalette('grey', {
                     'default': '50',
                     'hue-1': '50',
                     'hue-2': '100',
