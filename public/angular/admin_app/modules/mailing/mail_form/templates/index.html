@@ -1,6 +1,7 @@
 <md-content layout layout-wrap class="fixed-fabs-container" flex="grow">
     <md-content layout flex="grow">
         <md-card layout="column" flex="70" class="padding">
+            <md-subheader class="md-accent md-hue-3">Mailing data</md-subheader>
 
             <label>Subscribers groups:</label>
             <ae-select-input ng-model="mail.subscribers_groups_ids" or-name-field="key" has-error="hasErrors.subscribers_groups_ids" ng-resource="models.subscribers_groups" ng-resource-fields="fields.subscribers_groups" is-edit="true" adder="true" type="multiselect"></ae-select-input>
@@ -41,28 +42,8 @@
                         <ae-text-input ng-model="mail.mail_template.title" has-error="hasErrors.mail_template.title" is-edit="true" ng-change="status.mail_template.dirty = true"></ae-text-input>
 
                         <label>Mail content template:</label>
-                        <wiz-markdown-editor content="mail.mail_template.content" textareaclass="form-control" ng-change="status.mail_template.dirty = true">
-                            <wiz-toolbar-button command="bold">Bold</wiz-toolbar-button>
-                            <wiz-toolbar-button command="italic">Italic</wiz-toolbar-button>
-                            <wiz-toolbar-button command="undo">UNDO</wiz-toolbar-button>
-                            <wiz-toolbar-button command="redo">REDO</wiz-toolbar-button>
-                            <wiz-toolbar-button command="heading">HEADING</wiz-toolbar-button>
-                            <wiz-toolbar-button command="code">CODE</wiz-toolbar-button>
-                            <wiz-toolbar-button command="ullist">ULLIST</wiz-toolbar-button>
-                            <wiz-toolbar-button command="ollist">OLLIST</wiz-toolbar-button>
-                            <wiz-toolbar-button command="indent">INDENT</wiz-toolbar-button>
-                            <wiz-toolbar-button command="outdent">OUTDENT</wiz-toolbar-button>
-                            <wiz-toolbar-button command="link">LINK</wiz-toolbar-button>
-                            <wiz-toolbar-button command="img">IMG</wiz-toolbar-button>
-                            <wiz-toolbar-button command="hr">HR</wiz-toolbar-button>
-                            <wiz-toolbar-button command="h0">H0</wiz-toolbar-button>
-                            <wiz-toolbar-button command="h1">H1</wiz-toolbar-button>
-                            <wiz-toolbar-button command="h2">H2</wiz-toolbar-button>
-                            <wiz-toolbar-button command="h3">H3</wiz-toolbar-button>
-                            <wiz-toolbar-button command="h4">H4</wiz-toolbar-button>
-                            <wiz-toolbar-button command="h5">H5</wiz-toolbar-button>
-                            <wiz-toolbar-button command="h6">H6</wiz-toolbar-button>
-                        </wiz-markdown-editor>
+
+                        <sf-texteditor ng-model="mail.mail_template.content" is-edit="true" ng-change="status.mail_template.dirty = true"></sf-texteditor>
 
                         <label>Available variables:</label>
                         <div>

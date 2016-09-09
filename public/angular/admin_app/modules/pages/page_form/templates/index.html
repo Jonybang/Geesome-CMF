@@ -2,7 +2,7 @@
     <md-content layout flex="grow">
         <div layout="column" flex="70" class="padding">
             <md-content class="padding">
-                <md-subheader class="md-accent">General data</md-subheader>
+                <md-subheader class="md-accent md-hue-3">General data</md-subheader>
 
                 <label>Title:</label>
                 <ae-text-input ng-model="page.title" is-edit="true" has-error="hasErrors.title" ng-model-options="{debounce: 500}"></ae-text-input>
@@ -36,7 +36,7 @@
             <md-divider></md-divider>
 
             <md-content class="padding">
-                <md-subheader class="md-accent">Sub fields</md-subheader>
+                <md-subheader class="md-accent md-hue-3">Sub fields</md-subheader>
 
                 <sub-fields-manager ng-model="sub_fields" page-resource="page" api="subFieldsApi" refresh-sub-fields="getSubFields()"></sub-fields-manager>
             </md-content>
@@ -44,7 +44,7 @@
         <md-divider></md-divider>
         <div layout="column" flex="30">
             <md-content class="padding">
-                <md-subheader class="md-accent">Technical data</md-subheader>
+                <md-subheader class="md-accent md-hue-3">Technical data</md-subheader>
 
                 <label>Template:</label>
                 <ae-select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" is-edit="true" adder="true" get-list="true"></ae-select-input>
@@ -128,7 +128,7 @@
             <md-divider></md-divider>
 
             <md-content class="padding">
-                <md-subheader class="md-accent">SEO</md-subheader>
+                <md-subheader class="md-accent md-hue-3">SEO</md-subheader>
 
                 <label>Title:</label>
                 <ae-text-input ng-model="page.seo.title" is-edit="true"></ae-text-input>

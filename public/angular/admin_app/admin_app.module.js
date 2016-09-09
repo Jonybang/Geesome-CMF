@@ -65,9 +65,9 @@ angular
                 })
                 .accentPalette('blue', {
                     'default': '600',
-                    'hue-1': '400',
-                    'hue-2': '500',
-                    'hue-3': '700'
+                    'hue-1': '700',
+                    'hue-2': '800',
+                    'hue-3': '900'
                 })
                 .warnPalette('red', {
                     'default': '500',
