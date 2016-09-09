@@ -89,3 +89,6 @@ ul.child_pages.empty {
 .fixed-fabs .md-fab:nth-child(2){
     top: 125px;
 }
+md-input-container label {
+    font-size: 17px;
+}

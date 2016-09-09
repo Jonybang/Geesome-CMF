@@ -4,19 +4,16 @@
             <md-content class="padding">
                 <md-subheader class="md-accent md-hue-3">General data</md-subheader>
 
-                <label>Title:</label>
-                <ae-text-input ng-model="page.title" is-edit="true" has-error="hasErrors.title" ng-model-options="{debounce: 500}"></ae-text-input>
+                <ae-text-input label="Title:" ng-model="page.title" is-edit="true" has-error="hasErrors.title" ng-model-options="{debounce: 500}"></ae-text-input>
 
                 <div>
                     <a href ng-click="subTitleDescriptionShow = !subTitleDescriptionShow" ng-class="{'dropup': subTitleDescriptionShow}">
                         Edit sub title and description <span class="caret"></span><br>
                     </a>
                     <div ng-if="subTitleDescriptionShow">
-                        <label>Sub title:</label>
-                        <ae-text-input ng-model="page.sub_title" has-error="hasErrors.sub_title" is-edit="true"></ae-text-input>
+                        <ae-text-input label="Sub title:" ng-model="page.sub_title" has-error="hasErrors.sub_title" is-edit="true"></ae-text-input>
 
-                        <label>Description:</label>
-                        <ae-text-input ng-model="page.description" has-error="hasErrors.description" type="textarea" is-edit="true"></ae-text-input>
+                        <ae-text-input label="Description:" ng-model="page.description" has-error="hasErrors.description" type="textarea" is-edit="true"></ae-text-input>
                     </div>
                 </div>
 
@@ -46,7 +43,7 @@
             <md-content class="padding">
                 <md-subheader class="md-accent md-hue-3">Technical data</md-subheader>
 
-                <label>Template:</label>
+                <label>Template:{{page.template_id}}</label>
                 <ae-select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" is-edit="true" adder="true" get-list="true"></ae-select-input>
 
                 <div>
@@ -63,8 +60,7 @@
                     </div>
                 </div>
 
-                <label>Alias:</label>
-                <ae-text-input ng-model="page.alias" ng-disabled="page.is_alias_blocked" has-error="hasErrors.alias" is-edit="true"></ae-text-input>
+                <ae-text-input label="Alias:" ng-model="page.alias" ng-disabled="page.is_alias_blocked" has-error="hasErrors.alias" is-edit="true"></ae-text-input>
 
                 <label>Published:
                     <ae-bool-input ng-model="page.is_published" has-error="hasErrors.is_published" is-edit="true"></ae-bool-input>
@@ -75,11 +71,9 @@
                         Edit menu info <span class="caret"></span><br>
                     </a>
                     <div ng-if="menuInfoShow">
-                        <label>Menu title:</label>
-                        <ae-text-input ng-model="page.menu_title" has-error="hasErrors.menu_title" is-edit="true"></ae-text-input>
+                        <ae-text-input label="Menu title:" ng-model="page.menu_title" has-error="hasErrors.menu_title" is-edit="true"></ae-text-input>
 
-                        <label>Menu index:</label>
-                        <ae-text-input ng-model="page.menu_index" has-error="hasErrors.menu_index" is-edit="true"></ae-text-input>
+                        <ae-text-input label="Menu index:" ng-model="page.menu_index" has-error="hasErrors.menu_index" is-edit="true"></ae-text-input>
 
                         <label>
                             Is hide from menu:
@@ -130,14 +124,11 @@
             <md-content class="padding">
                 <md-subheader class="md-accent md-hue-3">SEO</md-subheader>
 
-                <label>Title:</label>
-                <ae-text-input ng-model="page.seo.title" is-edit="true"></ae-text-input>
+                <ae-text-input label="Title:" ng-model="page.seo.title" is-edit="true"></ae-text-input>
 
-                <label>Description:</label>
-                <ae-text-input ng-model="page.seo.description" type="textarea" is-edit="true"></ae-text-input>
+                <ae-text-input label="Description:" ng-model="page.seo.description" type="textarea" is-edit="true"></ae-text-input>
 
-                <label>Keywords:</label>
-                <ae-text-input ng-model="page.seo.keywords" type="textarea" is-edit="true"></ae-text-input>
+                <ae-text-input label="Keywords:" ng-model="page.seo.keywords" type="textarea" is-edit="true"></ae-text-input>
             </md-content>
         </div>
     </md-content>
