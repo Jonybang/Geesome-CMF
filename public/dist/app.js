@@ -72,8 +72,8 @@ angular
                     'hue-2': '300',
                     'hue-3': '200'
                 })
-                .accentPalette('green', {
-                    'default': '300',
+                .accentPalette('blue', {
+                    'default': '600',
                     'hue-1': '400',
                     'hue-2': '500',
                     'hue-3': '700'
@@ -103,13 +103,13 @@ angular
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
 angular
-    .module('admin_app.general', [
-    ]);
-angular
     .module('admin_app.database', [
         'ui.router',
 
         'admin_app.general'
+    ]);
+angular
+    .module('admin_app.general', [
     ]);
 angular
     .module('admin_app.mailing', [
@@ -777,19 +777,6 @@ angular
                         templateUrl: AppPaths.pages + 'page_form/templates/index.html'
                     });
         }]);
-var app_path = '/angular/admin_app/',
-    modules_path = app_path + 'modules/';
-
-angular.module('admin_app.general')
-    .constant('AppPaths', {
-        app:            app_path,
-        modules:        modules_path,
-        directives:     app_path + 'directives/',
-
-        database:       modules_path + 'database/',
-        pages:          modules_path + 'pages/',
-        mailing:        modules_path + 'mailing/'
-    });
 angular.module('admin_app.database')
     .factory('DBManageContextsConfig', ['Contexts', function(Contexts) {
 
@@ -1612,6 +1599,19 @@ angular.module('admin_app.database')
 
         return this;
     }]);
+var app_path = '/angular/admin_app/',
+    modules_path = app_path + 'modules/';
+
+angular.module('admin_app.general')
+    .constant('AppPaths', {
+        app:            app_path,
+        modules:        modules_path,
+        directives:     app_path + 'directives/',
+
+        database:       modules_path + 'database/',
+        pages:          modules_path + 'pages/',
+        mailing:        modules_path + 'mailing/'
+    });
 angular.module('admin_app.mailing')
     .controller('MailFormController', ['$scope', '$state', '$http', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'ServerData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
         function($scope, $state, $http, $uibModal, debounce, Notification, AppPaths, ServerData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
@@ -1971,8 +1971,6 @@ angular
 
             //Fields for adder functional at select inputs
             $scope.fields = PageFormConfig.fields;
-
-            $scope.toolbarPath = AppPaths.pages + 'page_form/templates/page_toolbar.html';
 
             var defaultPage = new Pages();
 

@@ -76,3 +76,16 @@ ul.child_pages.empty {
 .cke_top{
     border-bottom: 1px solid #ccc !important;
 }
+
+.fixed-fabs-container {
+    position: relative;
+}
+.fixed-fabs .md-button.md-fab{
+    position: fixed;
+}
+.fixed-fabs .md-fab:nth-child(1){
+     top: 65px;
+ }
+.fixed-fabs .md-fab:nth-child(2){
+    top: 125px;
+}

@@ -1,5 +1,18 @@
-<md-content layout layout-wrap>
-    <div ng-include="{{toolbarPath}}"></div>
+<md-content layout layout-wrap class="fixed-fabs-container">
+    <div layout="row" class="fixed-fabs">
+        <md-button class="md-accent md-fab md-fab-top-right" ng-click="savePage()">
+            <md-tooltip md-direction="left">
+                Save page
+            </md-tooltip>
+            <md-icon>save</md-icon>
+        </md-button>
+        <md-button class="md-primary md-fab md-fab-top-right" ng-disabled="!page.id" target="_self" ng-href="/{{page.page_uri}}">
+            <md-tooltip md-direction="left">
+                Open page
+            </md-tooltip>
+            <md-icon>launch</md-icon>
+        </md-button>
+    </div>
 
     <md-content layout flex="grow">
         <div layout="column" flex="70" class="padding">
@@ -130,6 +143,4 @@
         </div>
 
     </md-content>
-
-    <div ng-include="{{toolbarPath}}"></div>
 </md-content >

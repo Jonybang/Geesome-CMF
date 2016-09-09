@@ -72,8 +72,8 @@ angular
                     'hue-2': '300',
                     'hue-3': '200'
                 })
-                .accentPalette('green', {
-                    'default': '300',
+                .accentPalette('blue', {
+                    'default': '600',
                     'hue-1': '400',
                     'hue-2': '500',
                     'hue-3': '700'
