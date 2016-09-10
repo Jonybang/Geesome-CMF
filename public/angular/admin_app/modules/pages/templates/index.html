@@ -1,8 +1,8 @@
 <div layout="row" flex="grow">
-    <md-sidenav layout="column" class="md-background md-hue-2 padding" md-is-locked-open="true" flex="15">
+    <md-sidenav layout="column" class="md-background md-hue-1 padding" md-is-locked-open="true" flex="15">
 
         <div ng-repeat="context in contexts">
-            <md-toolbar class="md-primary md-hue-3">
+            <md-toolbar class="md-background md-hue-3">
                 <div class="md-toolbar-tools">
                     <h2>
                         <span>{{context.name}}</span>
@@ -10,7 +10,7 @@
 
                     <span flex></span>
 
-                    <md-button class="md-fab md-mini md-accent" ui-sref="app.page.edit({pageId: null, context_id: context.id})">
+                    <md-button class="md-fab md-mini md-primary" ui-sref="app.page.edit({pageId: null, context_id: context.id})">
                         <md-tooltip md-direction="left">
                             New page
                         </md-tooltip>
@@ -37,7 +37,7 @@
 
     </md-sidenav>
 
-    <md-card ui-view layout="column" flex="85">
+    <md-card ui-view layout="column" flex="75">
     </md-card>
 </div>
 

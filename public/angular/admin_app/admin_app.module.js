@@ -58,26 +58,26 @@ angular
 
             $mdThemingProvider.theme('default')
                 .primaryPalette('orange', {
-                    'default': '500',
-                    'hue-1': '400',
-                    'hue-2': '300',
-                    'hue-3': '200'
+                    'default': '800',
+                    'hue-1': '200',
+                    'hue-2': '100',
+                    'hue-3': '100'
                 })
-                .accentPalette('blue', {
-                    'default': '600',
+                .accentPalette('cyan', {
+                    'default': '800',
+                    'hue-1': '700'
+                })
+                .warnPalette('pink', {
+                    'default': 'A700',
                     'hue-1': '700',
                     'hue-2': '800',
                     'hue-3': '900'
-                })
-                .warnPalette('red', {
-                    'default': '500',
-                    'hue-1': '700'
                 })
                 .backgroundPalette('grey', {
                     'default': '50',
                     'hue-1': '50',
                     'hue-2': '100',
-                    'hue-3': '200'
+                    'hue-3': '400'
                 });
         }])
     .run(['$rootScope', 'ServerData', 'AEditConfig', function($rootScope, ServerData, AEditConfig){

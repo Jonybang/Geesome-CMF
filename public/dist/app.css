@@ -116,6 +116,8 @@ body > ui-view > md-content {
 
 label {
   width: 100%;
+  color: rgba(0,0,0,0.54);
+  font-size: 13px;
 }
 
 .markdown-input.form-control {

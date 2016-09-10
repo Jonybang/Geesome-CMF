@@ -1,12 +1,12 @@
-<md-content layout layout-wrap class="fixed-fabs-container" flex="grow">
+<md-content layout layout-wrap class="fixed-fabs-container">
     <md-content layout flex="grow">
         <div layout="column" flex="70" class="padding">
             <md-content class="padding">
-                <md-subheader class="md-accent md-hue-3">General data</md-subheader>
+                <md-subheader class="md-background md-hue-3">General data</md-subheader>
 
                 <ae-text-input label="Title:" ng-model="page.title"  has-error="hasErrors.title" ng-model-options="{debounce: 500}"></ae-text-input>
 
-                <div>
+                <div class="padding">
                     <a href ng-click="subTitleDescriptionShow = !subTitleDescriptionShow" ng-class="{'dropup': subTitleDescriptionShow}">
                         Edit sub title and description <span class="caret"></span><br>
                     </a>
@@ -25,15 +25,14 @@
                     <wiz-markdown content="$parent.page.content"></wiz-markdown>
                 </md-card>
 
-                <label>Tags:</label>
-                <ae-select-input ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags"  adder="true" get-list="true" type="multiselect"></ae-select-input>
+                <ae-select-input label="Tags:" ng-model="page.tags_ids" has-error="hasErrors.tags_ids" ng-resource="models.tags" ng-resource-fields="fields.tags"  adder="true" get-list="true" type="multiselect"></ae-select-input>
 
             </md-content>
 
             <md-divider></md-divider>
 
             <md-content class="padding">
-                <md-subheader class="md-accent md-hue-3">Sub fields</md-subheader>
+                <md-subheader class="md-background md-hue-3">Sub fields</md-subheader>
 
                 <sub-fields-manager ng-model="sub_fields" page-resource="page" api="subFieldsApi" refresh-sub-fields="getSubFields()"></sub-fields-manager>
             </md-content>
@@ -41,19 +40,17 @@
         <md-divider></md-divider>
         <div layout="column" flex="30">
             <md-content class="padding">
-                <md-subheader class="md-accent md-hue-3">Technical data</md-subheader>
+                <md-subheader class="md-background md-hue-3">Technical data</md-subheader>
 
-                <label>Template:</label>
-                <ae-select-input ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" adder="true" get-list="true"></ae-select-input>
+                <ae-select-input label="Template:" ng-model="page.template_id" has-error="hasErrors.template_id" ng-resource="models.templates" ng-resource-fields="fields.templates" adder="true" get-list="true"></ae-select-input>
 
-                <div>
+                <div class="padding">
                     <a href ng-click="templateInfoShow = !templateInfoShow" ng-class="{'dropup': templateInfoShow}">
                         Edit template data <span class="caret"></span><br>
                     </a>
                     <div ng-if="templateInfoShow">
                         <div class="alert alert-warning">
-                            <label>Controller Actions:</label>
-                            <ae-select-input ng-model="page.controller_actions_ids" or-name-field="key" has-error="hasErrors.controller_actions_ids" ng-resource="models.controller_actions" ng-resource-fields="fields.controller_actions" adder="true" get-list="true" type="multiselect"></ae-select-input>
+                            <ae-select-input label="Controller Actions:" ng-model="page.controller_actions_ids" or-name-field="key" has-error="hasErrors.controller_actions_ids" ng-resource="models.controller_actions" ng-resource-fields="fields.controller_actions" adder="true" get-list="true" type="multiselect"></ae-select-input>
 
                             <div><small>Add actions to some laravel controllers, than bind they to template by names(example: 'SomeController@someAction') for execute when page render and get data from action result returned.</small></div>
                         </div>
@@ -64,7 +61,7 @@
 
                 <ae-bool-input label="Published" ng-model="page.is_published" has-error="hasErrors.is_published"></ae-bool-input>
 
-                <div>
+                <div class="padding">
                     <a href ng-click="menuInfoShow = !menuInfoShow" ng-class="{'dropup': menuInfoShow}">
                         Edit menu info <span class="caret"></span><br>
                     </a>
@@ -77,19 +74,16 @@
                     </div>
                 </div>
 
-                <label>Parent:</label>
-                <ae-select-input ng-model="page.parent_page_id" name-field="title" has-error="hasErrors.parent_page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" adder="true" get-list="true" refresh-list-on="page"></ae-select-input>
+                <ae-select-input label="Parent:" ng-model="page.parent_page_id" name-field="title" has-error="hasErrors.parent_page_id" ng-resource="models.pages" ng-resource-fields="fields.pages" adder="true" get-list="true" refresh-list-on="page"></ae-select-input>
 
-                <label>Author:</label>
-                <ae-select-input ng-model="page.author_id" has-error="hasErrors.author_id" ng-resource="models.users" ng-resource-fields="fields.users" adder="true" get-list="true"></ae-select-input>
+                <ae-select-input label="Author:" ng-model="page.author_id" has-error="hasErrors.author_id" ng-resource="models.users" ng-resource-fields="fields.users" adder="true" get-list="true"></ae-select-input>
 
-                <div>
+                <div class="padding">
                     <a href ng-click="subInfoShow = !subInfoShow" ng-class="{'dropup': subInfoShow}">
                         Edit sub info <span class="caret"></span><br>
                     </a>
                     <div ng-if="subInfoShow">
-                        <label>Context:</label>
-                        <ae-select-input ng-model="page.context_id" has-error="hasErrors.context_id" ng-resource="models.contexts" ng-resource-fields="fields.contexts"  adder="true" get-list="true"></ae-select-input>
+                        <ae-select-input label="Context:" ng-model="page.context_id" has-error="hasErrors.context_id" ng-resource="models.contexts" ng-resource-fields="fields.contexts"  adder="true" get-list="true"></ae-select-input>
 
                         <ae-bool-input label="Allow short alias" ng-model="page.is_allow_short_alias" has-error="hasErrors.is_allow_short_alias"></ae-bool-input>
 
@@ -106,7 +100,7 @@
             <md-divider></md-divider>
 
             <md-content class="padding">
-                <md-subheader class="md-accent md-hue-3">SEO</md-subheader>
+                <md-subheader class="md-background md-hue-3">SEO</md-subheader>
 
                 <ae-text-input label="Title:" ng-model="page.seo.title"></ae-text-input>
 
@@ -124,11 +118,11 @@
             </md-tooltip>
             <md-icon>save</md-icon>
         </md-button>
-        <md-button class="md-primary md-fab md-fab-top-right" ng-disabled="!page.id" target="_self" ng-href="/{{page.page_uri}}">
+        <md-button class="md-warn md-fab md-fab-top-right" ng-disabled="!page.id" target="_self" ng-href="/{{page.page_uri}}">
             <md-tooltip md-direction="left">
                 Open page
             </md-tooltip>
             <md-icon>launch</md-icon>
         </md-button>
     </div>
-</md-content >
+</md-content>

@@ -1188,7 +1188,7 @@ angular
 angular
     .module('a-edit')
 
-    .directive('aeSelectInput', ['$timeout', '$compile', '$templateCache', 'AEditHelpers' ,'AEditConfig', function($timeout, $compile, $templateCache, AEditHelpers, AEditConfig) {
+    .directive('aeSelectInput', ['$timeout', '$compile', '$templateCache', '$mdDialog', 'AEditHelpers' ,'AEditConfig', function($timeout, $compile, $templateCache, $mdDialog, AEditHelpers, AEditConfig) {
         function getTemplateByType(type, options){
             options = options || {};
 
@@ -1200,7 +1200,7 @@ angular
                 //subClasses: ''
             };
 
-            var template = '';
+            var template = '<label>{{label}}</label>';
             if(type == 'select') {
                 template += '<span ng-if="viewMode">{{getNameFromObj(options.selected)}}</span>';
             }
@@ -1228,8 +1228,7 @@ angular
                                     '<span md-highlight-text="options.search" md-highlight-flags="^i">{{' + mdSelect.itemName + '}}</span> ' +
                                 '</md-item-template>' +
                                 '<md-not-found>' +
-                                    'No items matching "{{options.search}}" were found.' +
-                                    '<a ng-click="newItem(options.search)">Create a new one!</a>' +
+                                    'Not found. <a ng-click="newItem(options.search)">Create a new one?</a>' +
                                 '</md-not-found>' +
                         '</md-autocomplete>';
 
@@ -1274,6 +1273,7 @@ angular
                 nameField: '@',
                 orNameField: '@',
                 placeholder: '@',
+                label: '@',
                 name: '@',
                 type: '@' //select or multiselect
             },
@@ -1444,6 +1444,46 @@ angular
                         return '';
 
                     return obj[scope.nameField] || obj.name || obj[scope.orNameField];
+                };
+
+                scope.newItem = function(){
+                    if(scope.type == 'textselect' || !scope.ngResourceFields || !scope.ngResourceFields.length)
+                        scope.ngResourceFields = [{name: scope.nameField || 'name' || scope.orNameField, label: ''}];
+
+                    var inputsHtml = '';
+                    var locals = {};
+                    scope.ngResourceFields.forEach(function(field){
+                        inputsHtml += AEditHelpers.generateDirectiveByConfig(field, {
+                                            item_name: 'new_object',
+                                            lists_container: 'lists',
+                                            always_edit: true,
+                                            is_new: true
+                                            //already_modal: true
+                                        });
+
+                        if(field.resource){
+                            locals[field.name + '_resource'] = field.resource;
+                        }
+
+                        if(field.type == 'multiselect'){
+                            locals.new_object[field.name] = [];
+                        }
+                    });
+
+                    $mdDialog.show({
+                        clickOutsideToClose: true,
+                        locals: locals,
+                        controller: function ($scope, $mdDialog) {
+                            $scope.close = function() {
+                                $mdDialog.hide();
+                            }
+                        },
+                        template: '<md-dialog>' +
+                        '  <md-dialog-content>' +
+                        inputsHtml +
+                        '  </md-dialog-content>' +
+                        '</md-dialog>'
+                    });
                 };
 
                 //=============================================================
