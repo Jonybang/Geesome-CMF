@@ -1215,7 +1215,7 @@ angular
 
             template +=
                         '<md-autocomplete ' +
-                            (type == 'select' ? 'ng-if="!viewMode" md-selected-item="options.selected" ' : ' ') +
+                            (type == 'select' ? 'ng-if="!viewMode" md-selected-item="$parent.options.selected" ' : ' ') +
                             'md-search-text="options.search" ' +
                             'md-items="item in local_list" ' +
                             'ng-disabled="ngDisabled" ' +
@@ -1451,99 +1451,58 @@ angular
                         scope.ngResourceFields = [{name: scope.nameField || 'name' || scope.orNameField, label: ''}];
 
                     var inputsHtml = '';
-                    var locals = {};
+                    var data = {};
                     scope.ngResourceFields.forEach(function(field){
-                        inputsHtml += AEditHelpers.generateDirectiveByConfig(field, {
+                        if(field.name == scope.nameField || field.name == 'name' || field.name == scope.orNameField)
+                            field.default_value = scope.options.search;
+
+                        inputsHtml += '<div flex="grow" layout="row" layout-fill>' + AEditHelpers.generateDirectiveByConfig(field, {
                                             item_name: 'new_object',
                                             lists_container: 'lists',
                                             always_edit: true,
                                             is_new: true
                                             //already_modal: true
-                                        });
+                                        }) + '</div>';
 
                         if(field.resource){
-                            locals[field.name + '_resource'] = field.resource;
+                            data[field.name + '_resource'] = field.resource;
                         }
 
                         if(field.type == 'multiselect'){
-                            locals.new_object[field.name] = [];
+                            data.new_object[field.name] = [];
                         }
                     });
 
                     $mdDialog.show({
                         clickOutsideToClose: true,
-                        locals: locals,
-                        controller: function ($scope, $mdDialog) {
-                            $scope.close = function() {
-                                $mdDialog.hide();
-                            }
+                        locals: {
+                            data: data
                         },
-                        template: '<md-dialog>' +
-                        '  <md-dialog-content>' +
-                        inputsHtml +
-                        '  </md-dialog-content>' +
+                        controller: ['$scope', '$mdDialog', 'data', function ($scope, $mdDialog, data) {
+                            angular.extend($scope, data);
+                            $scope.save = function() {
+                                $mdDialog.hide($scope.new_object);
+                            };
+                            $scope.cancel = function() {
+                                $mdDialog.cancel();
+                            };
+                        }],
+                        template: '' +
+                        '<md-dialog>' +
+                            '<md-dialog-content layout="row" class="padding" layout-wrap>' +
+                                inputsHtml +
+                            '</md-dialog-content>' +
+                            '<md-dialog-actions layout="row">' +
+                                '<md-button ng-click="save()">Save</md-button>' +
+                            '</md-dialog-actions>' +
                         '</md-dialog>'
-                    });
+                    }).then(scope.saveToList);
                 };
-
-                //=============================================================
-                // Compile Adder button
-                //=============================================================
-                if(scope.adder){
-                    scope.new_object = {};
-
-                    var popoverTemplate = '' +
-                        '<div ng-click="popoverContentClick($event)">';
-
-                    if(scope.type == 'textselect' && !scope.ngResourceFields)
-                        scope.ngResourceFields = [{name: 'name', label: ''}];
-
-                    scope.ngResourceFields.forEach(function(field){
-                        popoverTemplate += '' +
-                            '<div class="form-group col-md-12 row">' +
-                            '<div>' +
-                            '<label>' + field.label + '</label>' +
-                            '</div>' +
-                            '<div>' +
-                            AEditHelpers.generateDirectiveByConfig(field, {
-                                item_name: '$parent.new_object',
-                                lists_container: 'lists',
-                                always_edit: true,
-                                is_new: true
-                                //already_modal: true
-                            }) +
-                            '</div>' +
-                            '</div>';
-
-                        if(field.resource){
-                            scope[field.name + '_resource'] = field.resource;
-                        }
-
-                        if(field.type == 'multiselect'){
-                            scope.new_object[field.name] = [];
-                        }
-                    });
-
-                    popoverTemplate += '' +
-                        '<div class="form-group col-md-12 row">' +
-                        '<button type="submit" class="btn btn-primary" ng-click="$parent.saveToList(new_object);">Save</button>' +
-                        '<button class="btn btn-danger pull-right" ng-click="$parent.popover.is_open = false">Close</button>' +
-                        '</div>' +
-                        '</div>';
-
-                    scope.popover = {
-                        is_open: false,
-                        template_name: attrs.ngModel + '-' + attrs.ngResource + '.html'
-                    };
-                    $templateCache.put(scope.popover.template_name, popoverTemplate);
-                }
 
                 //=============================================================
                 // Add new item to select list by adder
                 //=============================================================
                 scope.saveToList = function(new_object){
-                    scope.popover.is_open = false;
-
                     if(scope.type == 'textselect'){
                         //get first property of object and add it to list
                         var is_first_prop = true;
@@ -1558,12 +1517,16 @@ angular
                     }
 
                     AEditHelpers.getResourceQuery(new scope.ngResource(new_object), 'create').then(function(object){
-                        scope.local_list.unshift(object);
+                        scope.options.search = '';
 
-                        if(angular.isArray(scope.ngModel))
-                            scope.ngModel.push(object.id);
-                        else
-                            scope.ngModel = object.id;
+                        if(scope.type == 'multiselect')
+                            scope.fakeModel.push(object.id);
+                        else if(scope.type == 'select')
+                            scope.fakeModel = object.id;
+
+                        scope.ngModel = scope.fakeModel;
+
+                        scope.setSelected();
                     });
                 }
             }
@@ -1873,6 +1836,7 @@ angular.module('a-edit')
                     'ng-model-str="' + item_name + '.' +  field_name + '_str" ' +
                     'ng-model-sub-str="' + item_name + '.' +  field_name + '_sub_str" ' +
                     (field.default_value ? 'default-value="' + field.default_value + '" ' : '') +
+                    'label="' + field.label + '" '+
                     'view-mode="!' + is_edit + '" '+
                     'is-new="' + (config.is_new ? 'true': 'false') + '" '+
                     'placeholder="' + ((config.always_edit ? field.new_placeholder : field.placeholder) || '') + '" ';
