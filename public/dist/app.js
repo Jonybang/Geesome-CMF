@@ -259,7 +259,7 @@ angular
                 ngModel: '=',
                 pageResource: '=?',
                 templateResource: '=?',
-                isEdit: '=?'
+                viewMode: '=?'
             },
             link: function (scope, element) {
                 scope.openFileManager = function(){

@@ -1,10 +1,10 @@
-<div class="input-group" ng-show="isEdit">
+<div class="input-group" ng-hide="viewMode">
     <input type="text" class="form-control" ng-model="ngModel" ng-model-options="{debounce:500}">
     <span class="input-group-btn">
         <button class="btn btn-default" ng-click="openFileManager()"><span class="glyphicon glyphicon-hdd"></span></button>
     </span>
 </div>
 
-<span ng-hide="isEdit">{{ngModel}}</span>
+<span ng-show="viewMode">{{ngModel}}</span>
 
 <img src="{{ngModel}}" class="img-responsive margin-top" style="max-width: 200px;">
