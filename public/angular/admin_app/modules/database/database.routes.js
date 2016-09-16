@@ -13,7 +13,7 @@ angular
                 abstract: true,
                 views: {
                     header:     { template: "<h3>Database</h3>" },
-                    content:    { template: '<ui-view class="padding"></ui-view>' }// layout="row" flex="grow"
+                    content:    { template: '<md-content layout="row" flex="grow"><ui-view layout="column" flex="grow" class="padding"></ui-view></md-content>' }// layout="row" flex="grow"
                 }
             });
 
