@@ -94,13 +94,13 @@ angular
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
 angular
+    .module('admin_app.general', [
+    ]);
+angular
     .module('admin_app.database', [
         'ui.router',
 
         'admin_app.general'
-    ]);
-angular
-    .module('admin_app.general', [
     ]);
 angular
     .module('admin_app.mailing', [
@@ -768,6 +768,19 @@ angular
                         templateUrl: AppPaths.pages + 'page_form/templates/index.html'
                     });
         }]);
+var app_path = '/angular/admin_app/',
+    modules_path = app_path + 'modules/';
+
+angular.module('admin_app.general')
+    .constant('AppPaths', {
+        app:            app_path,
+        modules:        modules_path,
+        directives:     app_path + 'directives/',
+
+        database:       modules_path + 'database/',
+        pages:          modules_path + 'pages/',
+        mailing:        modules_path + 'mailing/'
+    });
 angular.module('admin_app.database')
     .factory('DBManageContextsConfig', ['Contexts', function(Contexts) {
 
@@ -907,6 +920,7 @@ angular.module('admin_app.database')
 
         this.aeGridOptions = {
             resource: MailTemplates,
+            row_height: '100px',
             fields: [
                 {
                     name: 'id',
@@ -926,13 +940,15 @@ angular.module('admin_app.database')
                 },
                 {
                     name: 'title',
-                    label: 'Mail Title'
+                    label: 'Mail Title',
+                    colspan: 2
                 },
                 {
                     name: 'content',
                     label: 'Main Content',
                     type: 'textarea',
-                    width: '500px'
+                    width: '500px',
+                    colspan: 3
                 }
             ]
         };
@@ -957,7 +973,8 @@ angular.module('admin_app.database')
                     modal: 'self',
                     label: 'Title',
                     new_placeholder: 'New page',
-                    required: true
+                    required: true,
+                    colspan: 2
                 },
                 {
                     name: 'alias',
@@ -965,7 +982,8 @@ angular.module('admin_app.database')
                 },
                 {
                     name: 'sub_title',
-                    label: 'SubTitle'
+                    label: 'SubTitle',
+                    colspan: 2
                 },
                 {
                     name: 'parent_page_id',
@@ -1490,7 +1508,8 @@ angular.module('admin_app.database')
                 },
                 {
                     name: 'value',
-                    label: 'Value'
+                    label: 'Value',
+                    colspan: 3
                 },
                 {
                     name: 'locale',
@@ -1590,19 +1609,6 @@ angular.module('admin_app.database')
 
         return this;
     }]);
-var app_path = '/angular/admin_app/',
-    modules_path = app_path + 'modules/';
-
-angular.module('admin_app.general')
-    .constant('AppPaths', {
-        app:            app_path,
-        modules:        modules_path,
-        directives:     app_path + 'directives/',
-
-        database:       modules_path + 'database/',
-        pages:          modules_path + 'pages/',
-        mailing:        modules_path + 'mailing/'
-    });
 angular.module('admin_app.mailing')
     .controller('MailFormController', ['$scope', '$state', '$http', '$mdSidenav', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'ServerData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
         function($scope, $state, $http, $mdSidenav, $uibModal, debounce, Notification, AppPaths, ServerData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {

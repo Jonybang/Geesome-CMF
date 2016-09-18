@@ -16,7 +16,8 @@ angular.module('admin_app.database')
                     modal: 'self',
                     label: 'Title',
                     new_placeholder: 'New page',
-                    required: true
+                    required: true,
+                    colspan: 2
                 },
                 {
                     name: 'alias',
@@ -24,7 +25,8 @@ angular.module('admin_app.database')
                 },
                 {
                     name: 'sub_title',
-                    label: 'SubTitle'
+                    label: 'SubTitle',
+                    colspan: 2
                 },
                 {
                     name: 'parent_page_id',

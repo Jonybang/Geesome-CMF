@@ -20,7 +20,8 @@ angular.module('admin_app.database')
                 },
                 {
                     name: 'value',
-                    label: 'Value'
+                    label: 'Value',
+                    colspan: 3
                 },
                 {
                     name: 'locale',

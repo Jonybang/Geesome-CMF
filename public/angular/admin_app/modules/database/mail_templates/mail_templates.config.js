@@ -5,6 +5,7 @@ angular.module('admin_app.database')
 
         this.aeGridOptions = {
             resource: MailTemplates,
+            row_height: '100px',
             fields: [
                 {
                     name: 'id',
@@ -24,13 +25,15 @@ angular.module('admin_app.database')
                 },
                 {
                     name: 'title',
-                    label: 'Mail Title'
+                    label: 'Mail Title',
+                    colspan: 2
                 },
                 {
                     name: 'content',
                     label: 'Main Content',
                     type: 'textarea',
-                    width: '500px'
+                    width: '500px',
+                    colspan: 3
                 }
             ]
         };
