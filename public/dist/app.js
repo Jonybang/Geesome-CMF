@@ -274,6 +274,23 @@ angular
     }]);
 angular
     .module('admin_app')
+    .directive('sfText', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
+        return {
+            restrict: 'E',
+            templateUrl: AppPaths.directives + 'sf_text/sf_text.html',
+            scope: {
+                /* SubFieldValues resource */
+                ngModel: '=',
+                pageResource: '=?',
+                templateResource: '=?'
+            },
+            link: function (scope, element) {
+
+            }
+        };
+    }]);
+angular
+    .module('admin_app')
     .directive('sfJson', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -331,23 +348,6 @@ angular
                 }
             }
 
-        };
-    }]);
-angular
-    .module('admin_app')
-    .directive('sfText', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
-        return {
-            restrict: 'E',
-            templateUrl: AppPaths.directives + 'sf_text/sf_text.html',
-            scope: {
-                /* SubFieldValues resource */
-                ngModel: '=',
-                pageResource: '=?',
-                templateResource: '=?'
-            },
-            link: function (scope, element) {
-
-            }
         };
     }]);
 angular
@@ -901,48 +901,6 @@ angular.module('admin_app.database')
         return this;
 }]);
 angular.module('admin_app.database')
-    .factory('DBManageMailTemplatesConfig', ['MailTemplates', function(MailTemplates) {
-
-        this.entityName = 'Mail templates';
-
-        this.aeGridOptions = {
-            resource: MailTemplates,
-            row_height: '100px',
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'key',
-                    label: 'Template key',
-                    modal: 'self',
-                    required: true,
-                    new_placeholder: 'New Mail Template'
-                },
-                {
-                    name: 'name',
-                    label: 'Template name'
-                },
-                {
-                    name: 'title',
-                    label: 'Mail Title',
-                    colspan: 2
-                },
-                {
-                    name: 'content',
-                    label: 'Main Content',
-                    type: 'textarea',
-                    width: '500px',
-                    colspan: 3
-                }
-            ]
-        };
-
-        return this;
-}]);
-angular.module('admin_app.database')
     .factory('DBManagePagesConfig', ['Pages', 'Templates', 'Users', 'Contexts', function(Pages, Templates, Users, Contexts) {
 
         this.entityName = 'Pages';
@@ -1053,6 +1011,48 @@ angular.module('admin_app.database')
 
         return this;
     }]);
+angular.module('admin_app.database')
+    .factory('DBManageMailTemplatesConfig', ['MailTemplates', function(MailTemplates) {
+
+        this.entityName = 'Mail templates';
+
+        this.aeGridOptions = {
+            resource: MailTemplates,
+            row_height: '100px',
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'key',
+                    label: 'Template key',
+                    modal: 'self',
+                    required: true,
+                    new_placeholder: 'New Mail Template'
+                },
+                {
+                    name: 'name',
+                    label: 'Template name'
+                },
+                {
+                    name: 'title',
+                    label: 'Mail Title',
+                    colspan: 2
+                },
+                {
+                    name: 'content',
+                    label: 'Main Content',
+                    type: 'textarea',
+                    width: '500px',
+                    colspan: 3
+                }
+            ]
+        };
+
+        return this;
+}]);
 angular.module('admin_app.database')
     .factory('DBManageSentMailsConfig', ['SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function(SentMails, MailTemplates, Pages, SubscribersGroups) {
 
