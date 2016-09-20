@@ -65,7 +65,6 @@ return array (
   array (
     'numeric' => 'The :attribute must be :size.',
     'file' => 'The :attribute must be :size kilobytes.',
-    'string' => 'The :attribute must be :size characters.',
     'array' => 'The :attribute must contain :size items.',
   ),
   'string' => 'The :attribute must be a string.',

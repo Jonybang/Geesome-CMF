@@ -68,6 +68,10 @@ class TranslationController extends Controller
 		$data = $request->only(['status', 'locale', 'group', 'key', 'value']);
 		$is_saved = $obj->update($data);
 
+		$path_to_locale = base_path('resources/lang/' . $data['locale']);
+		if(!is_dir($path_to_locale))
+			mkdir($path_to_locale, 0755, true);
+
 		if($is_saved)
 			$this->translation_manager->exportTranslations($request->group);
 
