@@ -253,6 +253,7 @@ angular
     .directive('sfImage', ['$timeout', 'AppPaths', 'FileManger', function($timeout, AppPaths, FileManger) {
         return {
             restrict: 'E',
+            replace: true,
             templateUrl: AppPaths.directives + 'sf_image/sf_image.html',
             scope: {
                 /* SubFieldValues resource */

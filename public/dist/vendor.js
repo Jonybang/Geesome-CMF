@@ -688,7 +688,7 @@ angular
                         field.colspan = 1;
 
                     if(!field.table_hide)
-                        tableFieldsCount += field.colspan;
+                        tableFieldsCount += parseInt(field.colspan);
                 });
 
                 var md_grid_list = '<md-grid-list flex="grow" md-cols="' + tableFieldsCount + '" md-row-height="' + scope.actualOptions.row_height + '">';
@@ -842,7 +842,6 @@ angular
                     tplHtml += '<ae-paging ng-model="ajaxList.paging" ng-change="getList()"></ae-paging>';
                 }
 
-                console.log(tplHtml);
                 angular.element(element).html('');
 
                 var template = angular.element('<md-content layout="column" flex>' + tplHtml + '</md-content>');
@@ -1444,7 +1443,7 @@ angular
                         return;
                     }
 
-                    if(scope.type == 'multiselect' && scope.ngModel.length){
+                    if(scope.type == 'multiselect' && scope.ngModel && scope.ngModel.length){
                         if(scope.options.selected && scope.options.selected.length)
                             return;
 

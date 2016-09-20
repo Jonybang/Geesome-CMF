@@ -25,6 +25,7 @@ class SliderSubFieldsTableSeeder extends Seeder
                 'caption' => 'Add, edit and delete images links',
                 'search' => false,
                 'paginate' => false,
+                'row_height' => '70px',
                 'fields' => [
                     [
                         'name' => 'image',
