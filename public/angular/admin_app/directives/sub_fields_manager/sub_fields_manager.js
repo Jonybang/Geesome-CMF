@@ -36,7 +36,7 @@ angular
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '.value" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
                             'sub-field-resource="resources.' + sub_field.key + '" is-edit="true"></' + directive + '>';
-                        tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><hr>';
+                        tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><md-divider></md-divider>';
                     });
 
                     tplHtml += '' +

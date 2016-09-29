@@ -5,10 +5,7 @@ angular
         'ngAria',
         'ngMessages',
         'ngMaterial',
-        'ui.bootstrap',
         'ui.router',
-        'ui.router.tabs',
-        'ui-notification',
         'wiz.markdown',
         'dndLists',
         'rt.debounce',
@@ -20,8 +17,8 @@ angular
         'admin_app.database',
         'admin_app.mailing'
     ])
-    .config(['$mdThemingProvider', '$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
-        function($mdThemingProvider, $urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
+    .config(['$mdThemingProvider', '$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
+        function($mdThemingProvider, $urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 
             $stateProvider
                 .state('app', {
@@ -45,16 +42,6 @@ angular
 
             $locationProvider.html5Mode(true).hashPrefix('!');
             $urlRouterProvider.otherwise("/admin");
-
-            NotificationProvider.setOptions({
-                delay: 5000,
-                startTop: 20,
-                startRight: 10,
-                verticalSpacing: 20,
-                horizontalSpacing: 20,
-                positionX: 'right',
-                positionY: 'top'
-            });
 
             $mdThemingProvider.theme('default')
                 .primaryPalette('orange', {

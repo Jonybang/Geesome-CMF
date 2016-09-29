@@ -1,7 +1,7 @@
 angular
     .module('admin_app.pages')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'ServerData', 'PageFormConfig', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, Notification, AppPaths, ServerData, PageFormConfig, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', 'cmdToast', 'AppPaths', 'ServerData', 'PageFormConfig', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, cmdToast, AppPaths, ServerData, PageFormConfig, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
 
             $scope.subFieldsApi = {};
 
@@ -130,7 +130,7 @@ angular
                         $scope.page.seo = seo;
                     });
 
-                    Notification.success('Page saved!');
+                    cmdToast.success('Page saved!');
                     $scope.app.refreshPagesTree();
                 })
             };

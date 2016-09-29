@@ -6,13 +6,7 @@
 
 @section('styles')
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <!-- Bootstrap Core CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Morris Charts CSS -->
-    <link href="/css/angular/select.min.css" rel="stylesheet">
-    <link href="/css/angular/angular-ui-notification.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
     <link href="/css/angular/angular-material.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
@@ -21,7 +15,7 @@
 
 @section('content')
     @if(Auth::user() && Auth::user()->hasRole('admin'))
-        <ui-view layout="row"></ui-view>
+        <ui-view layout="row" class="md-body-1"></ui-view>
     @else
         <div style="margin-top: 100px;">
             <h1 class="text-center">Login to admin panel</h1>

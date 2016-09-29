@@ -35,7 +35,6 @@ var paths = {
 gulp.task('concatAngularVendorJS', function() {
     return gulp.src([
             angular_dir + 'vendor/angular.min.js',
-            angular_dir + 'vendor/ui-bootstrap*',
             angular_dir + 'awesome-edit/dist/a-edit.js',
             angular_dir + 'vendor/*.js'
         ])

@@ -259,3 +259,11 @@ md-input-container label {
 md-pagination-wrapper {
   width: auto !important;
 }
+
+h3 {
+  margin: 12px;
+}
+
+h5 {
+  margin: 8px;
+}

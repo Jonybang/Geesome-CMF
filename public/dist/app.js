@@ -5,10 +5,7 @@ angular
         'ngAria',
         'ngMessages',
         'ngMaterial',
-        'ui.bootstrap',
         'ui.router',
-        'ui.router.tabs',
-        'ui-notification',
         'wiz.markdown',
         'dndLists',
         'rt.debounce',
@@ -20,8 +17,8 @@ angular
         'admin_app.database',
         'admin_app.mailing'
     ])
-    .config(['$mdThemingProvider', '$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths', 'NotificationProvider',
-        function($mdThemingProvider, $urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths, NotificationProvider) {
+    .config(['$mdThemingProvider', '$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
+        function($mdThemingProvider, $urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
 
             $stateProvider
                 .state('app', {
@@ -45,16 +42,6 @@ angular
 
             $locationProvider.html5Mode(true).hashPrefix('!');
             $urlRouterProvider.otherwise("/admin");
-
-            NotificationProvider.setOptions({
-                delay: 5000,
-                startTop: 20,
-                startRight: 10,
-                verticalSpacing: 20,
-                horizontalSpacing: 20,
-                positionX: 'right',
-                positionY: 'top'
-            });
 
             $mdThemingProvider.theme('default')
                 .primaryPalette('orange', {
@@ -143,6 +130,51 @@ angular.module('admin_app')
     }]);
 angular
     .module('admin_app')
+    .service('cmdToast', ['$mdToast', function($mdToast){
+        var self = this;
+
+        self.baseOptions = {
+            textContent: '',
+            action: 'ок',
+            hideDelay: 10000,
+            highlightAction: undefined,
+            theme: undefined,
+            toastClass: undefined
+        };
+
+        self.basic = function(textContent){
+            return self.show({textContent: textContent});
+        };
+        self.success = function(textContent){
+            return self.show({textContent: textContent, theme: 'success-toast'});
+        };
+        self.error = function(textContent){
+            if(!textContent)
+                textContent = 'Unexpected error, please contact to administrator.';
+
+            return self.show({textContent: textContent, theme: 'error-toast'});
+        };
+        self.warn = function(textContent){
+            return self.show({textContent: textContent, theme: 'warn-toast'});
+        };
+
+        self.show = function(options){
+            options = angular.extend({}, self.baseOptions, options);
+
+            var toastObj = $mdToast.simple();
+
+            angular.forEach(options, function(value, name){
+                if(value)
+                    toastObj[name](value);
+            });
+
+            return $mdToast.show(toastObj);
+        };
+
+        return self;
+    }]);
+angular
+    .module('admin_app')
     .service('FileManger', ['$q', function($q){
         this.getPath = function(){
             return $q(function(resolve, reject) {
@@ -222,6 +254,198 @@ angular
 
         return self;
     }]);
+angular.module('admin_app.database')
+    .service('DatabaseConfig', [function(){
+
+        this.menu = [
+            {
+                title: 'Pages',
+                route:   'app.db.pages'
+            },
+            {
+                title: 'Translations',
+                route:   'app.db.translations'
+            },
+            {
+                title: 'Mail Templates',
+                route:   'app.db.mail_templates'
+            },
+            {
+                title: 'Subscribers',
+                route:   'app.db.subscribers'
+            },
+            {
+                title: 'Sent Mails',
+                route:   'app.db.sent_mails'
+            },
+            {
+                title: 'Settings',
+                route:   'app.db.settings'
+            },
+            {
+                title: 'Contexts',
+                route:   'app.db.contexts'
+            },
+            {
+                title: 'Logs',
+                route:   'app.db.logs'
+            },
+            {
+                title: 'Tags',
+                route:   'app.db.tags'
+            },
+            {
+                title: 'Templates',
+                route:   'app.db.templates'
+            },
+            {
+                title: 'SubFields',
+                route:   'app.db.sub_fields'
+            },
+            {
+                title: 'Users',
+                route:   'app.db.users'
+            }
+        ];
+
+        return this;
+    }]);
+angular
+    .module('admin_app.database')
+    .config(['$stateProvider', 'AppPaths', function($stateProvider, AppPaths) {
+
+        $stateProvider
+
+        //=====================================================
+        // DATABASE
+        //=====================================================
+
+            .state('app.db', {
+                url: '/db',
+                abstract: true,
+                views: {
+                    header:     { template: "<h3>Database</h3>" },
+                    content:    { template: '<md-content layout="row" flex="grow"><ui-view layout="column" flex="grow" class="padding"></ui-view></md-content>' }// layout="row" flex="grow"
+                }
+            });
+
+        // states WITHOUT custom controller and template
+        var generalStates = [
+            'pages', 'mail_templates', 'sent_mails', 'settings', 'logs', 'tags', 'templates', 'users', 'contexts'
+        ];
+
+        generalStates.forEach(function(state_name){
+            var StateName = _.upperFirst(_.camelCase(state_name));
+
+            $stateProvider.state('app.db.' + state_name, {
+                url: '/' + state_name,
+                controller: 'DBManageGeneralController',
+                templateUrl: AppPaths.database + 'general/templates/index.html',
+                resolve: {
+                    EntityConfig: 'DBManage' + StateName + 'Config'
+                }
+            })
+        });
+
+        // states WITH custom controller and template
+        var customStates = [
+            'subscribers', 'sub_fields', 'translations'
+        ];
+
+        customStates.forEach(function(state_name){
+            var StateName = _.upperFirst(_.camelCase(state_name));
+
+            $stateProvider.state('app.db.' + state_name, {
+                url: '/' + state_name,
+                controller: 'DBManage' + StateName + 'Controller',
+                templateUrl: AppPaths.database + state_name + '/templates/index.html',
+                resolve: {
+                    EntityConfig: 'DBManage' + StateName + 'Config'
+                }
+            })
+        });
+    }]);
+angular
+    .module('admin_app.mailing')
+    .config(['$stateProvider', 'AppPaths', function($stateProvider, AppPaths) {
+
+            $stateProvider
+
+            //=====================================================
+            // MAILING
+            //=====================================================
+
+                .state('app.mailing', {
+                    url: '/manage',
+                    abstract: true,
+                    views: {
+                        header:     { template: "<h3>Mailing</h3>" },
+                        content:    { template: '<ui-view layout="row" flex="grow"></ui-view>' }
+                    }
+                })
+                    .state('app.mailing.manage', {
+                        url: '/mailing/:sentMailId',
+                        controller: 'MailFormController',
+                        templateUrl: AppPaths.mailing + 'mail_form/templates/index.html'
+                    });
+        }]);
+angular.module('admin_app')
+    .controller('PagesController', ['$scope', '$http', 'AppPaths', 'ServerData', 'Contexts', 'Pages', 'DatabaseConfig', function($scope, $http, AppPaths, ServerData, Contexts, Pages, DatabaseConfig) {
+
+        $scope.refreshPagesTree = function(){
+            $scope.contexts = Contexts.query({_with: 'pages_tree', is_hide: 0});
+        };
+
+        $scope.refreshPagesTree();
+
+        $scope.changeParent = function(event, dropped_index, dropped_item, parent){
+            if(parent.id == dropped_item.id)
+                return;
+
+            dropped_item.parent_page_id = parent.id;
+            dropped_item.menu_index = dropped_index;
+
+            Pages.update({ id: dropped_item.id }, dropped_item);
+
+            parent.child_pages_by_index.forEach(function(page, page_index){
+                if(page_index >= dropped_index && page.id != dropped_item.id){
+                    page.menu_index = page_index + 1;
+                    Pages.update({ id: page.id }, page);
+                }
+            });
+
+            return dropped_item;
+        };
+    }]);
+angular
+    .module('admin_app.pages')
+    .config(['$stateProvider', 'AppPaths', function($stateProvider, AppPaths) {
+
+            $stateProvider
+
+            //=====================================================
+            // PAGES
+            //=====================================================
+
+                .state('app.page', {
+                    url: '',
+                    abstract: true,
+                    views: {
+                        header:     { template: "<h3>Pages</h3>" },
+                        content:    { templateUrl: AppPaths.pages + 'templates/index.html', controller: "PagesController" }
+                    }
+                })
+                    .state('app.page.create', {
+                        url: '?context_id',
+                        controller: 'PageFormController',
+                        templateUrl: AppPaths.pages + 'page_form/templates/index.html'
+                    })
+                    .state('app.page.edit', {
+                        url: '/page/:pageId?context_id',
+                        controller: 'PageFormController',
+                        templateUrl: AppPaths.pages + 'page_form/templates/index.html'
+                    });
+        }]);
 angular
     .module('admin_app')
     .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
@@ -451,7 +675,7 @@ angular
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '.value" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
                             'sub-field-resource="resources.' + sub_field.key + '" is-edit="true"></' + directive + '>';
-                        tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><hr>';
+                        tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><md-divider></md-divider>';
                     });
 
                     tplHtml += '' +
@@ -575,198 +799,6 @@ angular
             }
         };
     }]);
-angular.module('admin_app.database')
-    .service('DatabaseConfig', [function(){
-
-        this.menu = [
-            {
-                title: 'Pages',
-                route:   'app.db.pages'
-            },
-            {
-                title: 'Translations',
-                route:   'app.db.translations'
-            },
-            {
-                title: 'Mail Templates',
-                route:   'app.db.mail_templates'
-            },
-            {
-                title: 'Subscribers',
-                route:   'app.db.subscribers'
-            },
-            {
-                title: 'Sent Mails',
-                route:   'app.db.sent_mails'
-            },
-            {
-                title: 'Settings',
-                route:   'app.db.settings'
-            },
-            {
-                title: 'Contexts',
-                route:   'app.db.contexts'
-            },
-            {
-                title: 'Logs',
-                route:   'app.db.logs'
-            },
-            {
-                title: 'Tags',
-                route:   'app.db.tags'
-            },
-            {
-                title: 'Templates',
-                route:   'app.db.templates'
-            },
-            {
-                title: 'SubFields',
-                route:   'app.db.sub_fields'
-            },
-            {
-                title: 'Users',
-                route:   'app.db.users'
-            }
-        ];
-
-        return this;
-    }]);
-angular
-    .module('admin_app.database')
-    .config(['$stateProvider', 'AppPaths', function($stateProvider, AppPaths) {
-
-        $stateProvider
-
-        //=====================================================
-        // DATABASE
-        //=====================================================
-
-            .state('app.db', {
-                url: '/db',
-                abstract: true,
-                views: {
-                    header:     { template: "<h3>Database</h3>" },
-                    content:    { template: '<md-content layout="row" flex="grow"><ui-view layout="column" flex="grow" class="padding"></ui-view></md-content>' }// layout="row" flex="grow"
-                }
-            });
-
-        // states WITHOUT custom controller and template
-        var generalStates = [
-            'pages', 'mail_templates', 'sent_mails', 'settings', 'logs', 'tags', 'templates', 'users', 'contexts'
-        ];
-
-        generalStates.forEach(function(state_name){
-            var StateName = _.upperFirst(_.camelCase(state_name));
-
-            $stateProvider.state('app.db.' + state_name, {
-                url: '/' + state_name,
-                controller: 'DBManageGeneralController',
-                templateUrl: AppPaths.database + 'general/templates/index.html',
-                resolve: {
-                    EntityConfig: 'DBManage' + StateName + 'Config'
-                }
-            })
-        });
-
-        // states WITH custom controller and template
-        var customStates = [
-            'subscribers', 'sub_fields', 'translations'
-        ];
-
-        customStates.forEach(function(state_name){
-            var StateName = _.upperFirst(_.camelCase(state_name));
-
-            $stateProvider.state('app.db.' + state_name, {
-                url: '/' + state_name,
-                controller: 'DBManage' + StateName + 'Controller',
-                templateUrl: AppPaths.database + state_name + '/templates/index.html',
-                resolve: {
-                    EntityConfig: 'DBManage' + StateName + 'Config'
-                }
-            })
-        });
-    }]);
-angular
-    .module('admin_app.mailing')
-    .config(['$stateProvider', 'AppPaths', function($stateProvider, AppPaths) {
-
-            $stateProvider
-
-            //=====================================================
-            // MAILING
-            //=====================================================
-
-                .state('app.mailing', {
-                    url: '/manage',
-                    abstract: true,
-                    views: {
-                        header:     { template: "<h3>Mailing</h3>" },
-                        content:    { template: '<ui-view layout="row" flex="grow"></ui-view>' }
-                    }
-                })
-                    .state('app.mailing.manage', {
-                        url: '/mailing/:sentMailId',
-                        controller: 'MailFormController',
-                        templateUrl: AppPaths.mailing + 'mail_form/templates/index.html'
-                    });
-        }]);
-angular.module('admin_app')
-    .controller('PagesController', ['$scope', '$http', 'AppPaths', 'ServerData', 'Contexts', 'Pages', 'DatabaseConfig', function($scope, $http, AppPaths, ServerData, Contexts, Pages, DatabaseConfig) {
-
-        $scope.refreshPagesTree = function(){
-            $scope.contexts = Contexts.query({_with: 'pages_tree', is_hide: 0});
-        };
-
-        $scope.refreshPagesTree();
-
-        $scope.changeParent = function(event, dropped_index, dropped_item, parent){
-            if(parent.id == dropped_item.id)
-                return;
-
-            dropped_item.parent_page_id = parent.id;
-            dropped_item.menu_index = dropped_index;
-
-            Pages.update({ id: dropped_item.id }, dropped_item);
-
-            parent.child_pages_by_index.forEach(function(page, page_index){
-                if(page_index >= dropped_index && page.id != dropped_item.id){
-                    page.menu_index = page_index + 1;
-                    Pages.update({ id: page.id }, page);
-                }
-            });
-
-            return dropped_item;
-        };
-    }]);
-angular
-    .module('admin_app.pages')
-    .config(['$stateProvider', 'AppPaths', function($stateProvider, AppPaths) {
-
-            $stateProvider
-
-            //=====================================================
-            // PAGES
-            //=====================================================
-
-                .state('app.page', {
-                    url: '',
-                    abstract: true,
-                    views: {
-                        header:     { template: "<h3>Pages</h3>" },
-                        content:    { templateUrl: AppPaths.pages + 'templates/index.html', controller: "PagesController" }
-                    }
-                })
-                    .state('app.page.create', {
-                        url: '?context_id',
-                        controller: 'PageFormController',
-                        templateUrl: AppPaths.pages + 'page_form/templates/index.html'
-                    })
-                    .state('app.page.edit', {
-                        url: '/page/:pageId?context_id',
-                        controller: 'PageFormController',
-                        templateUrl: AppPaths.pages + 'page_form/templates/index.html'
-                    });
-        }]);
 angular.module('admin_app.database')
     .factory('DBManageContextsConfig', ['Contexts', function(Contexts) {
 
@@ -1521,7 +1553,7 @@ angular.module('admin_app.database')
         return this;
     }]);
 angular.module('admin_app.database')
-    .controller('DBManageTranslationsController', ['$scope', '$http', 'Notification', 'DBManageGeneralConfig', 'EntityConfig', function($scope, $http, Notification, DBManageGeneralConfig, EntityConfig) {
+    .controller('DBManageTranslationsController', ['$scope', '$http', 'cmdToast', 'DBManageGeneralConfig', 'EntityConfig', function($scope, $http, cmdToast, DBManageGeneralConfig, EntityConfig) {
 
         angular.extend($scope, EntityConfig);
 
@@ -1533,10 +1565,10 @@ angular.module('admin_app.database')
                 return;
 
             $http.post('admin/api/import_translations').then(function(){
-                Notification.success('Import success!');
+                cmdToast.success('Import success!');
                 $scope.aGridOptions = angular.copy($scope.aGridOptions);
             }, function(){
-                Notification.error('Import error!');
+                cmdToast.error('Import error!');
             });
         };
 
@@ -1545,9 +1577,9 @@ angular.module('admin_app.database')
                 return;
 
             $http.post('admin/api/export_translations').then(function(){
-                Notification.success('Export success!');
+                cmdToast.success('Export success!');
             }, function(){
-                Notification.error('Export error!');
+                cmdToast.error('Export error!');
             });
         }
     }]);
@@ -1609,8 +1641,8 @@ angular.module('admin_app.general')
         mailing:        modules_path + 'mailing/'
     });
 angular.module('admin_app.mailing')
-    .controller('MailFormController', ['$scope', '$state', '$http', '$mdSidenav', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'ServerData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
-        function($scope, $state, $http, $mdSidenav, $uibModal, debounce, Notification, AppPaths, ServerData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
+    .controller('MailFormController', ['$scope', '$state', '$http', '$mdSidenav', 'debounce', 'cmdToast', 'AppPaths', 'ServerData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
+        function($scope, $state, $http, $mdSidenav, debounce, cmdToast, AppPaths, ServerData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
 
             //======================================
             //INITIAL ACTIONS
@@ -1848,7 +1880,7 @@ angular.module('admin_app.mailing')
                     if(!confirm('Are you sure want to send mail without last not saved changes in mail template? For save changes click "Save mail template" button.'))
                         return;
                 }
-                Notification.info({message: 'Sending mail...', replaceMessage: true, delay: 999999});
+                cmdToast.basic({message: 'Sending mail...', replaceMessage: true, delay: 999999});
 
                 $scope.mail.sub_data = {};
                 $scope.mail.sub_data_array.forEach(function(sub_item){
@@ -1860,14 +1892,14 @@ angular.module('admin_app.mailing')
                 $scope.mail.$save().then(function(result){
                     $scope.mail = angular.copy(defaultMail);
 
-                    Notification.success({message: 'Mail sent!', replaceMessage: true});
+                    cmdToast.success({message: 'Mail sent!', replaceMessage: true});
 
                     $scope.getSentMails();
 
                     $scope.status.mail = {};
                 }, function(){
                     $scope.status.mail.error = true;
-                    Notification.error({message: 'Error. Something wrong...', replaceMessage: true});
+                    cmdToast.error({message: 'Error. Something wrong...', replaceMessage: true});
                 })
             };
 
@@ -1964,8 +1996,8 @@ angular
 }]);
 angular
     .module('admin_app.pages')
-    .controller('PageFormController', ['$scope', '$state', '$http', '$uibModal', 'Notification', 'AppPaths', 'ServerData', 'PageFormConfig', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
-        function($scope, $state, $http, $uibModal, Notification, AppPaths, ServerData, PageFormConfig, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
+    .controller('PageFormController', ['$scope', '$state', '$http', 'cmdToast', 'AppPaths', 'ServerData', 'PageFormConfig', 'Contexts', 'Pages', 'PagesSEO', 'Templates', 'Users', 'Tags', 'SubFields', 'ControllerActions',
+        function($scope, $state, $http, cmdToast, AppPaths, ServerData, PageFormConfig, Contexts, Pages, PagesSEO, Templates, Users, Tags, SubFields, ControllerActions) {
 
             $scope.subFieldsApi = {};
 
@@ -2094,7 +2126,7 @@ angular
                         $scope.page.seo = seo;
                     });
 
-                    Notification.success('Page saved!');
+                    cmdToast.success('Page saved!');
                     $scope.app.refreshPagesTree();
                 })
             };

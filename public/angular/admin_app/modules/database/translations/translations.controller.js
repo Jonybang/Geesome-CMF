@@ -1,5 +1,5 @@
 angular.module('admin_app.database')
-    .controller('DBManageTranslationsController', ['$scope', '$http', 'Notification', 'DBManageGeneralConfig', 'EntityConfig', function($scope, $http, Notification, DBManageGeneralConfig, EntityConfig) {
+    .controller('DBManageTranslationsController', ['$scope', '$http', 'cmdToast', 'DBManageGeneralConfig', 'EntityConfig', function($scope, $http, cmdToast, DBManageGeneralConfig, EntityConfig) {
 
         angular.extend($scope, EntityConfig);
 
@@ -11,10 +11,10 @@ angular.module('admin_app.database')
                 return;
 
             $http.post('admin/api/import_translations').then(function(){
-                Notification.success('Import success!');
+                cmdToast.success('Import success!');
                 $scope.aGridOptions = angular.copy($scope.aGridOptions);
             }, function(){
-                Notification.error('Import error!');
+                cmdToast.error('Import error!');
             });
         };
 
@@ -23,9 +23,9 @@ angular.module('admin_app.database')
                 return;
 
             $http.post('admin/api/export_translations').then(function(){
-                Notification.success('Export success!');
+                cmdToast.success('Export success!');
             }, function(){
-                Notification.error('Export error!');
+                cmdToast.error('Export error!');
             });
         }
     }]);

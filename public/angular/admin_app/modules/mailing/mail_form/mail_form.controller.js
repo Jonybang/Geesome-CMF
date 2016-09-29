@@ -1,6 +1,6 @@
 angular.module('admin_app.mailing')
-    .controller('MailFormController', ['$scope', '$state', '$http', '$mdSidenav', '$uibModal', 'debounce', 'Notification', 'AppPaths', 'ServerData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
-        function($scope, $state, $http, $mdSidenav, $uibModal, debounce, Notification, AppPaths, ServerData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
+    .controller('MailFormController', ['$scope', '$state', '$http', '$mdSidenav', 'debounce', 'cmdToast', 'AppPaths', 'ServerData', 'Pages', 'Templates', 'MailTemplates', 'SentMails', 'SubscribersGroups', 'Subscribers',
+        function($scope, $state, $http, $mdSidenav, debounce, cmdToast, AppPaths, ServerData, Pages, Templates, MailTemplates, SentMails, SubscribersGroups, Subscribers) {
 
             //======================================
             //INITIAL ACTIONS
@@ -238,7 +238,7 @@ angular.module('admin_app.mailing')
                     if(!confirm('Are you sure want to send mail without last not saved changes in mail template? For save changes click "Save mail template" button.'))
                         return;
                 }
-                Notification.info({message: 'Sending mail...', replaceMessage: true, delay: 999999});
+                cmdToast.basic({message: 'Sending mail...', replaceMessage: true, delay: 999999});
 
                 $scope.mail.sub_data = {};
                 $scope.mail.sub_data_array.forEach(function(sub_item){
@@ -250,14 +250,14 @@ angular.module('admin_app.mailing')
                 $scope.mail.$save().then(function(result){
                     $scope.mail = angular.copy(defaultMail);
 
-                    Notification.success({message: 'Mail sent!', replaceMessage: true});
+                    cmdToast.success({message: 'Mail sent!', replaceMessage: true});
 
                     $scope.getSentMails();
 
                     $scope.status.mail = {};
                 }, function(){
                     $scope.status.mail.error = true;
-                    Notification.error({message: 'Error. Something wrong...', replaceMessage: true});
+                    cmdToast.error({message: 'Error. Something wrong...', replaceMessage: true});
                 })
             };
 
