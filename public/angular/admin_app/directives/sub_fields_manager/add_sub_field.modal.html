@@ -1,37 +1,44 @@
-<div class="modal-header">
-    <h3 class="modal-title">Add Sub Field</h3>
-</div>
-<div class="modal-body">
-    <button class="btn btn-default" ng-click="mode='select'">Select existing</button> or <button class="btn btn-default" ng-click="mode='create'">create new</button>
+<md-dialog flex="50">
+    <md-dialog-content>
+        <md-toolbar class="md-hue-2" layout="row">
+            <div class="md-toolbar-tools">
+                <h2>
+                    <span>Add Sub Field</span>
+                </h2>
+            </div>
+        </md-toolbar>
 
-    <div ng-if="mode == 'select'">
-        <h4>Choose Sub Field</h4>
-        <ae-select-input ng-model="subField.id" or-name-field="key" ng-resource="models.SubFields" has-error="hasErrors.subField_id" is-edit="true"></ae-select-input>
-    </div>
+        <md-content>
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="Select existing" md-on-select="mode = 'select'">
+                    <md-content class="md-padding">
+                        <h4>Select Sub Field</h4>
 
-    <div ng-if="mode == 'create'">
-        <h4>Create Sub Field</h4>
+                        <ae-select-input label="Choose Sub Field" ng-model="subField.id" or-name-field="key" ng-resource="models.SubFields" has-error="hasErrors.subField_id" is-edit="true" get-list="true"></ae-select-input>
+                    </md-content>
+                </md-tab>
+                <md-tab label="Create new" md-on-select="mode = 'create'">
+                    <md-content class="md-padding">
+                        <h4>Create Sub Field</h4>
 
-        <label>Key</label>
-        <ae-text-input ng-model="subField.key" is-edit="true" has-error="hasErrors.name"></ae-text-input>
+                        <ae-text-input label="Key" ng-model="subField.key" has-error="hasErrors.name"></ae-text-input>
 
-        <label>Sub Field Type</label>
-        <ae-select-input ng-model="subField.sub_field_type_id" or-name-field="key" has-error="hasErrors.sub_field_type_id" ng-resource="models.SubFieldsTypes" ng-resource-fields="fields.sub_field_type" is-edit="true" adder="true"></ae-select-input>
+                        <ae-select-input label="Sub Field Type" ng-model="subField.sub_field_type_id" or-name-field="key" has-error="hasErrors.sub_field_type_id" ng-resource="models.SubFieldsTypes" ng-resource-fields="fields.sub_field_type" adder="true" get-list="true"></ae-select-input>
+                        <br>
+                        <ae-text-input label="Name" ng-model="subField.name" has-error="hasErrors.name"></ae-text-input>
 
-        <label>Name</label>
-        <ae-text-input ng-model="subField.name" is-edit="true" has-error="hasErrors.name"></ae-text-input>
+                        <ae-text-input label="Description" ng-model="subField.description" has-error="hasErrors.description" type="textarea"></ae-text-input>
 
-        <label>Description</label>
-        <ae-text-input ng-model="subField.description" is-edit="true" has-error="hasErrors.description" type="textarea"></ae-text-input>
+                        <ae-text-input label="Config" ng-model="subField.config" has-error="hasErrors.config" type="textarea"></ae-text-input>
 
-        <label>Config</label>
-        <ae-text-input ng-model="subField.config" is-edit="true" has-error="hasErrors.config" type="textarea"></ae-text-input>
-
-        <label>Default value</label>
-        <ae-text-input ng-model="subField.default_value" is-edit="true" has-error="hasErrors.default_value"></ae-text-input>
-    </div>
-</div>
-<div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="ok()">Save</button>
-    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
-</div>
+                        <ae-text-input label="Default value" ng-model="subField.default_value" has-error="hasErrors.default_value"></ae-text-input>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-content>
+    </md-dialog-content>
+    <md-dialog-actions>
+        <md-button class="md-raised md-accent" ng-click="ok()">Save</md-button>
+        <md-button ng-click="cancel()">Cancel</md-button>
+    </md-dialog-actions>
+</md-dialog>

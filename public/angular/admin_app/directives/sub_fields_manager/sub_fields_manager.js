@@ -1,6 +1,6 @@
 angular
     .module('admin_app')
-    .directive('subFieldsManager', ['$timeout', '$compile', '$uibModal', 'AppPaths', 'SubFields', 'SubFieldsValues', function($timeout, $compile, $uibModal, AppPaths, SubFields, SubFieldsValues) {
+    .directive('subFieldsManager', ['$timeout', '$compile', '$mdDialog', 'AppPaths', 'SubFields', 'SubFieldsValues', function($timeout, $compile, $mdDialog, AppPaths, SubFields, SubFieldsValues) {
         return {
             restrict: 'E',
             scope: {
@@ -32,15 +32,18 @@ angular
                         sub_fields_values_names.push(sub_field_value_name);
 
                         var directive = sub_field.type.directive;
-                        tplHtml += '<label><span uib-tooltip="{ { $' + sub_field.key + ' } }">' + (sub_field.name || sub_field.key) + '</span></label>';
+                        tplHtml += '<label><span><md-tooltip md-direction="top">{ { $' + sub_field.key + ' } }</md-tooltip>' + (sub_field.name || sub_field.key) + '</span></label>';
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '.value" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
                             'sub-field-resource="resources.' + sub_field.key + '" is-edit="true"></' + directive + '>';
                         tplHtml += '<div><small>' + (sub_field.description || '') + '</small></div><hr>';
                     });
 
-                    tplHtml += '<button class="btn btn-warning margin-top" ng-click="addSubField()" title="Add SubField"><span class="glyphicon glyphicon-plus"></span> Add sub field to current template</button>' +
-                        ' <span class="glyphicon glyphicon-question-sign" style="color: #8a6d3b;" uib-tooltip="Need to change template source code for take effect!"></span>';
+                    tplHtml += '' +
+                        '<md-button class="md-raised md-primary margin-top" ng-click="addSubField()">' +
+                            '<md-tooltip md-direction="top">Need to change template source code for take effect!</md-tooltip>' +
+                            '<md-icon>add</md-icon> Add sub field to current template' +
+                        '</md-button>';
 
                     var template = angular.element("<div>" + tplHtml + "</div>");
 
@@ -77,11 +80,15 @@ angular
                 }
 
                 scope.addSubField = function(){
-                    var modalInstance = $uibModal.open({
-                        animation: true,
+                    var modalInstance = $mdDialog.show({
                         templateUrl: AppPaths.directives + 'sub_fields_manager/add_sub_field.modal.html',
-                        controller: ['$scope', 'subField', 'SubFieldsTypes', function($scope, subField, SubFieldsTypes){
+                        clickOutsideToClose: true,
+                        locals: {
+                            subField: new SubFields()
+                        },
+                        controller: ['$scope', '$mdDialog', 'subField', 'SubFieldsTypes', function($scope, $mdDialog, subField, SubFieldsTypes){
                             $scope.subField = subField;
+                            $scope.mode = 'select';
 
                             $scope.models = {
                                 SubFields: SubFields,
@@ -123,26 +130,19 @@ angular
                                 if(!_.isEmpty($scope.hasErrors))
                                     return;
 
-
                                 if($scope.mode == 'select')
                                     $scope.subField = $scope.subField.$get();
 
-                                $scope.$close($scope.subField);
+                                $mdDialog.hide($scope.subField);
                             };
 
                             $scope.cancel = function () {
-                                $scope.$dismiss(false);
+                                $mdDialog.cancel();
                             };
-                        }],
-                        size: 'md',
-                        resolve: {
-                            subField: function () {
-                                return new SubFields();
-                            }
-                        }
+                        }]
                     });
 
-                    modalInstance.result.then(function (subField) {
+                    modalInstance.then(function (subField) {
                         if(subField.templates_ids)
                             subField.templates_ids.push(scope.pageResource.template_id);
                         else
@@ -155,8 +155,6 @@ angular
 
                         if(scope.refreshSubFields)
                             $timeout(scope.refreshSubFields);
-                    }, function () {
-                        //$log.info('Modal dismissed at: ' + new Date());
                     });
                 }
             }
