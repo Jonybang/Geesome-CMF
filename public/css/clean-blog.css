@@ -534,3 +534,6 @@ aside {
   font-size: 12px;
   margin-top: 15px;
 }
+.inline-block {
+  display: inline-block;
+}

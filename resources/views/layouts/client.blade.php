@@ -44,11 +44,13 @@
                 </button>
                 <a class="navbar-brand" href="/">{{$site_title}}</a>
                 @foreach($lang_contexts as $context)
-                    <a  href="{{ LaravelLocalization::getLocalizedURL($context->settings_values['locale']) }}"
-                        class="btn {{$context->id == session('current_context_id') ? 'btn-primary' : 'btn-default'}}">
-
-                        {{$context->name}}
-                    </a>
+                    {!! Form::open(array('url' => 'change_locale', 'method'=>'post', 'class'=> "inline-block")) !!}
+                        <input type="hidden" name="locale" value="{{$context->settings_values['locale']}}">
+                        <input type="hidden" name="page_url" value="{{ LaravelLocalization::getLocalizedURL($context->settings_values['locale']) }}">
+                        <button type="submit" class="btn {{$context->id == session('current_context_id') ? 'btn-primary' : 'btn-default'}}">
+                            {{$context->name}}
+                        </button>
+                    {!! Form::close() !!}
                 @endforeach
             </div>
 

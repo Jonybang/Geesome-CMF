@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\Page;
-use App\Models\Setting;
 use App\Models\Context;
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,6 +134,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::', 'middleware' => ['auth', '
     })->where('any', '.*');
 });
 
+Route::post('/change_locale', function(Request $request){
+    Session::put('current_locale', $request->input('locale'));
+    Session::put('current_context_id', null);
+    return redirect($request->input('page_url'));
+});
 //========================================================================================================
 // CMS CORE - RENDER PAGE AND SET DATA FOR TEMPLATE
 //========================================================================================================
@@ -140,9 +147,6 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
     Route::any('{all?}', function ($url_query = null) {
 
         $current_context = Context::getByLocale(LaravelLocalization::getCurrentLocale());
-
-        Session::put('current_context_id', $current_context->id);
-        Session::put('last_locale', LaravelLocalization::getCurrentLocale());
 
         $page = null;
         //find page by url or get main page from current context
@@ -186,9 +190,12 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
             $page = Page::find($main_page_id);
         }
 
-        if($page && $page->context_id != $current_context->id){
-            $page = $page->getPageByTranslation(LaravelLocalization::getCurrentLocale());
+        $current_locale = session('current_locale') ? session('current_locale') : LaravelLocalization::getCurrentLocale();
+        if($page && ($page->context_id != $current_context->id || $current_context->settings_values['locale'] != session('current_locale'))){
+            $page = $page->getPageByTranslation($current_locale);
+            return redirect(\App\Helpers\Helper::localeUrl($page, $current_locale));
         }
+        Session::put('current_context_id', $current_context->id);
 
         //if page exist and published get all page data, else return 404 template
         $sub_fields = [];
@@ -223,6 +230,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
             $path = '404';
         }
 
+
         //get menu items
         $page_data['menu_items'] = $current_context->pages()->where([
             'is_menu_hide' => false,
@@ -242,7 +250,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         //sf - sub fields and st - settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming
         $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields, 'st' => $settings, 'lang_contexts' => $lang_contexts], $sub_fields, $settings);
 
+        //dd($current_context);
         //render view by template->key or custom view name from some controller action returned data['render_template']
         return view('templates.' . $path, $page_data);
-    })->where('all', '(?!laravel-filemanager|robots.txt|sitemap).*');
+    })->where('all', '(?!laravel-filemanager|robots.txt|sitemap|css|js|dist|angular|fonts|images|img|vendor).*');
 });

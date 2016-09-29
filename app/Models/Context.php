@@ -68,7 +68,7 @@ class Context extends Model
 
     //Get current context by id from session(if actual) or by current locale
     public static function getByLocale($locale){
-        if(session('current_context_id') && session('last_locale') == $locale)
+        if(session('current_context_id') && session('current_locale') == $locale)//
             return Context::find(session('current_context_id'));
 
         $context = Context::whereHas('settings', function($query) use($locale){
