@@ -190,13 +190,13 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
             $page = Page::find($main_page_id);
         }
 
-        $current_locale = session('current_locale') ? session('current_locale') : LaravelLocalization::getCurrentLocale();
+		$current_locale = session('current_locale') ? session('current_locale') : LaravelLocalization::getCurrentLocale();
 		if($page && session('current_locale') && ($page->context_id != $current_context->id || $current_context->settings_values['locale'] != session('current_locale'))){
-			$page = $page->getPageByTranslation($current_locale);
+			//$page = $page->getPageByTranslation($current_locale);
 			Session::put('current_context_id', null);
-			return redirect(\App\Helpers\Helper::localeUrl($page, $current_locale));
+			return redirect(\LaravelLocalization::getLocalizedURL($current_locale,$url_query));
 		}
-        Session::put('current_context_id', $current_context->id);
+		Session::put('current_context_id', $current_context->id);
 
         //if page exist and published get all page data, else return 404 template
         $sub_fields = [];

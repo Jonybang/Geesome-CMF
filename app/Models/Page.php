@@ -262,6 +262,9 @@ class Page extends Model
     }
 
     public function getPageByTranslation($locale){
+    	if(!$this->entity_translation)
+    		return $this;
+
         return EntityTranslation::where([
             'hash_key' => $this->entity_translation->hash_key,
             'locale' => $locale
