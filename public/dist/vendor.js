@@ -657,7 +657,7 @@ angular
                 var tplHtml = '' +
                     '<md-content layout="row" flex="grow" layout-wrap class="padding ae-grid">' +
                     '   <md-list flex>' +
-                    '       <md-subheader class="md-no-sticky">';
+                    '       <md-subheader class="md-no-sticky" ng-show="actualOptions.caption || actualOptions.search">';
 
                 if(scope.actualOptions.search){
                     tplHtml +=
@@ -1252,7 +1252,8 @@ angular
                             (type == 'select' || type == 'textselect' ? 'ng-if="!viewMode" md-selected-item="$parent.options.selected" ' : ' ') +
                             'id="{{id}}" ' +
                             'md-search-text="options.search" ' +
-                            'md-items="item in local_list | filter:options.search" ' +
+                            'md-items="item in getListByResource(options.search)" ' + // | filter:options.search"
+                            'md-no-cache="true" ' +
                             'ng-disabled="ngDisabled" ' +
                             'md-search-text-change="getListByResource(options.search)" ' +
                             'md-selected-item-change="selectedItemChange(item)" ' +
@@ -1434,7 +1435,7 @@ angular
                     }
 
                     if(scope.type == 'multiselect' && scope.ngModel && scope.ngModel.length){
-                        if(scope.options.selected && scope.options.selected.length)
+                        if(scope.options.selected && scope.options.selected.length && scope.fakeModel.length == scope.options.selected.length)
                             return;
 
                         scope.options.selected = [];
@@ -1492,7 +1493,7 @@ angular
                         scope.ngResourceFields = [{name: scope.nameField || 'name' || scope.orNameField, label: ''}];
 
                     var inputsHtml = '';
-                    var data = {};
+                    var data = { lists: {} };
                     scope.ngResourceFields.forEach(function(field){
                         if(field.name == scope.nameField || field.name == 'name' || field.name == scope.orNameField)
                             field.default_value = scope.options.search;
@@ -1501,9 +1502,12 @@ angular
                                             item_name: 'new_object',
                                             lists_container: 'lists',
                                             always_edit: true,
+                                            get_list: true,
                                             is_new: true
                                             //already_modal: true
                                         }) + '</div>';
+
+                        data.lists[field.list] = [];
 
                         if(field.resource){
                             data[field.name + '_resource'] = field.resource;
@@ -1516,20 +1520,22 @@ angular
 
                     var position = $mdPanel.newPanelPosition()
                         .relativeTo('#' + scope.id)
-                        .addPanelPosition($mdPanel.xPosition.OFFSET_START, $mdPanel.yPosition.ABOVE);
+                        .addPanelPosition($mdPanel.xPosition.ALIGN_START, $mdPanel.yPosition.ABOVE);
 
                     $mdPanel.open({
                         clickOutsideToClose: false,
                         position: position,
                         focusOnOpen: false,
                         hasBackdrop: true,
+                        bindToController: false,
                         panelClass: 'md-background md-hue-3',
                         locals: {
                             data: data
                         },
-                        controller: ['$scope', 'mdPanelRef', function ($scope, mdPanelRef) {
+                        controller: ['$scope', 'mdPanelRef', 'data', function ($scope, mdPanelRef, data) {
+                            angular.extend($scope, data);
                             $scope.save = function() {
-                                mdPanelRef.save($scope.new_object)
+                                mdPanelRef.save($scope.new_object);
                                 mdPanelRef.hide();
                             };
                             $scope.cancel = function() {
