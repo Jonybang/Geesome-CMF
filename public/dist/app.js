@@ -479,7 +479,7 @@ angular
                         sub_fields_values_names.push(sub_field_value_name);
 
                         var directive = sub_field.type.directive;
-                        tplHtml += '<label><span><md-tooltip md-direction="top">{ { $' + sub_field.key + ' } }</md-tooltip>' + (sub_field.name || sub_field.key) + '</span></label>';
+                        tplHtml += '<div><label><span><md-tooltip md-direction="top">{ { $' + sub_field.key + ' } }</md-tooltip>' + (sub_field.name || sub_field.key) + '</span></label></div>';
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '.value" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
                             'sub-field-resource="resources.' + sub_field.key + '" is-edit="true"></' + directive + '>';
@@ -846,6 +846,46 @@ angular.module('admin_app.database')
         return this;
     }]);
 angular.module('admin_app.database')
+    .factory('DBManageGeneralConfig', [function() {
+
+        this.entityName = 'Entity Name';
+
+        this.aeGridOptions = {
+            caption: '',
+            create: true,
+            edit: true,
+            order_by: '-id',
+            resource: null,
+            ajax_handler: true,
+            get_list: true,
+            paginate: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Entity',
+                    required: true
+                }
+            ]
+        };
+
+        return this;
+    }]);
+angular.module('admin_app.database')
+    .controller('DBManageGeneralController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
+        $scope.items = [];
+
+        angular.extend($scope, EntityConfig);
+
+        $scope.aeGridOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridOptions);
+    }]);
+angular.module('admin_app.database')
     .factory('DBManageLogsConfig', ['Logs', 'Users', function(Logs, Users) {
 
         this.entityName = 'Logs';
@@ -891,46 +931,6 @@ angular.module('admin_app.database')
 
         return this;
 }]);
-angular.module('admin_app.database')
-    .factory('DBManageGeneralConfig', [function() {
-
-        this.entityName = 'Entity Name';
-
-        this.aeGridOptions = {
-            caption: '',
-            create: true,
-            edit: true,
-            order_by: '-id',
-            resource: null,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Entity',
-                    required: true
-                }
-            ]
-        };
-
-        return this;
-    }]);
-angular.module('admin_app.database')
-    .controller('DBManageGeneralController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
-        $scope.items = [];
-
-        angular.extend($scope, EntityConfig);
-
-        $scope.aeGridOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridOptions);
-    }]);
 angular.module('admin_app.database')
     .factory('DBManageMailTemplatesConfig', ['MailTemplates', function(MailTemplates) {
 

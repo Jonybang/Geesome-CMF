@@ -32,7 +32,7 @@ angular
                         sub_fields_values_names.push(sub_field_value_name);
 
                         var directive = sub_field.type.directive;
-                        tplHtml += '<label><span><md-tooltip md-direction="top">{ { $' + sub_field.key + ' } }</md-tooltip>' + (sub_field.name || sub_field.key) + '</span></label>';
+                        tplHtml += '<div><label><span><md-tooltip md-direction="top">{ { $' + sub_field.key + ' } }</md-tooltip>' + (sub_field.name || sub_field.key) + '</span></label></div>';
                         tplHtml += '<' + directive + ' ng-model="resources.' + sub_field_value_name + '.value" ' +
                             'page-resource="pageResource" template-resource="templateResource" ' +
                             'sub-field-resource="resources.' + sub_field.key + '" is-edit="true"></' + directive + '>';
