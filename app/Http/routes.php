@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Helper;
 use App\Models\Page;
 use App\Models\Context;
 use Illuminate\Http\Request;
@@ -49,9 +50,14 @@ Route::get('sitemap.xml', function(){
     // check if there is cached sitemap and build new only if is not
     if (!$sitemap->isCached())
     {
-        $pages = Page::where(['is_published' => true, 'is_deleted' => false, 'is_part' => false])->get();
-        foreach ($pages as $page) {
-            $sitemap->add($page->alias, $page->updated_at, '1.0', 'daily');
+        $contexts = Context::where('is_hide', false)->get();
+        foreach($contexts as $context){
+            $locale = $context->settings_values['locale'];
+
+            $pages = $context->pages()->where(['is_published' => true, 'is_deleted' => false, 'is_part' => false])->get();
+            foreach ($pages as $page) {
+                $sitemap->add( Helper::localeUrl($page, $locale), $page->updated_at, '1.0', 'daily');
+            }
         }
     }
     // show your sitemap (options: 'xml' (default), 'html', 'txt', 'ror-rss', 'ror-rdf')
@@ -251,7 +257,6 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         //sf - sub fields and st - settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming
         $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields, 'st' => $settings, 'lang_contexts' => $lang_contexts], $sub_fields, $settings);
 
-        //dd($current_context);
         //render view by template->key or custom view name from some controller action returned data['render_template']
         return view('templates.' . $path, $page_data);
     })->where('all', '(?!laravel-filemanager|robots.txt|sitemap|css|js|dist|angular|fonts|images|img|vendor).*');

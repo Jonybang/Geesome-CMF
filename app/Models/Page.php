@@ -229,6 +229,8 @@ class Page extends Model
             return $this->child_pages[0]->page_uri;
         else if($this->is_part && $this->parent_page_id)
             return $this->parent_page->page_uri . '#' . $this->alias;
+        else if($this->parent_id)
+            return $this->parent->page_uri . '/' .$this->alias;
         else
             return $this->alias;
     }
