@@ -155,7 +155,7 @@ class Page extends Model
     {
         $dictionary = \DB::table('sub_fields_values')->where('page_id', $this->id)
             ->join('sub_fields', 'sub_fields_values.sub_field_id', '=', 'sub_fields.id')
-            ->lists('sub_fields_values.value', 'sub_fields.key');
+            ->pluck('sub_fields_values.value', 'sub_fields.key')->toArray();
 
         //make undefined sub_fields as empty strings
         foreach($this->template->sub_fields as $sub_field)

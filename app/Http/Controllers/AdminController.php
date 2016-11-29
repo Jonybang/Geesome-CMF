@@ -19,7 +19,7 @@ class AdminController extends Controller
 
     public function site_settings_dictionary()
     {
-        return \DB::table('settings')->lists('value', 'key');
+        return \DB::table('settings')->pluck('value', 'key');
     }
 
     public function preview_mail(Request $request)

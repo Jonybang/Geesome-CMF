@@ -247,7 +247,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         ])->orderBy('menu_index', 'ASC')->with('child_pages')->get();
 
         //get general settings and add or rewrite by settings in current context
-        $general_settings = \DB::table('settings')->whereNull('context_id')->lists('value', 'key');
+        $general_settings = \DB::table('settings')->whereNull('context_id')->pluck('value', 'key')->toArray();
         $context_settings = $current_context->settings_values;
         $settings = $context_settings ? array_merge($general_settings, $context_settings) : $general_settings;
 

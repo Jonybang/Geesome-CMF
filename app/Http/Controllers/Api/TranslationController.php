@@ -92,11 +92,11 @@ class TranslationController extends Controller
 	}
 
 	public function getGroups(){
-		return Translation::groupBy('group')->lists('group');
+		return Translation::groupBy('group')->pluck('group');
 	}
 
 	public function getLocales(){
-		return Translation::groupBy('locale')->lists('locale');
+		return Translation::groupBy('locale')->pluck('locale');
 	}
 	public function exportAll(){
 		$groups = $this->getGroups();

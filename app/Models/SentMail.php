@@ -95,7 +95,7 @@ class SentMail extends Model
     }
 
     public function prepareMailData(){
-        $settings = \DB::table('settings')->lists('value', 'key');
+        $settings = \DB::table('settings')->pluck('value', 'key');
         $render_data = array_merge($this->sub_data ? $this->sub_data : [], $settings);
 
         if($this->page){
