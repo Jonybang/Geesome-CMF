@@ -1,48 +1,4 @@
-<div layout="row" flex="grow">
-    <md-sidenav layout="column" class="md-background md-hue-1 padding" md-is-locked-open="true" flex="15">
-
-        <div ng-repeat="context in contexts">
-            <md-toolbar class="md-background md-hue-3">
-                <div class="md-toolbar-tools">
-                    <h2>
-                        <span>{{context.name}}</span>
-                    </h2>
-
-                    <span flex></span>
-
-                    <md-button class="md-fab md-mini md-primary" ui-sref="app.page.edit({pageId: null, context_id: context.id})">
-                        <md-tooltip md-direction="left">
-                            New page
-                        </md-tooltip>
-                        <md-icon>note_add</md-icon>
-                    </md-button>
-                </div>
-            </md-toolbar>
-
-            <ul dnd-list="context.pages_tree"
-                dnd-drop="changeParent(event, index, item, {id: 0})"
-                class="list-unstyled margin-top">
-                <li ng-repeat="page in context.pages_tree"
-                    dnd-draggable="page"
-                    dnd-effect-allowed="move"
-                    dnd-moved="context.pages_tree.splice($index, 1)"
-                    dnd-selected="models.selected = page"
-                    ng-class="{selected: models.selected === page}"
-                    ng-include="'list.html'"
-                    ui-sref="app.page.edit({pageId: page.id})">
-                </li>
-            </ul>
-            <md-divider></md-divider>
-        </div>
-
-    </md-sidenav>
-
-    <md-card ui-view layout="column" flex="75">
-    </md-card>
-</div>
-
-<script type="text/ng-template" id="list.html">
-    <a href ng-click="page.hide_children = !page.hide_children" >{{page.title}}</a>
+<div layout="row" flex="grow"><md-sidenav layout="column" class="md-background md-hue-1 padding" md-is-locked-open="true" flex="15"><div ng-repeat="context in contexts"><md-toolbar class="md-background md-hue-3"><div class="md-toolbar-tools"><h2><span>{{context.name}}</span></h2><span flex></span><md-button class="md-fab md-mini md-primary" ui-sref="app.page.edit({pageId: null, context_id: context.id})"><md-tooltip md-direction="left">New page</md-tooltip><md-icon>note_add</md-icon></md-button></div></md-toolbar><ul dnd-list="context.pages_tree" dnd-drop="changeParent(event, index, item, {id: 0})" class="list-unstyled margin-top"><li ng-repeat="page in context.pages_tree" dnd-draggable="page" dnd-effect-allowed="move" dnd-moved="context.pages_tree.splice($index, 1)" dnd-selected="models.selected = page" ng-class="{selected: models.selected === page}" ng-include="'list.html'" ui-sref="app.page.edit({pageId: page.id})"></li></ul><md-divider></md-divider></div></md-sidenav><md-card ui-view layout="column" flex="75"></md-card></div><script type="text/ng-template" id="list.html"><a href ng-click="page.hide_children = !page.hide_children" >{{page.title}}</a>
     <ul dnd-list="page.child_pages_by_index"
         dnd-drop="changeParent(event, index, item, page)"
         ng-class="['child_pages', {'empty':!page.child_pages_by_index.length}]">
@@ -55,5 +11,4 @@
             ng-include="'list.html'"
             ui-sref="app.page.edit({pageId: page.id})">
         </li>
-    </ul>
-</script>
+    </ul></script>

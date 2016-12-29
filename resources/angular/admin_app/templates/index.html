@@ -1,0 +1,70 @@
+<md-sidenav layout="column" class="md-background md-hue-2" md-is-locked-open='true' flex="{{app.collapseNav ? 5 : 15}}">
+    <md-toolbar class="md-primary" layout="row" layout-align="center center">
+        <h3 ng-hide="app.collapseNav" class="md-headline">Geesome CMF</h3>
+        <h5 ng-show="app.collapseNav" class="md-subhead">Geesome CMF</h5>
+    </md-toolbar>
+
+    <md-list-item class="md-2-line" ui-sref="app.page.create">
+        <md-icon>description</md-icon>
+        <div class="md-list-item-text">
+            <h3>Pages</h3>
+        </div>
+    </md-list-item>
+
+    <md-divider></md-divider>
+
+    <md-list-item class="md-2-line">
+        <md-icon class="md-avatar-icon md-48">storage</md-icon>
+        <div class="md-list-item-text">
+            <div class="md-list-item-text">
+                <h3>Database</h3>
+            </div>
+        </div>
+
+        <md-menu class="md-secondary" md-position-mode="target-left target">
+            <md-button class="md-icon-button" ng-click="$mdOpenMenu()" ng-hide="app.collapseNav">
+                <md-icon md-menu-origin>keyboard_arrow_right</md-icon>
+            </md-button>
+
+            <md-menu-content width="4" class="md-background md-default">
+                <md-menu-item ng-repeat="menuItem in app.databaseMenu">
+                    <md-button ui-sref="{{menuItem.route}}">
+                        {{menuItem.title}}
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+    </md-list-item>
+
+    <md-divider></md-divider>
+
+    <md-list-item class="md-2-line" ui-sref="app.mailing.manage({sentMailId: null})">
+        <md-icon>mail_outline</md-icon>
+        <div class="md-list-item-text">
+            <h3>Mailing</h3>
+        </div>
+    </md-list-item>
+
+    <md-divider></md-divider>
+</md-sidenav>
+
+<md-content flex layout="column">
+    <md-toolbar class="md-primary" layout="row">
+        <div class="md-toolbar-tools">
+
+            <md-button class="md-icon-button" ng-click="app.collapseNav = !app.collapseNav">
+                <md-icon>{{app.collapseNav ? 'keyboard_arrow_right' : 'keyboard_arrow_left'}}</md-icon>
+            </md-button>
+
+            <div ui-view="header"></div>
+
+            <span flex></span>
+
+            <md-button href="/" target="_self">
+                To site content
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <md-content ui-view="content" layout="row" flex="grow"></md-content>
+</md-content>

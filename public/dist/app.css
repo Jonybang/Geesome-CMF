@@ -143,6 +143,14 @@ md-grid-tile:focus {
 md-checkbox > .md-container.md-ink-ripple {
   margin: 5px;
 }
+
+.md-panel md-input-container {
+  margin: 8px 0;
+}
+
+.padding-top {
+  padding-top: 15px !important;
+}
 /* Page structure */
 
 ui-view {
@@ -194,7 +202,7 @@ body > ui-view > md-content {
 
 label {
   width: 100%;
-  color: rgba(0,0,0,0.54);
+  color: rgba(0, 0, 0, 0.54);
   font-size: 13px;
 }
 
@@ -274,4 +282,16 @@ h3 {
 
 h5 {
   margin: 8px;
+}
+
+md-toast.md-success-toast-theme .md-toast-content {
+  background-color: #00838f;
+}
+
+md-toast.md-error-toast-theme .md-toast-content {
+  background-color: #d81b60;
+}
+
+md-toast.md-warn-toast-theme .md-toast-content {
+  background-color: #ef6c00;
 }

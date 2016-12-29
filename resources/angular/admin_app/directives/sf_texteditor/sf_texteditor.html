@@ -1,0 +1,34 @@
+<div ng-if="site_settings.markdown_mode != 1">
+	<div ng-hide="viewMode">
+		<div ckeditor="CKEditorOptions" ng-model="$parent.ngModel"></div>
+	</div>
+
+	<div ng-show="viewMode" ng-bind-html="$parent.ngModel"></div>
+</div>
+
+<div ng-if="site_settings.markdown_mode == 1">
+	<wiz-markdown-editor ng-hide="viewMode" content="$parent.ngModel" textareaclass="form-control">
+		<wiz-toolbar-button command="bold">Bold</wiz-toolbar-button>
+		<wiz-toolbar-button command="italic">Italic</wiz-toolbar-button>
+		<wiz-toolbar-button command="undo">UNDO</wiz-toolbar-button>
+		<wiz-toolbar-button command="redo">REDO</wiz-toolbar-button>
+		<wiz-toolbar-button command="heading">HEADING</wiz-toolbar-button>
+		<wiz-toolbar-button command="code">CODE</wiz-toolbar-button>
+		<wiz-toolbar-button command="ullist">ULLIST</wiz-toolbar-button>
+		<wiz-toolbar-button command="ollist">OLLIST</wiz-toolbar-button>
+		<wiz-toolbar-button command="indent">INDENT</wiz-toolbar-button>
+		<wiz-toolbar-button command="outdent">OUTDENT</wiz-toolbar-button>
+		<wiz-toolbar-button command="link">LINK</wiz-toolbar-button>
+		<wiz-toolbar-button command="img">IMG</wiz-toolbar-button>
+		<wiz-toolbar-button command="hr">HR</wiz-toolbar-button>
+		<wiz-toolbar-button command="h0">H0</wiz-toolbar-button>
+		<wiz-toolbar-button command="h1">H1</wiz-toolbar-button>
+		<wiz-toolbar-button command="h2">H2</wiz-toolbar-button>
+		<wiz-toolbar-button command="h3">H3</wiz-toolbar-button>
+		<wiz-toolbar-button command="h4">H4</wiz-toolbar-button>
+		<wiz-toolbar-button command="h5">H5</wiz-toolbar-button>
+		<wiz-toolbar-button command="h6">H6</wiz-toolbar-button>
+	</wiz-markdown-editor>
+
+	<wiz-markdown ng-show="viewMode" content="$parent.ngModel"></wiz-markdown>
+</div>

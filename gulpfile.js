@@ -1,69 +1,103 @@
-//var elixir = require('laravel-elixir');
-
-/*
- |--------------------------------------------------------------------------
- | Elixir Asset Management
- |--------------------------------------------------------------------------
- |
- | Elixir provides a clean, fluent API for defining some basic Gulp tasks
- | for your Laravel application. By default, we are compiling the Sass
- | file for our application, as well as publishing vendor resources.
- |
- */
-
-//elixir(function(mix) {
-//    mix.sass('app.scss');
-//});
-
-
 var gulp = require('gulp');
+var size = require('gulp-size');
 
 var concat = require('gulp-concat');
 var concatCss = require('gulp-concat-css');
 
-var angular_dir = 'public/angular/';
+var htmlmin = require('gulp-htmlmin');
+var sass = require('gulp-sass');
+
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
+
+var angular_dir = 'resources/angular/';
+var sass_dir = 'resources/sass/';
 var css_dir = 'public/css/';
-var dist_dir = 'public/dist/';
+var build_dir = 'public/dist/';
+var build_html_dir = 'public/angular/admin_app';
 
 var paths = {
-    styles: [
+    vendor_styles: [
+        css_dir + 'angular-material.min.css'
+    ],
+    vendor_scripts: angular_dir + 'vendor.js',
+
+    admin_app_sass: sass_dir + '**/*.scss',
+    admin_app_styles: [
         angular_dir + 'awesome-edit/dist/a-edit.css',
-        css_dir     + 'admin_app.css'
-    ]
+        'public/css/admin_app.css'
+    ],
+
+    admin_app_scripts: [
+        angular_dir + 'awesome-edit/dist/a-edit.js',
+        angular_dir + 'admin_app/**/*.module.js',
+        angular_dir + 'admin_app/admin_app.module.js',
+        angular_dir + 'admin_app/**/*.js'
+    ],
+    admin_app_templates: angular_dir + 'admin_app/**/*.html'
 };
 
-gulp.task('concatAngularVendorJS', function() {
-    return gulp.src([
-            angular_dir + 'vendor/angular.min.js',
-            angular_dir + 'awesome-edit/dist/a-edit.js',
-            angular_dir + 'vendor/*.js'
-        ])
-        .pipe(concat('vendor.js'))
-        .pipe(gulp.dest(dist_dir));
+//===================================================================================
+// VENDOR
+//===================================================================================
+
+gulp.task('vendorJS', function() {
+    return browserify(paths.vendor_scripts)
+        .bundle()
+        .pipe(source('vendor.js'))
+        .pipe(gulp.dest(build_dir))
+        .pipe(size({title: 'vendor.js'}));
 });
 
-gulp.task('concatAdminAppJS', function() {
-    return gulp
-        .src([
-            angular_dir + 'admin_app/**/*.module.js',
-            angular_dir + 'admin_app/app.module.js',
+gulp.task('vendorCSS', function() {
+    return gulp.src(paths.vendor_styles)
+        .pipe(concatCss('vendor.css'))
+        .pipe(gulp.dest(build_dir))
+        .pipe(size({title: 'vendor.css'}));
+});
 
-            angular_dir + 'admin_app/**/*.js'
-        ])
+//===================================================================================
+// ADMIN APPLICATION
+//===================================================================================
+
+gulp.task('appJS', function() {
+    return gulp.src(paths.admin_app_scripts)
         .pipe(concat('app.js'))
-        .pipe(gulp.dest(dist_dir));
+        .pipe(gulp.dest(build_dir))
+        .pipe(size({title: 'app.js'}));
 });
 
-gulp.task('concatAdminAppCSS', function() {
-    return gulp.src(paths.styles)
-        .pipe(concatCss('app.css'))
-        .pipe(gulp.dest(dist_dir));
+gulp.task('appSASS', function () {
+    return gulp.src(paths.admin_app_sass)
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest(css_dir));
 });
+
+gulp.task('appCSS', function() {
+    return gulp.src(paths.admin_app_styles)
+        .pipe(concatCss('app.css'))
+        .pipe(gulp.dest(build_dir))
+        .pipe(size({title: 'app.css'}));
+});
+
+gulp.task('appHTML', function() {
+    return gulp.src(paths.admin_app_templates)
+        .pipe(htmlmin({collapseWhitespace: true}))
+        .pipe(gulp.dest(build_html_dir));
+});
+
+//===================================================================================
+// WATCH
+//===================================================================================
 
 gulp.task('watch', function() {
-    gulp.watch([angular_dir + 'vendor/**/*.js', angular_dir + 'awesome-edit/dist/a-edit.js'], ['concatAngularVendorJS']);
-    gulp.watch(angular_dir + 'admin_app/**/*.js', ['concatAdminAppJS']);
-    gulp.watch(paths.styles, ['concatAdminAppCSS']);
+    gulp.watch(paths.vendor_scripts, ['vendorJS']);
+    gulp.watch(paths.vendor_styles, ['vendorCSS']);
+
+    gulp.watch(paths.admin_app_scripts, ['appJS']);
+    gulp.watch(paths.admin_app_sass, ['appSASS']);
+    gulp.watch(paths.admin_app_styles, ['appCSS']);
+    gulp.watch(paths.admin_app_styles, ['appHTML']);
 });
 
-gulp.task('default', ['concatAngularVendorJS', 'concatAdminAppJS', 'concatAdminAppCSS', 'watch']);
+gulp.task('default', ['vendorJS', 'vendorCSS', 'appJS', 'appSASS', 'appCSS', 'appHTML', 'watch']);

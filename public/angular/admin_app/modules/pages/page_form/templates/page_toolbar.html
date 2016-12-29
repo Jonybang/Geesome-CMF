@@ -1,13 +1,1 @@
-<md-toolbar class="md-accent md-hue-1" layout class="padding">
-
-	<md-button class="md-accent" ng-click="savePage()">
-		<span ng-if="!page.id">Create page</span>
-		<span ng-if="page.id">Save</span>
-	</md-button>
-
-	<span flex></span>
-
-	<md-button class="md-raised" target="_self" ng-href="/{{page.page_uri}}" ng-disabled="!page.id">
-		Open page
-	</md-button>
-</md-toolbar>
+<md-toolbar class="md-accent md-hue-1" layout class="padding"><md-button class="md-accent" ng-click="savePage()"><span ng-if="!page.id">Create page</span> <span ng-if="page.id">Save</span></md-button><span flex></span><md-button class="md-raised" target="_self" ng-href="/{{page.page_uri}}" ng-disabled="!page.id">Open page</md-button></md-toolbar>

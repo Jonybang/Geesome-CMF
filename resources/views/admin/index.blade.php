@@ -7,9 +7,8 @@
 @section('styles')
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
-    <link href="/css/angular/angular-material.min.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
+    <link href="/dist/vendor.css" rel="stylesheet">
     <link href="/dist/app.css" rel="stylesheet">
 @endsection
 
