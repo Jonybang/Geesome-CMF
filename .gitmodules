@@ -1,3 +1,3 @@
-[submodule "public/angular/awesome-edit"]
-	path = public/angular/awesome-edit
+[submodule "resources/angular/awesome-edit"]
+	path = resources/angular/awesome-edit
 	url = https://github.com/Jonybang/awesome-edit

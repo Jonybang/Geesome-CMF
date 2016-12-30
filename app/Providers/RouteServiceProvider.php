@@ -39,6 +39,9 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         $this->mapWebRoutes();
+        $this->mapAdminRoutes();
+        $this->mapCMFRoutes();
+        $this->mapSEORoutes();
 
         //
     }
@@ -58,6 +61,35 @@ class RouteServiceProvider extends ServiceProvider
             'namespace' => $this->namespace,
         ], function ($router) {
             require base_path('routes/web.php');
+        });
+    }
+    protected function mapAdminRoutes()
+    {
+        Route::group([
+            'middleware' => ['web', 'auth', 'role:admin'],
+            'prefix' => 'admin',
+            'as' => 'admin::',
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/admin.php');
+        });
+    }
+    protected function mapCMFRoutes()
+    {
+        Route::group([
+            'middleware' => 'web',
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/cmf.php');
+        });
+    }
+    protected function mapSEORoutes()
+    {
+        Route::group([
+            'middleware' => 'web',
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/seo.php');
         });
     }
 }
