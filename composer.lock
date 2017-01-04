@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "58945c746d9e3afcd2da097c6850e86b",
-    "content-hash": "e4b97ef571c716e0b6f1897971f869b8",
+    "hash": "1cb91c05951e77cd133d4fb3076c7a72",
+    "content-hash": "b3a7764577dcc2357fc2f2aee44ef649",
     "packages": [
         {
             "name": "barryvdh/laravel-translation-manager",
@@ -2582,16 +2582,16 @@
         },
         {
             "name": "unisharp/laravel-filemanager",
-            "version": "1.6.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/UniSharp/laravel-filemanager.git",
-                "reference": "124f07151dd47343583848ebfd4f047cd4ca9bd0"
+                "url": "https://github.com/ejeanneaubc/laravel-filemanager.git",
+                "reference": "3aa9086ed138db76bea2e717c8e84c57319dc892"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/UniSharp/laravel-filemanager/zipball/124f07151dd47343583848ebfd4f047cd4ca9bd0",
-                "reference": "124f07151dd47343583848ebfd4f047cd4ca9bd0",
+                "url": "https://api.github.com/repos/ejeanneaubc/laravel-filemanager/zipball/3aa9086ed138db76bea2e717c8e84c57319dc892",
+                "reference": "3aa9086ed138db76bea2e717c8e84c57319dc892",
                 "shasum": ""
             },
             "require": {
@@ -2609,7 +2609,6 @@
                     "Unisharp\\Laravelfilemanager\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2625,7 +2624,7 @@
             ],
             "description": "A file upload/editor intended for use with Laravel 5 and CKEditor / TinyMCE",
             "keywords": [
-                "CKEditor",
+                "ckeditor",
                 "file",
                 "filemanager",
                 "image",
@@ -2634,7 +2633,10 @@
                 "tinymce",
                 "upload"
             ],
-            "time": "2016-11-22 03:54:17"
+            "support": {
+                "source": "https://github.com/ejeanneaubc/laravel-filemanager/tree/master"
+            },
+            "time": "2016-07-13 10:34:01"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -4139,7 +4141,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "zizaco/entrust": 20,
-        "marcelgwerder/laravel-api-handler": 20
+        "marcelgwerder/laravel-api-handler": 20,
+        "unisharp/laravel-filemanager": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

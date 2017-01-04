@@ -58,7 +58,7 @@ $('#upload-btn').click(function () {
     if (responseText != 'OK'){
       notify(responseText);
     }
-    $('#upload').val('');
+    $('input#upload').val('');
     loadItems();
   }
 
