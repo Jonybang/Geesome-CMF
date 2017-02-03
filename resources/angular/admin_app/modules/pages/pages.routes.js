@@ -13,7 +13,7 @@ angular
                     abstract: true,
                     views: {
                         header:     { template: "<h3>Pages</h3>" },
-                        content:    { templateUrl: AppPaths.pages + 'templates/index.html', controller: "PagesController" }
+                        content:    { templateUrl: AppPaths.pages + 'templates/index.html', controller: "PagesController as pagesCtrl" }
                     }
                 })
                     .state('app.page.create', {

@@ -1,11 +1,13 @@
 angular.module('admin_app')
     .controller('PagesController', ['$scope', '$http', 'AppPaths', 'ServerData', 'Contexts', 'Pages', 'DatabaseConfig', function($scope, $http, AppPaths, ServerData, Contexts, Pages, DatabaseConfig) {
 
-        $scope.refreshPagesTree = function(){
+        var pagesCtrl = this;
+
+        pagesCtrl.refreshPagesTree = function(){
             $scope.contexts = Contexts.query({_with: 'pages_tree', is_hide: 0});
         };
 
-        $scope.refreshPagesTree();
+        pagesCtrl.refreshPagesTree();
 
         $scope.changeParent = function(event, dropped_index, dropped_item, parent){
             if(parent.id == dropped_item.id)

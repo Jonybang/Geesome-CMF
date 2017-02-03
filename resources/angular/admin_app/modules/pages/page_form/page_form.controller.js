@@ -131,7 +131,7 @@ angular
                     });
 
                     cmdToast.success('Page saved!');
-                    $scope.app.refreshPagesTree();
+                    $scope.pagesCtrl.refreshPagesTree();
                 })
             };
     }]);
