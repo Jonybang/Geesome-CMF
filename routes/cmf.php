@@ -122,6 +122,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
         //sf - sub fields and st - settings dictionaries for alternative to take sub_fields in page if a conflict of variables naming
         $page_data = array_merge($page_data, ['page' => $page, 'sf' => $sub_fields, 'st' => $settings, 'lang_contexts' => $lang_contexts], $sub_fields, $settings);
 
+        \View::share('current_page', $page);
         //render view by template->key or custom view name from some controller action returned data['render_template']
         return view('templates.' . $path, $page_data);
     })->where('all', '(?!laravel-filemanager|robots.txt|sitemap|css|js|dist|angular|fonts|images|img|vendor).*');
