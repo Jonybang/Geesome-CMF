@@ -1914,8 +1914,8 @@ angular
         'admin_app.database',
         'admin_app.mailing'
     ])
-    .config(['$mdThemingProvider', '$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
-        function($mdThemingProvider, $urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
+    .config(['$mdThemingProvider', '$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', '$compileProvider', '$mdDateLocaleProvider', 'AppPaths',
+        function($mdThemingProvider, $urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, $compileProvider, $mdDateLocaleProvider, AppPaths) {
 
             $stateProvider
                 .state('app', {
@@ -1963,6 +1963,12 @@ angular
                     'hue-2': '100',
                     'hue-3': '400'
                 });
+
+            $compileProvider.preAssignBindingsEnabled(true);
+
+            $mdDateLocaleProvider.formatDate = function(date) {
+                return moment(date).format('DD.MM.YYYY');
+            };
         }])
     .run(['$rootScope', 'ServerData', 'AEditConfig', function($rootScope, ServerData, AEditConfig){
 
@@ -3944,8 +3950,12 @@ angular
             var defaultPage = new Pages();
 
             if($state.params.pageId){
-                $scope.page = Pages.get({id: $state.params.pageId});
-                $scope.page.id = $state.params.pageId;
+                Pages.get({id: $state.params.pageId}, function(page){
+                    $scope.page = page;
+                    $scope.page.published_at = new Date($scope.page.published_at);
+                });
+
+                $scope.page = {id: $state.params.pageId};
             } else {
                 defaultPage.is_menu_hide = true;
                 defaultPage.tags_ids = [];

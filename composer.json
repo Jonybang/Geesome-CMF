@@ -20,7 +20,8 @@
         "ellisthedev/laravel-5-robots": "^0.1.0",
         "roumen/sitemap": "^2.6",
         "ipunkt/laravel-analytics": "^1.2",
-        "laravelcollective/html": "^5.3"
+        "laravelcollective/html": "^5.3",
+        "doctrine/dbal": "^2.5"
     },
     "repositories": [
         { "type": "vcs", "url": "https://github.com/ejeanneaubc/laravel-filemanager" }

@@ -14,8 +14,12 @@ angular
             var defaultPage = new Pages();
 
             if($state.params.pageId){
-                $scope.page = Pages.get({id: $state.params.pageId});
-                $scope.page.id = $state.params.pageId;
+                Pages.get({id: $state.params.pageId}, function(page){
+                    $scope.page = page;
+                    $scope.page.published_at = new Date($scope.page.published_at);
+                });
+
+                $scope.page = {id: $state.params.pageId};
             } else {
                 defaultPage.is_menu_hide = true;
                 defaultPage.tags_ids = [];

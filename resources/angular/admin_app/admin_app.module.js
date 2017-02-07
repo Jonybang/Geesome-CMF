@@ -17,8 +17,8 @@ angular
         'admin_app.database',
         'admin_app.mailing'
     ])
-    .config(['$mdThemingProvider', '$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', 'AppPaths',
-        function($mdThemingProvider, $urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, AppPaths) {
+    .config(['$mdThemingProvider', '$urlRouterProvider', '$stateProvider', '$locationProvider', '$httpProvider', '$compileProvider', '$mdDateLocaleProvider', 'AppPaths',
+        function($mdThemingProvider, $urlRouterProvider, $stateProvider, $locationProvider, $httpProvider, $compileProvider, $mdDateLocaleProvider, AppPaths) {
 
             $stateProvider
                 .state('app', {
@@ -66,6 +66,12 @@ angular
                     'hue-2': '100',
                     'hue-3': '400'
                 });
+
+            $compileProvider.preAssignBindingsEnabled(true);
+
+            $mdDateLocaleProvider.formatDate = function(date) {
+                return moment(date).format('DD.MM.YYYY');
+            };
         }])
     .run(['$rootScope', 'ServerData', 'AEditConfig', function($rootScope, ServerData, AEditConfig){
 

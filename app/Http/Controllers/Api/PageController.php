@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\UserActionLog;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use \Response;
 use \Auth;
@@ -51,6 +52,7 @@ class PageController extends ApiController
     {
         $data = $request->all();
         $data['context_id'] = isset($data['context_id']) ? $data['context_id'] : Context::first()->id;
+        $data['published_at'] = Carbon::parse($request->input('published_at'));
         $obj = Page::create($data);
         $obj->save();
 
@@ -64,6 +66,7 @@ class PageController extends ApiController
     {
         $data = $request->all();
         $obj = Page::find($data['id']);
+        $data['published_at'] = Carbon::parse($request->input('published_at'));
         $is_saved = $obj->update($data);
 
         $this->setPageSubData($obj, $data);
