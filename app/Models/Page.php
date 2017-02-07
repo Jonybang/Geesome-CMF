@@ -19,6 +19,7 @@ class Page extends Model
         'sub_title',
         'description',
         'menu_index',
+        'published_at',
 
         'is_published',
         'is_menu_hide',
@@ -49,6 +50,12 @@ class Page extends Model
         'author_id' => 'integer',
         'template_id' => 'integer',
         'context_id' => 'integer'
+    ];
+
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'published_at'
     ];
 
     /**

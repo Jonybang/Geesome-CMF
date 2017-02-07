@@ -61,6 +61,10 @@
 
                 <ae-bool-input label="Published" ng-model="page.is_published" has-error="hasErrors.is_published"></ae-bool-input>
 
+                <label>Published at</label>
+
+                <md-datepicker ng-model="page.published_at" md-placeholder="Published at"></md-datepicker>
+
                 <div class="padding">
                     <a href ng-click="menuInfoShow = !menuInfoShow" ng-class="{'dropup': menuInfoShow}">
                         Edit menu info <span class="caret"></span><br>
