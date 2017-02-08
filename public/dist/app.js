@@ -2195,12 +2195,16 @@ angular
                 ngModel: '=',
                 pageResource: '=?',
                 templateResource: '=?',
-                viewMode: '=?'
+                viewMode: '=?',
+                onSave: '&'
             },
             link: function (scope, element) {
                 scope.openFileManager = function(){
                     FileManger.getPath().then(function(path){
                         scope.ngModel = path;
+
+                        if(scope.onSave)
+                            $timeout(scope.onSave);
                     }, function(){
                         //closed
                     })
