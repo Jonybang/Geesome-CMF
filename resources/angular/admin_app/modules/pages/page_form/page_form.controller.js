@@ -79,6 +79,7 @@ angular
             });
 
             $scope.getSubFields = function(){
+                console.log('get sub fields');
                 SubFields.query({'template_id': $scope.page.template_id}).$promise.then(function(data){
                     $scope.sub_fields = data;
                 });

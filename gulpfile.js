@@ -97,7 +97,7 @@ gulp.task('watch', function() {
     gulp.watch(paths.admin_app_scripts, ['appJS']);
     gulp.watch(paths.admin_app_sass, ['appSASS']);
     gulp.watch(paths.admin_app_styles, ['appCSS']);
-    gulp.watch(paths.admin_app_styles, ['appHTML']);
+    gulp.watch(paths.admin_app_templates, ['appHTML']);
 });
 
 gulp.task('default', ['vendorJS', 'vendorCSS', 'appJS', 'appSASS', 'appCSS', 'appHTML', 'watch']);

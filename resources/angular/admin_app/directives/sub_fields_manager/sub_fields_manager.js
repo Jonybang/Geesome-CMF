@@ -61,7 +61,7 @@ angular
                     debounceInit();
                 }
                 scope.$watchCollection('ngModel', checkForInit);
-                scope.$watchCollection('pageResource', checkForInit);
+                scope.$watch('pageResource', checkForInit);
 
                 if(scope.api){
                     scope.api.saveSubFieldsValues = function(pageResource){
