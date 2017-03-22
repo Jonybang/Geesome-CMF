@@ -2012,27 +2012,6 @@ angular.module('a-edit')
     }]);
 
 angular
-    .module('admin_app.database', [
-        'ui.router',
-
-        'admin_app.general'
-    ]);
-angular
-    .module('admin_app.general', [
-    ]);
-angular
-    .module('admin_app.mailing', [
-        'ui.router',
-
-        'admin_app.general'
-    ]);
-angular
-    .module('admin_app.pages', [
-        'ui.router',
-
-        'admin_app.general'
-    ]);
-angular
     .module('admin_app', [
         'ngResource',
         'ngAnimate',
@@ -2120,6 +2099,27 @@ angular
         //config for marcelgwerder/laravel-api-handler
         AEditConfig.grid_options.additional_request_params._config = "meta-total-count,meta-filter-count,response-envelope";
     }]);
+angular
+    .module('admin_app.database', [
+        'ui.router',
+
+        'admin_app.general'
+    ]);
+angular
+    .module('admin_app.general', [
+    ]);
+angular
+    .module('admin_app.mailing', [
+        'ui.router',
+
+        'admin_app.general'
+    ]);
+angular
+    .module('admin_app.pages', [
+        'ui.router',
+
+        'admin_app.general'
+    ]);
 angular.module('admin_app')
     .controller('AppController', ['$scope', '$http', 'AppPaths', 'ServerData', 'Contexts', 'Pages', 'DatabaseConfig', function($scope, $http, AppPaths, ServerData, Contexts, Pages, DatabaseConfig) {
         var self = this;
@@ -2428,10 +2428,10 @@ angular
                     }
                     if(config.fields && config.fields.length){
                         scope.fields = _.isObject(config.fields[0]) ? config.fields : config.fields.map(function(field){return {name: field, label: _.upperFirst(_.upperCase(field))}});
-                        scope.addder = true;
+                        scope.adder = true;
                     } else {
                         scope.fields = null;
-                        scope.addder = false;
+                        scope.adder = false;
                     }
                 });
 
