@@ -115,3 +115,7 @@ md-toast.md-error-toast-theme .md-toast-content {
 md-toast.md-warn-toast-theme .md-toast-content {
     background-color: rgb(239,108,0);
 }
+
+.md-virtual-repeat-container.md-autocomplete-suggestions-container {
+    min-width: 300px !important;
+}
