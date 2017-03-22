@@ -37,10 +37,10 @@ angular
                     }
                     if(config.fields && config.fields.length){
                         scope.fields = _.isObject(config.fields[0]) ? config.fields : config.fields.map(function(field){return {name: field, label: _.upperFirst(_.upperCase(field))}});
-                        scope.addder = true;
+                        scope.adder = true;
                     } else {
                         scope.fields = null;
-                        scope.addder = false;
+                        scope.adder = false;
                     }
                 });
 
