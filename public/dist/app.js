@@ -2405,8 +2405,6 @@ angular
             },
             link: function (scope, element) {
 
-                scope.resource = Pages;
-
                 scope.$watch('ngModel', function(){
                     if(!scope.ngModel){
                         scope.fakeModel = [];
@@ -2418,13 +2416,17 @@ angular
                 });
 
 
-                scope.$watch('subFieldResource.config', function(configJSON){
-                    if(!configJSON)
+                scope.$watch('subFieldResource', function(subFieldResource){
+                    if(!subFieldResource.config){
+                        scope.resource = Pages;
                         return;
+                    }
 
-                    var config = JSON.parse(configJSON);
+                    var config = JSON.parse(subFieldResource.config);
                     if(config.url){
                         scope.resource = $resource(config.url + '/:id', { id: '@id' }, {'update': { method: 'PUT' }});
+                    } else {
+                        scope.resource = Pages;
                     }
                     if(config.fields && config.fields.length){
                         scope.fields = _.isObject(config.fields[0]) ? config.fields : config.fields.map(function(field){return {name: field, label: _.upperFirst(_.upperCase(field))}});
