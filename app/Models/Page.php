@@ -118,7 +118,7 @@ class Page extends Model
      */
     public function child_pages_by_index()
     {
-        return $this->hasMany(Page::class, 'parent_page_id')->orderBy('menu_index', 'ASC')->with('child_pages');
+        return $this->hasMany(Page::class, 'parent_page_id')->orderBy('menu_index', 'ASC')->with('child_pages_by_index');
     }
     /**
      * @Relation
