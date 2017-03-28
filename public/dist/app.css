@@ -173,8 +173,7 @@ ae-grid md-input-container {
   margin: 0;
 }
 
-md-dialog-content ae-text-input,
-md-dialog-content ae-select-input {
+md-dialog-content > .ae-select-input-dialog-field > * {
   width: 100%;
 }
 /* Page structure */
@@ -324,8 +323,4 @@ md-toast.md-warn-toast-theme .md-toast-content {
 
 .md-virtual-repeat-container.md-autocomplete-suggestions-container {
   min-width: 300px !important;
-}
-
-md-dialog-content > .ae-select-input-dialog-field > * {
-  width: 100%;
 }
