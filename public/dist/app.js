@@ -332,6 +332,7 @@ angular
 
                     var queryOptions = {};
                     queryOptions[variables.sort] = scope.actualOptions.order_by;
+                    queryOptions[variables.limit] = AEditConfig.grid_options.items_per_page;
 
                     scope.ajaxList = new AEditAjaxHelper(scope.actualOptions.resource, queryOptions);
 
@@ -733,7 +734,8 @@ angular
                             resource = new scope.actualOptions.resource(angular.extend(request_object, scope.actualOptions.params));
                             AEditHelpers.getResourceQuery(resource, 'create').then(function (created_item) {
                                 created_item.is_new = true;
-                                scope.ngModel.unshift(created_item);
+                                //scope.ngModel.unshift(created_item);
+                                scope.getList();
                                 delete scope.new_item;
                                 scope.new_item = angular.copy(new_item);
 
@@ -751,7 +753,11 @@ angular
                     var index = scope.ngModel.indexOf(item);
 
                     function deleteCallbacks() {
-                        scope.ngModel.splice(index, 1);
+                        if (mode == 'remote')
+                            scope.getList();
+                        else
+                            scope.ngModel.splice(index, 1);
+
                         if (scope.ngChange)
                             $timeout(scope.ngChange);
 
@@ -1172,11 +1178,22 @@ angular
                 //=============================================================
                 // Init select list
                 //=============================================================
+                var last_resource = scope.ngResource;
                 function initListGetByResource(){
-                    if(!scope.ngResource || !scope.getList || (scope.local_list && scope.local_list.length))
-                        return;
+                    if(!scope.ngResource || !scope.getList || (scope.local_list && scope.local_list.length)){
+                        if(last_resource == scope.ngResource){
+                            return;
+                        }
+                    }
+
+                    if(last_resource != scope.ngResource){
+                        scope.options.selected = null;
+                        scope.objectsById = null;
+                    }
 
                     getList();
+
+                    last_resource = scope.ngResource;
                 }
 
                 function getList(resolve, reject){
@@ -1197,17 +1214,24 @@ angular
 
                     request_options[variables['limit']] = AEditConfig.select_options.items_per_page;
 
-                    if(scope.type == 'multiselect')
+                    if(scope.type == 'multiselect' && scope.objectsById)
                         request_options[variables['id_not_in']] = scope.ngModel && scope.ngModel.length ? scope.ngModel.join(',') : [];
 
                     return AEditHelpers.getResourceQuery(scope.ngResource, 'get', request_options).then(function(list){
+                        var isResourceWasReinit = scope.ngModel && scope.ngModel.length && !scope.objectsById
                         scope.local_list = list;
 
                         if(scope.fakeModel)
                             scope.setSelected();
 
+                        if(isResourceWasReinit){
+                            scope.local_list = list.filter(function(item){
+                                return !scope.ngModel.includes(item.id);
+                            });
+                        }
+
                         if(angular.isFunction(resolve))
-                            resolve(list);
+                            resolve(scope.local_list);
                     }, function(response){
                         if(angular.isFunction(reject))
                             reject(response);
@@ -1219,8 +1243,10 @@ angular
                     return $q(scope.debouncedGetList);
                 };
 
-                scope.$watch('ngResource', initListGetByResource);
-                scope.$watch('refreshListOn', initListGetByResource);
+                var debouncedInitList = AEditHelpers.debounce(initListGetByResource, 300);
+
+                scope.$watch('ngResource', debouncedInitList);
+                scope.$watch('refreshListOn', debouncedInitList);
                 scope.$watchCollection('params', getList);
 
                 //=============================================================
@@ -1787,7 +1813,7 @@ angular.module('a-edit')
                 total_count: 'total_count',
                 filter_count: 'filter_count'
             },
-            items_per_page: 15
+            items_per_page: 10
         };
 
         this.select_options = {
@@ -1880,6 +1906,9 @@ angular.module('a-edit')
 
                 if(field.fields)
                     output += 'ng-resource-fields="' + field.name + '_fields" ';
+
+                if(field.config)
+                    output += 'config="' + JSON.stringify(field.config) + '" ';
 
                 if(config.list_variable)
                     output += 'list="' + config.list_variable + '" ';
@@ -2365,12 +2394,15 @@ angular
 
                 scope.gridOptions = defaultConfig;
 
-                scope.$watch('subFieldResource.config', function(config){
+                scope.$watch('subFieldResource.config', initConfig);
+                scope.$watch('config', initConfig);
+                
+                function initConfig(config){
                     if(!config)
                         return;
 
                     scope.gridOptions = angular.extend({}, defaultConfig, JSON.parse(config));
-                });
+                }
 
                 scope.$watch('ngModel', function(){
                     if(!scope.ngModel){

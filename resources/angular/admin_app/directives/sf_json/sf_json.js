@@ -35,12 +35,15 @@ angular
 
                 scope.gridOptions = defaultConfig;
 
-                scope.$watch('subFieldResource.config', function(config){
+                scope.$watch('subFieldResource.config', initConfig);
+                scope.$watch('config', initConfig);
+                
+                function initConfig(config){
                     if(!config)
                         return;
 
                     scope.gridOptions = angular.extend({}, defaultConfig, JSON.parse(config));
-                });
+                }
 
                 scope.$watch('ngModel', function(){
                     if(!scope.ngModel){
