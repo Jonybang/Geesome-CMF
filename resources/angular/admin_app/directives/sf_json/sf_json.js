@@ -42,7 +42,7 @@ angular
                     if(!config)
                         return;
 
-                    scope.gridOptions = angular.extend({}, defaultConfig, JSON.parse(config));
+                    scope.gridOptions = angular.extend({}, defaultConfig, angular.isString(config) ? JSON.parse(config) : config);
                 }
 
                 scope.$watch('ngModel', function(){
