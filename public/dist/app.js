@@ -994,7 +994,7 @@ angular
             if(type == 'multiselect') {
                 template += '' +
                     '<md-chips ng-model="options.selected" md-on-remove="removeFromMultiSelect($chip)">' +
-                        '<md-chip-template>' +
+                        '<md-chip-template ng-dblclick="editItem(objectsById[$chip])">' +
                             '<span>{{getNameFromObj(objectsById[$chip])}}</span>' +
                         '</md-chip-template>';
             }
@@ -1020,7 +1020,7 @@ angular
                                     '<span md-highlight-text="options.search" md-highlight-flags="^i">{{' + mdSelect.itemName + '}}</span> ' +
                                 '</md-item-template>' +
                                 '<md-not-found>' +
-                                    AEditConfig.locale.not_found + ' <a ng-click="newItem(options.search)" ng-show="adder">' + AEditConfig.locale.create_new_question + '</a>' +
+                                    AEditConfig.locale.not_found + ' <a href ng-click="editItem(null)" ng-show="adder">' + AEditConfig.locale.create_new_question + '</a>' +
                                 '</md-not-found>' +
                         '</md-autocomplete>';
 
@@ -1068,6 +1068,7 @@ angular
                 nameField: '@',
                 orNameField: '@',
                 placeholder: '@',
+                defaultValue: '@',
                 label: '@',
                 name: '@',
                 type: '@' //select or multiselect
@@ -1091,6 +1092,9 @@ angular
                 scope.full_type = scope.type = scope.type || 'select';
                 if(scope.adder)
                     scope.full_type += '-adder';
+
+                if(attrs.defaultValue)
+                    scope.ngModel = scope.defaultValue;
 
                 scope.fakeModel = scope.ngModel;
 
@@ -1381,18 +1385,19 @@ angular
                     }
                 };
 
-                scope.newItem = function(){
+                scope.editItem = function(item){
                     if(scope.type == 'textselect' || !scope.ngResourceFields || !scope.ngResourceFields.length)
                         scope.ngResourceFields = [{name: scope.nameField || 'name' || scope.orNameField, label: ''}];
 
                     var inputsHtml = '';
-                    var data = { lists: {}, configs: {} };
+                    var data = { lists: {}, configs: {}, object: item || {} };
+
                     scope.ngResourceFields.forEach(function(field){
                         if(field.name == scope.nameField || field.name == 'name' || field.name == scope.orNameField)
                             field.default_value = scope.options.search;
 
                         inputsHtml += '<div class="ae-select-input-dialog-field" flex="grow" layout="row" layout-fill>' + AEditHelpers.generateDirectiveByConfig(field, {
-                                            item_name: 'new_object',
+                                            item_name: 'object',
                                             lists_container: 'lists',
                                             always_edit: true,
                                             get_list: true,
@@ -1410,7 +1415,7 @@ angular
                         }
 
                         if(field.type == 'multiselect'){
-                            data.new_object[field.name] = [];
+                            data.object[field.name] = [];
                         }
                     });
 
@@ -1431,7 +1436,7 @@ angular
                         controller: ['$scope', '$mdDialog', 'data', function ($scope, $mdDialog, data) {
                             angular.extend($scope, data);
                             $scope.save = function() {
-                                $mdDialog.hide($scope.new_object);
+                                $mdDialog.hide($scope.object);
                             };
                             $scope.cancel = function() {
                                 $mdDialog.cancel();
@@ -1448,17 +1453,19 @@ angular
                                     '<md-button ng-click="cancel()">' + AEditConfig.locale.cancel + '</md-button>' +
                                 '</md-dialog-actions>' +
                         '</md-dialog>'
-                    }).then(scope.saveToList);
+                    }).then(function(savedItem){
+                        saveToList(item, savedItem)
+                    });
                 };
 
                 //=============================================================
                 // Add new item to select list by adder
                 //=============================================================
-                scope.saveToList = function(new_object){
+                function saveToList (editedItem, savedItem){
                     if(scope.type == 'textselect'){
                         //get first property of object and add it to list
                         var is_first_prop = true;
-                        angular.forEach(new_object, function(prop_value){
+                        angular.forEach(savedItem, function(prop_value){
                             if(is_first_prop){
                                 scope.local_list.unshift(prop_value);
                                 scope.ngModel = prop_value;
@@ -1468,13 +1475,17 @@ angular
                         return;
                     }
 
-                    AEditHelpers.getResourceQuery(new scope.ngResource(angular.extend(new_object, scope.params || {})), 'create').then(function(object){
+                    AEditHelpers.getResourceQuery(new scope.ngResource(angular.extend(editedItem || {}, savedItem, scope.params || {})), editedItem ? 'update' : 'create').then(function(object){
                         scope.options.search = '';
 
-                        if(scope.type == 'multiselect')
-                            scope.fakeModel.push(object.id);
-                        else if(scope.type == 'select')
+                        if(scope.type == 'multiselect'){
+                            if(scope.fakeModel.includes(object.id))
+                                scope.objectsById[object.id] = object;
+                            else
+                                scope.fakeModel.push(object.id);
+                        } else if(scope.type == 'select'){
                             scope.fakeModel = object.id;
+                        }
 
                         scope.ngModel = scope.fakeModel;
 
@@ -2308,32 +2319,6 @@ angular
     }]);
 angular
     .module('admin_app')
-    .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
-        return {
-            restrict: 'E',
-            templateUrl: AppPaths.directives + 'sf_date/sf_date.html',
-            scope: {
-                /* SubFieldValues resource */
-                ngModel: '=',
-                pageResource: '=?',
-                templateResource: '=?'
-            },
-            link: function (scope, element) {
-                scope.$watch('ngModel', function(){
-                    if(!scope.ngModel)
-                        return;
-
-                    if(new Date(scope.ngModel.value) != scope.fakeModel)
-                        scope.fakeModel = new Date(scope.ngModel.value);
-                });
-                scope.$watch('fakeModel', function(){
-                    scope.ngModel.value = scope.fakeModel;
-                });
-            }
-        };
-    }]);
-angular
-    .module('admin_app')
     .directive('sfImage', ['$timeout', 'AppPaths', 'FileManger', function($timeout, AppPaths, FileManger) {
         return {
             restrict: 'E',
@@ -2915,6 +2900,32 @@ angular
                         templateUrl: AppPaths.pages + 'page_form/templates/index.html'
                     });
         }]);
+angular
+    .module('admin_app')
+    .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
+        return {
+            restrict: 'E',
+            templateUrl: AppPaths.directives + 'sf_date/sf_date.html',
+            scope: {
+                /* SubFieldValues resource */
+                ngModel: '=',
+                pageResource: '=?',
+                templateResource: '=?'
+            },
+            link: function (scope, element) {
+                scope.$watch('ngModel', function(){
+                    if(!scope.ngModel)
+                        return;
+
+                    if(new Date(scope.ngModel.value) != scope.fakeModel)
+                        scope.fakeModel = new Date(scope.ngModel.value);
+                });
+                scope.$watch('fakeModel', function(){
+                    scope.ngModel.value = scope.fakeModel;
+                });
+            }
+        };
+    }]);
 angular.module('admin_app.database')
     .factory('DBManageContextsConfig', ['Contexts', function(Contexts) {
 
@@ -3201,63 +3212,6 @@ angular.module('admin_app.database')
         return this;
     }]);
 angular.module('admin_app.database')
-    .factory('DBManageSentMailsConfig', ['SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function(SentMails, MailTemplates, Pages, SubscribersGroups) {
-
-        this.entityName = 'Sent Mails';
-
-        this.aeGridOptions = {
-            resource: SentMails,
-            create: false,
-            edit: false,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'result_title',
-                    modal: 'self',
-                    label: 'Result Title'
-                },
-                {
-                    name: 'result_content',
-                    label: 'Result Content',
-                    type: 'textarea'
-                },
-                {
-                    name: 'result_addresses',
-                    label: 'Addresses Mail',
-                    type: 'textarea'
-                },
-                {
-                    name: 'mail_template_id',
-                    label: 'Mail template',
-                    type: 'select',
-                    resource: MailTemplates,
-                    list: 'mail_templates'
-                },
-                {
-                    name: 'page_id',
-                    label: 'Source page',
-                    type: 'select',
-                    resource: Pages,
-                    list: 'pages'
-                },
-                {
-                    name: 'subscribers_groups_ids',
-                    label: 'Subscribers groups',
-                    type: 'multiselect',
-                    resource: SubscribersGroups,
-                    list: 'subscribers_groups',
-                    table_hide: true
-                }
-            ]
-        };
-
-        return this;
-    }]);
-angular.module('admin_app.database')
     .factory('DBManageSettingsConfig', ['Settings', 'Contexts', 'ServerData', function(Settings, Contexts, ServerData) {
 
         this.entityName = 'Settings';
@@ -3446,6 +3400,63 @@ angular.module('admin_app.database')
 
         $scope.sub_fields_values = [];
         $scope.aeGridSubFieldsValuesOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridSubFieldsValuesOptions);
+    }]);
+angular.module('admin_app.database')
+    .factory('DBManageSentMailsConfig', ['SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function(SentMails, MailTemplates, Pages, SubscribersGroups) {
+
+        this.entityName = 'Sent Mails';
+
+        this.aeGridOptions = {
+            resource: SentMails,
+            create: false,
+            edit: false,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'result_title',
+                    modal: 'self',
+                    label: 'Result Title'
+                },
+                {
+                    name: 'result_content',
+                    label: 'Result Content',
+                    type: 'textarea'
+                },
+                {
+                    name: 'result_addresses',
+                    label: 'Addresses Mail',
+                    type: 'textarea'
+                },
+                {
+                    name: 'mail_template_id',
+                    label: 'Mail template',
+                    type: 'select',
+                    resource: MailTemplates,
+                    list: 'mail_templates'
+                },
+                {
+                    name: 'page_id',
+                    label: 'Source page',
+                    type: 'select',
+                    resource: Pages,
+                    list: 'pages'
+                },
+                {
+                    name: 'subscribers_groups_ids',
+                    label: 'Subscribers groups',
+                    type: 'multiselect',
+                    resource: SubscribersGroups,
+                    list: 'subscribers_groups',
+                    table_hide: true
+                }
+            ]
+        };
+
+        return this;
     }]);
 angular.module('admin_app.database')
     .factory('DBManageSubscribersConfig', ['SubscribersGroups', 'Subscribers', function(SubscribersGroups, Subscribers) {
