@@ -1,10 +1,8 @@
 // Code goes here
 angular
-  .module('a-edit', ['ngMaterial', 'angularMoment', 'ngSanitize', 'cl.paging'])
+  .module('a-edit', ['ngMaterial', 'ngSanitize', 'cl.paging'])
   
-  .run(['amMoment', '$templateCache', function(amMoment, $templateCache) {
-    amMoment.changeLocale('ru');
-
+  .run(['$templateCache', function($templateCache) {
     
     $templateCache.put('a-edit-image-popover.html', '<img class="fit" ng-src="{{::image}}" alt="">');
     
@@ -54,6 +52,15 @@ angular
         <md-content ng-if="ngModel.total_pages > 1">\
             <cl-paging flex cl-pages="ngModel.total_pages" cl-steps="ngModel.per_page" cl-page-changed="pagingChanged()" cl-align="center" cl-current-page="ngModel.current"></cl-paging>\
         </md-content>\
+    ');
+
+      $templateCache.put('ae-sorting.html', '\
+        <a href ng-click="sort()" ng-class="[\'ae-sort-link\', {\'asc\': ngModel == \'ASC\', \'desc\': ngModel == \'DESC\'}]">\
+            <b ng-transclude></b>\
+            <button class="md-datepicker-triangle-button md-icon-button md-button" md-no-ink ng-click="sort()">\
+                <div class="md-datepicker-expand-triangle ng-scope"></div>\
+            </button>\
+        </a>\
     ');
   }]);
 
@@ -285,7 +292,9 @@ angular
                 options: '=',
                 //callbacks
                 ngChange: '&',
-                onSave: '&'
+                onSave: '&',
+                onDelete: '&',
+                onError: '&'
             },
             link: function (scope, element, attrs, ngModel) {
                 var defaultOptions = {
@@ -325,7 +334,7 @@ angular
                 // TEMPLATE INIT
                 // *************************************************************
 
-                scope.$watch('options', function () {
+                scope.$watchCollection('options', function () {
                     if (!scope.options)
                         return;
 
@@ -347,8 +356,7 @@ angular
                     }
 
                     var tplHtml = '' +
-                        '<md-content layout="row" flex="grow" layout-wrap class="padding ae-grid">' +
-                        '   <md-list flex>' +
+                        '<div class="ae-grid">' +
                         '       <md-subheader class="md-no-sticky" ng-show="actualOptions.caption || actualOptions.search">';
 
                     if (scope.actualOptions.search) {
@@ -364,41 +372,43 @@ angular
                         '       </md-subheader>';
 
 
-                    var tableFieldsCount = 1;
+                    var visibleFieldsCount = 1;
+                    var columnsCount = 1;
                     scope.actualOptions.fields.forEach(function (field) {
                         if (!field.colspan)
                             field.colspan = 1;
 
-                        if (!field.table_hide)
-                            tableFieldsCount += parseInt(field.colspan);
+                        if (!field.table_hide){
+                            visibleFieldsCount++;
+                            columnsCount += parseInt(field.colspan);
+                        }
                     });
 
-                    var md_grid_list = '<md-grid-list flex="grow" md-cols="' + tableFieldsCount + '" md-row-height="' + scope.actualOptions.row_height + '">';
+                    var tplHead = '<div class="ae-grid-row">';
 
-                    var tplHead =
-                        '<md-list-item class="md-1-line">' +
-                        md_grid_list;
-
-                    var tplBodyNewItem =
-                        '<md-list-item class="md-1-line new-item">' +
-                        '   <md-content layout="row" flex="grow">' +
-                        md_grid_list;
+                    var tplBodyNewItem = '<div class="ae-grid-row">';
 
                     if (!scope.actualOptions.track_by)
                         scope.actualOptions.track_by = mode == 'remote' ? 'id' : 'json_id';
 
                     var track_by = scope.actualOptions.track_by == '$index' ? scope.actualOptions.track_by : 'item.' + scope.actualOptions.track_by;
                     var tplBodyItem =
-                        '<md-list-item ng-click="null" class="md-1-line word-wrap" ng-repeat="item in filtredList track by ' + track_by + '"  dnd-list="filtredList"  dnd-draggable="item" dnd-disable-if="actualOptions.drag_disabled" dnd-effect-allowed="move" dnd-moved="filtredList.splice($index, 1)" dnd-drop="drop($index, item)">' +
-                        '   <md-content layout layout-fill layout-align="center" flex="grow">' +
-                        md_grid_list;
+                        '<div class="ae-grid-row" ng-click="null" ng-repeat="item in filtredList track by ' + track_by + '" dnd-list="filtredList" dnd-draggable="item" dnd-disable-if="actualOptions.drag_disabled" dnd-effect-allowed="move" dnd-moved="filtredList.splice($index, 1)" dnd-drop="drop($index, item)">';
 
                     var select_list_request_options = {};
                     select_list_request_options[variables['limit']] = scope.select_options.items_per_page;
 
+                    if(!scope.actualOptions.menu_col_percent)
+                        scope.actualOptions.menu_col_percent = 10;
+
+                    var availableColPercent = 100 - scope.actualOptions.menu_col_percent;
+
                     scope.actualOptions.fields.forEach(function (field, index) {
 
                         if (field.resource && field.list && field.list != 'self') {
+                            if(!field.list)
+                                field.list = field.name + '_list';
+
                             if (!scope.actualOptions.lists[field.list]) {
                                 scope.actualOptions.lists[field.list] = [];
 
@@ -411,15 +421,20 @@ angular
                         if (field.table_hide)
                             return;
 
-                        if (field.resource) {
+                        if (field.resource)
                             scope[field.name + '_resource'] = field.resource;
-                        }
-                        if (field.fields) {
+
+                        if (field.fields)
                             scope[field.name + '_fields'] = field.fields;
-                        }
+
+                        var columnPercent = Math.round(field.colspan/columnsCount * 100);
+                        if(columnPercent > availableColPercent)
+                            columnPercent = availableColPercent;
+
+                        availableColPercent -= columnPercent;
 
                         tplHead +=
-                            '<md-grid-tile md-colspan="' + field.colspan + '"><sorting ng-model="ajaxList.sorting.' + field.name + '" ng-change="getList()">' + field.label + '</sorting></md-grid-tile>';
+                            '<div class="ae-grid-col-' + columnPercent + '"><ae-sorting ng-model="ajaxList.sorting.' + field.name + '" ng-change="getList()">' + field.label + '</ae-sorting></div>';
                         //
                         //var style = 'style="';
                         //if(field.width)
@@ -428,10 +443,10 @@ angular
 
                         //for new item row
                         tplBodyNewItem +=
-                            '<md-grid-tile md-colspan="' + field.colspan + '">';
+                            '<div class="ae-grid-col-' + columnPercent + '">';
                         //for regular item row
                         tplBodyItem +=
-                            '<md-grid-tile md-colspan="' + field.colspan + '" ng-dblclick="editItem(item)">';
+                            '<div class="ae-grid-col-' + columnPercent + '" ng-dblclick="editItem(item)">';
 
                         function getFieldDirective(is_new) {
                             var item_name = (is_new ? 'new_' : '' ) + 'item';
@@ -457,25 +472,23 @@ angular
                             });
                         }
 
-                        tplBodyNewItem += getFieldDirective(true) +
-                            '</md-grid-tile>';
-                        tplBodyItem += getFieldDirective(false) +
-                            '</md-grid-tile>';
+                        tplBodyNewItem += getFieldDirective(true) + '</div>';
+                        tplBodyItem += getFieldDirective(false) + '</div>';
                     });
 
                     if (scope.actualOptions.edit) {
                         tplHead +=
-                            '<md-grid-tile></md-grid-tile>';
+                            '<div class="ae-grid-col-' + scope.actualOptions.menu_col_percent + '"></div>';
 
                         tplBodyNewItem +=
-                            '<md-grid-tile>' +
+                            '<div class="ae-grid-col-' + scope.actualOptions.menu_col_percent + '">' +
                             '   <md-button class="md-fab md-mini md-primary" ng-click="save(new_item)">' +
                             '       <md-icon>save</md-icon>' +
                             '   </md-button>' +
-                            '</md-grid-tile>';
+                            '</div>';
 
                         tplBodyItem +=
-                            '<md-grid-tile>' +
+                            '<div class="ae-grid-col-' + scope.actualOptions.menu_col_percent + '">' +
                             '   <md-menu>' +
                             '       <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)"><md-icon md-menu-origin>more_vert</md-icon></md-button>' +
                             '       <md-menu-content width="4">' +
@@ -486,22 +499,17 @@ angular
                                         (scope.actualOptions.delete ? '<md-menu-item><md-button ng-click="deleteConfirm(item)"><md-icon>delete</md-icon>' + AEditConfig.locale.delete + '</md-button></md-menu-item>' : '') +
                             '       </md-menu-content>' +
                             '   </md-menu>' +
-                            '</md-grid-tile>';
+                            '</div>';
                     }
 
                     tplHead +=
-                        '</md-grid-list>' +
-                        '</md-list-item>';
+                        '</div>';
 
                     tplBodyNewItem +=
-                        '</md-grid-list>' +
-                        '</md-content>' +
-                        '</md-list-item>';
+                        '</div>';
 
                     tplBodyItem +=
-                        '</md-grid-list>' +
-                        '</md-content>' +
-                        '</md-list-item>';
+                        '</div>';
 
                     var tableHtml = '';
 
@@ -517,9 +525,7 @@ angular
 
                     tableHtml += tplBodyItem;
 
-                    tplHtml += tableHtml +
-                        '</md-list>' +
-                        '</md-content>';
+                    tplHtml += tableHtml + '</div>';
 
                     if (scope.actualOptions.paginate) {
                         tplHtml += '<ae-paging ng-model="ajaxList.paging" ng-change="getList()"></ae-paging>';
@@ -527,7 +533,8 @@ angular
 
                     angular.element(element).html('');
 
-                    var template = angular.element('<md-content layout="column" flex>' + tplHtml + '</md-content>');
+                    var template = angular.element(tplHtml);
+                    //var template = angular.element('<md-content>' + tplHtml + '</md-content>');
 
                     angular.element(element).append($compile(template)(scope));
                 });
@@ -726,7 +733,7 @@ angular
                                 angular.extend(item, updated_item);
 
                                 saveCallbacks(item);
-                            });
+                            }, errorHandle);
                         } else {
                             //create if id not exist
                             angular.forEach(scope.actualOptions.default_attrs, function (value, attr) {
@@ -742,7 +749,7 @@ angular
                                 scope.new_item = angular.copy(new_item);
 
                                 saveCallbacks(item);
-                            });
+                            }, errorHandle);
                         }
                     }
                 };
@@ -763,8 +770,14 @@ angular
                         if (scope.ngChange)
                             $timeout(scope.ngChange);
 
+                        if (scope.onDelete)
+                            $timeout(scope.onDelete);
+
                         if (scope.actualOptions.callbacks.onChange)
                             $timeout(scope.actualOptions.callbacks.onChange);
+
+                        if (scope.actualOptions.callbacks.onDelete)
+                            $timeout(scope.actualOptions.callbacks.onDelete);
                     }
 
                     if (mode != 'remote') {
@@ -775,9 +788,17 @@ angular
                     if (confirm(AEditConfig.locale.delete_confirm + ' "' + (item.name || item.key || item.title || item.value) + '"?')) {
                         AEditHelpers.getResourceQuery(new scope.actualOptions.resource(item), 'delete').then(function () {
                             deleteCallbacks();
-                        });
+                        }, errorHandle);
                     }
                 };
+
+                function errorHandle(){
+                    if (scope.onError)
+                        $timeout(scope.onError);
+
+                    if (scope.actualOptions.callbacks.onError)
+                        $timeout(scope.actualOptions.callbacks.onError);
+                }
 
                 scope.drop = function (dropped_index, dropped_item) {
                     var previousIndex = null;
@@ -793,11 +814,11 @@ angular
 
                     scope.ngModel.splice(previousIndex, 1);
 
-                    if (previousIndex > dropped_index) {
+                    if (previousIndex > dropped_index)
                         scope.ngModel.splice(dropped_index, 0, dropped_item);
-                    } else {
+                    else
                         scope.ngModel.splice(dropped_index - 1, 0, dropped_item);
-                    }
+
                     scope.ngModel.forEach(function (item, index) {
                         item.index = index;
                     });
@@ -947,7 +968,7 @@ angular
 
 angular
     .module('a-edit')
-    .directive('aePaging', ['AppPaths', '$timeout', function(AppPaths, $timeout) {
+    .directive('aePaging', ['$timeout', function($timeout) {
         return {
             restrict: 'E',
             templateUrl: 'a-edit-paging.html',
@@ -1001,7 +1022,8 @@ angular
 
             template +=
                         '<md-autocomplete ' +
-                            (type == 'select' || type == 'textselect' ? 'ng-if="!viewMode" md-selected-item="$parent.options.selected" ' : ' ') +
+                            (type == 'select' || type == 'textselect' ? ' md-selected-item="$parent.options.selected" ' : ' ') +
+                            'ng-if="!viewMode"' +
                             'id="{{id}}" ' +
                             'name="{{name}}" ' +
                             'ng-required="ngRequired" ' +
@@ -1052,6 +1074,7 @@ angular
                 hasError: '=?',
                 disallowClear: '=?',
                 ngRequired: '=?',
+                ngDisabled: '=?',
 
                 ngResource: '=?',
                 ngResourceFields: '=?',
@@ -1224,13 +1247,13 @@ angular
                         request_options[variables['id_not_in']] = scope.ngModel && scope.ngModel.length ? scope.ngModel.join(',') : [];
 
                     return AEditHelpers.getResourceQuery(scope.ngResource, 'get', request_options).then(function(list){
-                        var isResourceWasReinit = scope.ngModel && scope.ngModel.length && !scope.objectsById
+                        //var isResourceWasReinit = scope.ngModel && scope.ngModel.length && !scope.objectsById
                         scope.local_list = list;
 
                         if(scope.fakeModel)
                             scope.setSelected();
 
-                        if(isResourceWasReinit){
+                        if(scope.type == 'multiselect' && scope.ngModel && scope.ngModel.length){
                             scope.local_list = list.filter(function(item){
                                 return !scope.ngModel.includes(item.id);
                             });
@@ -1500,6 +1523,33 @@ angular
     }]);
 angular
     .module('a-edit')
+    .directive('aeSorting', ['$timeout', function($timeout) {
+        return {
+            restrict: 'E',
+            templateUrl: 'ae-sorting.html',
+            transclude: true,
+            scope: {
+                ngModel: '=',
+                name: '@',
+                ngChange: '&'
+            },
+            link: function (scope, element, attrs) {
+                scope.sort = function(){
+                    if(!scope.ngModel){
+                        scope.ngModel = 'ASC';
+                    } else if(scope.ngModel == 'ASC'){
+                        scope.ngModel = 'DESC';
+                    } else if(scope.ngModel == 'DESC'){
+                        scope.ngModel = '';
+                    }
+
+                    $timeout(scope.ngChange);
+                }
+            }
+        };
+    }]);
+angular
+    .module('a-edit')
     .directive('aeTextInput', ['$timeout', '$compile', function($timeout, $compile) {
         function getTemplateByType(type, options){
             var text = '{{$parent.ngModel}}';
@@ -1707,6 +1757,8 @@ angular
             else
                 self.defaultSorting['id'] = 'DESC';
 
+            self.manualSorting = false;
+
             self.getData = function(options){
                 if(options){
                     if(options.is_add_next_page)
@@ -1715,9 +1767,19 @@ angular
                         self.paging.current = 1;
                 }
 
-                self.prepareQuery();
+                var temp_params = angular.copy(self.params);
+                if(options && options.temp_params)
+                    angular.extend(temp_params, options.temp_params);
+
+                self.prepareQuery(temp_params);
 
                 var params = options && options.is_exclude_params ? {} : self.temp_params;
+                if(options && options.exclude_params){
+                    options.exclude_params.forEach(function(param){
+                        delete params[param];
+                    })
+                }
+
                 var result = self.resource.query(params, function(data, headers){
                     self.paging.total_items = headers('Meta-Filter-Count');
                 });
@@ -1742,9 +1804,8 @@ angular
                 });
             };
 
-            self.prepareQuery = function(){
-                self.temp_params = angular.copy(self.params);
-
+            self.prepareQuery = function(params){
+                self.temp_params = angular.copy(params || self.params);
                 self.searchToQuery();
                 self.pagingToQuery();
                 self.sortingToQuery();
@@ -1768,6 +1829,9 @@ angular
             };
 
             self.sortingToQuery = function(){
+                if(self.manualSorting)
+                    return;
+
                 self.temp_params._sort = '';
 
                 var sorting = _.isEmpty(self.sorting) ? self.defaultSorting : self.sorting;
@@ -1791,13 +1855,15 @@ angular
 
             self.likeParamsToQuery = function(){
                 angular.forEach(self.temp_params, function callback(value, name){
+                    if(angular.isUndefined(value) || value == null || ((angular.isString(value) || angular.isArray(value)) && !value.length)){
+                        delete self.temp_params[name];
+                        return;
+                    }
+
                     if (name.includes('-lk')) {
                         self.temp_params[name] = '*' + value + '*';
                     } else if(name.includes('-in') && value && value.join) {
-                        if(value.length)
-                            self.temp_params[name] = value.join(',');
-                        else
-                            delete self.temp_params[name];
+                        self.temp_params[name] = value.join(',');
                     }
                 });
             }
@@ -2319,30 +2385,27 @@ angular
     }]);
 angular
     .module('admin_app')
-    .directive('sfImage', ['$timeout', 'AppPaths', 'FileManger', function($timeout, AppPaths, FileManger) {
+    .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
-            replace: true,
-            templateUrl: AppPaths.directives + 'sf_image/sf_image.html',
+            templateUrl: AppPaths.directives + 'sf_date/sf_date.html',
             scope: {
                 /* SubFieldValues resource */
                 ngModel: '=',
                 pageResource: '=?',
-                templateResource: '=?',
-                viewMode: '=?',
-                onSave: '&'
+                templateResource: '=?'
             },
             link: function (scope, element) {
-                scope.openFileManager = function(){
-                    FileManger.getPath().then(function(path){
-                        scope.ngModel = path;
+                scope.$watch('ngModel', function(){
+                    if(!scope.ngModel)
+                        return;
 
-                        if(scope.onSave)
-                            $timeout(scope.onSave);
-                    }, function(){
-                        //closed
-                    })
-                }
+                    if(new Date(scope.ngModel.value) != scope.fakeModel)
+                        scope.fakeModel = new Date(scope.ngModel.value);
+                });
+                scope.$watch('fakeModel', function(){
+                    scope.ngModel.value = scope.fakeModel;
+                });
             }
         };
     }]);
@@ -2496,6 +2559,35 @@ angular
             },
             link: function (scope, element) {
 
+            }
+        };
+    }]);
+angular
+    .module('admin_app')
+    .directive('sfImage', ['$timeout', 'AppPaths', 'FileManger', function($timeout, AppPaths, FileManger) {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: AppPaths.directives + 'sf_image/sf_image.html',
+            scope: {
+                /* SubFieldValues resource */
+                ngModel: '=',
+                pageResource: '=?',
+                templateResource: '=?',
+                viewMode: '=?',
+                onSave: '&'
+            },
+            link: function (scope, element) {
+                scope.openFileManager = function(){
+                    FileManger.getPath().then(function(path){
+                        scope.ngModel = path;
+
+                        if(scope.onSave)
+                            $timeout(scope.onSave);
+                    }, function(){
+                        //closed
+                    })
+                }
             }
         };
     }]);
@@ -2900,32 +2992,6 @@ angular
                         templateUrl: AppPaths.pages + 'page_form/templates/index.html'
                     });
         }]);
-angular
-    .module('admin_app')
-    .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
-        return {
-            restrict: 'E',
-            templateUrl: AppPaths.directives + 'sf_date/sf_date.html',
-            scope: {
-                /* SubFieldValues resource */
-                ngModel: '=',
-                pageResource: '=?',
-                templateResource: '=?'
-            },
-            link: function (scope, element) {
-                scope.$watch('ngModel', function(){
-                    if(!scope.ngModel)
-                        return;
-
-                    if(new Date(scope.ngModel.value) != scope.fakeModel)
-                        scope.fakeModel = new Date(scope.ngModel.value);
-                });
-                scope.$watch('fakeModel', function(){
-                    scope.ngModel.value = scope.fakeModel;
-                });
-            }
-        };
-    }]);
 angular.module('admin_app.database')
     .factory('DBManageContextsConfig', ['Contexts', function(Contexts) {
 
@@ -2973,46 +3039,6 @@ angular.module('admin_app.database')
         return this;
     }]);
 angular.module('admin_app.database')
-    .factory('DBManageGeneralConfig', [function() {
-
-        this.entityName = 'Entity Name';
-
-        this.aeGridOptions = {
-            caption: '',
-            create: true,
-            edit: true,
-            order_by: '-id',
-            resource: null,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Entity',
-                    required: true
-                }
-            ]
-        };
-
-        return this;
-    }]);
-angular.module('admin_app.database')
-    .controller('DBManageGeneralController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
-        $scope.items = [];
-
-        angular.extend($scope, EntityConfig);
-
-        $scope.aeGridOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridOptions);
-    }]);
-angular.module('admin_app.database')
     .factory('DBManageLogsConfig', ['Logs', 'Users', function(Logs, Users) {
 
         this.entityName = 'Logs';
@@ -3058,6 +3084,46 @@ angular.module('admin_app.database')
 
         return this;
 }]);
+angular.module('admin_app.database')
+    .factory('DBManageGeneralConfig', [function() {
+
+        this.entityName = 'Entity Name';
+
+        this.aeGridOptions = {
+            caption: '',
+            create: true,
+            edit: true,
+            order_by: '-id',
+            resource: null,
+            ajax_handler: true,
+            get_list: true,
+            paginate: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Entity',
+                    required: true
+                }
+            ]
+        };
+
+        return this;
+    }]);
+angular.module('admin_app.database')
+    .controller('DBManageGeneralController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
+        $scope.items = [];
+
+        angular.extend($scope, EntityConfig);
+
+        $scope.aeGridOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridOptions);
+    }]);
 angular.module('admin_app.database')
     .factory('DBManageMailTemplatesConfig', ['MailTemplates', function(MailTemplates) {
 
@@ -3204,6 +3270,63 @@ angular.module('admin_app.database')
                     name: 'is_part',
                     label: 'Is part of parent page',
                     type: 'bool',
+                    table_hide: true
+                }
+            ]
+        };
+
+        return this;
+    }]);
+angular.module('admin_app.database')
+    .factory('DBManageSentMailsConfig', ['SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function(SentMails, MailTemplates, Pages, SubscribersGroups) {
+
+        this.entityName = 'Sent Mails';
+
+        this.aeGridOptions = {
+            resource: SentMails,
+            create: false,
+            edit: false,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'result_title',
+                    modal: 'self',
+                    label: 'Result Title'
+                },
+                {
+                    name: 'result_content',
+                    label: 'Result Content',
+                    type: 'textarea'
+                },
+                {
+                    name: 'result_addresses',
+                    label: 'Addresses Mail',
+                    type: 'textarea'
+                },
+                {
+                    name: 'mail_template_id',
+                    label: 'Mail template',
+                    type: 'select',
+                    resource: MailTemplates,
+                    list: 'mail_templates'
+                },
+                {
+                    name: 'page_id',
+                    label: 'Source page',
+                    type: 'select',
+                    resource: Pages,
+                    list: 'pages'
+                },
+                {
+                    name: 'subscribers_groups_ids',
+                    label: 'Subscribers groups',
+                    type: 'multiselect',
+                    resource: SubscribersGroups,
+                    list: 'subscribers_groups',
                     table_hide: true
                 }
             ]
@@ -3400,63 +3523,6 @@ angular.module('admin_app.database')
 
         $scope.sub_fields_values = [];
         $scope.aeGridSubFieldsValuesOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridSubFieldsValuesOptions);
-    }]);
-angular.module('admin_app.database')
-    .factory('DBManageSentMailsConfig', ['SentMails', 'MailTemplates', 'Pages', 'SubscribersGroups', function(SentMails, MailTemplates, Pages, SubscribersGroups) {
-
-        this.entityName = 'Sent Mails';
-
-        this.aeGridOptions = {
-            resource: SentMails,
-            create: false,
-            edit: false,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'result_title',
-                    modal: 'self',
-                    label: 'Result Title'
-                },
-                {
-                    name: 'result_content',
-                    label: 'Result Content',
-                    type: 'textarea'
-                },
-                {
-                    name: 'result_addresses',
-                    label: 'Addresses Mail',
-                    type: 'textarea'
-                },
-                {
-                    name: 'mail_template_id',
-                    label: 'Mail template',
-                    type: 'select',
-                    resource: MailTemplates,
-                    list: 'mail_templates'
-                },
-                {
-                    name: 'page_id',
-                    label: 'Source page',
-                    type: 'select',
-                    resource: Pages,
-                    list: 'pages'
-                },
-                {
-                    name: 'subscribers_groups_ids',
-                    label: 'Subscribers groups',
-                    type: 'multiselect',
-                    resource: SubscribersGroups,
-                    list: 'subscribers_groups',
-                    table_hide: true
-                }
-            ]
-        };
-
-        return this;
     }]);
 angular.module('admin_app.database')
     .factory('DBManageSubscribersConfig', ['SubscribersGroups', 'Subscribers', function(SubscribersGroups, Subscribers) {
