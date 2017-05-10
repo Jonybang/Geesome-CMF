@@ -13,6 +13,9 @@ angular.module('admin_app')
             if(parent.id == dropped_item.id)
                 return;
 
+            if(!parent.id)
+                return;
+
             dropped_item.parent_page_id = parent.id;
             dropped_item.menu_index = dropped_index;
 

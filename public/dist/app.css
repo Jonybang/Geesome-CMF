@@ -699,6 +699,12 @@ ul[dnd-list] > li {
   white-space: nowrap;
 }
 
+ul[dnd-list] > li.dndPlaceholder {
+  overflow: visible;
+  height: 20px;
+  background: #e4e4e4;
+}
+
 ul[dnd-list] > li:hover > a {
   text-decoration: underline;
 }

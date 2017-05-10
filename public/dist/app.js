@@ -2385,6 +2385,35 @@ angular
     }]);
 angular
     .module('admin_app')
+    .directive('sfImage', ['$timeout', 'AppPaths', 'FileManger', function($timeout, AppPaths, FileManger) {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: AppPaths.directives + 'sf_image/sf_image.html',
+            scope: {
+                /* SubFieldValues resource */
+                ngModel: '=',
+                pageResource: '=?',
+                templateResource: '=?',
+                viewMode: '=?',
+                onSave: '&'
+            },
+            link: function (scope, element) {
+                scope.openFileManager = function(){
+                    FileManger.getPath().then(function(path){
+                        scope.ngModel = path;
+
+                        if(scope.onSave)
+                            $timeout(scope.onSave);
+                    }, function(){
+                        //closed
+                    })
+                }
+            }
+        };
+    }]);
+angular
+    .module('admin_app')
     .directive('sfDate', ['$timeout', 'AppPaths', function($timeout, AppPaths) {
         return {
             restrict: 'E',
@@ -2559,35 +2588,6 @@ angular
             },
             link: function (scope, element) {
 
-            }
-        };
-    }]);
-angular
-    .module('admin_app')
-    .directive('sfImage', ['$timeout', 'AppPaths', 'FileManger', function($timeout, AppPaths, FileManger) {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: AppPaths.directives + 'sf_image/sf_image.html',
-            scope: {
-                /* SubFieldValues resource */
-                ngModel: '=',
-                pageResource: '=?',
-                templateResource: '=?',
-                viewMode: '=?',
-                onSave: '&'
-            },
-            link: function (scope, element) {
-                scope.openFileManager = function(){
-                    FileManger.getPath().then(function(path){
-                        scope.ngModel = path;
-
-                        if(scope.onSave)
-                            $timeout(scope.onSave);
-                    }, function(){
-                        //closed
-                    })
-                }
             }
         };
     }]);
@@ -2948,6 +2948,9 @@ angular.module('admin_app')
             if(parent.id == dropped_item.id)
                 return;
 
+            if(!parent.id)
+                return;
+
             dropped_item.parent_page_id = parent.id;
             dropped_item.menu_index = dropped_index;
 
@@ -3039,6 +3042,46 @@ angular.module('admin_app.database')
         return this;
     }]);
 angular.module('admin_app.database')
+    .factory('DBManageGeneralConfig', [function() {
+
+        this.entityName = 'Entity Name';
+
+        this.aeGridOptions = {
+            caption: '',
+            create: true,
+            edit: true,
+            order_by: '-id',
+            resource: null,
+            ajax_handler: true,
+            get_list: true,
+            paginate: true,
+            fields: [
+                {
+                    name: 'id',
+                    label: '#',
+                    readonly: true
+                },
+                {
+                    name: 'name',
+                    modal: 'self',
+                    label: 'Name',
+                    new_placeholder: 'New Entity',
+                    required: true
+                }
+            ]
+        };
+
+        return this;
+    }]);
+angular.module('admin_app.database')
+    .controller('DBManageGeneralController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
+        $scope.items = [];
+
+        angular.extend($scope, EntityConfig);
+
+        $scope.aeGridOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridOptions);
+    }]);
+angular.module('admin_app.database')
     .factory('DBManageLogsConfig', ['Logs', 'Users', function(Logs, Users) {
 
         this.entityName = 'Logs';
@@ -3084,46 +3127,6 @@ angular.module('admin_app.database')
 
         return this;
 }]);
-angular.module('admin_app.database')
-    .factory('DBManageGeneralConfig', [function() {
-
-        this.entityName = 'Entity Name';
-
-        this.aeGridOptions = {
-            caption: '',
-            create: true,
-            edit: true,
-            order_by: '-id',
-            resource: null,
-            ajax_handler: true,
-            get_list: true,
-            paginate: true,
-            fields: [
-                {
-                    name: 'id',
-                    label: '#',
-                    readonly: true
-                },
-                {
-                    name: 'name',
-                    modal: 'self',
-                    label: 'Name',
-                    new_placeholder: 'New Entity',
-                    required: true
-                }
-            ]
-        };
-
-        return this;
-    }]);
-angular.module('admin_app.database')
-    .controller('DBManageGeneralController', ['$scope', 'DBManageGeneralConfig', 'EntityConfig', function($scope, DBManageGeneralConfig, EntityConfig) {
-        $scope.items = [];
-
-        angular.extend($scope, EntityConfig);
-
-        $scope.aeGridOptions = angular.extend({}, DBManageGeneralConfig.aeGridOptions, EntityConfig.aeGridOptions);
-    }]);
 angular.module('admin_app.database')
     .factory('DBManageMailTemplatesConfig', ['MailTemplates', function(MailTemplates) {
 
