@@ -89,6 +89,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function(){
 
                 if($result instanceof \Illuminate\Http\JsonResponse)
                     $result_data = (array)$result->getData();
+                else if($result instanceof \Illuminate\Http\RedirectResponse)
+                    return $result;
                 else
                     $result_data = $result;
 
